@@ -1,0 +1,27 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/QuadSquad.dir/quadsquad/helpers.cpp.o"
+  "CMakeFiles/QuadSquad.dir/quadsquad/helpers.cpp.o.d"
+  "CMakeFiles/QuadSquad.dir/quadsquad/jump_provider.cpp.o"
+  "CMakeFiles/QuadSquad.dir/quadsquad/jump_provider.cpp.o.d"
+  "CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o"
+  "CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o.d"
+  "CMakeFiles/QuadSquad.dir/quadsquad/online_evaluator.cpp.o"
+  "CMakeFiles/QuadSquad.dir/quadsquad/online_evaluator.cpp.o.d"
+  "CMakeFiles/QuadSquad.dir/quadsquad/ot_provider.cpp.o"
+  "CMakeFiles/QuadSquad.dir/quadsquad/ot_provider.cpp.o.d"
+  "CMakeFiles/QuadSquad.dir/quadsquad/rand_gen_pool.cpp.o"
+  "CMakeFiles/QuadSquad.dir/quadsquad/rand_gen_pool.cpp.o.d"
+  "CMakeFiles/QuadSquad.dir/quadsquad/sharing.cpp.o"
+  "CMakeFiles/QuadSquad.dir/quadsquad/sharing.cpp.o.d"
+  "CMakeFiles/QuadSquad.dir/quadsquad/types.cpp.o"
+  "CMakeFiles/QuadSquad.dir/quadsquad/types.cpp.o.d"
+  "CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o"
+  "CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o.d"
+  "libQuadSquad.a"
+  "libQuadSquad.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/QuadSquad.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
