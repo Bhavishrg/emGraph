@@ -1,7 +1,6 @@
 #include "offline_evaluator.h"
 
 #include <NTL/BasicThreadPool.h>
-//#include <NTL/vec_ZZ_pE.h>
 
 #include <algorithm>
 #include <cassert>
