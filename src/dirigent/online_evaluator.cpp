@@ -14,7 +14,7 @@ OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> ne
       security_param_(security_param),
       rgen_(id,seed),
       network_(std::move(network)),
-      preproc_(preproc),
+      preproc_(std::move(preproc)),
       circ_(std::move(circ)),
       wires_(circ.num_gates) {tpool_ = std::make_shared<ThreadPool>(threads); }
 
