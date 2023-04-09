@@ -13,7 +13,7 @@ OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> ne
       id_(id),
       security_param_(security_param),
       rgen_(id,seed),
-      neetwork_(std::move(network)),
+      network_(std::move(network)),
       preproc_(preproc),
       circ_(std::move(circ)),
       wires_(circ.num_gates) {tpool_ = std::make_shared<ThreadPool>(threads); }
@@ -94,26 +94,28 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                 auto& tpm_in1 = preproc_.gates[g->in1]->tpmask;
                 auto& tpm_in2 = preproc_.gates[g->in2]->tpmask;
                 auto* pre_out = 
-                    static_cast<PreprocMultGate<Field>*>(preproc_gates[g->out].get());
+                    static_cast<PreprocMultGate<Field>*>(preproc_.gates[g->out].get());
                 
                 if(id_ != 0) {
                     auto q_share = pre_out->mask + pre_out->mask_prod - 
                                      m_in1 * wires_[g->in2] - m_in2 * wires_[g->in1];
                     q_share.add((wires_[g->in1] * wires_[g->in2] + r_mul), id_);
-                    network_->send(0, q_share.data(), sizeof(Field));
+                    network_->send(0, &q_share, sizeof(Field));
                 }
                 else
                     if(id_ == 0) {
+                        std::vector<Field> q_share;
                         Field q_value = 0;
                         for(int i = 1; i <= nP_; ++i) {
-                            network_.recv(1, q_share.value_.data(), sizeof(Field));
-                            q_value += q_share.value_;
-                            network_.send(i, q_value.data(), sizeof(Field));
+                            network_->recv(1, &q_share[i], sizeof(Field));
+                            q_value += q_share[i];
+                            network_->send(i, &q_value, sizeof(Field));
                             }
                     }
                 
                 if(id_ != 0)   {
-                    network_.recv(0, q_value.data(), sizeof(Field));
+                    Field q_value;
+                    network_->recv(0, &q_value, sizeof(Field));
                     wires_[g->out] = q_value - r_mul;
                 }
                 break;
@@ -121,11 +123,11 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
             case::quadsquad::utils::GateType::kDotprod: {
                 // All parties excluding TP sample a common random value r_in
                 Field r_dotp;
-                rgen_.all_minus_0().random_data(&r_mul, sizeof(Field));
+                rgen_.all_minus_0().random_data(&r_dotp, sizeof(Field));
 
                 auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
                 auto* pre_out =
-                    static_cast<PreprocDotpGate<Ring>*>(preproc_.gates[g->out].get());
+                    static_cast<PreprocDotpGate<Field>*>(preproc_.gates[g->out].get());
                 if(id_ != 0) {
                     auto q_share = pre_out->mask + pre_out->mask_prod;
                     for(size_t i = 0; i < g->in1.size(); ++i) {
@@ -139,15 +141,18 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                     q_share.add(r_dotp, id_);
                 }
                 else if (id_ == 0) {
+                    std::vector<Field> q_share;
                     Field q_value = 0;
                     for(int i = 1; i <= nP_; ++i) {
-                        network_.recv(1, q_share.value_.data(), sizeof(Field));
-                        q_value += q_share.value_;
-                        network_.send(i, q_value.data(), sizeof(Field));
+                        network_->recv(i, &q_share[i], sizeof(Field));
+                        q_value += q_share[i];
+                        network_->send(i, &q_value, sizeof(Field));
                     }
                 }
                 if(id_ != 0)   {
-                    wires_[g->out] = q_value - r_mul;
+                    Field q_value;
+                    network_->recv(0, &q_value, sizeof(Field));
+                    wires_[g->out] = q_value - r_dotp;
                 }
                 break;
             }
@@ -163,7 +168,7 @@ std::vector<Field> OnlineEvaluator::getOutputs() {
         return outvals;
     }
 
-    std::vector<Field> output_masks(circ_.output.size());
+    std::vector<Field> output_masks(circ_.outputs.size());
     if(id_ == 0) {
         for (size_t i = 0; i < circ_.outputs.size(); ++i) {
             auto wout = circ_.outputs[i];
@@ -171,12 +176,13 @@ std::vector<Field> OnlineEvaluator::getOutputs() {
             output_masks.push_back(outmask);
         }    
         for(int i = 1; i <= nP_; ++i) {
-            network_.send(i, output_masks.data(), output_masks.size() * sizeof(Field));
+            network_->send(i, &output_masks, output_masks.size() * sizeof(Field));
         }
     }
     else {
-        network_.recv(0,output_masks.data(), output_masks.size() * sizeof(Field));
-        for(size_t i = 0; i < circ_.output.size(); ++i) {
+        std::vector<Field> output_masks;
+        network_->recv(0, &output_masks, output_masks.size() * sizeof(Field));
+        for(size_t i = 0; i < circ_.outputs.size(); ++i) {
             auto wout = circ_.outputs[i]; 
             outvals[i] = wires_[wout] - output_masks[i];
         }
@@ -189,18 +195,20 @@ std::vector<Field> OnlineEvaluator::getOutputs() {
 Field OnlineEvaluator::reconstruct(AuthAddShare<Field>& shares) {
     Field reconstructed_value = 0;
     if(id_ != 0) {
-        network_.send(0, shares.value_.data(), sizeof(Field));
+        network_->send(0, &shares.valueAt(), sizeof(Field));
     }
     else if (id_ == 0) {
-        for(size_t i = 1, i <= nP_; ++i) {
-            network_.recv(i, shares.value_.data(), sizeof(Field));
-            reconstructed_value += shares.value_.data();
+        
+        for(size_t i = 1; i <= nP_; ++i) {    
+            std::vector<Field> share_val;
+            network_->recv(i, &share_val[i], sizeof(Field));
+            reconstructed_value += share_val[i];
         }
     }
     return reconstructed_value;
 }
 
-std::vector<Field> OnlineEvaluator::evaluateCircuit( const std::unordered_map<quadsquad::utils::wires_t, Field>& inputs) {
+std::vector<Field> OnlineEvaluator::evaluateCircuit( const std::unordered_map<quadsquad::utils::wire_t, Field>& inputs) {
     setInputs(inputs);
   for (size_t i = 0; i < circ_.gates_by_level.size(); ++i) {
     evaluateGatesAtDepth(i);

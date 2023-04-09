@@ -156,6 +156,8 @@ void OfflineEvaluator::setWireMasks(
           const auto& tpmask_in2 = preproc_.gates[g->in2]->tpmask;
           preproc_.gates[gate->out] =
               std::make_unique<PreprocGate<Field>>((mask_in1 - mask_in2),(tpmask_in1 - tpmask_in2));
+              //std::move(preproc_.gates[gate->out]);
+
           break;
         }
 
@@ -175,9 +177,8 @@ void OfflineEvaluator::setWireMasks(
           AuthAddShare<Field> mask_product; 
           randomShareWithParty(id_, 0, rgen_, *network_, 
                                 mask_product, tpmask_product, tp_prod);
-          preproc_.gates[gate->out] = 
-                    std::make_unique<PreprocMultGate<Field>>(rand_mask, tprand_mask, 
-                    mask_product, tpmask_product);
+          preproc_.gates[gate->out] = std::move(std::make_unique<PreprocMultGate<Field>>
+                              (rand_mask, tprand_mask, mask_product, tpmask_product));
         }
 
         default:

@@ -47,7 +47,7 @@ class OnlineEvaluator {
         // Reconstruct an authenticated additive shared value
         // combining multiple values might be more effficient
         // CHECK
-        Field rconstruct(AuthAddShare<Field>& shares);
+        Field reconstruct(AuthAddShare<Field>& shares);
 
         // Evaluate online phase for circuit
         std::vector<Field> evaluateCircuit(

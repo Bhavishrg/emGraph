@@ -80,9 +80,9 @@ class AuthAddShare {
   AuthAddShare<R>& add(R val, int pid) {
     if (pid == 1) {
       value_ += val;
-      tag_ += key_sh_.val;
+      tag_ += key_sh_*val;
     } else {
-      tag_ += key_sh_.val;
+      tag_ += key_sh_*val;
     }
 
     return *this;

@@ -113,27 +113,29 @@ struct PreprocMsbGate : public PreprocGate<R> {
 //Simpler construction
 
 // Preprocessed data for output wires.
-struct PreprocOutput {
+//struct PreprocOutput {
   // Commitment corresponding to share elements not available with the party
   // for the output wire. If party's ID is 'i' then array is of the form
   // {s[i+1, i+2], s[i+1, i+3], s[i+2, i+3]}.
-  std::array<std::array<char, emp::Hash::DIGEST_SIZE>, 3> commitments{};
+  //std::array<std::array<char, emp::Hash::DIGEST_SIZE>, 3> commitments{};
 
   // Opening info for commitments to party's output shares.
   // If party's ID is 'i' then array is of the form
   // {o[i, i+1], o[i, i+2], o[i, i+3]} where o[i, j] is the opening info for
   // share common to parties with ID i and j.
-  std::array<std::vector<uint8_t>, 3> openings;
-};
+  //std::array<std::vector<uint8_t>, 3> openings;
+//};
 
 // Preprocessed data for the circuit.
 template <class R>
 struct PreprocCircuit {
   std::vector<preprocg_ptr_t<R>> gates;
-  std::vector<PreprocOutput> output;
+  //std::vector<PreprocOutput> output;
 
   PreprocCircuit() = default;
   PreprocCircuit(size_t num_gates, size_t num_output)
-      : gates(num_gates), output(num_output) {}
+      : gates(num_gates) 
+      //output(num_output)
+       {}
 };
 };  // namespace dirigent
