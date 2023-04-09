@@ -18,40 +18,40 @@ class OnlineEvaluator {
     int security_param_;
     RandGenPool rgen_;
     std::shared_ptr<io::NetIOMP> network_;
-    PreprocCircuit<dirigent::Field> preproc_;
-    utils::LevelOrderedCircuit circ_;
-    std::vector<dirigent::Field> wires_;
+    PreprocCircuit<Field> preproc_;
+    quadsquad::utils::LevelOrderedCircuit circ_;
+    std::vector<Field> wires_;
     std::shared_ptr<ThreadPool> tpool_;
 
     // write reconstruction function
      public:
         OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
-                        PreprocCircuit<dirigent::Field> preproc, 
-                        utils::LevelOrderedCircuit circ,
+                        PreprocCircuit<Field> preproc, 
+                        quadsquad::utils::LevelOrderedCircuit circ,
                         int security_param, int threads, int seed = 200);
                         
         OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
-                        PreprocCircuit<dirigent::Field> preproc, 
-                        utils::LevelOrderedCircuit circ,
+                        PreprocCircuit<Field> preproc, 
+                        quadsquad::utils::LevelOrderedCircuit circ,
                         int security_param, 
                         std::shared_ptr<ThreadPool> tpool, int seed = 200);
 
-        void setInputs(const std::unordered_map<utils::wire_t, dirigent::Field>& inputs);
+        void setInputs(const std::unordered_map<quadsquad::utils::wire_t, Field>& inputs);
 
         void setRandomInputs();
 
         void evaluateGatesAtDepth(size_t depth);
 
-        std::vector<dirigent::Field> getOutputs();
+        std::vector<Field> getOutputs();
 
         // Reconstruct an authenticated additive shared value
         // combining multiple values might be more effficient
         // CHECK
-        dirigent::Field rconstruct(AuthAddShare<dirigent::Field>& shares);
+        Field rconstruct(AuthAddShare<Field>& shares);
 
         // Evaluate online phase for circuit
-        std::vector<dirigent::Field> evaluateCircuit(
-            const std::unordered_map<utils::wire_t, dirigent::Field>& inputs);
+        std::vector<Field> evaluateCircuit(
+            const std::unordered_map<quadsquad::utils::wire_t, Field>& inputs);
         
 
     };

@@ -237,6 +237,9 @@ CMAKE_STRIP:FILEPATH=/Library/Developer/CommandLineTools/usr/bin/strip
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Dependencies for the target
+Dirigent_LIB_DEPENDS:STATIC=general;Boost::system;general;NTL;general;GMP;
+
 //Path to a file.
 EMP-OT_INCLUDE_DIR:PATH=/usr/local/include
 

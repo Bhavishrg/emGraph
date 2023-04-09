@@ -25,6 +25,9 @@ class AuthAddShare {
 
   R& valueAt() { return value_; }
   R& tagAt() { return tag_; }
+
+  void pushValue(R val) { value_ = val; } 
+  void pushTag(R tag) {tag_ = tag; }
   
   R valueAt() const { return value_; }
   R tagAt() const { return tag_; }
@@ -108,6 +111,8 @@ class TPShare {
   R operator[](size_t idx) const { return values_.at(idx); }
   //R operator()(size_t idx) { return tags_.at(idx); }
 
+  R& macKey() { return key_; }
+
   R& commonValueWithParty(int pid) {
     return values_.at(pid);
   }
@@ -124,6 +129,9 @@ class TPShare {
     return tags_.at(pid);
   }
 
+  void pushValues(R val) { values_.push_back(val); }
+  void pushTags(R tag) {tags_.push_back(tag);}
+
   [[nodiscard]] R secret() const { 
     R res=values_[0];
     for (int i = 1; i < values_.size(); i++)
@@ -134,7 +142,7 @@ class TPShare {
   TPShare<R>& operator+=(const TPShare<R>& rhs) {
     for (size_t i = 1; i < values_.size(); i++) {
       values_[i] += rhs.values_[i];
-      tags_[i] += rhs.tag_[i];
+      tags_[i] += rhs.tags_[i];
     }
     return *this;
   }

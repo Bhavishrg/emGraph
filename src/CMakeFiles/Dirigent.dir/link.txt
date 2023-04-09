@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libDirigent.a CMakeFiles/Dirigent.dir/utils/circuit.cpp.o CMakeFiles/Dirigent.dir/dirigent/types.cpp.o CMakeFiles/Dirigent.dir/dirigent/sharing.cpp.o CMakeFiles/Dirigent.dir/dirigent/helpers.cpp.o CMakeFiles/Dirigent.dir/dirigent/rand_gen_pool.cpp.o CMakeFiles/Dirigent.dir/dirigent/offline_evaluator.cpp.o CMakeFiles/Dirigent.dir/dirigent/online_evaluator.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libDirigent.a

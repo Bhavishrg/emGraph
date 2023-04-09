@@ -140,6 +140,19 @@ QuadSquad/fast:
 .PHONY : QuadSquad/fast
 
 #=============================================================================
+# Target rules for targets named Dirigent
+
+# Build rule for target.
+Dirigent: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Dirigent
+.PHONY : Dirigent
+
+# fast build rule for target.
+Dirigent/fast:
+	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/build
+.PHONY : Dirigent/fast
+
+#=============================================================================
 # Target rules for targets named online_mpc
 
 # Build rule for target.
@@ -306,6 +319,7 @@ help:
 	@echo "... test"
 	@echo "... benchmarks"
 	@echo "... tests"
+	@echo "... Dirigent"
 	@echo "... QuadSquad"
 	@echo "... io_test"
 	@echo "... offline_mpc_sub"

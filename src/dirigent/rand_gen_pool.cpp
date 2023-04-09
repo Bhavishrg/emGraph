@@ -6,7 +6,7 @@
 
 namespace dirigent {
 
-RandGenPool::RandGenPool(int my_id) : id_{my_id} {
+RandGenPool::RandGenPool(int my_id, uint64_t seed) : id_{my_id} {
   //all keys will be the same.  for different keys look at emp toolkit
 }
 

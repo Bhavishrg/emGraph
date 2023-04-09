@@ -140,6 +140,164 @@ QuadSquad/fast:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/build
 .PHONY : QuadSquad/fast
 
+# Convenience name for target.
+src/CMakeFiles/Dirigent.dir/rule:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/Dirigent.dir/rule
+.PHONY : src/CMakeFiles/Dirigent.dir/rule
+
+# Convenience name for target.
+Dirigent: src/CMakeFiles/Dirigent.dir/rule
+.PHONY : Dirigent
+
+# fast build rule for target.
+Dirigent/fast:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/build
+.PHONY : Dirigent/fast
+
+dirigent/helpers.o: dirigent/helpers.cpp.o
+.PHONY : dirigent/helpers.o
+
+# target to build an object file
+dirigent/helpers.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/helpers.cpp.o
+.PHONY : dirigent/helpers.cpp.o
+
+dirigent/helpers.i: dirigent/helpers.cpp.i
+.PHONY : dirigent/helpers.i
+
+# target to preprocess a source file
+dirigent/helpers.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/helpers.cpp.i
+.PHONY : dirigent/helpers.cpp.i
+
+dirigent/helpers.s: dirigent/helpers.cpp.s
+.PHONY : dirigent/helpers.s
+
+# target to generate assembly for a file
+dirigent/helpers.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/helpers.cpp.s
+.PHONY : dirigent/helpers.cpp.s
+
+dirigent/offline_evaluator.o: dirigent/offline_evaluator.cpp.o
+.PHONY : dirigent/offline_evaluator.o
+
+# target to build an object file
+dirigent/offline_evaluator.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/offline_evaluator.cpp.o
+.PHONY : dirigent/offline_evaluator.cpp.o
+
+dirigent/offline_evaluator.i: dirigent/offline_evaluator.cpp.i
+.PHONY : dirigent/offline_evaluator.i
+
+# target to preprocess a source file
+dirigent/offline_evaluator.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/offline_evaluator.cpp.i
+.PHONY : dirigent/offline_evaluator.cpp.i
+
+dirigent/offline_evaluator.s: dirigent/offline_evaluator.cpp.s
+.PHONY : dirigent/offline_evaluator.s
+
+# target to generate assembly for a file
+dirigent/offline_evaluator.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/offline_evaluator.cpp.s
+.PHONY : dirigent/offline_evaluator.cpp.s
+
+dirigent/online_evaluator.o: dirigent/online_evaluator.cpp.o
+.PHONY : dirigent/online_evaluator.o
+
+# target to build an object file
+dirigent/online_evaluator.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/online_evaluator.cpp.o
+.PHONY : dirigent/online_evaluator.cpp.o
+
+dirigent/online_evaluator.i: dirigent/online_evaluator.cpp.i
+.PHONY : dirigent/online_evaluator.i
+
+# target to preprocess a source file
+dirigent/online_evaluator.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/online_evaluator.cpp.i
+.PHONY : dirigent/online_evaluator.cpp.i
+
+dirigent/online_evaluator.s: dirigent/online_evaluator.cpp.s
+.PHONY : dirigent/online_evaluator.s
+
+# target to generate assembly for a file
+dirigent/online_evaluator.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/online_evaluator.cpp.s
+.PHONY : dirigent/online_evaluator.cpp.s
+
+dirigent/rand_gen_pool.o: dirigent/rand_gen_pool.cpp.o
+.PHONY : dirigent/rand_gen_pool.o
+
+# target to build an object file
+dirigent/rand_gen_pool.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/rand_gen_pool.cpp.o
+.PHONY : dirigent/rand_gen_pool.cpp.o
+
+dirigent/rand_gen_pool.i: dirigent/rand_gen_pool.cpp.i
+.PHONY : dirigent/rand_gen_pool.i
+
+# target to preprocess a source file
+dirigent/rand_gen_pool.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/rand_gen_pool.cpp.i
+.PHONY : dirigent/rand_gen_pool.cpp.i
+
+dirigent/rand_gen_pool.s: dirigent/rand_gen_pool.cpp.s
+.PHONY : dirigent/rand_gen_pool.s
+
+# target to generate assembly for a file
+dirigent/rand_gen_pool.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/rand_gen_pool.cpp.s
+.PHONY : dirigent/rand_gen_pool.cpp.s
+
+dirigent/sharing.o: dirigent/sharing.cpp.o
+.PHONY : dirigent/sharing.o
+
+# target to build an object file
+dirigent/sharing.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/sharing.cpp.o
+.PHONY : dirigent/sharing.cpp.o
+
+dirigent/sharing.i: dirigent/sharing.cpp.i
+.PHONY : dirigent/sharing.i
+
+# target to preprocess a source file
+dirigent/sharing.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/sharing.cpp.i
+.PHONY : dirigent/sharing.cpp.i
+
+dirigent/sharing.s: dirigent/sharing.cpp.s
+.PHONY : dirigent/sharing.s
+
+# target to generate assembly for a file
+dirigent/sharing.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/sharing.cpp.s
+.PHONY : dirigent/sharing.cpp.s
+
+dirigent/types.o: dirigent/types.cpp.o
+.PHONY : dirigent/types.o
+
+# target to build an object file
+dirigent/types.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/types.cpp.o
+.PHONY : dirigent/types.cpp.o
+
+dirigent/types.i: dirigent/types.cpp.i
+.PHONY : dirigent/types.i
+
+# target to preprocess a source file
+dirigent/types.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/types.cpp.i
+.PHONY : dirigent/types.cpp.i
+
+dirigent/types.s: dirigent/types.cpp.s
+.PHONY : dirigent/types.s
+
+# target to generate assembly for a file
+dirigent/types.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/dirigent/types.cpp.s
+.PHONY : dirigent/types.cpp.s
+
 quadsquad/helpers.o: quadsquad/helpers.cpp.o
 .PHONY : quadsquad/helpers.o
 
@@ -338,6 +496,7 @@ utils/circuit.o: utils/circuit.cpp.o
 # target to build an object file
 utils/circuit.cpp.o:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/utils/circuit.cpp.o
 .PHONY : utils/circuit.cpp.o
 
 utils/circuit.i: utils/circuit.cpp.i
@@ -346,6 +505,7 @@ utils/circuit.i: utils/circuit.cpp.i
 # target to preprocess a source file
 utils/circuit.cpp.i:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/utils/circuit.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/utils/circuit.cpp.i
 .PHONY : utils/circuit.cpp.i
 
 utils/circuit.s: utils/circuit.cpp.s
@@ -354,6 +514,7 @@ utils/circuit.s: utils/circuit.cpp.s
 # target to generate assembly for a file
 utils/circuit.cpp.s:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/utils/circuit.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/Dirigent.dir/build.make src/CMakeFiles/Dirigent.dir/utils/circuit.cpp.s
 .PHONY : utils/circuit.cpp.s
 
 # Help Target
@@ -365,7 +526,26 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... Dirigent"
 	@echo "... QuadSquad"
+	@echo "... dirigent/helpers.o"
+	@echo "... dirigent/helpers.i"
+	@echo "... dirigent/helpers.s"
+	@echo "... dirigent/offline_evaluator.o"
+	@echo "... dirigent/offline_evaluator.i"
+	@echo "... dirigent/offline_evaluator.s"
+	@echo "... dirigent/online_evaluator.o"
+	@echo "... dirigent/online_evaluator.i"
+	@echo "... dirigent/online_evaluator.s"
+	@echo "... dirigent/rand_gen_pool.o"
+	@echo "... dirigent/rand_gen_pool.i"
+	@echo "... dirigent/rand_gen_pool.s"
+	@echo "... dirigent/sharing.o"
+	@echo "... dirigent/sharing.i"
+	@echo "... dirigent/sharing.s"
+	@echo "... dirigent/types.o"
+	@echo "... dirigent/types.i"
+	@echo "... dirigent/types.s"
 	@echo "... quadsquad/helpers.o"
 	@echo "... quadsquad/helpers.i"
 	@echo "... quadsquad/helpers.s"
