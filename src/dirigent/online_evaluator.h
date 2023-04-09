@@ -13,6 +13,7 @@
 
 namespace dirigent{
 class OnlineEvaluator {
+    int nP_;
     int id_;
     int security_param_;
     RandGenPool rgen_;
@@ -24,12 +25,12 @@ class OnlineEvaluator {
 
     // write reconstruction function
      public:
-        OnlineEvaluator(int id, std::shared_ptr<io::NetIOMP> network,
+        OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                         PreprocCircuit<dirigent::Field> preproc, 
                         utils::LevelOrderedCircuit circ,
                         int security_param, int threads, int seed = 200);
                         
-        OnlineEvaluator(int id, std::shared_ptr<io::NetIOMP> network,
+        OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                         PreprocCircuit<dirigent::Field> preproc, 
                         utils::LevelOrderedCircuit circ,
                         int security_param, 
