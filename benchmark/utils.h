@@ -20,7 +20,7 @@ struct TimePoint {
 struct CommPoint {
   std::array<uint64_t, 4> stats;
 
-  explicit CommPoint(io::NetIOMP<4>& network);
+  explicit CommPoint(io::NetIOMP& network);
   std::array<uint64_t, 4> operator-(const CommPoint& rhs) const;
 };
 
@@ -29,7 +29,7 @@ class StatsPoint {
   CommPoint cpoint_;
 
  public:
-  explicit StatsPoint(io::NetIOMP<4>& network);
+  explicit StatsPoint(io::NetIOMP& network);
   nlohmann::json operator-(const StatsPoint& rhs);
 };
 

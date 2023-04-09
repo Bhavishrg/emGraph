@@ -13,7 +13,7 @@ double TimePoint::operator-(const TimePoint& rhs) const {
   return std::chrono::duration_cast<timeunit_t>(time - rhs.time).count();
 }
 
-CommPoint::CommPoint(io::NetIOMP<4>& network) : stats{} {
+CommPoint::CommPoint(io::NetIOMP& network) : stats{} {
   for (size_t i = 0; i < 4; ++i) {
     if (i != network.party) {
       stats[i] = network.get(i, false)->counter + network.get(i, true)->counter;
@@ -29,7 +29,7 @@ std::array<uint64_t, 4> CommPoint::operator-(const CommPoint& rhs) const {
   return res;
 }
 
-StatsPoint::StatsPoint(io::NetIOMP<4>& network) : cpoint_(network) {}
+StatsPoint::StatsPoint(io::NetIOMP& network) : cpoint_(network) {}
 
 nlohmann::json StatsPoint::operator-(const StatsPoint& rhs) {
   return {{"time", tpoint_ - rhs.tpoint_},

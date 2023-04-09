@@ -606,50 +606,7 @@ test/CMakeFiles/online_test.dir/online.cpp.o: test/online.cpp \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
   src/io/netmp.h \
-  src/quadsquad/offline_evaluator.h \
-  /usr/local/include/NTL/ZZ_p.h \
-  /usr/local/include/NTL/ZZ.h \
-  /usr/local/include/NTL/lip.h \
-  /usr/local/include/NTL/ctools.h \
-  /usr/local/include/NTL/config.h \
-  /usr/local/include/NTL/mach_desc.h \
-  /usr/local/include/NTL/ALL_FEATURES.h \
-  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
-  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
-  /usr/local/include/NTL/HAVE_LL_TYPE.h \
-  /usr/local/include/NTL/HAVE_SSSE3.h \
-  /usr/local/include/NTL/HAVE_AVX.h \
-  /usr/local/include/NTL/HAVE_PCLMUL.h \
-  /usr/local/include/NTL/HAVE_AVX2.h \
-  /usr/local/include/NTL/HAVE_FMA.h \
-  /usr/local/include/NTL/HAVE_AVX512F.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
-  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
-  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
-  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
-  /usr/local/include/NTL/HAVE_AES_NI.h \
-  /usr/local/include/NTL/HAVE_KMA.h \
-  /usr/local/include/NTL/PackageInfo.h \
-  /usr/local/include/NTL/gmp_aux.h \
-  /usr/local/include/NTL/tools.h \
-  /usr/local/include/NTL/new.h \
-  /usr/local/include/NTL/vector.h \
-  /usr/local/include/NTL/SmartPtr.h \
-  /usr/local/include/NTL/thread.h \
-  /usr/local/include/NTL/sp_arith.h \
-  /usr/local/include/NTL/ZZVec.h \
-  /usr/local/include/NTL/Lazy.h \
-  /usr/local/include/NTL/ZZ_pE.h \
-  /usr/local/include/NTL/matrix.h \
-  /usr/local/include/NTL/vec_long.h \
-  /usr/local/include/NTL/ZZ_pX.h \
-  /usr/local/include/NTL/vec_ZZ.h \
-  /usr/local/include/NTL/vec_ZZ_p.h \
-  /usr/local/include/NTL/FFT.h \
-  /usr/local/include/NTL/LazyTable.h \
-  /usr/local/include/NTL/mat_ZZ_p.h \
-  /usr/local/include/NTL/vec_vec_ZZ_p.h \
+  src/dirigent/offline_evaluator.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/unordered_map \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/is_transparent.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__hash_table \
@@ -886,34 +843,57 @@ test/CMakeFiles/online_test.dir/online.cpp.o: test/online.cpp \
   /usr/local/include/boost/format/free_funcs.hpp \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
   src/quadsquad/helpers.h \
+  /usr/local/include/NTL/ZZ_p.h \
+  /usr/local/include/NTL/ZZ.h \
+  /usr/local/include/NTL/lip.h \
+  /usr/local/include/NTL/ctools.h \
+  /usr/local/include/NTL/config.h \
+  /usr/local/include/NTL/mach_desc.h \
+  /usr/local/include/NTL/ALL_FEATURES.h \
+  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
+  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
+  /usr/local/include/NTL/HAVE_LL_TYPE.h \
+  /usr/local/include/NTL/HAVE_SSSE3.h \
+  /usr/local/include/NTL/HAVE_AVX.h \
+  /usr/local/include/NTL/HAVE_PCLMUL.h \
+  /usr/local/include/NTL/HAVE_AVX2.h \
+  /usr/local/include/NTL/HAVE_FMA.h \
+  /usr/local/include/NTL/HAVE_AVX512F.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
+  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
+  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
+  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
+  /usr/local/include/NTL/HAVE_AES_NI.h \
+  /usr/local/include/NTL/HAVE_KMA.h \
+  /usr/local/include/NTL/PackageInfo.h \
+  /usr/local/include/NTL/gmp_aux.h \
+  /usr/local/include/NTL/tools.h \
+  /usr/local/include/NTL/new.h \
+  /usr/local/include/NTL/vector.h \
+  /usr/local/include/NTL/SmartPtr.h \
+  /usr/local/include/NTL/thread.h \
+  /usr/local/include/NTL/sp_arith.h \
+  /usr/local/include/NTL/ZZVec.h \
+  /usr/local/include/NTL/Lazy.h \
+  /usr/local/include/NTL/ZZ_pE.h \
+  /usr/local/include/NTL/matrix.h \
+  /usr/local/include/NTL/vec_long.h \
+  /usr/local/include/NTL/ZZ_pX.h \
+  /usr/local/include/NTL/vec_ZZ.h \
+  /usr/local/include/NTL/vec_ZZ_p.h \
+  /usr/local/include/NTL/FFT.h \
+  /usr/local/include/NTL/LazyTable.h \
+  /usr/local/include/NTL/mat_ZZ_p.h \
+  /usr/local/include/NTL/vec_vec_ZZ_p.h \
+  src/io/netmp.h \
   src/quadsquad/types.h \
-  src/quadsquad/types.h \
-  src/quadsquad/jump_provider.h \
-  src/quadsquad/ot_provider.h \
-  /usr/local/include/emp-ot/emp-ot.h \
-  /usr/local/include/emp-ot/ot.h \
-  /usr/local/include/emp-ot/ideal.h \
-  /usr/local/include/emp-ot/cot.h \
-  /usr/local/include/emp-ot/co.h \
-  /usr/local/include/emp-ot/np.h \
-  /usr/local/include/emp-ot/iknp.h \
-  /usr/local/include/emp-ot/ferret/ferret_cot.h \
-  /usr/local/include/emp-ot/ferret/mpcot_reg.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/set \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__tree \
-  /usr/local/include/emp-ot/ferret/spcot_sender.h \
-  /usr/local/include/emp-ot/ferret/twokeyprp.h \
-  /usr/local/include/emp-ot/ferret/spcot_recver.h \
-  /usr/local/include/emp-ot/ferret/preot.h \
-  /usr/local/include/emp-ot/ferret/base_cot.h \
-  /usr/local/include/emp-ot/ferret/lpn_f2.h \
-  /usr/local/include/emp-ot/ferret/constants.h \
-  /usr/local/include/emp-ot/ferret/ferret_cot.hpp \
-  src/quadsquad/preproc.h \
-  src/quadsquad/sharing.h \
-  src/quadsquad/helpers.h \
-  src/quadsquad/rand_gen_pool.h \
-  src/quadsquad/online_evaluator.h \
+  src/dirigent/preproc.h \
+  src/dirigent/sharing.h \
+  src/dirigent/helpers.h \
+  src/dirigent/types.h \
+  src/dirigent/rand_gen_pool.h \
+  src/dirigent/online_evaluator.h \
   /usr/local/include/boost/test/data/monomorphic.hpp \
   /usr/local/include/boost/test/data/monomorphic/array.hpp \
   /usr/local/include/boost/test/data/config.hpp \
@@ -1109,6 +1089,7 @@ test/CMakeFiles/online_test.dir/online.cpp.o: test/online.cpp \
   /usr/local/include/boost/function/function1.hpp \
   /usr/local/include/boost/test/framework.hpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/map \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__tree \
   /usr/local/include/boost/preprocessor/variadic/to_seq.hpp \
   /usr/local/include/boost/preprocessor/tuple/to_seq.hpp \
   /usr/local/include/boost/preprocessor/tuple/size.hpp \
@@ -1179,6 +1160,7 @@ test/CMakeFiles/online_test.dir/online.cpp.o: test/online.cpp \
   /usr/local/include/boost/test/results_collector.hpp \
   /usr/local/include/boost/test/tree/observer.hpp \
   /usr/local/include/boost/test/utils/algorithm.hpp \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/set \
   /usr/local/include/boost/test/impl/debug.ipp \
   /usr/local/include/boost/test/debug.hpp \
   /usr/local/include/boost/test/debug_config.hpp \
@@ -1505,6 +1487,8 @@ test/CMakeFiles/online_test.dir/online.cpp.o: test/online.cpp \
 
 /usr/local/include/boost/algorithm/cxx11/all_of.hpp:
 
+/usr/local/include/boost/function/detail/function_iterate.hpp:
+
 /usr/local/include/boost/preprocessor/slot/detail/shared.hpp:
 
 /usr/local/include/boost/preprocessor/iteration/detail/iter/forward1.hpp:
@@ -1526,8 +1510,6 @@ test/CMakeFiles/online_test.dir/online.cpp.o: test/online.cpp \
 /usr/local/include/boost/test/tools/detail/lexicographic_manip.hpp:
 
 /usr/local/include/boost/test/tools/detail/per_element_manip.hpp:
-
-/usr/local/include/boost/test/tools/detail/indirections.hpp:
 
 /usr/local/include/boost/function/function2.hpp:
 
@@ -1634,8 +1616,6 @@ test/CMakeFiles/online_test.dir/online.cpp.o: test/online.cpp \
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/mach/i386/thread_state.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/mach/i386/thread_status.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/mach/thread_status.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/mach/machine/exception.h:
 
@@ -2093,6 +2073,14 @@ test/CMakeFiles/online_test.dir/online.cpp.o: test/online.cpp \
 
 /usr/local/include/boost/core/ref.hpp:
 
+/usr/local/include/boost/mpl/aux_/config/compiler.hpp:
+
+/usr/local/include/boost/test/data/monomorphic/generate.hpp:
+
+/usr/local/include/boost/test/utils/string_cast.hpp:
+
+/usr/local/include/boost/test/data/monomorphic/initializer_list.hpp:
+
 /usr/local/include/boost/test/utils/basic_cstring/basic_cstring_fwd.hpp:
 
 /usr/local/include/boost/type_traits/remove_pointer.hpp:
@@ -2123,49 +2111,81 @@ test/CMakeFiles/online_test.dir/online.cpp.o: test/online.cpp \
 
 /usr/local/include/boost/test/data/monomorphic/array.hpp:
 
-/usr/local/include/boost/mpl/aux_/config/compiler.hpp:
+src/dirigent/online_evaluator.h:
 
-/usr/local/include/boost/test/data/monomorphic/generate.hpp:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/mach/thread_status.h:
 
-src/quadsquad/online_evaluator.h:
+src/dirigent/rand_gen_pool.h:
 
-src/quadsquad/sharing.h:
+src/dirigent/types.h:
 
-src/quadsquad/preproc.h:
+src/dirigent/helpers.h:
 
-/usr/local/include/boost/function/detail/function_iterate.hpp:
+src/dirigent/sharing.h:
 
-/usr/local/include/emp-ot/ferret/lpn_f2.h:
+/usr/local/include/boost/test/tools/detail/indirections.hpp:
 
-/usr/local/include/boost/test/utils/string_cast.hpp:
-
-/usr/local/include/boost/test/data/monomorphic/initializer_list.hpp:
-
-/usr/local/include/emp-ot/ferret/base_cot.h:
-
-/usr/local/include/emp-ot/ferret/preot.h:
-
-/usr/local/include/emp-ot/ferret/spcot_sender.h:
-
-/usr/local/include/emp-ot/ferret/ferret_cot.h:
-
-/usr/local/include/emp-ot/iknp.h:
-
-/usr/local/include/emp-ot/np.h:
-
-/usr/local/include/emp-ot/co.h:
-
-/usr/local/include/emp-ot/ideal.h:
-
-/usr/local/include/emp-ot/ot.h:
-
-/usr/local/include/emp-ot/emp-ot.h:
+src/dirigent/preproc.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/list:
 
 /usr/local/include/boost/test/data/index_sequence.hpp:
 
 src/quadsquad/types.h:
+
+/usr/local/include/boost/type_traits/is_copy_constructible.hpp:
+
+/usr/local/include/NTL/vec_vec_ZZ_p.h:
+
+/usr/local/include/boost/test/utils/runtime/modifier.hpp:
+
+/usr/local/include/NTL/mat_ZZ_p.h:
+
+/usr/local/include/NTL/vec_ZZ_p.h:
+
+/usr/local/include/boost/test/utils/algorithm.hpp:
+
+/usr/local/include/boost/mpl/aux_/arity.hpp:
+
+/usr/local/include/NTL/vec_ZZ.h:
+
+/usr/local/include/NTL/vec_long.h:
+
+/usr/local/include/NTL/Lazy.h:
+
+/usr/local/include/NTL/sp_arith.h:
+
+/usr/local/include/NTL/SmartPtr.h:
+
+/usr/local/include/NTL/new.h:
+
+/usr/local/include/NTL/gmp_aux.h:
+
+/usr/local/include/NTL/HAVE_KMA.h:
+
+/usr/local/include/NTL/HAVE_POSIX_TIME.h:
+
+/usr/local/include/NTL/HAVE_MACOS_TIME.h:
+
+/usr/local/include/NTL/HAVE_COPY_TRAITS1.h:
+
+/usr/local/include/NTL/HAVE_AVX512F.h:
+
+/usr/local/include/NTL/HAVE_FMA.h:
+
+/usr/local/include/NTL/HAVE_AVX2.h:
+
+/usr/local/include/NTL/HAVE_SSSE3.h:
+
+/usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h:
+
+/usr/local/include/boost/bind/storage.hpp:
+
+/usr/local/include/boost/test/utils/is_forward_iterable.hpp:
+
+/usr/local/include/NTL/ctools.h:
+
+/usr/local/include/NTL/ZZ_p.h:
 
 /usr/local/include/boost/mpl/aux_/preprocessor/enum.hpp:
 
@@ -2221,15 +2241,37 @@ src/quadsquad/types.h:
 
 /usr/local/include/boost/utility/enable_if.hpp:
 
+/usr/local/include/NTL/tools.h:
+
+/usr/local/include/boost/preprocessor/logical/and.hpp:
+
 /usr/local/include/boost/preprocessor/arithmetic/detail/is_minimum_number.hpp:
 
 /usr/local/include/boost/preprocessor/comparison/limits/not_equal_256.hpp:
 
-/usr/local/include/boost/preprocessor/control/detail/limits/while_256.hpp:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/insert_iterator.h:
+
+/usr/local/include/boost/preprocessor/comparison/equal.hpp:
+
+/usr/local/include/boost/test/detail/suppress_warnings.hpp:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/AvailabilityVersions.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/unique.h:
+
+/usr/local/include/boost/preprocessor/arithmetic/detail/is_maximum_number.hpp:
+
+/usr/local/include/boost/format/alt_sstream.hpp:
+
+/usr/local/include/boost/preprocessor/logical/bitor.hpp:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/move_backward.h:
+
+/usr/local/include/boost/type_traits/is_rvalue_reference.hpp:
+
+/usr/local/include/boost/preprocessor/control/limits/while_256.hpp:
 
 /usr/local/include/boost/preprocessor/control/detail/while.hpp:
-
-/usr/local/include/boost/preprocessor/logical/bitand.hpp:
 
 /usr/local/include/boost/mp11/bind.hpp:
 
@@ -2239,12 +2281,6 @@ src/quadsquad/types.h:
 
 /usr/local/include/boost/preprocessor/list/detail/limits/fold_left_256.hpp:
 
-/usr/local/include/boost/mpl/aux_/template_arity_fwd.hpp:
-
-/usr/local/include/boost/preprocessor/logical/compl.hpp:
-
-/usr/local/include/boost/preprocessor/detail/check.hpp:
-
 /usr/local/include/boost/preprocessor/detail/is_binary.hpp:
 
 /usr/local/include/boost/test/impl/unit_test_parameters.ipp:
@@ -2253,47 +2289,39 @@ src/quadsquad/types.h:
 
 /usr/local/include/boost/preprocessor/list/adt.hpp:
 
-/usr/local/include/boost/preprocessor/control/expr_iif.hpp:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/stdio.h:
 
-/usr/local/include/emp-ot/ferret/mpcot_reg.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/math.h:
 
-/usr/local/include/boost/preprocessor/control/while.hpp:
-
-/usr/local/include/boost/preprocessor/arithmetic/limits/dec_256.hpp:
-
-/usr/local/include/boost/preprocessor/arithmetic/dec.hpp:
+/usr/local/include/boost/preprocessor/list/detail/fold_left.hpp:
 
 /usr/local/include/boost/preprocessor/arithmetic/add.hpp:
 
 /usr/local/include/boost/preprocessor/repetition/repeat_from_to.hpp:
 
+/usr/local/include/boost/current_function.hpp:
+
+/usr/local/include/boost/preprocessor/repetition/enum_params.hpp:
+
 /usr/local/include/boost/preprocessor/variadic/elem.hpp:
 
-/usr/local/include/boost/preprocessor/tuple/detail/is_single_return.hpp:
+/usr/local/include/boost/mpl/aux_/arithmetic_op.hpp:
 
-/usr/local/include/boost/preprocessor/variadic/limits/size_64.hpp:
+/usr/local/include/NTL/matrix.h:
 
-/usr/local/include/boost/preprocessor/facilities/check_empty.hpp:
+/usr/local/include/boost/preprocessor/variadic/has_opt.hpp:
 
 /usr/local/include/boost/preprocessor/variadic/size.hpp:
 
 /usr/local/include/boost/preprocessor/facilities/expand.hpp:
 
-/usr/local/include/boost/preprocessor/tuple/elem.hpp:
-
-/usr/local/include/boost/preprocessor/repetition/limits/repeat_256.hpp:
-
 /usr/local/include/boost/preprocessor/detail/limits/auto_rec_256.hpp:
 
 /usr/local/include/boost/preprocessor/detail/auto_rec.hpp:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/setjmp.h:
-
-/usr/local/include/boost/test/impl/debug.ipp:
-
-/usr/local/include/boost/preprocessor/debug/error.hpp:
-
 /usr/local/include/boost/preprocessor/control/iif.hpp:
+
+/usr/local/include/boost/preprocessor/control/detail/limits/while_256.hpp:
 
 /usr/local/include/boost/preprocessor/control/if.hpp:
 
@@ -2310,6 +2338,12 @@ src/quadsquad/types.h:
 /usr/local/include/boost/numeric/conversion/detail/int_float_mixture.hpp:
 
 /usr/local/include/boost/optional/detail/optional_aligned_storage.hpp:
+
+/usr/local/include/boost/preprocessor/iterate.hpp:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512dqintrin.h:
+
+/usr/local/include/boost/preprocessor/list/detail/limits/fold_right_256.hpp:
 
 /usr/local/include/boost/type_traits/add_const.hpp:
 
@@ -2340,6 +2374,8 @@ src/quadsquad/types.h:
 /usr/local/include/boost/type_traits/is_volatile.hpp:
 
 /usr/local/include/boost/type_traits/is_nothrow_move_assignable.hpp:
+
+/usr/local/include/boost/preprocessor/facilities/check_empty.hpp:
 
 /usr/local/include/boost/test/utils/runtime/finalize.hpp:
 
@@ -2386,8 +2422,6 @@ src/quadsquad/types.h:
 /usr/local/opt/openssl/include/openssl/symhacks.h:
 
 /usr/local/include/boost/type_traits/is_enum.hpp:
-
-/usr/local/include/emp-ot/cot.h:
 
 /usr/local/include/boost/type_traits/type_with_alignment.hpp:
 
@@ -2467,85 +2501,15 @@ src/quadsquad/types.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__hash_table:
 
-/usr/local/include/emp-tool/utils/hash.h:
-
-/usr/local/include/NTL/FFT.h:
-
-/usr/local/include/NTL/vec_ZZ_p.h:
-
-/usr/local/include/boost/mpl/is_sequence.hpp:
-
-/usr/local/include/boost/test/tools/output_test_stream.hpp:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqintrin.h:
-
-/usr/local/include/NTL/ZZ_pX.h:
-
-/usr/local/include/boost/mpl/aux_/arithmetic_op.hpp:
-
-/usr/local/include/boost/preprocessor/variadic/has_opt.hpp:
-
-/usr/local/include/NTL/matrix.h:
-
-/usr/local/include/NTL/Lazy.h:
-
-/usr/local/include/NTL/sp_arith.h:
-
-/usr/local/include/boost/config.hpp:
-
-/usr/local/include/NTL/thread.h:
-
-/usr/local/include/NTL/gmp_aux.h:
-
-/usr/local/include/NTL/HAVE_POSIX_TIME.h:
-
-/usr/local/include/NTL/HAVE_MACOS_TIME.h:
-
-/usr/local/include/NTL/HAVE_AVX512F.h:
-
-/usr/local/include/NTL/HAVE_FMA.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/mach/host_notify.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__locale:
-
-/usr/local/include/NTL/HAVE_PCLMUL.h:
-
-/usr/local/include/boost/test/impl/decorator.ipp:
-
-/usr/local/opt/openssl/include/openssl/safestack.h:
-
-/usr/local/include/NTL/HAVE_AVX.h:
-
-/usr/local/include/NTL/HAVE_SSSE3.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/fill_n.h:
-
-/usr/local/include/NTL/config.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/empty.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512cdintrin.h:
-
-/usr/local/include/NTL/ZZVec.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/istream_iterator.h:
-
-/usr/local/include/NTL/ALL_FEATURES.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/signal.h:
-
-/usr/local/include/NTL/lip.h:
-
-/usr/local/include/boost/type_traits/decay.hpp:
-
-/usr/local/include/NTL/ZZ.h:
-
-/usr/local/include/NTL/ZZ_p.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/new:
 
 src/io/netmp.h:
+
+/usr/local/include/boost/mp11/list.hpp:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cstddef:
+
+/usr/local/include/boost/preprocessor/tuple/eat.hpp:
 
 /usr/local/include/emp-tool/execution/plain_prot.h:
 
@@ -2597,17 +2561,23 @@ src/utils/circuit.h:
 
 /usr/local/include/emp-tool/utils/crh.h:
 
+/usr/local/include/boost/preprocessor/control/expr_iif.hpp:
+
 /usr/local/include/boost/mpl/bool_fwd.hpp:
 
 /usr/local/include/NTL/HAVE_CHRONO_TIME.h:
 
 /usr/local/include/emp-tool/utils/prp.h:
 
-/usr/local/include/boost/preprocessor/list/reverse.hpp:
+/usr/local/include/NTL/FFT.h:
+
+/usr/local/include/emp-tool/utils/hash.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__debug:
 
 /usr/local/include/boost/core/pointer_traits.hpp:
+
+/usr/local/include/boost/preprocessor/list/reverse.hpp:
 
 /usr/local/include/emp-tool/circuits/number.h:
 
@@ -2637,6 +2607,8 @@ src/utils/circuit.h:
 
 /usr/local/include/emp-tool/execution/protocol_execution.h:
 
+/usr/local/include/boost/preprocessor/logical/bitand.hpp:
+
 /usr/local/include/emp-tool/execution/circuit_execution.h:
 
 /usr/local/include/boost/throw_exception.hpp:
@@ -2646,8 +2618,6 @@ src/utils/circuit.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_u_int16_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/netinet/tcp.h:
-
-/usr/local/include/NTL/new.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/netinet6/in6.h:
 
@@ -2707,6 +2677,12 @@ src/utils/circuit.h:
 
 /usr/local/opt/openssl/include/openssl/stack.h:
 
+/usr/local/include/boost/test/impl/decorator.ipp:
+
+/usr/local/include/NTL/HAVE_AVX.h:
+
+/usr/local/opt/openssl/include/openssl/safestack.h:
+
 /usr/local/include/boost/config/pragma_message.hpp:
 
 /usr/local/opt/openssl/include/openssl/e_os2.h:
@@ -2729,12 +2705,6 @@ src/utils/circuit.h:
 
 /usr/local/include/boost/config/detail/suffix.hpp:
 
-/usr/local/include/boost/preprocessor/list/detail/fold_left.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/stdio.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/math.h:
-
 /usr/local/include/boost/smart_ptr/make_shared_array.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_ctype.h:
@@ -2753,11 +2723,19 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/sstream:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/xlocale/_stdlib.h:
+
+/usr/local/include/boost/preprocessor/facilities/overload.hpp:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/prev_permutation.h:
 
 /usr/local/include/emp-tool/utils/aes.h:
 
 /usr/local/include/emp-tool/utils/prg.h:
+
+/usr/local/include/NTL/ZZ.h:
+
+/usr/local/include/boost/type_traits/decay.hpp:
 
 /usr/local/include/boost/test/utils/runtime/cla/argv_traverser.hpp:
 
@@ -2832,8 +2810,6 @@ src/utils/circuit.h:
 /usr/local/include/boost/move/detail/addressof.hpp:
 
 /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fxsrintrin.h:
-
-/usr/local/include/emp-ot/ferret/twokeyprp.h:
 
 /usr/local/opt/openssl/include/openssl/core_dispatch.h:
 
@@ -2920,6 +2896,12 @@ src/utils/circuit.h:
 /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqvlintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/_param.h:
+
+/usr/local/include/NTL/ZZVec.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/empty.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512cdintrin.h:
 
 /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bitalgintrin.h:
 
@@ -3021,12 +3003,6 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_fsfilcnt_t.h:
 
-/usr/local/include/boost/preprocessor/control/limits/while_256.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/move_backward.h:
-
-/usr/local/include/boost/type_traits/is_rvalue_reference.hpp:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_fsblkcnt_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/mach/i386/kern_return.h:
@@ -3085,6 +3061,8 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_blkcnt_t.h:
 
+/usr/local/include/boost/preprocessor/tuple/detail/is_single_return.hpp:
+
 /usr/local/include/boost/type_traits/is_destructible.hpp:
 
 /usr/local/include/boost/preprocessor/arithmetic/sub.hpp:
@@ -3110,6 +3088,14 @@ src/utils/circuit.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_pthread/_pthread_rwlockattr_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/istream:
+
+/usr/local/include/boost/mpl/is_sequence.hpp:
+
+/usr/local/include/boost/test/tools/output_test_stream.hpp:
+
+/usr/local/include/NTL/ZZ_pX.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/tuple:
 
@@ -3137,8 +3123,6 @@ src/utils/circuit.h:
 
 /usr/local/include/boost/type_traits/is_lvalue_reference.hpp:
 
-/usr/local/include/NTL/HAVE_KMA.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/xlocale/_string.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_posix_availability.h:
@@ -3148,10 +3132,6 @@ src/utils/circuit.h:
 /usr/local/include/boost/move/detail/config_begin.hpp:
 
 /usr/local/include/boost/type_traits/integral_constant.hpp:
-
-/usr/local/include/boost/preprocessor/facilities/overload.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/xlocale/_stdlib.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_posix_vdisable.h:
 
@@ -3191,8 +3171,6 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cwchar:
 
-/usr/local/include/emp-ot/ferret/constants.h:
-
 /usr/local/include/boost/preprocessor/list/fold_right.hpp:
 
 /usr/local/include/boost/config/detail/select_platform_config.hpp:
@@ -3206,14 +3184,6 @@ src/utils/circuit.h:
 /usr/local/include/boost/preprocessor/iteration/detail/iter/limits/forward1_256.hpp:
 
 /usr/local/include/boost/assert/source_location.hpp:
-
-/usr/local/include/boost/test/detail/suppress_warnings.hpp:
-
-/usr/local/include/boost/preprocessor/arithmetic/detail/is_maximum_number.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/AvailabilityVersions.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/unique.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/shift_right.h:
 
@@ -3247,11 +3217,9 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/replace_copy_if.h:
 
-/usr/local/include/NTL/vec_long.h:
-
-src/quadsquad/jump_provider.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/remove_if.h:
+
+/usr/local/include/boost/preprocessor/detail/check.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/remove_copy_if.h:
 
@@ -3317,6 +3285,10 @@ src/quadsquad/jump_provider.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/none_of.h:
 
+/usr/local/include/NTL/lip.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/signal.h:
+
 /usr/local/include/boost/mp11/detail/mp_copy_if.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/reverse.h:
@@ -3381,8 +3353,6 @@ src/quadsquad/jump_provider.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/is_sorted.h:
 
-/usr/local/include/emp-ot/ferret/ferret_cot.hpp:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/is_heap.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/min_element.h:
@@ -3413,11 +3383,11 @@ src/quadsquad/jump_provider.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/upper_bound.h:
 
+src/dirigent/offline_evaluator.h:
+
 /usr/local/opt/openssl/include/openssl/core.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/equal.h:
-
-src/quadsquad/ot_provider.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__ranges/access.h:
 
@@ -3428,16 +3398,6 @@ src/quadsquad/ot_provider.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/copy_n.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/copy_backward.h:
-
-/usr/local/include/boost/integer_traits.hpp:
-
-/usr/local/include/emp-tool/circuits/swappable.h:
-
-/usr/local/include/NTL/HAVE_AES_NI.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_u_short.h:
-
-/usr/local/include/NTL/HAVE_COPY_TRAITS2.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/unwrap_iter.h:
 
@@ -3456,6 +3416,12 @@ src/quadsquad/ot_provider.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/for_each_n.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/unary_negate.h:
+
+/usr/local/include/boost/integer_traits.hpp:
+
+/usr/local/include/NTL/HAVE_AES_NI.h:
+
+/usr/local/include/emp-tool/circuits/swappable.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/not_fn.h:
 
@@ -3519,8 +3485,6 @@ src/quadsquad/ot_provider.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/next.h:
 
-/usr/local/include/NTL/HAVE_COPY_TRAITS1.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__availability:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_nlink_t.h:
@@ -3541,9 +3505,9 @@ src/quadsquad/ot_provider.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/variant:
 
-/usr/local/include/boost/preprocessor/comparison/equal.hpp:
+/usr/local/include/NTL/ALL_FEATURES.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/insert_iterator.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/istream_iterator.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/iosfwd:
 
@@ -3583,6 +3547,12 @@ src/quadsquad/ot_provider.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__function_like.h:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/mach/host_notify.h:
+
+/usr/local/include/NTL/HAVE_PCLMUL.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__locale:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/advance.h:
 
 /usr/local/include/boost/preprocessor/config/config.hpp:
@@ -3609,8 +3579,6 @@ src/quadsquad/ot_provider.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/raw_storage_iterator.h:
 
-/usr/local/include/NTL/SmartPtr.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/pointer_safety.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_pthread/_pthread_mutex_t.h:
@@ -3631,8 +3599,6 @@ src/quadsquad/ot_provider.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/shared_ptr.h:
 
-src/quadsquad/rand_gen_pool.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/errno.h:
 
 /usr/local/include/emp-tool/io/file_io_channel.h:
@@ -3647,21 +3613,23 @@ src/quadsquad/rand_gen_pool.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_u_int32_t.h:
 
+/usr/local/include/boost/preprocessor/tuple/elem.hpp:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/access.h:
 
 /usr/local/include/boost/mem_fn.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__string:
 
+/usr/local/include/NTL/HAVE_COPY_TRAITS2.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_u_short.h:
+
 /usr/local/include/boost/test/data/monomorphic.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/xlocale/_ctype.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/binder2nd.h:
-
-/usr/local/include/boost/test/utils/runtime/modifier.hpp:
-
-/usr/local/include/NTL/mat_ZZ_p.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/binder1st.h:
 
@@ -3729,6 +3697,10 @@ src/quadsquad/rand_gen_pool.h:
 
 /usr/local/include/emp-tool/utils/group.h:
 
+/usr/local/include/NTL/thread.h:
+
+/usr/local/include/boost/config.hpp:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/front_insert_iterator.h:
 
 /usr/local/include/boost/mpl/sequence_tag_fwd.hpp:
@@ -3743,17 +3715,11 @@ src/quadsquad/rand_gen_pool.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/readable_traits.h:
 
-/usr/local/include/boost/preprocessor/logical/bitor.hpp:
-
-/usr/local/include/boost/format/alt_sstream.hpp:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/merge.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/iterator_traits.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cerrno:
-
-src/quadsquad/offline_evaluator.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/mismatch.h:
 
@@ -3823,6 +3789,8 @@ src/quadsquad/offline_evaluator.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/errno.h:
 
+/usr/local/include/boost/preprocessor/control/while.hpp:
+
 /usr/local/opt/openssl/include/openssl/asn1err.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_sigaltstack.h:
@@ -3879,10 +3847,6 @@ src/quadsquad/offline_evaluator.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/in_place.h:
 
-/usr/local/include/boost/type_traits/is_copy_constructible.hpp:
-
-/usr/local/include/NTL/vec_vec_ZZ_p.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/unordered_map:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/wchar.h:
@@ -3890,12 +3854,6 @@ src/quadsquad/offline_evaluator.h:
 /usr/local/include/boost/preprocessor/seq/to_tuple.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__tuple:
-
-/usr/local/include/boost/bind/storage.hpp:
-
-/usr/local/include/boost/test/utils/is_forward_iterable.hpp:
-
-/usr/local/include/NTL/ctools.h:
 
 /usr/local/include/boost/test/utils/runtime/argument.hpp:
 
@@ -3977,6 +3935,8 @@ src/quadsquad/offline_evaluator.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/ostreambuf_iterator.h:
 
+/usr/local/include/boost/preprocessor/arithmetic/limits/dec_256.hpp:
+
 /usr/local/include/boost/preprocessor/empty.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_intmax_t.h:
@@ -4047,20 +4007,6 @@ src/quadsquad/offline_evaluator.h:
 
 /usr/local/include/boost/move/core.hpp:
 
-/usr/local/include/boost/test/utils/algorithm.hpp:
-
-/usr/local/include/boost/mpl/aux_/arity.hpp:
-
-/usr/local/include/NTL/vec_ZZ.h:
-
-/usr/local/include/NTL/HAVE_AVX2.h:
-
-/usr/local/include/boost/mp11/list.hpp:
-
-/usr/local/include/boost/preprocessor/tuple/eat.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cstddef:
-
 /usr/local/include/NTL/vector.h:
 
 /usr/local/include/boost/type_traits/is_constructible.hpp:
@@ -4098,6 +4044,10 @@ test/online.cpp:
 /usr/local/include/boost/function/function1.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/wrap_iter.h:
+
+/usr/local/include/NTL/config.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/fill_n.h:
 
 /usr/local/include/boost/preprocessor/logical/not.hpp:
 
@@ -4144,8 +4094,6 @@ test/online.cpp:
 /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmaintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/binary_function.h:
-
-/usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/hash.h:
 
@@ -4211,9 +4159,11 @@ test/online.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_size_t.h:
 
+/usr/local/include/emp-tool/circuits/integer.hpp:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_int64_t.h:
 
-/usr/local/include/emp-tool/circuits/integer.hpp:
+/usr/local/include/boost/preprocessor/variadic/limits/size_64.hpp:
 
 /usr/local/include/boost/type_traits/is_signed.hpp:
 
@@ -4221,27 +4171,21 @@ test/online.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/concepts.h:
 
-/usr/local/include/boost/preprocessor/iterate.hpp:
-
-/usr/local/include/boost/preprocessor/list/detail/limits/fold_right_256.hpp:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512dqintrin.h:
-
 /usr/local/include/boost/smart_ptr/detail/sp_noexcept.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_u_int64_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/appleapiopts.h:
 
+/usr/local/include/boost/mpl/aux_/template_arity_fwd.hpp:
+
+/usr/local/include/boost/preprocessor/logical/compl.hpp:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/as_const.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stddef.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_int8_t.h:
-
-/usr/local/include/boost/preprocessor/repetition/enum_params.hpp:
-
-/usr/local/include/boost/current_function.hpp:
 
 /usr/local/include/boost/test/data/monomorphic/zip.hpp:
 
@@ -4283,11 +4227,11 @@ test/online.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__random/uniform_int_distribution.h:
 
+/usr/local/include/boost/preprocessor/repetition/limits/repeat_256.hpp:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/arpa/inet.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/is_partitioned.h:
-
-/usr/local/include/emp-ot/ferret/spcot_recver.h:
 
 /usr/local/include/boost/utility/result_of.hpp:
 
@@ -4298,6 +4242,8 @@ test/online.cpp:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uintptr_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/climits:
+
+/usr/local/include/boost/preprocessor/arithmetic/dec.hpp:
 
 /usr/local/include/boost/optional/detail/optional_swap.hpp:
 
@@ -4357,6 +4303,12 @@ test/online.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_ssize_t.h:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/setjmp.h:
+
+/usr/local/include/boost/test/impl/debug.ipp:
+
+/usr/local/include/boost/preprocessor/debug/error.hpp:
+
 /usr/local/include/boost/test/test_framework_init_observer.hpp:
 
 /usr/local/include/boost/config/platform/macos.hpp:
@@ -4398,10 +4350,6 @@ src/quadsquad/helpers.h:
 /usr/local/include/boost/type_traits/add_pointer.hpp:
 
 /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdarg.h:
-
-/usr/local/include/boost/preprocessor/logical/and.hpp:
-
-/usr/local/include/NTL/tools.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/istreambuf_iterator.h:
 

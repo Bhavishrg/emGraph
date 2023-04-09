@@ -1,6 +1,6 @@
 benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o: \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark/online_nn.cpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/io/netmp.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/online_nn.cpp \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/io/netmp.h \
   /usr/local/include/emp-tool/emp-tool.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/thread \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__config \
@@ -604,7 +604,7 @@ benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o: \
   /usr/local/include/emp-tool/gc/privacy_free_gen.h \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/offline_evaluator.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/offline_evaluator.h \
   /usr/local/include/NTL/ZZ_p.h /usr/local/include/NTL/ZZ.h \
   /usr/local/include/NTL/lip.h /usr/local/include/NTL/ctools.h \
   /usr/local/include/NTL/config.h /usr/local/include/NTL/mach_desc.h \
@@ -638,8 +638,8 @@ benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__hash_table \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__node_handle \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/optional \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/../io/netmp.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/../utils/circuit.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../io/netmp.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../utils/circuit.h \
   /usr/local/include/boost/format.hpp \
   /usr/local/include/boost/detail/workaround.hpp \
   /usr/local/include/boost/config/workaround.hpp \
@@ -866,11 +866,11 @@ benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o: \
   /usr/local/include/boost/format/parsing.hpp \
   /usr/local/include/boost/format/free_funcs.hpp \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/../utils/../quadsquad/helpers.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/types.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/../utils/../quadsquad/types.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/jump_provider.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/ot_provider.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../utils/../quadsquad/helpers.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/types.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../utils/../quadsquad/types.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/jump_provider.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/ot_provider.h \
   /usr/local/include/emp-ot/emp-ot.h /usr/local/include/emp-ot/ot.h \
   /usr/local/include/emp-ot/ideal.h /usr/local/include/emp-ot/cot.h \
   /usr/local/include/emp-ot/co.h /usr/local/include/emp-ot/np.h \
@@ -887,13 +887,13 @@ benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o: \
   /usr/local/include/emp-ot/ferret/lpn_f2.h \
   /usr/local/include/emp-ot/ferret/constants.h \
   /usr/local/include/emp-ot/ferret/ferret_cot.hpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/preproc.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/sharing.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/helpers.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/rand_gen_pool.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/online_evaluator.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/utils/circuit.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/utils/neural_network.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/preproc.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/sharing.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/helpers.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/rand_gen_pool.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/online_evaluator.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/utils/circuit.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/utils/neural_network.h \
   /usr/local/include/boost/multi_array.hpp \
   /usr/local/include/boost/multi_array/base.hpp \
   /usr/local/include/boost/multi_array/extent_range.hpp \
@@ -1366,7 +1366,7 @@ benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o: \
   /usr/local/include/boost/program_options/detail/convert.hpp \
   /usr/local/include/boost/program_options/variables_map.hpp \
   /usr/local/include/boost/program_options/version.hpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark/utils.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/utils.h \
   /usr/local/include/nlohmann/json.hpp \
   /usr/local/include/nlohmann/adl_serializer.hpp \
   /usr/local/include/nlohmann/detail/conversions/from_json.hpp \

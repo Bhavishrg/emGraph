@@ -53,10 +53,10 @@ RM = /usr/local/Cellar/cmake/3.25.2/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad
+CMAKE_SOURCE_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad
+CMAKE_BINARY_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2
 
 # Include any dependencies generated for this target.
 include benchmark/CMakeFiles/online_nn.dir/depend.make
@@ -72,30 +72,30 @@ include benchmark/CMakeFiles/online_nn.dir/flags.make
 benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o: benchmark/CMakeFiles/online_nn.dir/flags.make
 benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o: benchmark/online_nn.cpp
 benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o: benchmark/CMakeFiles/online_nn.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o -MF CMakeFiles/online_nn.dir/online_nn.cpp.o.d -o CMakeFiles/online_nn.dir/online_nn.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark/online_nn.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o -MF CMakeFiles/online_nn.dir/online_nn.cpp.o.d -o CMakeFiles/online_nn.dir/online_nn.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/online_nn.cpp
 
 benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/online_nn.dir/online_nn.cpp.i"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark/online_nn.cpp > CMakeFiles/online_nn.dir/online_nn.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/online_nn.cpp > CMakeFiles/online_nn.dir/online_nn.cpp.i
 
 benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/online_nn.dir/online_nn.cpp.s"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark/online_nn.cpp -o CMakeFiles/online_nn.dir/online_nn.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/online_nn.cpp -o CMakeFiles/online_nn.dir/online_nn.cpp.s
 
 benchmark/CMakeFiles/online_nn.dir/utils.cpp.o: benchmark/CMakeFiles/online_nn.dir/flags.make
 benchmark/CMakeFiles/online_nn.dir/utils.cpp.o: benchmark/utils.cpp
 benchmark/CMakeFiles/online_nn.dir/utils.cpp.o: benchmark/CMakeFiles/online_nn.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object benchmark/CMakeFiles/online_nn.dir/utils.cpp.o"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT benchmark/CMakeFiles/online_nn.dir/utils.cpp.o -MF CMakeFiles/online_nn.dir/utils.cpp.o.d -o CMakeFiles/online_nn.dir/utils.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark/utils.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object benchmark/CMakeFiles/online_nn.dir/utils.cpp.o"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT benchmark/CMakeFiles/online_nn.dir/utils.cpp.o -MF CMakeFiles/online_nn.dir/utils.cpp.o.d -o CMakeFiles/online_nn.dir/utils.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/utils.cpp
 
 benchmark/CMakeFiles/online_nn.dir/utils.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/online_nn.dir/utils.cpp.i"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark/utils.cpp > CMakeFiles/online_nn.dir/utils.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/utils.cpp > CMakeFiles/online_nn.dir/utils.cpp.i
 
 benchmark/CMakeFiles/online_nn.dir/utils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/online_nn.dir/utils.cpp.s"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark/utils.cpp -o CMakeFiles/online_nn.dir/utils.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/utils.cpp -o CMakeFiles/online_nn.dir/utils.cpp.s
 
 # Object files for target online_nn
 online_nn_OBJECTS = \
@@ -117,18 +117,18 @@ benchmarks/online_nn: /usr/local/lib/libemp-tool.dylib
 benchmarks/online_nn: /usr/local/opt/openssl/lib/libssl.dylib
 benchmarks/online_nn: /usr/local/opt/openssl/lib/libcrypto.dylib
 benchmarks/online_nn: benchmark/CMakeFiles/online_nn.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable ../benchmarks/online_nn"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/online_nn.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable ../benchmarks/online_nn"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/online_nn.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 benchmark/CMakeFiles/online_nn.dir/build: benchmarks/online_nn
 .PHONY : benchmark/CMakeFiles/online_nn.dir/build
 
 benchmark/CMakeFiles/online_nn.dir/clean:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark && $(CMAKE_COMMAND) -P CMakeFiles/online_nn.dir/cmake_clean.cmake
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && $(CMAKE_COMMAND) -P CMakeFiles/online_nn.dir/cmake_clean.cmake
 .PHONY : benchmark/CMakeFiles/online_nn.dir/clean
 
 benchmark/CMakeFiles/online_nn.dir/depend:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark/CMakeFiles/online_nn.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/CMakeFiles/online_nn.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : benchmark/CMakeFiles/online_nn.dir/depend
 

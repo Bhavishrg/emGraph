@@ -1,7 +1,7 @@
 benchmark/CMakeFiles/online_nn.dir/utils.cpp.o: \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark/utils.cpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark/utils.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/io/netmp.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/utils.cpp \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/utils.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/io/netmp.h \
   /usr/local/include/emp-tool/emp-tool.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/thread \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__config \

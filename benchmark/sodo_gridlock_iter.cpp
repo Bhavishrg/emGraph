@@ -65,9 +65,9 @@ void benchmark(const bpo::variables_map& opts) {
   auto num_banks = opts["num-banks"].as<size_t>();
   auto num_txns = opts["num-txns"].as<size_t>();
 
-  std::shared_ptr<io::NetIOMP<4>> network = nullptr;
+  std::shared_ptr<io::NetIOMP> network = nullptr;
   if (opts["localhost"].as<bool>()) {
-    network = std::make_shared<io::NetIOMP<4>>(pid, port, nullptr, true);
+    network = std::make_shared<io::NetIOMP>(pid, 4, port, nullptr, true);
   } else {
     std::ifstream fnet(opts["net-config"].as<std::string>());
     if (!fnet.good()) {
@@ -85,7 +85,7 @@ void benchmark(const bpo::variables_map& opts) {
       ip[i] = ipaddress[i].data();
     }
 
-    network = std::make_shared<io::NetIOMP<4>>(pid, port, ip.data(), false);
+    network = std::make_shared<io::NetIOMP>(pid, 4, port, ip.data(), false);
   }
 
   json output_data;

@@ -1,5 +1,5 @@
 test/CMakeFiles/jump_test.dir/jump.cpp.o: \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/test/jump.cpp \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test/jump.cpp \
   /usr/local/include/emp-tool/emp-tool.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/thread \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__config \
@@ -603,9 +603,9 @@ test/CMakeFiles/jump_test.dir/jump.cpp.o: \
   /usr/local/include/emp-tool/gc/privacy_free_gen.h \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/io/netmp.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/jump_provider.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/../io/netmp.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/io/netmp.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/jump_provider.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../io/netmp.h \
   /usr/local/include/boost/test/included/unit_test.hpp \
   /usr/local/include/boost/test/impl/compiler_log_formatter.ipp \
   /usr/local/include/boost/test/output/compiler_log_formatter.hpp \

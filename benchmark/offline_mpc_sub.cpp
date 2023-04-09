@@ -67,11 +67,11 @@ void benchmark(const bpo::variables_map& opts) {
   auto repeat = opts["repeat"].as<size_t>();
   auto port = opts["port"].as<int>();
 
-  std::shared_ptr<io::NetIOMP<4>> network1 = nullptr;
-  std::shared_ptr<io::NetIOMP<4>> network2 = nullptr;
+  std::shared_ptr<io::NetIOMP> network1 = nullptr;
+  std::shared_ptr<io::NetIOMP> network2 = nullptr;
   if (opts["localhost"].as<bool>()) {
-    network1 = std::make_shared<io::NetIOMP<4>>(pid, port, nullptr, true);
-    network2 = std::make_shared<io::NetIOMP<4>>(pid, port + 100, nullptr, true);
+    network1 = std::make_shared<io::NetIOMP>(pid, 4, port, nullptr, true);
+    network2 = std::make_shared<io::NetIOMP>(pid, 4, port + 100, nullptr, true);
   } else {
     std::ifstream fnet(opts["net-config"].as<std::string>());
     if (!fnet.good()) {
@@ -89,9 +89,9 @@ void benchmark(const bpo::variables_map& opts) {
       ip[i] = ipaddress[i].data();
     }
 
-    network1 = std::make_shared<io::NetIOMP<4>>(pid, port, ip.data(), false);
+    network1 = std::make_shared<io::NetIOMP>(pid, 4, port, ip.data(), false);
     network2 =
-        std::make_shared<io::NetIOMP<4>>(pid, port + 100, ip.data(), false);
+        std::make_shared<io::NetIOMP>(pid, 4, port + 100, ip.data(), false);
   }
 
   json output_data;

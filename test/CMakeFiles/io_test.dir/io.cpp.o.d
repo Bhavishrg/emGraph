@@ -1,6 +1,6 @@
 test/CMakeFiles/io_test.dir/io.cpp.o: \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/test/io.cpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/io/netmp.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test/io.cpp \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/io/netmp.h \
   /usr/local/include/emp-tool/emp-tool.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/thread \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__config \

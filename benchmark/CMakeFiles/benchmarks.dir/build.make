@@ -53,10 +53,10 @@ RM = /usr/local/Cellar/cmake/3.25.2/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad
+CMAKE_SOURCE_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad
+CMAKE_BINARY_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2
 
 # Utility rule file for benchmarks.
 
@@ -74,10 +74,10 @@ benchmark/CMakeFiles/benchmarks.dir/build: benchmarks
 .PHONY : benchmark/CMakeFiles/benchmarks.dir/build
 
 benchmark/CMakeFiles/benchmarks.dir/clean:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark && $(CMAKE_COMMAND) -P CMakeFiles/benchmarks.dir/cmake_clean.cmake
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && $(CMAKE_COMMAND) -P CMakeFiles/benchmarks.dir/cmake_clean.cmake
 .PHONY : benchmark/CMakeFiles/benchmarks.dir/clean
 
 benchmark/CMakeFiles/benchmarks.dir/depend:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/benchmark/CMakeFiles/benchmarks.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/CMakeFiles/benchmarks.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : benchmark/CMakeFiles/benchmarks.dir/depend
 

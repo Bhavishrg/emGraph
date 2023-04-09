@@ -1,6 +1,6 @@
 src/CMakeFiles/QuadSquad.dir/quadsquad/jump_provider.cpp.o: \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/jump_provider.cpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/jump_provider.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/jump_provider.cpp \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/jump_provider.h \
   /usr/local/include/emp-tool/emp-tool.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/thread \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__config \
@@ -604,7 +604,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/jump_provider.cpp.o: \
   /usr/local/include/emp-tool/gc/privacy_free_gen.h \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/../io/netmp.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../io/netmp.h \
   /usr/local/include/boost/format.hpp \
   /usr/local/include/boost/detail/workaround.hpp \
   /usr/local/include/boost/config/workaround.hpp \
@@ -832,7 +832,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/jump_provider.cpp.o: \
   /usr/local/include/boost/format/parsing.hpp \
   /usr/local/include/boost/format/free_funcs.hpp \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/helpers.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/helpers.h \
   /usr/local/include/NTL/ZZ_p.h /usr/local/include/NTL/ZZ.h \
   /usr/local/include/NTL/lip.h /usr/local/include/NTL/ctools.h \
   /usr/local/include/NTL/config.h /usr/local/include/NTL/mach_desc.h \
@@ -861,4 +861,4 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/jump_provider.cpp.o: \
   /usr/local/include/NTL/FFT.h /usr/local/include/NTL/LazyTable.h \
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/types.h
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/types.h

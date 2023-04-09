@@ -1,6 +1,6 @@
 src/CMakeFiles/QuadSquad.dir/quadsquad/helpers.cpp.o: \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/helpers.cpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/helpers.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/helpers.cpp \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/helpers.h \
   /usr/local/include/NTL/ZZ_p.h /usr/local/include/NTL/ZZ.h \
   /usr/local/include/NTL/lip.h /usr/local/include/NTL/ctools.h \
   /usr/local/include/NTL/config.h /usr/local/include/NTL/mach_desc.h \
@@ -632,5 +632,5 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/helpers.cpp.o: \
   /usr/local/include/emp-tool/gc/privacy_free_gen.h \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/../io/netmp.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/types.h
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../io/netmp.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/types.h

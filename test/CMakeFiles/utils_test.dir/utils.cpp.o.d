@@ -1,5 +1,5 @@
 test/CMakeFiles/utils_test.dir/utils.cpp.o: \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/test/utils.cpp \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test/utils.cpp \
   /usr/local/include/emp-tool/emp-tool.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/thread \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__config \
@@ -603,8 +603,8 @@ test/CMakeFiles/utils_test.dir/utils.cpp.o: \
   /usr/local/include/emp-tool/gc/privacy_free_gen.h \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/rand_gen_pool.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/utils/circuit.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/rand_gen_pool.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/utils/circuit.h \
   /usr/local/include/boost/format.hpp \
   /usr/local/include/boost/detail/workaround.hpp \
   /usr/local/include/boost/config/workaround.hpp \
@@ -836,7 +836,7 @@ test/CMakeFiles/utils_test.dir/utils.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/is_transparent.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__hash_table \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__node_handle \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/utils/../quadsquad/helpers.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/utils/../quadsquad/helpers.h \
   /usr/local/include/NTL/ZZ_p.h /usr/local/include/NTL/ZZ.h \
   /usr/local/include/NTL/lip.h /usr/local/include/NTL/ctools.h \
   /usr/local/include/NTL/config.h /usr/local/include/NTL/mach_desc.h \
@@ -865,10 +865,10 @@ test/CMakeFiles/utils_test.dir/utils.cpp.o: \
   /usr/local/include/NTL/FFT.h /usr/local/include/NTL/LazyTable.h \
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/../io/netmp.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/types.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/utils/../quadsquad/types.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/utils/liquidity_matching.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../io/netmp.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/types.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/utils/../quadsquad/types.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/utils/liquidity_matching.h \
   /usr/local/include/boost/multi_array.hpp \
   /usr/local/include/boost/multi_array/base.hpp \
   /usr/local/include/boost/multi_array/extent_range.hpp \
@@ -1138,7 +1138,7 @@ test/CMakeFiles/utils_test.dir/utils.cpp.o: \
   /usr/local/include/boost/type_traits/remove_volatile.hpp \
   /usr/local/include/boost/type_traits/integral_promotion.hpp \
   /usr/local/include/boost/type_traits/promote.hpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/utils/neural_network.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/utils/neural_network.h \
   /usr/local/include/boost/test/data/monomorphic.hpp \
   /usr/local/include/boost/test/data/monomorphic/array.hpp \
   /usr/local/include/boost/test/data/config.hpp \

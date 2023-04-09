@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utils_d/circuit.h"
+#include "../utils/circuit.h"
 #include "sharing.h"
 #include "types.h"
 

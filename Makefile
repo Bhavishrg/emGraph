@@ -57,10 +57,10 @@ RM = /usr/local/Cellar/cmake/3.25.2/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad
+CMAKE_SOURCE_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad
+CMAKE_BINARY_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -97,9 +97,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/CMakeFiles /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -270,19 +270,6 @@ offline_test/fast:
 .PHONY : offline_test/fast
 
 #=============================================================================
-# Target rules for targets named jump_test
-
-# Build rule for target.
-jump_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 jump_test
-.PHONY : jump_test
-
-# fast build rule for target.
-jump_test/fast:
-	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/jump_test.dir/build.make test/CMakeFiles/jump_test.dir/build
-.PHONY : jump_test/fast
-
-#=============================================================================
 # Target rules for targets named online_test
 
 # Build rule for target.
@@ -321,7 +308,6 @@ help:
 	@echo "... tests"
 	@echo "... QuadSquad"
 	@echo "... io_test"
-	@echo "... jump_test"
 	@echo "... offline_mpc_sub"
 	@echo "... offline_mpc_tp"
 	@echo "... offline_test"

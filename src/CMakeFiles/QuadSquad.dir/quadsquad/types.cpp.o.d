@@ -1,6 +1,6 @@
 src/CMakeFiles/QuadSquad.dir/quadsquad/types.cpp.o: \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/types.cpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/types.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/types.cpp \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/types.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cstdint \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__config \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__config_site \

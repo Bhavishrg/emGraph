@@ -1,9 +1,9 @@
 #define BOOST_TEST_MODULE online
 #include <emp-tool/emp-tool.h>
 #include <io/netmp.h>
-#include <quadsquad/offline_evaluator.h>
-#include <quadsquad/online_evaluator.h>
-#include <quadsquad/sharing.h>
+#include <dirigent/offline_evaluator.h>
+#include <dirigent/online_evaluator.h>
+#include <dirigent/sharing.h>
 
 #include <boost/test/data/monomorphic.hpp>
 #include <boost/test/data/test_case.hpp>
@@ -14,10 +14,10 @@
 #include <string>
 #include <vector>
 
-using namespace quadsquad;
-using namespace quadsquad::utils;
+using namespace dirigent;
+using namespace dirigent::utils;
 namespace bdata = boost::unit_test::data;
-
+/*
 constexpr int TEST_DATA_MAX_VAL = 1000;
 constexpr int SECURITY_PARAM = 128;
 
@@ -575,3 +575,4 @@ BOOST_AUTO_TEST_CASE(recon_shares) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+*/

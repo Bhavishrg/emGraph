@@ -33,9 +33,9 @@ void benchmark(const bpo::variables_map& opts) {
   auto neural_network = opts["neural-network"].as<std::string>();
   auto batch_size = opts["batch-size"].as<size_t>();
 
-  std::shared_ptr<io::NetIOMP<4>> network = nullptr;
+  std::shared_ptr<io::NetIOMP> network = nullptr;
   if (opts["localhost"].as<bool>()) {
-    network = std::make_shared<io::NetIOMP<4>>(pid, port, nullptr, true);
+    network = std::make_shared<io::NetIOMP>(pid, 4, port, nullptr, true);
   } else {
     std::ifstream fnet(opts["net-config"].as<std::string>());
     if (!fnet.good()) {
@@ -53,7 +53,7 @@ void benchmark(const bpo::variables_map& opts) {
       ip[i] = ipaddress[i].data();
     }
 
-    network = std::make_shared<io::NetIOMP<4>>(pid, port, ip.data(), false);
+    network = std::make_shared<io::NetIOMP>(pid, 4, port, ip.data(), false);
   }
 
   json output_data;

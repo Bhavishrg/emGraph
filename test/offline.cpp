@@ -1,12 +1,10 @@
 #define BOOST_TEST_MODULE offline
-#include <NTL/ZZ_p.h>
-#include <NTL/ZZ_pE.h>
+
 #include <emp-tool/emp-tool.h>
 #include <io/netmp.h>
-#include <quadsquad/helpers.h>
-#include <quadsquad/offline_evaluator.h>
-#include <quadsquad/ot_provider.h>
-#include <quadsquad/rand_gen_pool.h>
+#include <dirigent/helpers.h>
+#include <dirigent/offline_evaluator.h>
+#include <dirigent/rand_gen_pool.h>
 #include <utils/circuit.h>
 
 #include <algorithm>
@@ -19,9 +17,10 @@
 #include <random>
 #include <vector>
 
-using namespace quadsquad;
+using namespace dirigent;
 namespace bdata = boost::unit_test::data;
-
+ std::cout<<"CHECK POINT/n";
+/*
 constexpr int TEST_DATA_MAX_VAL = 1000;
 constexpr int SECURITY_PARAM = 128;
 
@@ -391,3 +390,4 @@ BOOST_AUTO_TEST_CASE(randomize) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+*/

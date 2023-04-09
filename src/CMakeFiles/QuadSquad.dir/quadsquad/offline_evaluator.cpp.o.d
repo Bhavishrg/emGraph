@@ -1,6 +1,6 @@
 src/CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o: \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/offline_evaluator.cpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/offline_evaluator.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/offline_evaluator.cpp \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/offline_evaluator.h \
   /usr/local/include/NTL/ZZ_p.h /usr/local/include/NTL/ZZ.h \
   /usr/local/include/NTL/lip.h /usr/local/include/NTL/ctools.h \
   /usr/local/include/NTL/config.h /usr/local/include/NTL/mach_desc.h \
@@ -637,8 +637,8 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__hash_table \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__node_handle \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/optional \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/../io/netmp.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/../utils/circuit.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../io/netmp.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../utils/circuit.h \
   /usr/local/include/boost/format.hpp \
   /usr/local/include/boost/detail/workaround.hpp \
   /usr/local/include/boost/config/workaround.hpp \
@@ -865,11 +865,11 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o: \
   /usr/local/include/boost/format/parsing.hpp \
   /usr/local/include/boost/format/free_funcs.hpp \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/../utils/../quadsquad/helpers.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/types.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/../utils/../quadsquad/types.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/jump_provider.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/ot_provider.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../utils/../quadsquad/helpers.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/types.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../utils/../quadsquad/types.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/jump_provider.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/ot_provider.h \
   /usr/local/include/emp-ot/emp-ot.h /usr/local/include/emp-ot/ot.h \
   /usr/local/include/emp-ot/ideal.h /usr/local/include/emp-ot/cot.h \
   /usr/local/include/emp-ot/co.h /usr/local/include/emp-ot/np.h \
@@ -886,10 +886,10 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o: \
   /usr/local/include/emp-ot/ferret/lpn_f2.h \
   /usr/local/include/emp-ot/ferret/constants.h \
   /usr/local/include/emp-ot/ferret/ferret_cot.hpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/preproc.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/sharing.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/helpers.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/rand_gen_pool.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/preproc.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/sharing.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/helpers.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/rand_gen_pool.h \
   /usr/local/include/NTL/BasicThreadPool.h \
   /usr/local/include/NTL/vec_ZZ_pE.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/online_evaluator.h
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/online_evaluator.h

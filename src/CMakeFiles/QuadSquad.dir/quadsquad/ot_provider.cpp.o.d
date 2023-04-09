@@ -1,6 +1,6 @@
 src/CMakeFiles/QuadSquad.dir/quadsquad/ot_provider.cpp.o: \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/ot_provider.cpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/ot_provider.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/ot_provider.cpp \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/ot_provider.h \
   /usr/local/include/emp-ot/emp-ot.h /usr/local/include/emp-ot/ot.h \
   /usr/local/include/emp-tool/emp-tool.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/thread \
@@ -623,7 +623,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/ot_provider.cpp.o: \
   /usr/local/include/emp-ot/ferret/lpn_f2.h \
   /usr/local/include/emp-ot/ferret/constants.h \
   /usr/local/include/emp-ot/ferret/ferret_cot.hpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src/quadsquad/types.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/types.h \
   /usr/local/include/boost/format.hpp \
   /usr/local/include/boost/detail/workaround.hpp \
   /usr/local/include/boost/config/workaround.hpp \

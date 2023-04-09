@@ -57,10 +57,10 @@ RM = /usr/local/Cellar/cmake/3.25.2/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad
+CMAKE_SOURCE_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad
+CMAKE_BINARY_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -97,14 +97,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/CMakeFiles /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/test//CMakeFiles/progress.marks
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/CMakeFiles 0
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test//CMakeFiles/progress.marks
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/clean
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/clean
 .PHONY : clean
 
 # The main clean target
@@ -113,22 +113,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/preinstall
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/preinstall
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 test/CMakeFiles/io_test.dir/rule:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/io_test.dir/rule
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/io_test.dir/rule
 .PHONY : test/CMakeFiles/io_test.dir/rule
 
 # Convenience name for target.
@@ -137,12 +137,12 @@ io_test: test/CMakeFiles/io_test.dir/rule
 
 # fast build rule for target.
 io_test/fast:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/io_test.dir/build.make test/CMakeFiles/io_test.dir/build
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/io_test.dir/build.make test/CMakeFiles/io_test.dir/build
 .PHONY : io_test/fast
 
 # Convenience name for target.
 test/CMakeFiles/sharing_test.dir/rule:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/sharing_test.dir/rule
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/sharing_test.dir/rule
 .PHONY : test/CMakeFiles/sharing_test.dir/rule
 
 # Convenience name for target.
@@ -151,12 +151,12 @@ sharing_test: test/CMakeFiles/sharing_test.dir/rule
 
 # fast build rule for target.
 sharing_test/fast:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/sharing_test.dir/build.make test/CMakeFiles/sharing_test.dir/build
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/sharing_test.dir/build.make test/CMakeFiles/sharing_test.dir/build
 .PHONY : sharing_test/fast
 
 # Convenience name for target.
 test/CMakeFiles/utils_test.dir/rule:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/utils_test.dir/rule
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/utils_test.dir/rule
 .PHONY : test/CMakeFiles/utils_test.dir/rule
 
 # Convenience name for target.
@@ -165,12 +165,12 @@ utils_test: test/CMakeFiles/utils_test.dir/rule
 
 # fast build rule for target.
 utils_test/fast:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/utils_test.dir/build.make test/CMakeFiles/utils_test.dir/build
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/utils_test.dir/build.make test/CMakeFiles/utils_test.dir/build
 .PHONY : utils_test/fast
 
 # Convenience name for target.
 test/CMakeFiles/offline_test.dir/rule:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/offline_test.dir/rule
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/offline_test.dir/rule
 .PHONY : test/CMakeFiles/offline_test.dir/rule
 
 # Convenience name for target.
@@ -179,26 +179,12 @@ offline_test: test/CMakeFiles/offline_test.dir/rule
 
 # fast build rule for target.
 offline_test/fast:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/offline_test.dir/build.make test/CMakeFiles/offline_test.dir/build
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/offline_test.dir/build.make test/CMakeFiles/offline_test.dir/build
 .PHONY : offline_test/fast
 
 # Convenience name for target.
-test/CMakeFiles/jump_test.dir/rule:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/jump_test.dir/rule
-.PHONY : test/CMakeFiles/jump_test.dir/rule
-
-# Convenience name for target.
-jump_test: test/CMakeFiles/jump_test.dir/rule
-.PHONY : jump_test
-
-# fast build rule for target.
-jump_test/fast:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/jump_test.dir/build.make test/CMakeFiles/jump_test.dir/build
-.PHONY : jump_test/fast
-
-# Convenience name for target.
 test/CMakeFiles/online_test.dir/rule:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/online_test.dir/rule
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/online_test.dir/rule
 .PHONY : test/CMakeFiles/online_test.dir/rule
 
 # Convenience name for target.
@@ -207,12 +193,12 @@ online_test: test/CMakeFiles/online_test.dir/rule
 
 # fast build rule for target.
 online_test/fast:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/build
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/build
 .PHONY : online_test/fast
 
 # Convenience name for target.
 test/CMakeFiles/tests.dir/rule:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/tests.dir/rule
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/tests.dir/rule
 .PHONY : test/CMakeFiles/tests.dir/rule
 
 # Convenience name for target.
@@ -221,7 +207,7 @@ tests: test/CMakeFiles/tests.dir/rule
 
 # fast build rule for target.
 tests/fast:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/tests.dir/build.make test/CMakeFiles/tests.dir/build
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/tests.dir/build.make test/CMakeFiles/tests.dir/build
 .PHONY : tests/fast
 
 io.o: io.cpp.o
@@ -229,7 +215,7 @@ io.o: io.cpp.o
 
 # target to build an object file
 io.cpp.o:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/io_test.dir/build.make test/CMakeFiles/io_test.dir/io.cpp.o
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/io_test.dir/build.make test/CMakeFiles/io_test.dir/io.cpp.o
 .PHONY : io.cpp.o
 
 io.i: io.cpp.i
@@ -237,7 +223,7 @@ io.i: io.cpp.i
 
 # target to preprocess a source file
 io.cpp.i:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/io_test.dir/build.make test/CMakeFiles/io_test.dir/io.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/io_test.dir/build.make test/CMakeFiles/io_test.dir/io.cpp.i
 .PHONY : io.cpp.i
 
 io.s: io.cpp.s
@@ -245,39 +231,15 @@ io.s: io.cpp.s
 
 # target to generate assembly for a file
 io.cpp.s:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/io_test.dir/build.make test/CMakeFiles/io_test.dir/io.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/io_test.dir/build.make test/CMakeFiles/io_test.dir/io.cpp.s
 .PHONY : io.cpp.s
-
-jump.o: jump.cpp.o
-.PHONY : jump.o
-
-# target to build an object file
-jump.cpp.o:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/jump_test.dir/build.make test/CMakeFiles/jump_test.dir/jump.cpp.o
-.PHONY : jump.cpp.o
-
-jump.i: jump.cpp.i
-.PHONY : jump.i
-
-# target to preprocess a source file
-jump.cpp.i:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/jump_test.dir/build.make test/CMakeFiles/jump_test.dir/jump.cpp.i
-.PHONY : jump.cpp.i
-
-jump.s: jump.cpp.s
-.PHONY : jump.s
-
-# target to generate assembly for a file
-jump.cpp.s:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/jump_test.dir/build.make test/CMakeFiles/jump_test.dir/jump.cpp.s
-.PHONY : jump.cpp.s
 
 offline.o: offline.cpp.o
 .PHONY : offline.o
 
 # target to build an object file
 offline.cpp.o:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/offline_test.dir/build.make test/CMakeFiles/offline_test.dir/offline.cpp.o
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/offline_test.dir/build.make test/CMakeFiles/offline_test.dir/offline.cpp.o
 .PHONY : offline.cpp.o
 
 offline.i: offline.cpp.i
@@ -285,7 +247,7 @@ offline.i: offline.cpp.i
 
 # target to preprocess a source file
 offline.cpp.i:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/offline_test.dir/build.make test/CMakeFiles/offline_test.dir/offline.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/offline_test.dir/build.make test/CMakeFiles/offline_test.dir/offline.cpp.i
 .PHONY : offline.cpp.i
 
 offline.s: offline.cpp.s
@@ -293,7 +255,7 @@ offline.s: offline.cpp.s
 
 # target to generate assembly for a file
 offline.cpp.s:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/offline_test.dir/build.make test/CMakeFiles/offline_test.dir/offline.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/offline_test.dir/build.make test/CMakeFiles/offline_test.dir/offline.cpp.s
 .PHONY : offline.cpp.s
 
 online.o: online.cpp.o
@@ -301,7 +263,7 @@ online.o: online.cpp.o
 
 # target to build an object file
 online.cpp.o:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/online.cpp.o
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/online.cpp.o
 .PHONY : online.cpp.o
 
 online.i: online.cpp.i
@@ -309,7 +271,7 @@ online.i: online.cpp.i
 
 # target to preprocess a source file
 online.cpp.i:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/online.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/online.cpp.i
 .PHONY : online.cpp.i
 
 online.s: online.cpp.s
@@ -317,7 +279,7 @@ online.s: online.cpp.s
 
 # target to generate assembly for a file
 online.cpp.s:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/online.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/online.cpp.s
 .PHONY : online.cpp.s
 
 sharing.o: sharing.cpp.o
@@ -325,7 +287,7 @@ sharing.o: sharing.cpp.o
 
 # target to build an object file
 sharing.cpp.o:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/sharing_test.dir/build.make test/CMakeFiles/sharing_test.dir/sharing.cpp.o
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/sharing_test.dir/build.make test/CMakeFiles/sharing_test.dir/sharing.cpp.o
 .PHONY : sharing.cpp.o
 
 sharing.i: sharing.cpp.i
@@ -333,7 +295,7 @@ sharing.i: sharing.cpp.i
 
 # target to preprocess a source file
 sharing.cpp.i:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/sharing_test.dir/build.make test/CMakeFiles/sharing_test.dir/sharing.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/sharing_test.dir/build.make test/CMakeFiles/sharing_test.dir/sharing.cpp.i
 .PHONY : sharing.cpp.i
 
 sharing.s: sharing.cpp.s
@@ -341,7 +303,7 @@ sharing.s: sharing.cpp.s
 
 # target to generate assembly for a file
 sharing.cpp.s:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/sharing_test.dir/build.make test/CMakeFiles/sharing_test.dir/sharing.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/sharing_test.dir/build.make test/CMakeFiles/sharing_test.dir/sharing.cpp.s
 .PHONY : sharing.cpp.s
 
 utils.o: utils.cpp.o
@@ -349,7 +311,7 @@ utils.o: utils.cpp.o
 
 # target to build an object file
 utils.cpp.o:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/utils_test.dir/build.make test/CMakeFiles/utils_test.dir/utils.cpp.o
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/utils_test.dir/build.make test/CMakeFiles/utils_test.dir/utils.cpp.o
 .PHONY : utils.cpp.o
 
 utils.i: utils.cpp.i
@@ -357,7 +319,7 @@ utils.i: utils.cpp.i
 
 # target to preprocess a source file
 utils.cpp.i:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/utils_test.dir/build.make test/CMakeFiles/utils_test.dir/utils.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/utils_test.dir/build.make test/CMakeFiles/utils_test.dir/utils.cpp.i
 .PHONY : utils.cpp.i
 
 utils.s: utils.cpp.s
@@ -365,7 +327,7 @@ utils.s: utils.cpp.s
 
 # target to generate assembly for a file
 utils.cpp.s:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/utils_test.dir/build.make test/CMakeFiles/utils_test.dir/utils.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/utils_test.dir/build.make test/CMakeFiles/utils_test.dir/utils.cpp.s
 .PHONY : utils.cpp.s
 
 # Help Target
@@ -379,7 +341,6 @@ help:
 	@echo "... test"
 	@echo "... tests"
 	@echo "... io_test"
-	@echo "... jump_test"
 	@echo "... offline_test"
 	@echo "... online_test"
 	@echo "... sharing_test"
@@ -387,9 +348,6 @@ help:
 	@echo "... io.o"
 	@echo "... io.i"
 	@echo "... io.s"
-	@echo "... jump.o"
-	@echo "... jump.i"
-	@echo "... jump.s"
 	@echo "... offline.o"
 	@echo "... offline.i"
 	@echo "... offline.s"
@@ -413,6 +371,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

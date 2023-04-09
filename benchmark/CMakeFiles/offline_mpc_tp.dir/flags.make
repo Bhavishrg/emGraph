@@ -4,7 +4,7 @@
 # compile CXX with /Library/Developer/CommandLineTools/usr/bin/c++
 CXX_DEFINES = -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_PROGRAM_OPTIONS_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -DEMP_CIRCUIT_PATH=/usr/local/include/emp-tool/circuits/files/ -DJSON_USE_IMPLICIT_CONVERSIONS=1
 
-CXX_INCLUDES = -I/Users/protikpaul/Desktop/TP_Aided_MPC/quadsquad/src -I/usr/local/opt/openssl/include -isystem /usr/local/include -isystem /usr/local/include/NTL/..
+CXX_INCLUDES = -I/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src -I/usr/local/opt/openssl/include -isystem /usr/local/include -isystem /usr/local/include/NTL/..
 
-CXX_FLAGS = -march=native -maes -mrdseed -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=12.6 -std=gnu++17
+CXX_FLAGS = -march=native -maes -mrdseed -O3 -DNDEBUG -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=12.6 -std=gnu++17
 
