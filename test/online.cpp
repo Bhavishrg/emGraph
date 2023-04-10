@@ -15,7 +15,7 @@
 #include <vector>
 
 using namespace dirigent;
-using namespace dirigent::utils;
+using namespace quadsquad::utils;
 namespace bdata = boost::unit_test::data;
 /*
 constexpr int TEST_DATA_MAX_VAL = 1000;

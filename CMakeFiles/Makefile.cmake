@@ -104,6 +104,7 @@ set(CMAKE_DEPEND_INFO_FILES
   "test/CMakeFiles/io_test.dir/DependInfo.cmake"
   "test/CMakeFiles/sharing_test.dir/DependInfo.cmake"
   "test/CMakeFiles/utils_test.dir/DependInfo.cmake"
+  "test/CMakeFiles/rand_test.dir/DependInfo.cmake"
   "test/CMakeFiles/offline_test.dir/DependInfo.cmake"
   "test/CMakeFiles/online_test.dir/DependInfo.cmake"
   "test/CMakeFiles/tests.dir/DependInfo.cmake"

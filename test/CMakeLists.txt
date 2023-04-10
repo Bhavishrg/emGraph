@@ -9,6 +9,9 @@ target_link_libraries(sharing_test Boost::unit_test_framework Threads::Threads Q
 add_executable(utils_test utils.cpp)
 target_link_libraries(utils_test Boost::unit_test_framework Threads::Threads QuadSquad)
 
+add_executable(rand_test rand.cpp)
+target_link_libraries(rand_test Boost::unit_test_framework Threads::Threads QuadSquad)
+
 add_executable(offline_test offline.cpp)
 target_link_libraries(offline_test Boost::unit_test_framework Threads::Threads QuadSquad NTL GMP)
 
@@ -17,10 +20,11 @@ target_link_libraries(online_test Boost::unit_test_framework Threads::Threads Qu
 
 add_custom_target(tests)
 add_dependencies(tests
-    io_test sharing_test utils_test offline_test online_test)
+    io_test sharing_test utils_test rand_test offline_test online_test)
 
 add_test(NAME io_test COMMAND io_test)
 add_test(NAME sharing_test COMMAND sharing_test)
 add_test(NAME utils_test COMMAND utils_test)
+add_test(NAME rand_test COMMAND rand_test)
 add_test(NAME offline_test COMMAND offline_test)
 add_test(NAME online_test COMMAND online_test)

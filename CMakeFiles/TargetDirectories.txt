@@ -18,6 +18,7 @@
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test/CMakeFiles/io_test.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test/CMakeFiles/sharing_test.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test/CMakeFiles/utils_test.dir
+/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test/CMakeFiles/rand_test.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test/CMakeFiles/offline_test.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test/CMakeFiles/online_test.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test/CMakeFiles/tests.dir

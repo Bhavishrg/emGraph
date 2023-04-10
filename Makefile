@@ -270,6 +270,19 @@ utils_test/fast:
 .PHONY : utils_test/fast
 
 #=============================================================================
+# Target rules for targets named rand_test
+
+# Build rule for target.
+rand_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 rand_test
+.PHONY : rand_test
+
+# fast build rule for target.
+rand_test/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/rand_test.dir/build.make test/CMakeFiles/rand_test.dir/build
+.PHONY : rand_test/fast
+
+#=============================================================================
 # Target rules for targets named offline_test
 
 # Build rule for target.
@@ -328,6 +341,7 @@ help:
 	@echo "... online_mpc"
 	@echo "... online_nn"
 	@echo "... online_test"
+	@echo "... rand_test"
 	@echo "... sharing_test"
 	@echo "... sodo_gridlock_iter"
 	@echo "... utils_test"

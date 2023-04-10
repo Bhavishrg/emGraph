@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE utils
 #include <emp-tool/emp-tool.h>
-#include <quadsquad/rand_gen_pool.h>
+//#include <dirigent/rand_gen_pool.h>
 #include <utils/circuit.h>
 #include <utils/liquidity_matching.h>
 #include <utils/neural_network.h>
@@ -13,6 +13,7 @@
 
 using namespace quadsquad;
 using namespace quadsquad::utils;
+
 namespace bdata = boost::unit_test::data;
 
 constexpr int TEST_DATA_MAX_VAL = 1000;
@@ -374,42 +375,54 @@ BOOST_DATA_TEST_CASE(ppa_circuit,
 
 BOOST_AUTO_TEST_SUITE_END()
 
-BOOST_AUTO_TEST_SUITE(rand_gen_pool)
+//BOOST_AUTO_TEST_SUITE(rand_gen_pool)
 
-BOOST_AUTO_TEST_CASE(matching_output) {
-  const int num_tests = 10;
-  const uint64_t seed = 200;
+//BOOST_AUTO_TEST_CASE(matching_output) {
+//  const int num_tests = 10;
+//  uint64_t seed = 200;
+//  int nP = 4;
+//  for (int i = 1; i <= nP; ++i) {
+    //auto rpool_i = dirigent::RandGenPool(i, seed);
+    //auto rpool_0 = dirigent::RandGenPool(0);
 
-  for (int i = 0; i < 4; ++i) {
-    for (int j = i + 1; j < 4; ++j) {
-      auto rpool_i = RandGenPool(i, seed);
-      auto rpool_j = RandGenPool(j, seed);
+  //  uint64_t bi=0;
+  //  uint64_t b0=0;
 
-      uint64_t bi;
-      uint64_t bj;
-      for (int t = 0; t < num_tests; ++t) {
-        rpool_i.all().random_data(&bi, sizeof(uint64_t));
-        rpool_j.all().random_data(&bj, sizeof(uint64_t));
-        BOOST_TEST(bi == bj);
+   // rpool_i.self().random_data(&bi, sizeof(uint64_t));
+   // rpool_0.self().random_data(&b0, sizeof(uint64_t));
 
-        rpool_i.get(j).random_data(&bi, sizeof(uint64_t));
-        rpool_j.get(i).random_data(&bj, sizeof(uint64_t));
-        BOOST_TEST(bi == bj);
+  //  BOOST_TEST(bi == b0);
+  //}
+  //for (int i = 0; i < 4; ++i) {
+  //  for (int j = i + 1; j < 4; ++j) {
+  //    auto rpool_i = RandGenPool(i, seed);}
+  //    auto rpool_j = dirigent::RandGenPool(j, seed);
 
-        for (int k = 0; k < 4; ++k) {
-          if (k != i && k != j) {
-            emp::block bk;
-            rpool_i.get(k, j).random_data(&bi, sizeof(uint64_t));
-            rpool_j.get(k, i).random_data(&bj, sizeof(uint64_t));
-            BOOST_TEST(bi == bj);
-          }
-        }
-      }
-    }
-  }
-}
+  //    uint64_t bi;
+  //    uint64_t bj;
+  //    for (int t = 0; t < num_tests; ++t) {
+  //      rpool_i.all().random_data(&bi, sizeof(uint64_t));
+  //      rpool_j.all().random_data(&bj, sizeof(uint64_t));
+  //      BOOST_TEST(bi == bj);
+  //
+  //      rpool_i.get(j).random_data(&bi, sizeof(uint64_t));
+  //      rpool_j.get(i).random_data(&bj, sizeof(uint64_t));
+  //      BOOST_TEST(bi == bj);
+  //
+  //      for (int k = 0; k < 4; ++k) {
+  //        if (k != i && k != j) {
+  //          emp::block bk;
+  //          rpool_i.get(k, j).random_data(&bi, sizeof(uint64_t));
+  //          rpool_j.get(k, i).random_data(&bj, sizeof(uint64_t));
+  //          BOOST_TEST(bi == bj);
+  //        }
+  //      }
+  //    }
+  //  }
+  //}
+//}
 
-BOOST_AUTO_TEST_SUITE_END()
+//BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(bool_ring)
 

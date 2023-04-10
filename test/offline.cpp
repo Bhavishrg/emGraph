@@ -17,9 +17,9 @@
 #include <random>
 #include <vector>
 
-using namespace dirigent;
+using namespace quadsquad;
 namespace bdata = boost::unit_test::data;
- std::cout<<"CHECK POINT/n";
+ //std::cout<<"CHECK POINT/n";
 /*
 constexpr int TEST_DATA_MAX_VAL = 1000;
 constexpr int SECURITY_PARAM = 128;

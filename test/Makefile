@@ -169,6 +169,20 @@ utils_test/fast:
 .PHONY : utils_test/fast
 
 # Convenience name for target.
+test/CMakeFiles/rand_test.dir/rule:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/rand_test.dir/rule
+.PHONY : test/CMakeFiles/rand_test.dir/rule
+
+# Convenience name for target.
+rand_test: test/CMakeFiles/rand_test.dir/rule
+.PHONY : rand_test
+
+# fast build rule for target.
+rand_test/fast:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/rand_test.dir/build.make test/CMakeFiles/rand_test.dir/build
+.PHONY : rand_test/fast
+
+# Convenience name for target.
 test/CMakeFiles/offline_test.dir/rule:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/offline_test.dir/rule
 .PHONY : test/CMakeFiles/offline_test.dir/rule
@@ -282,6 +296,30 @@ online.cpp.s:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/online.cpp.s
 .PHONY : online.cpp.s
 
+rand.o: rand.cpp.o
+.PHONY : rand.o
+
+# target to build an object file
+rand.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/rand_test.dir/build.make test/CMakeFiles/rand_test.dir/rand.cpp.o
+.PHONY : rand.cpp.o
+
+rand.i: rand.cpp.i
+.PHONY : rand.i
+
+# target to preprocess a source file
+rand.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/rand_test.dir/build.make test/CMakeFiles/rand_test.dir/rand.cpp.i
+.PHONY : rand.cpp.i
+
+rand.s: rand.cpp.s
+.PHONY : rand.s
+
+# target to generate assembly for a file
+rand.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/rand_test.dir/build.make test/CMakeFiles/rand_test.dir/rand.cpp.s
+.PHONY : rand.cpp.s
+
 sharing.o: sharing.cpp.o
 .PHONY : sharing.o
 
@@ -343,6 +381,7 @@ help:
 	@echo "... io_test"
 	@echo "... offline_test"
 	@echo "... online_test"
+	@echo "... rand_test"
 	@echo "... sharing_test"
 	@echo "... utils_test"
 	@echo "... io.o"
@@ -354,6 +393,9 @@ help:
 	@echo "... online.o"
 	@echo "... online.i"
 	@echo "... online.s"
+	@echo "... rand.o"
+	@echo "... rand.i"
+	@echo "... rand.s"
 	@echo "... sharing.o"
 	@echo "... sharing.i"
 	@echo "... sharing.s"
