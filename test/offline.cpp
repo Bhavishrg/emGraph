@@ -228,9 +228,8 @@ BOOST_AUTO_TEST_CASE(random_share) {
   
   std::vector<std::future<AuthAddShare<Field>>> parties;
   RandGenPool vrgen(0);
+  tpshares.setKey(5);
   for (int i = 0; i <= nP; i++) {
-    
-    
     parties.push_back(std::async(std::launch::async, [&, i]() { 
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       OfflineEvaluator::randomShare(nP, i, vrgen, *network, shares[i], tpshares);
@@ -240,8 +239,14 @@ BOOST_AUTO_TEST_CASE(random_share) {
   }
   for (auto& p : parties) { 
     auto res = p.get();
+    int i = 0;
+    if(i>0) { 
+        BOOST_TEST(res.valueAt() == tpshares.commonValueWithParty(i));
+        BOOST_TEST(res.tagAt() == tpshares.commonTagWithParty(i));
+      }
+      i++;
     }
-    BOOST_TEST(0 == 0);
+    //BOOST_TEST(0 == 0);
   }
   BOOST_AUTO_TEST_SUITE_END()
   //int i = 0;

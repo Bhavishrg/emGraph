@@ -42,13 +42,13 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
   
   
   for(int i = 0; i <= nP; i++) {
-    if(i == 0) {
+    if(pid == 0) {
       tpShare.pushValues(0);
       tpShare.pushTags(0);
       share.pushValue(0);
       share.pushTag(0);
     }
-    else if(i == pid) {
+    else if(i == pid && i != 0) {
       rgen.p0().random_data(&val, sizeof(Field));
       tpShare.pushValues(val);
       share.pushValue(val);
@@ -62,17 +62,16 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
     if(pid == 0){
       val = tpShare.secret();
       tag = tpShare.macKey() * val;
-      tagn = tag;
+      tagn = 0;
       for(int i = 1; i < nP; i++){
-        tagn -= tpShare.commonTagWithParty(i);
+        tagn += tpShare.commonTagWithParty(i);
       }
+      
     tpShare.pushTags(tagn);
-    std::cout<< pid << " : "<< nP << std::endl;
     network.send(nP, &tagn, sizeof(tagn));
     }
     else if(pid == nP) {
       network.recv(0, &tagn, sizeof(tagn));
-      std::cout<< 0 << " : " << pid << std::endl;
       share.pushTag(tagn);
     }
 }

@@ -129,6 +129,7 @@ class TPShare {
     return tags_.at(pid);
   }
 
+  void setKey( R key) {key_ = key;}
   void pushValues(R val) { values_.push_back(val); }
   void pushTags(R tag) {tags_.push_back(tag);}
 
