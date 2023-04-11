@@ -40,7 +40,7 @@ class OfflineEvaluator {
                    quadsquad::utils::LevelOrderedCircuit circ, int security_param,
                    int threads, int seed = 200);
   // Generate sharing of a random unknown value.
-  void randomShare(int pid, RandGenPool& rgen, io::NetIOMP& network,
+  static void randomShare(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
                                    AuthAddShare<Field>& share, 
                                    TPShare<Field>& tpShare);
   // Generate sharing of a random value known to dealer (called by all parties

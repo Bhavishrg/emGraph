@@ -26,7 +26,7 @@ OfflineEvaluator::OfflineEvaluator(int nP, int my_id,
   tpool_ = std::make_shared<ThreadPool>(threads);
 }
 
-void OfflineEvaluator::randomShare(int pid, RandGenPool& rgen, io::NetIOMP& network,
+void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
                                     AuthAddShare<Field>& share, 
                                     TPShare<Field>& tpShare) {
   // for all pid = 1 to nP sample common random value
@@ -40,14 +40,19 @@ void OfflineEvaluator::randomShare(int pid, RandGenPool& rgen, io::NetIOMP& netw
   Field tag = 0;
   Field tagn = 0;
   
-  tpShare.pushValues(0);
-  tpShare.pushTags(0);
-  for(int i = 1; i <= nP_; i++) {
-    if(i == pid) {
+  
+  for(int i = 0; i <= nP; i++) {
+    if(i == 0) {
+      tpShare.pushValues(0);
+      tpShare.pushTags(0);
+      share.pushValue(0);
+      share.pushTag(0);
+    }
+    else if(i == pid) {
       rgen.p0().random_data(&val, sizeof(Field));
       tpShare.pushValues(val);
       share.pushValue(val);
-      if(i != nP_) {
+      if(i != nP) {
         rgen.p0().random_data(&tag, sizeof(Field));
         tpShare.pushTags(tag);
         share.pushTag(tag);
@@ -58,14 +63,16 @@ void OfflineEvaluator::randomShare(int pid, RandGenPool& rgen, io::NetIOMP& netw
       val = tpShare.secret();
       tag = tpShare.macKey() * val;
       tagn = tag;
-      for(int i = 1; i < nP_; i++){
+      for(int i = 1; i < nP; i++){
         tagn -= tpShare.commonTagWithParty(i);
       }
     tpShare.pushTags(tagn);
-    network.send(nP_, &tagn, sizeof(tagn));
+    std::cout<< pid << " : "<< nP << std::endl;
+    network.send(nP, &tagn, sizeof(tagn));
     }
-    else if(pid == nP_) {
+    else if(pid == nP) {
       network.recv(0, &tagn, sizeof(tagn));
+      std::cout<< 0 << " : " << pid << std::endl;
       share.pushTag(tagn);
     }
 }
@@ -171,7 +178,7 @@ void OfflineEvaluator::setWireMasks(
           auto tp_prod = tpmask_in1.secret() * tpmask_in2.secret();
           TPShare<Field> tprand_mask;
           AuthAddShare<Field> rand_mask;
-          randomShare(id_, rgen_, *network_, rand_mask, tprand_mask);
+          randomShare(nP_, id_, rgen_, *network_, rand_mask, tprand_mask);
                     
           TPShare<Field> tpmask_product;
           AuthAddShare<Field> mask_product; 

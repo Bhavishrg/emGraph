@@ -1,4 +1,4 @@
-/*#include "rand_gen_pool.h"
+#include "rand_gen_pool.h"
 
 #include <algorithm>
 
@@ -24,4 +24,3 @@ emp::PRG& RandGenPool::all_minus_0() { return k_all_minus_0; }
 emp::PRG& RandGenPool::p0() { return k_p0; }
 
 }  // namespace dirigents
-*/

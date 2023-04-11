@@ -94,7 +94,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "src/CMakeFiles/QuadSquad.dir/DependInfo.cmake"
-  "src/CMakeFiles/Dirigent.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/online_mpc.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/online_nn.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/offline_mpc_tp.dir/DependInfo.cmake"

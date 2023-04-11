@@ -7,11 +7,7 @@ add_library(QuadSquad
     quadsquad/offline_evaluator.cpp
     quadsquad/jump_provider.cpp
     quadsquad/online_evaluator.cpp
-    quadsquad/ot_provider.cpp)
-
-
-add_library(Dirigent
-    utils/circuit.cpp
+    quadsquad/ot_provider.cpp
     dirigent/types.cpp
     dirigent/sharing.cpp
     dirigent/helpers.cpp
@@ -19,9 +15,5 @@ add_library(Dirigent
     dirigent/offline_evaluator.cpp
     dirigent/online_evaluator.cpp)
 
-target_include_directories(Dirigent PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(Dirigent PUBLIC Boost::system EMPTool EMP_OT NTL GMP)
-
 target_include_directories(QuadSquad PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(QuadSquad PUBLIC Boost::system EMPTool EMP_OT NTL GMP)
-
