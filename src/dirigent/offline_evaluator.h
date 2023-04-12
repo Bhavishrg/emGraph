@@ -50,11 +50,11 @@ class OfflineEvaluator {
   //                                 ReplicatedShare<Field>& share);
   // Generate sharing of a random value known to party. Should be called by
   // dealer when other parties call other variant.
-  void randomShareWithParty(int pid, int dealer, RandGenPool& rgen,
-                                            io::NetIOMP& network,
-                                            AuthAddShare<Field>& share,
-                                            TPShare<Field>& tpShare, 
-                                            Field& secret);
+  static void randomShareWithParty(int nP, int pid, int dealer, RandGenPool& rgen,
+                                           io::NetIOMP& network,
+                                           AuthAddShare<Field>& share,
+                                           TPShare<Field>& tpShare, 
+                                           Field& secret);
 
   // Following methods implement various preprocessing subprotocols.
 

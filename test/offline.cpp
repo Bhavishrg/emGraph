@@ -231,67 +231,63 @@ BOOST_AUTO_TEST_CASE(random_share) {
   tpshares.setKey(5);
   for (int i = 0; i <= nP; i++) {
     parties.push_back(std::async(std::launch::async, [&, i]() { 
+      //std::cout<< i <<"->ith value: "<<shares[i].valueAt()<<std::endl;
+      //std::cout<< i <<"->ith tag: "<<shares[i].tagAt()<<std::endl;
+      //std::cout<<"before communication"<<std::endl;
+
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       OfflineEvaluator::randomShare(nP, i, vrgen, *network, shares[i], tpshares);
+      
+      //std::cout<< i <<"->ith value: "<<shares[i].valueAt()<<std::endl;
+      //std::cout<< i <<"->ith tag: "<<shares[i].tagAt()<<std::endl;
       return shares[i];
     }));
     
   }
+  int i = 0;
   for (auto& p : parties) { 
     auto res = p.get();
-    int i = 0;
+    
     if(i>0) { 
         BOOST_TEST(res.valueAt() == tpshares.commonValueWithParty(i));
         BOOST_TEST(res.tagAt() == tpshares.commonTagWithParty(i));
       }
       i++;
     }
-    //BOOST_TEST(0 == 0);
   }
   BOOST_AUTO_TEST_SUITE_END()
-  //int i = 0;
-    //if(i>0) { 
-    //    BOOST_TEST(res.valueAt() == tpshares.commonValueWithParty(i));
-    //    BOOST_TEST(res.tagAt() == tpshares.commonTagWithParty(i));
-    //  }
-    //  i++;
-    /*
-      std::cout<< i<<":\t shares[].valueAt() = \n"<< shares[i].valueAt() <<"\n";
-      //auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
-      vrgen.emplace_back(i);
-      shares[0].pushValue(0);
-      shares[0].pushTag(0);
-      if ( i > 0) { 
-        //OfflineEvaluator::randomShare(nP, i, vrgen.back(), *network, Shares, tpShares);
-        shares[i].pushValue(0);
-        shares[i].pushTag(0);
-      }
-      tpshares = tpShares;
-      shares[i] = Shares;
-      return shares.back();
-    }));
-  }
-  */
-  /*
+
+  
+  /*BOOST_AUTO_TEST_CASE(random_share_with_party) {
+    int nP = 4;
+    Field secret;
+    std::vector<AuthAddShare<Field>> shares(nP+1);
+    TPShare<Field> tpshares;
+  
+    std::vector<std::future<AuthAddShare<Field>>> parties;
+    RandGenPool vrgen(0);
+    tpshares.setKey(5);
+    for (int i = 0; i <= nP; i++) {
+      parties.push_back(std::async(std::launch::async, [&, i]() { 
+        auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+        OfflineEvaluator::randomShareWithParty(nP, i, nP, vrgen, *network, shares[i], tpshares, secret);
+        return shares[i];
+      }));
     
-    if(i > 0){
+    }
+    int i = 0;
+    for (auto& p : parties) { 
+      auto res = p.get();
       
-      OfflineEvaluator::randomShare(nP, i, vrgen.back(), *network, shares[i], tpshares);
-      
+      if(i>0) { 
+        BOOST_TEST(res.valueAt() == tpshares.commonValueWithParty(i));
+        BOOST_TEST(res.tagAt() == tpshares.commonTagWithParty(i));
+      }
+      i++;
     }
-    if(i != 0) {
-      return shares[i];
-    }
-    else if (i == 0) {
-      AuthAddShare<Field> noShare;
-      noShare.pushValue(0);
-      noShare.pushTag(0);
-      return noShare;
-    }
-    }));
-  }*/
-  /*
-  */
+  }
+  BOOST_AUTO_TEST_SUITE_END()
+*/
   //BOOST_TEST(shares[i].valueAt() == tpshares.commonValueWithParty(i));
   //BOOST_TEST(shares[i].tagAt() == tpshares.commonTagWithParty(i));
 
