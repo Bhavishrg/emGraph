@@ -17,8 +17,7 @@ OfflineEvaluator::OfflineEvaluator(int nP, int my_id,
     : nP_(nP),
       id_(my_id),
       security_param_(security_param),
-      //rgen_(my_id, seed),
-      rgen_(seed),
+      rgen_(my_id, seed),
       network_(std::move(network)),
       circ_(std::move(circ)),
       preproc_(circ.num_gates, circ.outputs.size())
@@ -37,21 +36,22 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
   // for all pid = 2 to nP sample common random tag
   // pid = 0 stores tags in TPShare.tags
   // pid = 0 sends tag[1] to pid = 1
+  
   Field val = 0;
-  Field val1 = 0;
-  Field val2 = 0;
   Field tag = 0;
   Field tagn = 0;
   
-  
-  //
+  //rgen.p0().random_data(&val, sizeof(Field));
+  //rgen.p0().random_data(&tag, sizeof(Field));
     if(pid == 0) {
       for(int i = 0; i <= nP; i++) {
-        rgen.p0().random_data(&val1, sizeof(Field));
-        tpShare.pushValues(val1);
-        std::cout<<"TP's " << i <<"th share " << val1 << std::endl;
+        //rgen.p0().random_data(&val, sizeof(Field));
+        val = 29343;
+        tpShare.pushValues(val);
+        std::cout<<"TP's " << i <<"th share " << val << std::endl;
         if( i != nP) {
-          rgen.p0().random_data(&tag, sizeof(Field));
+          //rgen.p0().random_data(&tag, sizeof(Field));
+          tag = 23013;
           tpShare.pushTags(tag);
           std::cout<<"TP's " << i << "th tag" << tag << std::endl;
         }
@@ -59,18 +59,18 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
     }
     else if(pid > 0) {
       
-      rgen.p0().random_data(&val2, sizeof(Field));
-      std::cout<<"P_"<< pid <<"'s " << " share " << val2 << std::endl;
-      //tpShare.pushValues(val2);
+      //rgen.p0().random_data(&val, sizeof(Field));
+      std::cout<<"P_"<< pid <<"'s " << " share " << val << std::endl;
+      val = 29343;
       share.pushValue(val);
       if(pid != nP) {
-        rgen.p0().random_data(&tag, sizeof(Field));
+        //rgen.p0().random_data(&tag, sizeof(Field));
+        tag = 23013;
         std::cout<<"P_"<< pid <<"'s " << " tag " << tag << std::endl;
-        //tpShare.pushTags(tag);
         share.pushTag(tag);
       }
     }
-//}
+
     if(pid == 0){
       val = tpShare.secret();
       //std::cout<<"secret: " << val <<std::endl;
@@ -101,49 +101,54 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
                                             AuthAddShare<Field>& share,
                                             TPShare<Field>& tpShare, 
                                             Field& secret) {
-  secret = 0;
+  Field tagF;
   Field val = 0;
   Field tag = 0;
   Field valn = 0;
   Field tagn = 0;
   
-  if (pid == 0 || pid == dealer) { 
-    rgen.p0().random_data(&secret, sizeof(Field));
-    tpShare.pushValues(secret);
-    tpShare.pushTags(secret* tpShare.macKey());
-  }
-
-  for(int i = 1; i < nP; i++) {
-    if(i == pid) {
-      rgen.p0().random_data(&val, sizeof(Field));
+  if( pid == 0) {
+    //rgen.p0().random_data(&secret, sizeof(Field));
+    secret = 1000;
+    tagF = tpShare.macKey() * secret;
+    for(int i = 0; i < nP; i++) {
+      //rgen.p0().random_data(&val, sizeof(Field));
+      val = i;
       tpShare.pushValues(val);
-      share.pushValue(val);
-      rgen.p0().random_data(&tag, sizeof(Field));
+      //rgen.p0().random_data(&tag, sizeof(Field));
+      tag = 0;
       tpShare.pushTags(tag);
-      share.pushTag(tag);
-    }
-  }
-
-  val = 0;
-  tag = 0;
-  if(pid == 0) {
-    for(int i = 1; i < nP; i++) {
-      valn += tpShare.commonValueWithParty(i) + valn;
-      tagn += tpShare.commonTagWithParty(i) + tagn;
+      valn += val;
+      tagn += tag;
     }
     valn = secret - valn;
-    tagn = (secret * tpShare.macKey()) - tagn;
+    tagn = tagF - tagn;
+    network.send(nP, &valn, sizeof(Field));
+    network.send(nP, &tagn, sizeof(Field));
     tpShare.pushValues(valn);
     tpShare.pushTags(tagn);
-    network.send(nP, &valn, sizeof(valn));
-    network.send(nP, &tagn, sizeof(tagn));
   }
-  else if(pid == nP) {
-      network.recv(0, &valn, sizeof(valn));
-      network.recv(0, &tagn, sizeof(tagn));
+  else if ( pid > 0) {
+    if(pid == dealer) {
+      //rgen.p0().random_data(&secret, sizeof(Field));
+      secret = 1000;
+    }
+    if(pid != nP) {
+      //rgen.p0().random_data(&val, sizeof(Field));
+      val = pid;
+      share.pushValue(val);
+      //rgen.p0().random_data(&tag, sizeof(Field));
+      tag = 0;
+      share.pushTag(tag);
+    }
+    else if (pid == nP) {
+      network.recv(0, &valn, sizeof(Field));
       share.pushValue(valn);
+      network.recv(0, &tagn, sizeof(Field));
       share.pushTag(tagn);
+    }
   }
+
 }
 
 void OfflineEvaluator::setWireMasks(

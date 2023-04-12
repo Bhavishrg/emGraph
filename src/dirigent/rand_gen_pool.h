@@ -10,7 +10,7 @@ namespace dirigent {
 
 // Collection of PRGs.
 class RandGenPool {
-  //int id_;
+  int id_;
 
   emp::PRG k_p0;
   emp::PRG k_self;
@@ -18,13 +18,12 @@ class RandGenPool {
   emp::PRG k_all;
 
  public:
-  //explicit RandGenPool(int my_id, uint64_t seed = 200);
-  explicit RandGenPool(uint64_t seed = 200);
-
-  emp::PRG& self();
-  emp::PRG& all_minus_0();
-  emp::PRG& all();
-  emp::PRG& p0();
+  explicit RandGenPool(int my_id, uint64_t seed = 200);
+  
+  emp::PRG& self();// { return k_self; }
+  emp::PRG& all_minus_0();//{ return k_all_minus_0; }
+  emp::PRG& all();//{ return k_all; }
+  emp::PRG& p0();// { return k_p0; }
 
 };
 

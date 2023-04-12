@@ -234,7 +234,7 @@ BOOST_AUTO_TEST_CASE(random_share) {
       //std::cout<< i <<"->ith value: "<<shares[i].valueAt()<<std::endl;
       //std::cout<< i <<"->ith tag: "<<shares[i].tagAt()<<std::endl;
       //std::cout<<"before communication"<<std::endl;
-
+      //vrgen.emplace_back(i);
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       OfflineEvaluator::randomShare(nP, i, vrgen, *network, shares[i], tpshares);
       
@@ -255,13 +255,13 @@ BOOST_AUTO_TEST_CASE(random_share) {
       i++;
     }
   }
-  BOOST_AUTO_TEST_SUITE_END()
+  //BOOST_AUTO_TEST_SUITE_END()
 
   
-  /*BOOST_AUTO_TEST_CASE(random_share_with_party) {
+  BOOST_AUTO_TEST_CASE(random_share_with_party) {
     int nP = 4;
     Field secret;
-    std::vector<AuthAddShare<Field>> shares(nP+1);
+    std::vector<AuthAddShare<Field>>  shares(nP+1);
     TPShare<Field> tpshares;
   
     std::vector<std::future<AuthAddShare<Field>>> parties;
@@ -287,7 +287,7 @@ BOOST_AUTO_TEST_CASE(random_share) {
     }
   }
   BOOST_AUTO_TEST_SUITE_END()
-*/
+
   //BOOST_TEST(shares[i].valueAt() == tpshares.commonValueWithParty(i));
   //BOOST_TEST(shares[i].tagAt() == tpshares.commonTagWithParty(i));
 
