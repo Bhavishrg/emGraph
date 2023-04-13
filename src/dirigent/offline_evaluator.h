@@ -62,7 +62,8 @@ class OfflineEvaluator {
   // subprotocols.
   void setWireMasks(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map);
   
-  
+  void getOutputMasks(int pid, std::vector<Field>& output_mask);
+
   PreprocCircuit<Field> getPreproc();
 
   // Efficiently runs above subprotocols.

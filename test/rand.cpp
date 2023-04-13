@@ -20,24 +20,24 @@ BOOST_AUTO_TEST_CASE(matching_output) {
     const int num_tests = 10;
     uint64_t seed = 200;
     int nP = 4;
-    auto rpool_0 = dirigent::RandGenPool(0, seed);
+    auto rpool_0 = dirigent::RandGenPool(0, nP+1, seed);
     uint64_t b0;
-    rpool_0.p0().random_data(&b0, sizeof(uint64_t));
-    for (int i = 1; i <= nP; ++i) {
-        auto rpool_i = dirigent::RandGenPool(i, seed);
+    
+   for (int i = 1; i <= nP; ++i) {
+        auto rpool_i = dirigent::RandGenPool(i, nP+1, seed);
         
 
         uint64_t bi;
         rpool_i.p0().random_data(&bi, sizeof(uint64_t));
-        
+        rpool_0.pi(i).random_data(&b0, sizeof(uint64_t));
         // CHECK WITH TP
         BOOST_TEST(bi == b0);
 
         // CHECK ALL
         rpool_i.all().random_data(&bi, sizeof(uint64_t));
         
-        for(int j = 0; j < i; j++)  {
-            auto rpool_j = dirigent::RandGenPool(j, seed);
+        for(int j = 1; j < i; j++)  {
+            auto rpool_j = dirigent::RandGenPool(j, nP+1, seed);
             uint64_t bj;
             rpool_j.all().random_data(&bj, sizeof(uint64_t));
             
@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE(matching_output) {
         rpool_i.all_minus_0().random_data(&bi, sizeof(uint64_t));
         
         for(int j = 0; j < i; j++)  {
-            auto rpool_j = dirigent::RandGenPool(j, seed);
+            auto rpool_j = dirigent::RandGenPool(j, nP+1, seed);
             uint64_t bj;
             rpool_j.all_minus_0().random_data(&bj, sizeof(uint64_t));
             // CHECK ALL

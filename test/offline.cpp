@@ -222,36 +222,32 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE(offline_evaluator)
 
 BOOST_AUTO_TEST_CASE(random_share) {
-  int nP = 3;
+  int nP = 5;
   std::vector<AuthAddShare<Field>> shares(nP+1);
   TPShare<Field> tpshares;
   
   std::vector<std::future<AuthAddShare<Field>>> parties;
-  RandGenPool vrgen(0);
+  
   tpshares.setKey(5);
   for (int i = 0; i <= nP; i++) {
+    
+    
     parties.push_back(std::async(std::launch::async, [&, i]() { 
-      //std::cout<< i <<"->ith value: "<<shares[i].valueAt()<<std::endl;
-      //std::cout<< i <<"->ith tag: "<<shares[i].tagAt()<<std::endl;
-      //std::cout<<"before communication"<<std::endl;
-      //vrgen.emplace_back(i);
+      RandGenPool vrgen(i, nP);
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       OfflineEvaluator::randomShare(nP, i, vrgen, *network, shares[i], tpshares);
-      
-      //std::cout<< i <<"->ith value: "<<shares[i].valueAt()<<std::endl;
-      //std::cout<< i <<"->ith tag: "<<shares[i].tagAt()<<std::endl;
-      return shares[i];
+
+            return shares[i];
     }));
     
   }
   int i = 0;
   for (auto& p : parties) { 
     auto res = p.get();
-    
-    if(i>0) { 
+      
         BOOST_TEST(res.valueAt() == tpshares.commonValueWithParty(i));
         BOOST_TEST(res.tagAt() == tpshares.commonTagWithParty(i));
-      }
+     
       i++;
     }
   }
@@ -259,34 +255,110 @@ BOOST_AUTO_TEST_CASE(random_share) {
 
   
   BOOST_AUTO_TEST_CASE(random_share_with_party) {
-    int nP = 4;
-    Field secret;
-    std::vector<AuthAddShare<Field>>  shares(nP+1);
+    int nP = 10;
+    
+    //std::vector<AuthAddShare<Field>> shares(nP+1);
     TPShare<Field> tpshares;
   
     std::vector<std::future<AuthAddShare<Field>>> parties;
-    RandGenPool vrgen(0);
+    
     tpshares.setKey(5);
-    for (int i = 0; i <= nP; i++) {
-      parties.push_back(std::async(std::launch::async, [&, i]() { 
+    int i = 0;
+    parties.push_back(std::async(std::launch::async, [&, i]() { 
+        
+        AuthAddShare<Field> share;
+        Field secret;
+        RandGenPool vrgen(i, nP);
         auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
-        OfflineEvaluator::randomShareWithParty(nP, i, nP, vrgen, *network, shares[i], tpshares, secret);
-        return shares[i];
+        OfflineEvaluator::randomShareWithParty(nP, i, nP, vrgen, *network, 
+                                               share, tpshares, secret);
+        return share;
+      }));
+
+    for ( i = 1; i <= nP; i++) {
+      
+      parties.push_back(std::async(std::launch::async, [&, i]() { 
+        AuthAddShare<Field> share;
+        TPShare<Field> tmp;
+        Field secret;
+        RandGenPool vrgen(i, nP);
+        auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+        OfflineEvaluator::randomShareWithParty(nP, i, nP, vrgen, *network, 
+                                               share, tmp, secret);
+        return share;
       }));
     
     }
-    int i = 0;
+
+    //int i = 0;
+    i = 0;
     for (auto& p : parties) { 
       auto res = p.get();
       
-      if(i>0) { 
+   
         BOOST_TEST(res.valueAt() == tpshares.commonValueWithParty(i));
         BOOST_TEST(res.tagAt() == tpshares.commonTagWithParty(i));
-      }
+      
       i++;
     }
+    
   }
-  BOOST_AUTO_TEST_SUITE_END()
+
+/*
+BOOST_AUTO_TEST_CASE(depth_2_circuit) {
+  int nP = 3;
+  quadsquad::utils::Circuit<Field> circ;
+  std::vector<quadsquad::utils::wire_t> input_wires;
+  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+  for (size_t i = 0; i < 4; ++i) {
+    auto winp = circ.newInputWire();
+    input_wires.push_back(winp);
+    input_pid_map[winp] = 0;
+  }
+  auto w_aab =
+      circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
+  auto w_cmd =
+      circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
+  auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
+  auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
+  circ.setAsOutput(w_mout);
+  circ.setAsOutput(w_aout);
+  auto level_circ = circ.orderGatesByLevel();
+
+  std::vector<std::future<PreprocCircuit<Field>>> parties;
+  parties.reserve(nP+1);
+  for (int i = 0; i <= nP; ++i) {
+    parties.push_back(std::async(std::launch::async, [&, i, input_pid_map]() {
+      
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      
+      OfflineEvaluator eval(nP, i, std::move(network), 
+                            level_circ, SECURITY_PARAM, 4);
+      return eval.run(input_pid_map);
+    }));
+  }
+}
+*/
+
+BOOST_AUTO_TEST_SUITE_END()
+//=================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //BOOST_AUTO_TEST_SUITE_END()
 
   //BOOST_TEST(shares[i].valueAt() == tpshares.commonValueWithParty(i));
   //BOOST_TEST(shares[i].tagAt() == tpshares.commonTagWithParty(i));
@@ -325,52 +397,15 @@ BOOST_AUTO_TEST_CASE(random_share) {
   //BOOST_TEST(secret == recon);
   //
 
-/*
-BOOST_AUTO_TEST_CASE(depth_2_circuit) {
-  NTL::ZZ_pContext ZZ_p_ctx;
-  NTL::ZZ_pEContext ZZ_pE_ctx;
-  ZZ_pE_ctx.save();
-  ZZ_p_ctx.save();
 
-  utils::Circuit<Ring> circ;
-  std::vector<utils::wire_t> input_wires;
-  std::unordered_map<utils::wire_t, int> input_pid_map;
-  for (size_t i = 0; i < 4; ++i) {
-    auto winp = circ.newInputWire();
-    input_wires.push_back(winp);
-    input_pid_map[winp] = 0;
-  }
-  auto w_aab =
-      circ.addGate(utils::GateType::kAdd, input_wires[0], input_wires[1]);
-  auto w_cmd =
-      circ.addGate(utils::GateType::kMul, input_wires[2], input_wires[3]);
-  auto w_mout = circ.addGate(utils::GateType::kMul, w_aab, w_cmd);
-  auto w_aout = circ.addGate(utils::GateType::kAdd, w_aab, w_cmd);
-  circ.setAsOutput(w_mout);
-  circ.setAsOutput(w_aout);
-  auto level_circ = circ.orderGatesByLevel();
 
-  std::vector<std::future<PreprocCircuit<Ring>>> parties;
-  parties.reserve(4);
-  for (int i = 0; i < 4; ++i) {
-    parties.push_back(std::async(std::launch::async, [&, i, input_pid_map]() {
-      ZZ_p_ctx.restore();
-      ZZ_pE_ctx.restore();
-      auto network1 = std::make_shared<io::NetIOMP<4>>(i, 10000, nullptr, true);
-      auto network2 = std::make_shared<io::NetIOMP<4>>(i, 11000, nullptr, true);
-      OfflineEvaluator eval(i, std::move(network1), std::move(network2),
-                            level_circ, SECURITY_PARAM, 4);
-      return eval.run(input_pid_map);
-    }));
-  }
-
-  std::vector<PreprocCircuit<Ring>> v_preproc;
+  /*std::vector<PreprocCircuit<Field>> v_preproc;
   v_preproc.reserve(parties.size());
   for (auto& f : parties) {
     v_preproc.push_back(f.get());
   }
-
-  for (int i = 0; i < 4; ++i) {
+*/
+  /*for (int i = 0; i < 4; ++i) {
     BOOST_TEST(v_preproc[i].gates.size() == level_circ.num_gates);
     for (int j = i + 1; j < 4; ++j) {
       const auto& preproc_i = v_preproc[i];
@@ -406,12 +441,10 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
         BOOST_TEST(commitment_i == commitment_j);
       }
     }
-  }
-}
+  }*/
 
-BOOST_AUTO_TEST_SUITE_END()
 
-BOOST_AUTO_TEST_SUITE(ring_ext_helpers)
+/*BOOST_AUTO_TEST_SUITE(ring_ext_helpers)
 
 BOOST_AUTO_TEST_CASE(io) {
   NTL::ZZ_pContext ZZ_p_ctx;
