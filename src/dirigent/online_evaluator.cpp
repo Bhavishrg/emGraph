@@ -86,8 +86,12 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
 
             case quadsquad::utils::GateType::kMul: {
                 // All parties excluding TP sample a common random value r_in
-                Field r_mul;
-                rgen_.all_minus_0().random_data(&r_mul, sizeof(Field));
+                std::vector<Field> r_mul(nP_);
+                Field r_sum = 0;
+                for( int i = 0; i < nP_; i++)   {
+                    rgen_.all_minus_0().random_data(&r_mul[i], sizeof(Field));
+                    r_sum += r_mul[i];
+                }
                 auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
                 auto& m_in1 = preproc_.gates[g->in1]->mask;
                 auto& m_in2 = preproc_.gates[g->in2]->mask;
@@ -99,7 +103,8 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                 if(id_ != 0) {
                     auto q_share = pre_out->mask + pre_out->mask_prod - 
                                      m_in1 * wires_[g->in2] - m_in2 * wires_[g->in1];
-                    q_share.add((wires_[g->in1] * wires_[g->in2] + r_mul), id_);
+                    q_share.add((wires_[g->in1] * wires_[g->in2]), id_);
+                    q_share.addWithAdder(r_mul[id_-1], id_, id_);
                     network_->send(0, &q_share, sizeof(Field));
                 }
                 else
@@ -116,14 +121,19 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                 if(id_ != 0)   {
                     Field q_value;
                     network_->recv(0, &q_value, sizeof(Field));
-                    wires_[g->out] = q_value - r_mul;
+                    wires_[g->out] = q_value - r_sum;
                 }
                 break;
             }
             case::quadsquad::utils::GateType::kDotprod: {
                 // All parties excluding TP sample a common random value r_in
-                Field r_dotp;
-                rgen_.all_minus_0().random_data(&r_dotp, sizeof(Field));
+                std::vector<Field> r_dotp;
+                Field r_sum = 0;
+                for( int i = 0; i < nP_; i++)   {
+                    rgen_.all_minus_0().random_data(&r_dotp, sizeof(Field));
+                    r_sum += r_dotp[i];
+                }
+                
 
                 auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
                 auto* pre_out =
@@ -138,7 +148,7 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                         q_share -= m_in1 * wires_[win2] + m_in2* wires_[win1];
                         q_share.add((wires_[win1] * wires_[win2]), id_);                  
                     }
-                    q_share.add(r_dotp, id_);
+                    q_share.addWithAdder(r_dotp[id_-1], id_, id_);
                 }
                 else if (id_ == 0) {
                     std::vector<Field> q_share;
@@ -152,7 +162,7 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                 if(id_ != 0)   {
                     Field q_value;
                     network_->recv(0, &q_value, sizeof(Field));
-                    wires_[g->out] = q_value - r_dotp;
+                    wires_[g->out] = q_value - r_sum;
                 }
                 break;
             }

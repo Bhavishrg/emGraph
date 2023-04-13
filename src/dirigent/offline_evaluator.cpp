@@ -250,6 +250,31 @@ void OfflineEvaluator::setWireMasks(
           
           break;
         }
+
+        case quadsquad::utils::GateType::kDotprod: {
+          preproc_.gates[gate->out] = std::make_unique<PreprocDotpGate<Field>>();
+          const auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
+          Field mask_prod = 0;
+          if(id_ ==0) {
+            for(size_t i = 0; i < g->in1.size(); i++) {
+              mask_prod += preproc_.gates[g->in1[i]]->tpmask.secret() 
+                                * preproc_.gates[g->in2[i]]->tpmask.secret();
+            }
+          }
+          TPShare<Field> tprand_mask;
+          AuthAddShare<Field> rand_mask;
+          randomShare(nP_, id_, rgen_, *network_, rand_mask, tprand_mask);
+
+          TPShare<Field> tpmask_product;
+          AuthAddShare<Field> mask_product; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_product, tpmask_product, mask_prod);
+                                
+          preproc_.gates[gate->out] = std::move(std::make_unique<PreprocDotpGate<Field>>
+                              (rand_mask, tprand_mask, mask_product, tpmask_product));
+          
+          break;
+        }
         
         default: {
           break;
