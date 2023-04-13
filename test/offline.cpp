@@ -304,6 +304,53 @@ BOOST_AUTO_TEST_CASE(random_share) {
     
   }
 
+  BOOST_AUTO_TEST_CASE(random_share_secret) {
+    int nP = 10;
+    TPShare<Field> tpshares;
+  
+    std::vector<std::future<AuthAddShare<Field>>> parties;
+    
+    tpshares.setKey(5);
+    Field secret = 134534;
+    int i = 0;
+    parties.push_back(std::async(std::launch::async, [&, i]() { 
+        
+        AuthAddShare<Field> share;
+        
+        RandGenPool vrgen(i, nP);
+        auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+        OfflineEvaluator::randomShareSecret(nP, i, vrgen, *network, 
+                                               share, tpshares, secret);
+        return share;
+      }));
+
+    for ( i = 1; i <= nP; i++) {
+      
+      parties.push_back(std::async(std::launch::async, [&, i]() { 
+        AuthAddShare<Field> share;
+        TPShare<Field> tmp;
+        Field secret;
+        RandGenPool vrgen(i, nP);
+        auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+        OfflineEvaluator::randomShareSecret(nP, i, vrgen, *network, 
+                                               share, tmp, secret);
+        return share;
+      }));
+    
+    }
+
+    //int i = 0;
+    i = 0;
+    for (auto& p : parties) { 
+      auto res = p.get();
+      
+   
+        BOOST_TEST(res.valueAt() == tpshares.commonValueWithParty(i));
+        BOOST_TEST(res.tagAt() == tpshares.commonTagWithParty(i));
+      
+      i++;
+    }
+  }
 /*
 BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   int nP = 3;
@@ -313,7 +360,7 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   for (size_t i = 0; i < 4; ++i) {
     auto winp = circ.newInputWire();
     input_wires.push_back(winp);
-    input_pid_map[winp] = 0;
+    input_pid_map[winp] = 1;
   }
   auto w_aab =
       circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
@@ -327,6 +374,7 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
 
   std::vector<std::future<PreprocCircuit<Field>>> parties;
   parties.reserve(nP+1);
+  
   for (int i = 0; i <= nP; ++i) {
     parties.push_back(std::async(std::launch::async, [&, i, input_pid_map]() {
       

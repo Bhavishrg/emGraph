@@ -131,12 +131,15 @@ template <class R>
 struct PreprocCircuit {
   std::vector<preprocg_ptr_t<R>> gates;
   //std::vector<PreprocOutput> output;
-  std::vector<Field> output;
-  
+  //std::vector<Field> output;
+
   PreprocCircuit() = default;
-  PreprocCircuit(size_t num_gates, size_t num_output)
-      : gates(num_gates), 
-      output(num_output)
-       {}
+  PreprocCircuit(size_t num_gates)
+      : gates(num_gates) {}
+        
+  //PreprocCircuit(size_t num_gates, size_t num_output)
+  //    : gates(num_gates), 
+  //      output(num_output)
+  //      {}
 };
 };  // namespace dirigent

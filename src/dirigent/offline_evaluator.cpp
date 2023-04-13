@@ -20,11 +20,9 @@ OfflineEvaluator::OfflineEvaluator(int nP, int my_id,
       rgen_(my_id, seed),
       network_(std::move(network)),
       circ_(std::move(circ)),
-      preproc_(circ.num_gates, circ.outputs.size())
-      {
-
-  tpool_ = std::make_shared<ThreadPool>(threads);
-}
+      //preproc_(circ.num_gates, circ.outputs.size())
+      preproc_(circ.num_gates)
+      {tpool_ = std::make_shared<ThreadPool>(threads);}
 
 void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
                                     AuthAddShare<Field>& share, 
@@ -77,6 +75,50 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
       }
     }
 
+}
+
+void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
+                                   AuthAddShare<Field>& share, 
+                                   TPShare<Field>& tpShare, Field secret) {
+  Field val = 0;
+  Field tag = 0;
+  Field tagn = 0;
+  Field valn = 0;
+  
+    if(pid == 0) {
+      share.pushValue(0);
+      share.pushTag(0);
+      tpShare.pushValues(0);
+      tpShare.pushTags(0);
+      for(int i = 1; i < nP; i++) {
+        rgen.pi(i).random_data(&val, sizeof(Field));
+        tpShare.pushValues(val);
+        valn += val;
+        rgen.pi(i).random_data(&tag, sizeof(Field));
+        tpShare.pushTags(tag);
+        tagn += tag;
+      }
+      valn = secret - valn;
+      tagn = tpShare.macKey() * secret - tagn;
+      tpShare.pushValues(valn);
+      tpShare.pushTags(tagn);
+      network.send(nP, &valn, sizeof(valn));
+      network.send(nP, &tagn, sizeof(tagn));
+    }
+    else if(pid > 0) {
+      if( pid != nP) {
+        rgen.p0().random_data(&val, sizeof(Field));
+        share.pushValue(val);
+        rgen.p0().random_data(&tag, sizeof(Field));
+        share.pushTag(tag);
+      }
+      else if(pid == nP) {
+        network.recv(0, &valn, sizeof(valn));
+        network.recv(0, &tagn, sizeof(tagn)); 
+        share.pushValue(valn);
+        share.pushTag(tagn);
+      }
+    }
 }
 
 void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGenPool& rgen,
@@ -143,6 +185,7 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
 
 void OfflineEvaluator::setWireMasks(
     const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map) {
+      std::cout<<"Entering setWireMasks method  "<<std::endl;
   for (const auto& level : circ_.gates_by_level) {
     for (const auto& gate : level) {
       switch (gate->type) {
@@ -155,6 +198,7 @@ void OfflineEvaluator::setWireMasks(
                                  pregate->tpmask, pregate->mask_value);
 
           preproc_.gates[gate->out] = std::move(pregate);
+          std::cout<< " id_ :  "<< id_ << "  Input provider : "<< pid<< std::endl;
           break;
         }
 
@@ -166,6 +210,8 @@ void OfflineEvaluator::setWireMasks(
           const auto& tpmask_in2 = preproc_.gates[g->in2]->tpmask;
           preproc_.gates[gate->out] =
               std::make_unique<PreprocGate<Field>>((mask_in1 + mask_in2), (tpmask_in1 + tpmask_in2));
+
+          std::cout << "tpmask_in1 : " << tpmask_in1.secret() << " tpmask_in2 : "<< tpmask_in2.secret()<<std::endl;
           break;
         }
 
@@ -178,6 +224,7 @@ void OfflineEvaluator::setWireMasks(
           preproc_.gates[gate->out] =
               std::make_unique<PreprocGate<Field>>((mask_in1 - mask_in2),(tpmask_in1 - tpmask_in2));
 
+          std::cout << "tpmask_in1 : " << tpmask_in1.secret() << " tpmask_in2 : "<< tpmask_in2.secret()<<std::endl;
           break;
         }
 
@@ -199,10 +246,15 @@ void OfflineEvaluator::setWireMasks(
                                 mask_product, tpmask_product, tp_prod);
           preproc_.gates[gate->out] = std::move(std::make_unique<PreprocMultGate<Field>>
                               (rand_mask, tprand_mask, mask_product, tpmask_product));
-        }
-
-        default:
+          if(id_ == 0) {
+            std::cout << "tpmask_in1 : " << tpmask_in1.secret() << " tpmask_in2 : "<< tpmask_in2.secret()<<std::endl;
+          }
           break;
+        }
+        
+        default: {
+          break;
+        }
       }
     }
   }
@@ -213,7 +265,7 @@ void OfflineEvaluator::getOutputMasks(int pid, std::vector<Field>& output_mask) 
   if(circ_.outputs.empty()) {
     return;
   }
-  preproc_.output.resize(circ_.outputs.size());
+  //preproc_.output.resize(circ_.outputs.size());
   
   if(pid == 0){
     for(size_t i = 0; i < circ_.outputs.size(); i++) {
@@ -223,7 +275,9 @@ void OfflineEvaluator::getOutputMasks(int pid, std::vector<Field>& output_mask) 
     
   }
   else {
+    for(size_t i = 0; i < circ_.outputs.size(); i++) {
     output_mask.push_back(0);
+    }
   }
   
 }
@@ -235,15 +289,16 @@ PreprocCircuit<Field> OfflineEvaluator::getPreproc() {
 PreprocCircuit<Field> OfflineEvaluator::run(
     const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map) {
   setWireMasks(input_pid_map);
-  std::cout<<"INSIDE OfflineEvaluator:run"<<std::endl;
+/*
   std::vector<Field> output_mask;
-  std::cout<<"Printing output masks"<<std::endl;
+  if(id_ == 0)  {
   getOutputMasks(id_, output_mask);
+  }
   for(size_t i = 0; i < circ_.outputs.size(); i++) {
     std::cout<<i<<": "<< output_mask[i] <<std::endl;
   }
   preproc_.output = output_mask;
-
+*/
   return std::move(preproc_);
   
 }
