@@ -185,7 +185,7 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
 
 void OfflineEvaluator::setWireMasks(
     const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map) {
-      std::cout<<"Entering setWireMasks method  "<<std::endl;
+      
   for (const auto& level : circ_.gates_by_level) {
     for (const auto& gate : level) {
       switch (gate->type) {
@@ -198,7 +198,7 @@ void OfflineEvaluator::setWireMasks(
                                  pregate->tpmask, pregate->mask_value);
 
           preproc_.gates[gate->out] = std::move(pregate);
-          std::cout<< " id_ :  "<< id_ << "  Input provider : "<< pid<< std::endl;
+          
           break;
         }
 
@@ -211,7 +211,7 @@ void OfflineEvaluator::setWireMasks(
           preproc_.gates[gate->out] =
               std::make_unique<PreprocGate<Field>>((mask_in1 + mask_in2), (tpmask_in1 + tpmask_in2));
 
-          std::cout << "tpmask_in1 : " << tpmask_in1.secret() << " tpmask_in2 : "<< tpmask_in2.secret()<<std::endl;
+          
           break;
         }
 
@@ -224,7 +224,7 @@ void OfflineEvaluator::setWireMasks(
           preproc_.gates[gate->out] =
               std::make_unique<PreprocGate<Field>>((mask_in1 - mask_in2),(tpmask_in1 - tpmask_in2));
 
-          std::cout << "tpmask_in1 : " << tpmask_in1.secret() << " tpmask_in2 : "<< tpmask_in2.secret()<<std::endl;
+          
           break;
         }
 
@@ -235,20 +235,19 @@ void OfflineEvaluator::setWireMasks(
           const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
           const auto& mask_in2 = preproc_.gates[g->in2]->mask;
           const auto& tpmask_in2 = preproc_.gates[g->in2]->tpmask;
-          auto tp_prod = tpmask_in1.secret() * tpmask_in2.secret();
+          Field tp_prod;
+          if(id_ == 0) {tp_prod = tpmask_in1.secret() * tpmask_in2.secret();}
           TPShare<Field> tprand_mask;
           AuthAddShare<Field> rand_mask;
           randomShare(nP_, id_, rgen_, *network_, rand_mask, tprand_mask);
                     
           TPShare<Field> tpmask_product;
           AuthAddShare<Field> mask_product; 
-          randomShareWithParty(nP_, id_, 0, rgen_, *network_, 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
                                 mask_product, tpmask_product, tp_prod);
           preproc_.gates[gate->out] = std::move(std::make_unique<PreprocMultGate<Field>>
                               (rand_mask, tprand_mask, mask_product, tpmask_product));
-          if(id_ == 0) {
-            std::cout << "tpmask_in1 : " << tpmask_in1.secret() << " tpmask_in2 : "<< tpmask_in2.secret()<<std::endl;
-          }
+          
           break;
         }
         

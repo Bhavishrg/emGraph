@@ -351,7 +351,7 @@ BOOST_AUTO_TEST_CASE(random_share) {
       i++;
     }
   }
-/*
+
 BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   int nP = 3;
   quadsquad::utils::Circuit<Field> circ;
@@ -385,8 +385,14 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
       return eval.run(input_pid_map);
     }));
   }
+
+  std::vector<PreprocCircuit<Field>> v_preproc;
+  v_preproc.reserve(parties.size());
+  for (auto& f : parties) {
+    v_preproc.push_back(f.get());
+  }
 }
-*/
+
 
 BOOST_AUTO_TEST_SUITE_END()
 //=================
@@ -453,7 +459,8 @@ BOOST_AUTO_TEST_SUITE_END()
     v_preproc.push_back(f.get());
   }
 */
-  /*for (int i = 0; i < 4; ++i) {
+/*
+  for (int i = 0; i < 4; ++i) {
     BOOST_TEST(v_preproc[i].gates.size() == level_circ.num_gates);
     for (int j = i + 1; j < 4; ++j) {
       const auto& preproc_i = v_preproc[i];

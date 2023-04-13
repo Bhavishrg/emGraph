@@ -87,6 +87,17 @@ class AuthAddShare {
 
     return *this;
   }
+
+  AuthAddShare<R>& addWithAdder(R val, int pid, int adder) {
+    if (pid == adder) {
+      value_ += val;
+      tag_ += key_sh_*val;
+    } else {
+      tag_ += key_sh_*val;
+    }
+
+    return *this;
+  }
   
 };
 
