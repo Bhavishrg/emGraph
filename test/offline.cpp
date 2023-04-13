@@ -353,7 +353,7 @@ BOOST_AUTO_TEST_CASE(random_share) {
   }
 
 BOOST_AUTO_TEST_CASE(depth_2_circuit) {
-  int nP = 3;
+  int nP = 5;
   quadsquad::utils::Circuit<Field> circ;
   std::vector<quadsquad::utils::wire_t> input_wires;
   std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
@@ -391,8 +391,21 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   for (auto& f : parties) {
     v_preproc.push_back(f.get());
   }
-}
 
+  BOOST_TEST(v_preproc[0].gates.size() == level_circ.num_gates);
+  const auto& preproc_0 = v_preproc[0];
+  
+  for (int i = 1; i <= nP; ++i) {
+    BOOST_TEST(v_preproc[i].gates.size() == level_circ.num_gates);
+    const auto& preproc_i = v_preproc[i];
+    for(int j = 0; j < 4; j++) {
+      auto tpmask = preproc_0.gates[j]->tpmask;
+      auto mask_i = preproc_i.gates[j]->mask;
+      BOOST_TEST(mask_i.valueAt() == tpmask.commonValueWithParty(i));
+      BOOST_TEST(mask_i.tagAt() == tpmask.commonTagWithParty(i));
+    }
+  }
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 //=================
@@ -411,54 +424,6 @@ BOOST_AUTO_TEST_SUITE_END()
 
 
 
-
-  //BOOST_AUTO_TEST_SUITE_END()
-
-  //BOOST_TEST(shares[i].valueAt() == tpshares.commonValueWithParty(i));
-  //BOOST_TEST(shares[i].tagAt() == tpshares.commonTagWithParty(i));
-
-
-  //std::vector<ReplicatedShare<Ring>> shares(4);
-  //std::vector<RandGenPool> vrgen;
-
-  //for (int i = 0; i < 4; ++i) {
-  //  vrgen.emplace_back(i);
-  //  OfflineEvaluator::randomShare(vrgen.back(), shares[i]);
-  //}
-
-  //for (int i = 0; i < 4; ++i) {
-  //  for (int j = i + 1; j < 4; ++j) {
-  //    BOOST_TEST(shares[i].commonValueWithParty(i, j) ==
-  //               shares[j].commonValueWithParty(j, i));
-  //  }
-  //}
-
-  //for (int i = 1; i < 4; ++i) {
-  //  OfflineEvaluator::randomShareWithParty(i, 0, vrgen[i], shares[i]);
-  //}
-  //Ring secret = 0;
-  //OfflineEvaluator::randomShareWithParty(0, vrgen[0], shares[0], secret);
-
-  //Ring recon = 0;
-  //for (int i = 0; i < 4; ++i) {
-  //  for (int j = i + 1; j < 4; ++j) {
-  //    BOOST_TEST(shares[i].commonValueWithParty(i, j) ==
-  //               shares[j].commonValueWithParty(j, i));
-  //    recon += shares[i].commonValueWithParty(i, j);
-  //  }
-  //}
-
-  //BOOST_TEST(secret == recon);
-  //
-
-
-
-  /*std::vector<PreprocCircuit<Field>> v_preproc;
-  v_preproc.reserve(parties.size());
-  for (auto& f : parties) {
-    v_preproc.push_back(f.get());
-  }
-*/
 /*
   for (int i = 0; i < 4; ++i) {
     BOOST_TEST(v_preproc[i].gates.size() == level_circ.num_gates);
