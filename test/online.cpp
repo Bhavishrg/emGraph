@@ -17,11 +17,68 @@
 using namespace dirigent;
 using namespace quadsquad::utils;
 namespace bdata = boost::unit_test::data;
-/*
 constexpr int TEST_DATA_MAX_VAL = 1000;
 constexpr int SECURITY_PARAM = 128;
 
 BOOST_AUTO_TEST_SUITE(online_evaluator)
+
+BOOST_AUTO_TEST_CASE(depth_2_circuit) {
+  int nP = 4;
+  auto seed_block = emp::makeBlock(0, 200);
+  emp::PRG prg(&seed_block);
+  std::mt19937 gen(200);
+  std::uniform_int_distribution<Field> distrib(0, TEST_DATA_MAX_VAL);
+  quadsquad::utils::Circuit<Field> circ;
+  std::vector<quadsquad::utils::wire_t> input_wires;
+  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+  std::unordered_map<quadsquad::utils::wire_t, Field> inputs;
+
+  for (size_t i = 0; i < 4; ++i) {
+    auto winp = circ.newInputWire();
+    input_wires.push_back(winp);
+    input_pid_map[winp] = 1;
+    
+    inputs[winp] = distrib(gen);
+  }
+  auto w_aab =
+      circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
+  auto w_cmd =
+      circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
+  auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
+  auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
+  circ.setAsOutput(w_mout);
+  circ.setAsOutput(w_aout);
+  auto level_circ = circ.orderGatesByLevel();
+
+  //std::vector<std::future<PreprocCircuit<Field>>> parties;
+  std::vector<std::future<std::vector<Field>>> parties;
+  parties.reserve(nP+1);
+  
+  for (int i = 0; i <= nP; ++i) {
+    parties.push_back(std::async(std::launch::async, [&, i, input_pid_map, inputs]() {
+      
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      
+      OfflineEvaluator eval(nP, i, std::move(network), 
+                            level_circ, SECURITY_PARAM, 4);
+      auto preproc = eval.run(input_pid_map);
+      //std::cout<<"preprocessing completed"<<std::endl; 
+      OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
+                                  level_circ, SECURITY_PARAM, 2);
+      
+      return online_eval.evaluateCircuit(inputs);
+      //return eval.run(input_pid_map);
+    }));
+  }
+  
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+/*
+constexpr int TEST_DATA_MAX_VAL = 1000;
+constexpr int SECURITY_PARAM = 128;
+
+
 
 BOOST_AUTO_TEST_CASE(reconstruct) {
   const int num_shares = 50;
