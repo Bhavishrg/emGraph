@@ -36,28 +36,30 @@ OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> ne
 void OnlineEvaluator::setInputs(const std::unordered_map<quadsquad::utils::wire_t, Field>& inputs) {
     Field q_value=0;
     std::vector<Field> masked_values;
-    std::vector<size_t> num_inp_pid;
-
+    std::vector<size_t> num_inp_pid(nP_, 0);
+    
     // Input gates have depth 0
     for(auto& g : circ_.gates_by_level[0]) {
         if(g->type == quadsquad::utils::GateType::kInp) {
             auto* pre_input = static_cast<PreprocInput<Field>*>(preproc_.gates[g->out].get());
             auto pid = pre_input->pid;
-
+            
             num_inp_pid[pid]++;
             Field r_in;
             // All parties excluding TP sample a common random value r_in
             if(id_ != 0) {
                 
                 rgen_.all_minus_0().random_data(&r_in, sizeof(Field));
+                
                 if(pid == id_) {
                 // pre_input->pid computes pre_input->mask + inputs.at(g->out) + r_in
                     q_value = pre_input->mask_value + inputs.at(g->out) + r_in;
                     network_->send(0, &q_value, sizeof(Field));
+                    
                 }
             }
             else if(id_ == 0) {
-                network_->recv(0, &q_value, sizeof(Field));
+                network_->recv(pid, &q_value, sizeof(Field));
                 for(int i = 1; i <= nP_; i++) {
                     network_->send(i, &q_value, sizeof(Field));
                 }
@@ -82,12 +84,13 @@ void OnlineEvaluator::setRandomInputs() {
 }
 
 void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
+    
     for (auto& gate : circ_.gates_by_level[depth]) {
         switch (gate->type) {
             case quadsquad::utils::GateType::kAdd: {
             auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
             if(id_!= 0) wires_[g->out] = wires_[g->in1] + wires_[g->in2];
-            std::cout<< " ADD gate"<<std::endl;
+            
             break;
             }
 
@@ -103,7 +106,7 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                 Field r_sum = 0;
                 Field q_value = 0;
                 std::vector<Field> qi(nP_ + 1);
-                std::cout<<"MULT gate "<< std::endl;
+                
                 if(id_ != 0) {
                     std::vector<Field> r_mul(nP_);
                     for( int i = 0; i < nP_; i++)   {
@@ -119,17 +122,17 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                                      m_in1 * wires_[g->in2] - m_in2 * wires_[g->in1];
                     q_share.add((wires_[g->in1] * wires_[g->in2]), id_);
                     q_share.addWithAdder(r_mul[id_-1], id_, id_);
-                    std::cout<< id_ << " sending the value "<<std::endl;
+                    
                     network_->send(0, &q_share.valueAt(), sizeof(Field));
                 }
                 else
                     if(id_ == 0) { 
                         q_value = 0;
                         for(int i = 1; i <= nP_; ++i) {
-                            std::cout<<"TP receiving the values "<<std::endl;
+                            
                             Field q = 0;
                             network_->recv(i, &q, sizeof(q));
-                            std::cout<<"TP received the "<< i <<"th values "<<std::endl;
+                            
                             q_value += q;
                         }
                         for(int i = 1; i <= nP_; i++) {
@@ -205,21 +208,29 @@ std::vector<Field> OnlineEvaluator::getOutputs() {
             auto wout = circ_.outputs[i];
             Field outmask = preproc_.gates[wout]->tpmask.secret();
             output_masks.push_back(outmask);
-        }    
-        for(int i = 1; i <= nP_; ++i) {
-            network_->send(i, &output_masks, output_masks.size() * sizeof(Field));
+            for(int i = 1; i <= nP_; ++i) {
+            network_->send(i, &outmask, sizeof(Field));
         }
+    }    
+        //for(int i = 1; i <= nP_; ++i) {
+        //    network_->send(i, &output_masks, output_masks.size() * sizeof(Field));
+        //}
+        return output_masks;
     }
     else {
-        std::vector<Field> output_masks;
-        network_->recv(0, &output_masks, output_masks.size() * sizeof(Field));
+        std::vector<Field> output_masks(circ_.outputs.size());
+        // network_->recv(0, &output_masks, output_masks.size() * sizeof(Field));
         for(size_t i = 0; i < circ_.outputs.size(); ++i) {
+            Field outmask;
+            network_->recv(0, &outmask, sizeof(Field));
             auto wout = circ_.outputs[i]; 
-            outvals[i] = wires_[wout] - output_masks[i];
+            //outvals[i] = wires_[wout] - output_masks[i];
+            outvals[i] = wires_[wout] - outmask; 
         }
+        return outvals;
     }
 
-    return outvals;
+    
     
 }
 
@@ -241,9 +252,11 @@ Field OnlineEvaluator::reconstruct(AuthAddShare<Field>& shares) {
 
 std::vector<Field> OnlineEvaluator::evaluateCircuit( const std::unordered_map<quadsquad::utils::wire_t, Field>& inputs) {
     setInputs(inputs);
+    
   for (size_t i = 0; i < circ_.gates_by_level.size(); ++i) {
-    evaluateGatesAtDepth(i);
+    evaluateGatesAtDepth(i); 
   }
+
   return getOutputs();
 }
 

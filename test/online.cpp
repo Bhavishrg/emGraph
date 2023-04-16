@@ -13,6 +13,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <thread>
 
 using namespace dirigent;
 using namespace quadsquad::utils;
@@ -41,34 +42,42 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
     inputs[winp] = distrib(gen);
   }
   auto w_aab =
-      circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
+     circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
   auto w_cmd =
       circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
   auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
   auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
-  circ.setAsOutput(w_mout);
-  circ.setAsOutput(w_aout);
+   circ.setAsOutput(w_cmd);
+   circ.setAsOutput(w_mout);
+   circ.setAsOutput(w_aout);
   auto level_circ = circ.orderGatesByLevel();
-
-  //std::vector<std::future<PreprocCircuit<Field>>> parties;
+  auto exp_output = circ.evaluate(inputs);
   std::vector<std::future<std::vector<Field>>> parties;
   parties.reserve(nP+1);
-  
   for (int i = 0; i <= nP; ++i) {
-    parties.push_back(std::async(std::launch::async, [&, i, input_pid_map, inputs]() {
+      parties.push_back(std::async(std::launch::async, [&, i, input_pid_map, inputs]() {
       
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       
-      OfflineEvaluator eval(nP, i, std::move(network), 
+      OfflineEvaluator eval(nP, i, network, 
                             level_circ, SECURITY_PARAM, 4);
       auto preproc = eval.run(input_pid_map);
-      //std::cout<<"preprocessing completed"<<std::endl; 
+     
       OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
-                                  level_circ, SECURITY_PARAM, 2);
+                                  level_circ, SECURITY_PARAM, 1);
       
-      return online_eval.evaluateCircuit(inputs);
-      //return eval.run(input_pid_map);
+      auto res = online_eval.evaluateCircuit(inputs);
+      return res;
+      
     }));
+  }
+  int i = 0;
+  for (auto& p : parties) {
+    auto output = p.get();
+      if(i > 0) {
+        BOOST_TEST(exp_output == output);
+      }
+      i++;
   }
   
 }

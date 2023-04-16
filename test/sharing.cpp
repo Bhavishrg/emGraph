@@ -136,6 +136,7 @@ BOOST_DATA_TEST_CASE(share_const_arithmetic,
   
   
   }
-  
+
+
 
 BOOST_AUTO_TEST_SUITE_END()

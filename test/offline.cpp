@@ -357,11 +357,15 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   quadsquad::utils::Circuit<Field> circ;
   std::vector<quadsquad::utils::wire_t> input_wires;
   std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+  
   for (size_t i = 0; i < 4; ++i) {
     auto winp = circ.newInputWire();
     input_wires.push_back(winp);
     input_pid_map[winp] = 1;
   }
+
+
+
   auto w_aab =
       circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
   auto w_cmd =
@@ -377,11 +381,12 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   
   for (int i = 0; i <= nP; ++i) {
     parties.push_back(std::async(std::launch::async, [&, i, input_pid_map]() {
-      
+      std::cout<< "Network created"<<std::endl;
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
-      
+      //std::cout<< "Network created"<<std::endl;
       OfflineEvaluator eval(nP, i, std::move(network), 
                             level_circ, SECURITY_PARAM, 4);
+      std::cout<<"preprocessing completed"<<std::endl;
       return eval.run(input_pid_map);
     }));
   }
