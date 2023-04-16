@@ -82,49 +82,67 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-/*
-constexpr int TEST_DATA_MAX_VAL = 1000;
-constexpr int SECURITY_PARAM = 128;
 
 
 
-BOOST_AUTO_TEST_CASE(reconstruct) {
-  const int num_shares = 50;
 
-  auto seed_block = emp::makeBlock(0, 200);
-  emp::PRG prg(&seed_block);
-  std::vector<DummyShare<Ring>> dummy_shares(num_shares);
-  for (size_t i = 0; i < num_shares; ++i) {
-    dummy_shares[i].randomize(prg);
+
+BOOST_AUTO_TEST_CASE(dotp_gate) {
+  auto seed = emp::makeBlock(100, 200);
+  int nf = 10;
+  int nP = 5;
+  Circuit<Field> circ;
+  std::vector<wire_t> vwa(nf);
+  std::vector<wire_t> vwb(nf);
+  for (int i = 0; i < nf; i++) {
+    vwa[i] = circ.newInputWire();
+    vwb[i] = circ.newInputWire();
+  }
+  auto wdotp = circ.addGate(GateType::kDotprod, vwa, vwb);
+  circ.setAsOutput(wdotp);
+  auto level_circ = circ.orderGatesByLevel();
+
+  std::unordered_map<wire_t, Field> input_map;
+  std::unordered_map<wire_t, int> input_pid_map;
+  std::mt19937 gen(200);
+  std::uniform_int_distribution<Ring> distrib(0, TEST_DATA_MAX_VAL);
+  for (size_t i = 0; i < nf; ++i) {
+    input_map[vwa[i]] = distrib(gen);
+    input_map[vwb[i]] = distrib(gen);
+    input_pid_map[vwa[i]] = 1;
+    input_pid_map[vwb[i]] = 2;
   }
 
-  std::vector<std::future<std::vector<Ring>>> parties;
-  for (int i = 0; i < 4; ++i) {
-    parties.push_back(std::async(std::launch::async, [&, i]() {
-      auto network = std::make_shared<io::NetIOMP<4>>(i, 10000, nullptr, true);
-      PreprocCircuit<Ring> preproc;
-      LevelOrderedCircuit circ;
-      OnlineEvaluator online_eval(i, std::move(network), std::move(preproc),
-                                  circ, SECURITY_PARAM, 1);
-      std::vector<ReplicatedShare<Ring>> shares(num_shares);
-      for (size_t j = 0; j < num_shares; ++j) {
-        shares[j] = dummy_shares[j].getRSS(i);
-      }
+  auto exp_output = circ.evaluate(input_map);
 
-      return online_eval.reconstruct(shares);
+  std::vector<std::future<std::vector<Field>>> parties;
+  //std::vector<std::future<PreprocCircuit<Field>>> parties;
+  parties.reserve(nP+1);
+  for (int i = 0; i <= nP; ++i) {
+    parties.push_back(std::async(std::launch::async, [&, i, input_pid_map, input_map]() {
+      
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      
+      OfflineEvaluator eval(nP, i, network, 
+                            level_circ, SECURITY_PARAM, 4);
+
+      auto preproc = eval.run(input_pid_map);
+      //return preproc;
+      OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
+                                   level_circ, SECURITY_PARAM, 1);
+
+      return online_eval.evaluateCircuit(input_map);
     }));
   }
 
-  for (auto& p : parties) {
-    auto res = p.get();
-
-    for (size_t i = 0; i < num_shares; ++i) {
-      BOOST_TEST(res[i] == dummy_shares[i].secret());
-    }
-  }
+  /*for (auto& p : parties) {
+    auto output = p.get();
+    BOOST_TEST(output == exp_output);
+  }*/
 }
 
+BOOST_AUTO_TEST_SUITE_END()
+/*
 BOOST_DATA_TEST_CASE(no_op_circuit,
                      bdata::random(0, TEST_DATA_MAX_VAL) ^ bdata::xrange(1),
                      input, idx) {

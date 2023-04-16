@@ -147,37 +147,44 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                 break;
             }
             
-            /*case::quadsquad::utils::GateType::kDotprod: {
+            case::quadsquad::utils::GateType::kDotprod: {
                 // All parties excluding TP sample a common random value r_in
-                std::vector<Field> r_dotp;
+                
                 Field r_sum = 0;
-                for( int i = 0; i < nP_; i++)   {
-                    rgen_.all_minus_0().random_data(&r_dotp, sizeof(Field));
-                    r_sum += r_dotp[i];
-                }
+                
                 
 
                 auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
                 auto* pre_out =
                     static_cast<PreprocDotpGate<Field>*>(preproc_.gates[g->out].get());
                 if(id_ != 0) {
+                    std::vector<Field> r_dotp(nP_);
+                    for( int i = 0; i < nP_; i++)   {
+                        rgen_.all_minus_0().random_data(&r_dotp[i], sizeof(Field));
+                        r_sum += r_dotp[i];
+                    }
+                
                     auto q_share = pre_out->mask + pre_out->mask_prod;
                     for(size_t i = 0; i < g->in1.size(); ++i) {
                         auto win1 = g->in1[i]; //masked value for left input wires
                         auto win2 = g->in2[i]; //masked value for right input wires
                         auto& m_in1 = preproc_.gates[win1]->mask; //masks for left wires
                         auto& m_in2 = preproc_.gates[win2]->mask; //masks for right wires
-                        q_share -= m_in1 * wires_[win2] + m_in2* wires_[win1];
+                        q_share -= (m_in1 * wires_[win2] + m_in2* wires_[win1]);
                         q_share.add((wires_[win1] * wires_[win2]), id_);                  
                     }
                     q_share.addWithAdder(r_dotp[id_-1], id_, id_);
+                    network_->send(0, &q_share.valueAt(), sizeof(Field));
                 }
                 else if (id_ == 0) {
-                    std::vector<Field> q_share;
+                    
                     Field q_value = 0;
                     for(int i = 1; i <= nP_; ++i) {
-                        network_->recv(i, &q_share[i], sizeof(Field));
-                        q_value += q_share[i];
+                        Field q_share=0;
+                        network_->recv(i, &q_share, sizeof(Field));
+                        q_value += q_share;
+                    }
+                    for(int i = 1; i <= nP_; i++) {
                         network_->send(i, &q_value, sizeof(Field));
                     }
                 }
@@ -187,7 +194,7 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                     wires_[g->out] = q_value - r_sum;
                 }
                 break;
-            }*/
+            }
         default:
             break;
         }
