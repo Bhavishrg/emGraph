@@ -132,9 +132,6 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                     }
                     network_->send(0, &q_share.valueAt(), sizeof(Field));
                     q_sh_[g->out] = q_share;
-                    std::cout<< "q_sh[" << g->out <<"].value =  " << q_sh_[g->out].valueAt() <<std::endl;
-                    std::cout<< "q_sh[" << g->out <<"].tag =  " << q_sh_[g->out].tagAt() <<std::endl;
-                    std::cout<< "q_sh[" << g->out <<"].key =  " << q_sh_[g->out].keySh() <<std::endl;
                 }
                 else
                     if(id_ == 0) { 
@@ -153,7 +150,6 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                     }
                 if(id_ != 0) {
                     network_->recv(0, &q_val_[g->out], sizeof(Field));
-                    std::cout<< "q_val[" << g->out << "] =  "<< q_val_[g->out] <<std::endl; 
                     wires_[g->out] = q_val_[g->out] - r_sum;
                 }
                 break;
@@ -185,7 +181,9 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                         q_share -= (m_in1 * wires_[win2] + m_in2* wires_[win1]);
                         q_share.add((wires_[win1] * wires_[win2]), id_);                  
                     }
-                    q_share.addWithAdder(r_dotp[id_-1], id_, id_);
+                    for (int i = 1; i <= nP_; i++)  {
+                        q_share.addWithAdder(r_dotp[id_-1], id_, i);
+                    }
                     network_->send(0, &q_share.valueAt(), sizeof(Field));
                     q_sh_[g->out] = q_share;
                 }
@@ -242,7 +240,11 @@ bool OnlineEvaluator::MACVerification() {
                         auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
                         prg.random_data(&rho[g->out], sizeof(Field));
                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
-                        std::cout<< omega << std::endl;
+                    }
+                    case quadsquad::utils::GateType::kDotprod: {
+                        auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
+                        prg.random_data(&rho[g->out], sizeof(Field));
+                        omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
                     }
                 }
             }

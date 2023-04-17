@@ -84,9 +84,6 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
 
 
 
-
-
-
 BOOST_AUTO_TEST_CASE(dotp_gate) {
   auto seed = emp::makeBlock(100, 200);
   int nf = 10;
@@ -134,14 +131,18 @@ BOOST_AUTO_TEST_CASE(dotp_gate) {
       return online_eval.evaluateCircuit(input_map);
     }));
   }
-
-  /*for (auto& p : parties) {
-    auto output = p.get();
-    BOOST_TEST(output == exp_output);
-  }*/
+  int i = 0;
+  for (auto& p : parties) {
+    if(i > 0) {
+      auto output = p.get();
+      BOOST_TEST(output == exp_output);
+    }
+    i++;
+  }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
 /*
 BOOST_DATA_TEST_CASE(no_op_circuit,
                      bdata::random(0, TEST_DATA_MAX_VAL) ^ bdata::xrange(1),
