@@ -20,13 +20,28 @@ OfflineEvaluator::OfflineEvaluator(int nP, int my_id,
       rgen_(my_id, seed),
       network_(std::move(network)),
       circ_(std::move(circ)),
-      //preproc_(circ.num_gates, circ.outputs.size())
       preproc_(circ.num_gates)
       {tpool_ = std::make_shared<ThreadPool>(threads);}
 
+void OfflineEvaluator::keyGen(int nP, int pid, RandGenPool& rgen, 
+                      std::vector<Field>& keySh, Field& key)  {
+  
+  if(pid == 0) {
+    key = 0;
+    keySh[0] = 0;
+    for(int i = 1; i <= nP; i++) {
+        rgen.pi(i).random_data(&keySh[i], sizeof(Field));
+        key += keySh[i];
+    }
+  }
+  else {
+    rgen.p0().random_data(&key, sizeof(Field));
+  }
+}
+
 void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
-                                    AuthAddShare<Field>& share, 
-                                    TPShare<Field>& tpShare) {
+                                    AuthAddShare<Field>& share, TPShare<Field>& tpShare,
+                                    Field key, std::vector<Field> keySh) {
   // for all pid = 1 to nP sample common random value
   // pid = 0 stores values in TPShare.values
   // pid = 0 computes secret = secret()
@@ -39,16 +54,20 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
   Field tag = 0;
   Field tagn = 0;
   
-  
     if(pid == 0) {
       share.pushValue(0);
       share.pushTag(0);
+      share.setKey(keySh[0]);
       tpShare.pushValues(0);
       tpShare.pushTags(0);
+      tpShare.setKeySh(keySh[0]);
+      tpShare.setKey(key);
+      
       for(int i = 1; i <= nP; i++) {
+
         rgen.pi(i).random_data(&val, sizeof(Field));
         tpShare.pushValues(val);
-  
+        tpShare.setKeySh(keySh[i]);
         rgen.pi(i).random_data(&tag, sizeof(Field));
         if( i != nP) {
           tpShare.pushTags(tag);
@@ -56,11 +75,15 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
           
         }
       }
-      tagn = tpShare.macKey() * tpShare.secret() - tagn;
+      Field secret = tpShare.secret();
+      
+      tag = key * secret;
+      tagn = tag - tagn;
       tpShare.pushTags(tagn);
       network.send(nP, &tagn, sizeof(tagn));
     }
     else if(pid > 0) {
+      share.setKey(key);
       rgen.p0().random_data(&val, sizeof(Field));
       share.pushValue(val);
       
@@ -78,8 +101,8 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
 }
 
 void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
-                                   AuthAddShare<Field>& share, 
-                                   TPShare<Field>& tpShare, Field secret) {
+                                  AuthAddShare<Field>& share, TPShare<Field>& tpShare,
+                                  Field secret, Field key, std::vector<Field> keySh) {
   Field val = 0;
   Field tag = 0;
   Field tagn = 0;
@@ -88,8 +111,11 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io:
     if(pid == 0) {
       share.pushValue(0);
       share.pushTag(0);
+      share.setKey(keySh[0]);
       tpShare.pushValues(0);
       tpShare.pushTags(0);
+      tpShare.setKeySh(keySh[0]);
+      tpShare.setKey(key);
       for(int i = 1; i < nP; i++) {
         rgen.pi(i).random_data(&val, sizeof(Field));
         tpShare.pushValues(val);
@@ -97,15 +123,17 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io:
         rgen.pi(i).random_data(&tag, sizeof(Field));
         tpShare.pushTags(tag);
         tagn += tag;
+        tpShare.setKeySh(keySh[i]);
       }
       valn = secret - valn;
-      tagn = tpShare.macKey() * secret - tagn;
+      tagn = key * secret - tagn;
       tpShare.pushValues(valn);
       tpShare.pushTags(tagn);
       network.send(nP, &valn, sizeof(valn));
       network.send(nP, &tagn, sizeof(tagn));
     }
     else if(pid > 0) {
+      share.setKey(key);
       if( pid != nP) {
         rgen.p0().random_data(&val, sizeof(Field));
         share.pushValue(val);
@@ -122,16 +150,16 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io:
 }
 
 void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGenPool& rgen,
-                                            io::NetIOMP& network,
-                                            AuthAddShare<Field>& share,
-                                            TPShare<Field>& tpShare, 
-                                            Field& secret) {
+                                            io::NetIOMP& network, AuthAddShare<Field>& share,
+                                            TPShare<Field>& tpShare, Field& secret, Field key,
+                                            std::vector<Field> keySh) {
+                                             
+                                            
   Field tagF = 0;
   Field val = 0;
   Field tag = 0;
   Field valn = 0;
   Field tagn = 0;
-  
   if( pid == 0) {
     if(dealer != 0) {
       rgen.pi(dealer).random_data(&secret, sizeof(Field));
@@ -142,10 +170,15 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
     
     share.pushValue(0);
     share.pushTag(0);
+    share.setKey(keySh[0]);
     tpShare.pushValues(0);
     tpShare.pushTags(0);
-    tagF = tpShare.macKey() * secret;
+    tpShare.setKeySh(keySh[0]);
+    tpShare.setKey(key);
+    
+    tagF = key * secret;
     for(int i = 1; i < nP; i++) {
+      tpShare.setKeySh(keySh[i]);
       rgen.pi(i).random_data(&val, sizeof(Field));
       
       tpShare.pushValues(val);
@@ -155,6 +188,7 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
       valn += val;
       tagn += tag;
     }
+    tpShare.setKeySh(keySh[nP]);
     valn = secret - valn;
     tagn = tagF - tagn;
     network.send(nP, &valn, sizeof(Field));
@@ -163,9 +197,9 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
     tpShare.pushTags(tagn);
   }
   else if ( pid > 0) {
+    share.setKey(key);
     if(pid == dealer) {
       rgen.p0().random_data(&secret, sizeof(Field));
-      
     }
     if(pid != nP) {
       rgen.p0().random_data(&val, sizeof(Field));
@@ -185,7 +219,22 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
 
 void OfflineEvaluator::setWireMasks(
     const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map) {
-      
+      std::vector<Field> keySh(nP_ + 1);
+      Field key = 0;
+      if(id_ == 0)  {
+        key = 0;
+        keySh[0] = 0;
+        for(int i = 1; i <= nP_; i++) {
+            rgen_.pi(i).random_data(&keySh[i], sizeof(Field));
+            key += keySh[i];
+        }
+        key_sh_ = key;
+      }
+      else {
+        rgen_.p0().random_data(&key, sizeof(Field));
+        key_sh_ = key;
+      }
+
   for (const auto& level : circ_.gates_by_level) {
     for (const auto& gate : level) {
       switch (gate->type) {
@@ -195,7 +244,7 @@ void OfflineEvaluator::setWireMasks(
           auto pid = input_pid_map.at(gate->out);
           pregate->pid = pid;
           randomShareWithParty(nP_, id_, pid, rgen_, *network_, pregate->mask, 
-                                 pregate->tpmask, pregate->mask_value);
+                                 pregate->tpmask, pregate->mask_value, key, keySh);
 
           preproc_.gates[gate->out] = std::move(pregate);
           
@@ -239,12 +288,12 @@ void OfflineEvaluator::setWireMasks(
           if(id_ == 0) {tp_prod = tpmask_in1.secret() * tpmask_in2.secret();}
           TPShare<Field> tprand_mask;
           AuthAddShare<Field> rand_mask;
-          randomShare(nP_, id_, rgen_, *network_, rand_mask, tprand_mask);
+          randomShare(nP_, id_, rgen_, *network_, rand_mask, tprand_mask, key, keySh);
                     
           TPShare<Field> tpmask_product;
           AuthAddShare<Field> mask_product; 
           randomShareSecret(nP_, id_, rgen_, *network_, 
-                                mask_product, tpmask_product, tp_prod);
+                                mask_product, tpmask_product, tp_prod, key, keySh);
           preproc_.gates[gate->out] = std::move(std::make_unique<PreprocMultGate<Field>>
                               (rand_mask, tprand_mask, mask_product, tpmask_product));
           
@@ -263,12 +312,12 @@ void OfflineEvaluator::setWireMasks(
           }
           TPShare<Field> tprand_mask;
           AuthAddShare<Field> rand_mask;
-          randomShare(nP_, id_, rgen_, *network_, rand_mask, tprand_mask);
+          randomShare(nP_, id_, rgen_, *network_, rand_mask, tprand_mask, key, keySh);
 
           TPShare<Field> tpmask_product;
           AuthAddShare<Field> mask_product; 
           randomShareSecret(nP_, id_, rgen_, *network_, 
-                                mask_product, tpmask_product, mask_prod);
+                                mask_product, tpmask_product, mask_prod, key, keySh);
                                 
           preproc_.gates[gate->out] = std::move(std::make_unique<PreprocDotpGate<Field>>
                               (rand_mask, tprand_mask, mask_product, tpmask_product));
@@ -289,11 +338,10 @@ void OfflineEvaluator::getOutputMasks(int pid, std::vector<Field>& output_mask) 
   if(circ_.outputs.empty()) {
     return;
   }
-  //preproc_.output.resize(circ_.outputs.size());
+  
   
   if(pid == 0){
     for(size_t i = 0; i < circ_.outputs.size(); i++) {
-      //auto& preout = preproc_.output[i];
       output_mask.push_back(preproc_.gates[circ_.outputs[i]]->tpmask.secret());
     }
     
@@ -313,16 +361,7 @@ PreprocCircuit<Field> OfflineEvaluator::getPreproc() {
 PreprocCircuit<Field> OfflineEvaluator::run(
     const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map) {
   setWireMasks(input_pid_map);
-/*
-  std::vector<Field> output_mask;
-  if(id_ == 0)  {
-  getOutputMasks(id_, output_mask);
-  }
-  for(size_t i = 0; i < circ_.outputs.size(); i++) {
-    std::cout<<i<<": "<< output_mask[i] <<std::endl;
-  }
-  preproc_.output = output_mask;
-*/
+
   return std::move(preproc_);
   
 }

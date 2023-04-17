@@ -25,26 +25,26 @@ class AuthAddShare {
 
   R& valueAt() { return value_; }
   R& tagAt() { return tag_; }
+  R& keySh() { return key_sh_; }
 
   void pushValue(R val) { value_ = val; } 
   void pushTag(R tag) {tag_ = tag; }
+  void setKey(R key) {key_sh_ = key; }
   
   R valueAt() const { return value_; }
   R tagAt() const { return tag_; }
-  
+  R keySh() const { return key_sh_; }
   //Check this part
   //void randomize(emp::PRG& prg) {
   //  prg.random_data(values_.data(), sizeof(R) * 3); // This step is not clear 
   //}
 
-  
-//What is the function?
-  //[[nodiscard]] R sum() const { return values_[0] + values_[1] + values_[2]; }
 
   // Arithmetic operators.
   AuthAddShare<R>& operator+=(const AuthAddShare<R>& rhs) {
     value_ += rhs.value_;
     tag_ += rhs.tag_;
+    key_sh_ = rhs.key_sh_;
     return *this;
   }
 
@@ -132,6 +132,10 @@ class TPShare {
     return tags_.at(pid);
   }
 
+  R& commonKeyWithParty(int pid) {
+    return key_sh_.at(pid);
+  }
+
   [[nodiscard]] R commonValueWithParty(int pid) const {
     return values_.at(pid);
   }
@@ -140,9 +144,14 @@ class TPShare {
     return tags_.at(pid);
   }
 
+  [[nodiscard]] R commonKeyWithParty(int pid) const {
+    return key_sh_.at(pid);
+  }
+
   void setKey( R key) {key_ = key;}
   void pushValues(R val) { values_.push_back(val); }
   void pushTags(R tag) {tags_.push_back(tag);}
+  void setKeySh( R keysh) {key_sh_.push_back(keysh); }
 
   [[nodiscard]] R secret() const { 
     R res=values_[0];
@@ -155,7 +164,13 @@ class TPShare {
     for (size_t i = 1; i < values_.size(); i++) {
       values_[i] += rhs.values_[i];
       tags_[i] += rhs.tags_[i];
+      if( this->key_sh_[i] != rhs.key_sh_[i]) {
+        std::cout <<" Inconsistent MAC key shares " << std::endl;
+      }
+      else
+        key_sh_[i] = rhs.key_sh_[i];
     }
+    key_ = rhs.key_;
     return *this;
   }
 

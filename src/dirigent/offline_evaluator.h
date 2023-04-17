@@ -21,6 +21,7 @@ class OfflineEvaluator {
   int nP_;  
   int id_;
   int security_param_;
+  Field key_sh_;
   RandGenPool rgen_;
   std::shared_ptr<io::NetIOMP> network_;
   quadsquad::utils::LevelOrderedCircuit circ_;
@@ -35,14 +36,18 @@ class OfflineEvaluator {
   //emp::block commonCoinKey();
 
  public:
-  int party_num() { return nP_; }
+  
   OfflineEvaluator(int nP, int my_id, std::shared_ptr<io::NetIOMP> network,
                    quadsquad::utils::LevelOrderedCircuit circ, int security_param,
                    int threads, int seed = 200);
+
+  static void keyGen(int nP, int pid, RandGenPool& rgen, 
+                      std::vector<Field>& keySh, Field& key);   
+
   // Generate sharing of a random unknown value.
   static void randomShare(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
-                                   AuthAddShare<Field>& share, 
-                                   TPShare<Field>& tpShare);
+                                  AuthAddShare<Field>& share, TPShare<Field>& tpShare,
+                                  Field key, std::vector<Field> keySh);
   // Generate sharing of a random value known to dealer (called by all parties
   // except the dealer).
   //static void randomShareWithParty(int pid, int dealer=0, RandGenPool& rgen,
@@ -51,15 +56,15 @@ class OfflineEvaluator {
   // Generate sharing of a random value known to party. Should be called by
   // dealer when other parties call other variant.
   static void randomShareSecret(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
-                                   AuthAddShare<Field>& share, 
-                                   TPShare<Field>& tpShare, Field secret);
-                                   
+                                   AuthAddShare<Field>& share, TPShare<Field>& tpShare, Field secret,
+                                   Field key, std::vector<Field> keySh);
+
 
   static void randomShareWithParty(int nP, int pid, int dealer, RandGenPool& rgen,
-                                           io::NetIOMP& network,
-                                           AuthAddShare<Field>& share,
-                                           TPShare<Field>& tpShare, 
-                                           Field& secret);
+                                           io::NetIOMP& network, AuthAddShare<Field>& share,
+                                           TPShare<Field>& tpShare, Field& secret,
+                                           Field key, std::vector<Field> keySh); 
+                                          
                                            
 
   // Following methods implement various preprocessing subprotocols.
