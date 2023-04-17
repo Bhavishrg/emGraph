@@ -22,7 +22,7 @@ class OnlineEvaluator {
     quadsquad::utils::LevelOrderedCircuit circ_;
     std::vector<Field> wires_;
     std::vector<Field> q_val_;
-    std::vector<AuthAddShare<Field>> q_sh;
+    std::vector<AuthAddShare<Field>> q_sh_;
     std::shared_ptr<ThreadPool> tpool_;
 
     // write reconstruction function
@@ -43,8 +43,6 @@ class OnlineEvaluator {
         void setRandomInputs();
 
         void evaluateGatesAtDepth(size_t depth);
-
-        emp::block commonCoinKey();
 
         bool MACVerification();
 

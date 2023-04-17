@@ -14,14 +14,18 @@ namespace bdata = boost::unit_test::data;
 
 constexpr int TEST_DATA_MAX_VAL = 1000;
 constexpr int NUM_SAMPLES = 1;
-
+std::random_device rd;
+std::mt19937 engine(rd());
+std::uniform_int_distribution<dirigent::Field> distrib;
+// dirigent::Field MAC_key = distrib(engine);
+dirigent::Field MAC_key = 5;
 // Utility function to generate replicated secret sharing of 3 parties.
 std::vector<AuthAddShare<dirigent::Field>> generateAuthAddShares(dirigent::Field secret, size_t nP) {
   std::random_device rd;
   std::mt19937 engine(rd());
   std::uniform_int_distribution<dirigent::Field> distrib;
   
-  dirigent::Field MAC_key = distrib(engine);
+  
   dirigent::Field tag = secret * MAC_key;
 
   std::vector<dirigent::Field> key_shares(nP);
@@ -58,10 +62,18 @@ std::vector<AuthAddShare<dirigent::Field>> generateAuthAddShares(dirigent::Field
 dirigent::Field reconstructAuthAddShares(
     const std::vector<AuthAddShare<dirigent::Field>>& v_aas, size_t nP) {
   dirigent::Field secret = 0;
+  dirigent::Field tag = 0;
+  dirigent::Field key = 0;
       for(size_t i = 1; i <= nP; i++) {
         secret += v_aas[i-1].valueAt();
+        tag += v_aas[i-1].tagAt();
+        key += v_aas[i-1].keySh();
       }
-  return secret;
+      if(secret * key == tag) { return secret; }
+      else {
+        std::cout<< "Incorrect sharing !!!" << std::endl;
+        return 0;
+      }
   }
 
 BOOST_AUTO_TEST_SUITE(authenticated_additive_sharing)
@@ -120,8 +132,35 @@ BOOST_DATA_TEST_CASE(share_const_arithmetic,
                          bdata::xrange(NUM_SAMPLES),
                      secret_val, const_val, idx) {
   size_t nP = 6;
-  dirigent::Field secret = secret_val;
-  dirigent::Field constant = const_val;
+  // dirigent::Field secret = secret_val;
+  // dirigent::Field constant = const_val;
+  dirigent::Field secret = 100;
+  dirigent::Field constant = 200;
+  auto v_aas = generateAuthAddShares(secret, nP);
+
+  std::vector<AuthAddShare<dirigent::Field>> v_aas_res(nP);
+  for (size_t i = 0; i < nP; ++i) {
+    // This implicitly checks compound assignment operators too.
+    v_aas_res[i] = v_aas[i].add(constant, i);
+  }
+
+  auto sum = reconstructAuthAddShares(v_aas_res, nP);
+  //std::cout << product <<"\t" << secret * constant <<"\n";
+  BOOST_TEST(sum == secret + constant);
+
+}
+
+
+BOOST_DATA_TEST_CASE(const_addition,
+                     bdata::random(0, TEST_DATA_MAX_VAL) ^
+                         bdata::random(0, TEST_DATA_MAX_VAL) ^
+                         bdata::xrange(NUM_SAMPLES),
+                     secret_val, const_val, idx) {
+  size_t nP = 6;
+  // dirigent::Field secret = secret_val;
+  // dirigent::Field constant = const_val;
+  dirigent::Field secret = 100;
+  dirigent::Field constant = 200;
   auto v_aas = generateAuthAddShares(secret, nP);
 
   std::vector<AuthAddShare<dirigent::Field>> v_aas_res(nP);
@@ -135,8 +174,7 @@ BOOST_DATA_TEST_CASE(share_const_arithmetic,
   BOOST_TEST(product == secret * constant);
   
   
-  }
-
+}
 
 
 BOOST_AUTO_TEST_SUITE_END()
