@@ -21,6 +21,7 @@ OfflineEvaluator::OfflineEvaluator(int nP, int my_id,
       network_(std::move(network)),
       circ_(std::move(circ)),
       preproc_(circ.num_gates)
+
       {tpool_ = std::make_shared<ThreadPool>(threads);}
 
 void OfflineEvaluator::keyGen(int nP, int pid, RandGenPool& rgen, 
@@ -298,6 +299,172 @@ void OfflineEvaluator::setWireMasks(
                               (rand_mask, tprand_mask, mask_product, tpmask_product));
           
           break;
+        }
+
+        case quadsquad::utils::GateType::kMul3: {
+          preproc_.gates[gate->out] = std::make_unique<PreprocMult3Gate<Field>>();
+          const auto* g = static_cast<quadsquad::utils::FIn3Gate*>(gate.get());
+          
+          const auto& mask_in1 = preproc_.gates[g->in1]->mask;
+          const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
+
+          const auto& mask_in2 = preproc_.gates[g->in2]->mask;
+          const auto& tpmask_in2 = preproc_.gates[g->in2]->tpmask;
+
+          const auto& mask_in3 = preproc_.gates[g->in3]->mask;
+          const auto& tpmask_in3 = preproc_.gates[g->in3]->tpmask;
+
+          Field tp_ab, tp_ac, tp_bc, tp_abc;
+          
+          if(id_ == 0) {
+            tp_ab = tpmask_in1.secret() * tpmask_in2.secret();
+            tp_ac = tpmask_in1.secret() * tpmask_in3.secret();
+            tp_bc = tpmask_in2.secret() * tpmask_in3.secret();
+          
+            tp_abc = tpmask_in1.secret() * tpmask_in2.secret() * tpmask_in3.secret();
+          }
+
+          TPShare<Field> tprand_mask;
+          AuthAddShare<Field> rand_mask;
+          randomShare(nP_, id_, rgen_, *network_, 
+                                  rand_mask, tprand_mask, key, keySh);
+
+          TPShare<Field> tpmask_ab;
+          AuthAddShare<Field> mask_ab; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_ab, tpmask_ab, tp_ab, key, keySh);
+
+          TPShare<Field> tpmask_ac;
+          AuthAddShare<Field> mask_ac; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_ac, tpmask_ac, tp_ac, key, keySh);
+          
+          TPShare<Field> tpmask_bc;
+          AuthAddShare<Field> mask_bc; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_bc, tpmask_bc, tp_bc, key, keySh);
+                    
+          TPShare<Field> tpmask_abc;
+          AuthAddShare<Field> mask_abc; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_abc, tpmask_abc, tp_abc, key, keySh);
+
+          preproc_.gates[gate->out] = std::move(std::make_unique<PreprocMult3Gate<Field>>
+                              (rand_mask, tprand_mask, 
+                              mask_ab, tpmask_ab, 
+                              mask_ac, tpmask_ac,
+                              mask_bc, tpmask_bc, 
+                              mask_abc, tpmask_abc));
+          break;
+        }
+
+        case quadsquad::utils::GateType::kMul4: {
+          preproc_.gates[gate->out] = std::make_unique<PreprocMult4Gate<Field>>();
+          const auto* g = static_cast<quadsquad::utils::FIn4Gate*>(gate.get());
+
+          const auto& mask_in1 = preproc_.gates[g->in1]->mask;
+          const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
+
+          const auto& mask_in2 = preproc_.gates[g->in2]->mask;
+          const auto& tpmask_in2 = preproc_.gates[g->in2]->tpmask;
+
+          const auto& mask_in3 = preproc_.gates[g->in3]->mask;
+          const auto& tpmask_in3 = preproc_.gates[g->in3]->tpmask;
+
+          const auto& mask_in4 = preproc_.gates[g->in4]->mask;
+          const auto& tpmask_in4 = preproc_.gates[g->in4]->tpmask;
+
+          Field tp_ab, tp_ac, tp_ad, tp_bc, tp_bd, tp_cd, tp_abc, tp_abd, tp_acd, tp_bcd, tp_abcd;
+          if(id_ == 0) {
+            tp_ab = tpmask_in1.secret() * tpmask_in2.secret();
+            tp_ac = tpmask_in1.secret() * tpmask_in3.secret();
+            tp_ad = tpmask_in1.secret() * tpmask_in4.secret();
+            tp_bc = tpmask_in2.secret() * tpmask_in3.secret();
+            tp_bd = tpmask_in2.secret() * tpmask_in4.secret();
+            tp_cd = tpmask_in3.secret() * tpmask_in4.secret();
+            tp_abc = tpmask_in1.secret() * tpmask_in2.secret() * tpmask_in3.secret();
+            tp_abd = tpmask_in1.secret() * tpmask_in2.secret() * tpmask_in4.secret();
+            tp_acd = tpmask_in1.secret() * tpmask_in3.secret() * tpmask_in4.secret();
+            tp_bcd = tpmask_in2.secret() * tpmask_in3.secret() * tpmask_in4.secret();
+            tp_abcd = tpmask_in1.secret() * tpmask_in2.secret() 
+                        * tpmask_in3.secret() * tpmask_in4.secret();
+          }
+
+          TPShare<Field> tprand_mask;
+          AuthAddShare<Field> rand_mask;
+          randomShare(nP_, id_, rgen_, *network_, rand_mask, tprand_mask, key, keySh);
+
+          TPShare<Field> tpmask_ab;
+          AuthAddShare<Field> mask_ab; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_ab, tpmask_ab, tp_ab, key, keySh);
+
+          
+          TPShare<Field> tpmask_ac;
+          AuthAddShare<Field> mask_ac; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_ac, tpmask_ac, tp_ac, key, keySh);
+
+          TPShare<Field> tpmask_ad;
+          AuthAddShare<Field> mask_ad; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_ad, tpmask_ad, tp_ad, key, keySh);
+
+          TPShare<Field> tpmask_bc;
+          AuthAddShare<Field> mask_bc; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_bc, tpmask_bc, tp_bc, key, keySh);
+
+          TPShare<Field> tpmask_bd;
+          AuthAddShare<Field> mask_bd; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_bd, tpmask_bd, tp_bd, key, keySh);
+        
+        
+          TPShare<Field> tpmask_cd;
+          AuthAddShare<Field> mask_cd; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_cd, tpmask_cd, tp_cd, key, keySh);
+
+          TPShare<Field> tpmask_abc;
+          AuthAddShare<Field> mask_abc; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_abc, tpmask_abc, tp_abc, key, keySh);
+          
+          TPShare<Field> tpmask_abd;
+          AuthAddShare<Field> mask_abd; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_abd, tpmask_abd, tp_abd, key, keySh);
+        
+          TPShare<Field> tpmask_acd;
+          AuthAddShare<Field> mask_acd; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_acd, tpmask_acd, tp_acd, key, keySh);
+
+          TPShare<Field> tpmask_bcd;
+          AuthAddShare<Field> mask_bcd; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_bcd, tpmask_bcd, tp_bcd, key, keySh);
+
+          TPShare<Field> tpmask_abcd;
+          AuthAddShare<Field> mask_abcd; 
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_abcd, tpmask_abcd, tp_abcd, key, keySh);    
+
+          preproc_.gates[gate->out] = std::move(std::make_unique<PreprocMult4Gate<Field>>
+                              (rand_mask, tprand_mask, 
+                              mask_ab, tpmask_ab,
+                              mask_ac, tpmask_ac, 
+                              mask_ad, tpmask_ad, 
+                              mask_bc, tpmask_bc,
+                              mask_bd, tpmask_bd,
+                              mask_cd, tpmask_cd,
+                              mask_abc, tpmask_abc,
+                              mask_abd, tpmask_abd,
+                              mask_acd, tpmask_acd,
+                              mask_bcd, tpmask_bcd,
+                              mask_abcd, tpmask_abcd));
+          break;    
         }
 
         case quadsquad::utils::GateType::kDotprod: {

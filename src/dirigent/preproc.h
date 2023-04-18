@@ -49,6 +49,97 @@ struct PreprocMultGate : public PreprocGate<R> {
 };
 
 template <class R>
+struct PreprocMult3Gate : public PreprocGate<R> {
+  // Secret shared product of inputs masks.
+  AuthAddShare<R> mask_ab{};
+  TPShare<R> tpmask_ab{};
+
+  AuthAddShare<R> mask_ac{};
+  TPShare<R> tpmask_ac{};
+
+  AuthAddShare<R> mask_bc{};
+  TPShare<R> tpmask_bc{};
+
+  AuthAddShare<R> mask_abc{};
+  TPShare<R> tpmask_abc{};
+
+  PreprocMult3Gate() = default;
+  PreprocMult3Gate(const AuthAddShare<R>& mask, const TPShare<R>& tpmask,
+                  const AuthAddShare<R>& mask_ab, const TPShare<R>& tpmask_ab,
+                  const AuthAddShare<R>& mask_ac, const TPShare<R>& tpmask_ac,
+                  const AuthAddShare<R>& mask_bc, const TPShare<R>& tpmask_bc,
+                  const AuthAddShare<R>& mask_abc, const TPShare<R>& tpmask_abc)
+      : PreprocGate<R>(mask, tpmask), mask_ab(mask_ab), tpmask_ab(tpmask_ab),
+                                      mask_ac(mask_ac), tpmask_ac(tpmask_ac),
+                                      mask_bc(mask_bc), tpmask_bc(tpmask_bc),
+                                      mask_abc(mask_abc), tpmask_abc(tpmask_abc){}
+};
+
+
+template <class R>
+struct PreprocMult4Gate : public PreprocGate<R> {
+  // Secret shared product of inputs masks.
+  AuthAddShare<R> mask_abcd{};
+  TPShare<R> tpmask_abcd{};
+
+  AuthAddShare<R> mask_abc{};
+  TPShare<R> tpmask_abc{};
+
+  AuthAddShare<R> mask_abd{};
+  TPShare<R> tpmask_abd{};
+
+  AuthAddShare<R> mask_acd{};
+  TPShare<R> tpmask_acd{};
+
+  AuthAddShare<R> mask_bcd{};
+  TPShare<R> tpmask_bcd{};
+
+  AuthAddShare<R> mask_ab{};
+  TPShare<R> tpmask_ab{};
+
+  AuthAddShare<R> mask_ac{};
+  TPShare<R> tpmask_ac{};
+
+  AuthAddShare<R> mask_ad{};
+  TPShare<R> tpmask_ad{};
+
+  AuthAddShare<R> mask_bc{};
+  TPShare<R> tpmask_bc{};
+
+  AuthAddShare<R> mask_bd{};
+  TPShare<R> tpmask_bd{};
+
+  AuthAddShare<R> mask_cd{};
+  TPShare<R> tpmask_cd{};
+
+
+  PreprocMult4Gate() = default;
+  PreprocMult4Gate(const AuthAddShare<R>& mask, const TPShare<R>& tpmask,
+                  const AuthAddShare<R>& mask_ab, const TPShare<R>& tpmask_ab,
+                  const AuthAddShare<R>& mask_ac, const TPShare<R>& tpmask_ac,
+                  const AuthAddShare<R>& mask_ad, const TPShare<R>& tpmask_ad,
+                  const AuthAddShare<R>& mask_bc, const TPShare<R>& tpmask_bc,
+                  const AuthAddShare<R>& mask_bd, const TPShare<R>& tpmask_bd,
+                  const AuthAddShare<R>& mask_cd, const TPShare<R>& tpmask_cd,
+                  const AuthAddShare<R>& mask_abc, const TPShare<R>& tpmask_abc,
+                  const AuthAddShare<R>& mask_abd, const TPShare<R>& tpmask_abd,
+                  const AuthAddShare<R>& mask_acd, const TPShare<R>& tpmask_acd,
+                  const AuthAddShare<R>& mask_bcd, const TPShare<R>& tpmask_bcd,
+                  const AuthAddShare<R>& mask_abcd, const TPShare<R>& tpmask_abcd)
+      : PreprocGate<R>(mask, tpmask), mask_ab(mask_ab), tpmask_ab(tpmask_ab),
+                                      mask_ac(mask_ac), tpmask_ac(tpmask_ac),
+                                      mask_ad(mask_ad), tpmask_ad(tpmask_ad),
+                                      mask_bc(mask_bc), tpmask_bc(tpmask_bc),
+                                      mask_bd(mask_bd), tpmask_bd(tpmask_bd),
+                                      mask_cd(mask_cd), tpmask_cd(tpmask_cd), 
+                                      mask_abc(mask_abc), tpmask_abc(tpmask_abc),
+                                      mask_abd(mask_abd), tpmask_abd(tpmask_abd),
+                                      mask_acd(mask_acd), tpmask_acd(tpmask_acd),
+                                      mask_bcd(mask_bcd), tpmask_bcd(tpmask_bcd),
+                                      mask_abcd(mask_abcd), tpmask_abcd(tpmask_abcd) {}
+};
+
+template <class R>
 struct PreprocDotpGate : public PreprocGate<R> {
   AuthAddShare<R> mask_prod{};
   TPShare<R> tpmask_prod{};

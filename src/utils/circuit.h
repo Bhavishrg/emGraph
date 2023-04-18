@@ -23,6 +23,8 @@ enum GateType {
   kInp,
   kAdd,
   kMul,
+  kMul3,
+  kMul4,
   kSub,
   kConstAdd,
   kConstMul,
@@ -31,6 +33,7 @@ enum GateType {
   kDotprod,
   kTrdotp,
   kInvalid,
+  kMulK,
   NumGates
 };
 
@@ -55,6 +58,26 @@ struct FIn2Gate : public Gate {
 
   FIn2Gate() = default;
   FIn2Gate(GateType type, wire_t in1, wire_t in2, wire_t out);
+};
+
+struct FIn3Gate : public Gate {
+  wire_t in1{0};
+  wire_t in2{0};
+  wire_t in3{0};
+
+  FIn3Gate() = default;
+  FIn3Gate(GateType type, wire_t in1, wire_t in2, wire_t in3, wire_t out);
+};
+
+struct FIn4Gate : public Gate {
+  wire_t in1{0};
+  wire_t in2{0};
+  wire_t in3{0};
+  wire_t in4{0};
+
+  FIn4Gate() = default;
+  FIn4Gate(GateType type, wire_t in1, wire_t in2, 
+            wire_t in3, wire_t in4, wire_t out);
 };
 
 // Represents a gate with fan-in 1.
@@ -148,6 +171,41 @@ class Circuit {
     return output;
   }
 
+  // Function to add a gate with fan-in 3.
+  wire_t addGate(GateType type, wire_t input1, wire_t input2, wire_t input3) {
+    if (type != GateType::kMul3) {
+      throw std::invalid_argument("Invalid gate type.");
+    }
+
+    if (!isWireValid(input1) || !isWireValid(input2) || !isWireValid(input3)) {
+      throw std::invalid_argument("Invalid wire ID.");
+    }
+
+    wire_t output = gates_.size();
+    gates_.push_back(std::make_shared<FIn3Gate>(type, input1, input2, input3, output));
+
+    return output;
+  }
+
+  // Function to add a gate with fan-in 4.
+  wire_t addGate(GateType type, wire_t input1, wire_t input2, 
+                                wire_t input3, wire_t input4) {
+    if (type != GateType::kMul4) {
+      throw std::invalid_argument("Invalid gate type.");
+    }
+
+    if (!isWireValid(input1) || !isWireValid(input2) 
+        || !isWireValid(input3) || !isWireValid(input4)) {
+      throw std::invalid_argument("Invalid wire ID.");
+    }
+
+    wire_t output = gates_.size();
+    gates_.push_back(std::make_shared<FIn4Gate>(type, input1, input2, 
+                                          input3, input4, output));
+
+    return output;
+  }
+
   // Function to add a gate with one input from a wire and a second constant
   // input.
   wire_t addConstOpGate(GateType type, wire_t wid, R cval) {
@@ -231,6 +289,22 @@ class Circuit {
               std::max(gate_level[g->in1], gate_level[g->in2]) + 1;
           break;
         }
+        case GateType::kMul3: {
+          const auto* g = static_cast<FIn3Gate*>(gate.get());
+          size_t gate_depth = std::max(gate_level[g->in1], gate_level[g->in2]);
+          gate_depth = std::max(gate_depth, gate_level[g->in3]);
+          gate_level[g->out] = gate_depth + 1;
+          break;
+        }
+
+        case GateType::kMul4: {
+          const auto* g = static_cast<FIn4Gate*>(gate.get());
+          size_t gate_depth = std::max(gate_level[g->in1], gate_level[g->in2]);
+          gate_depth = std::max(gate_depth, gate_level[g->in3]);
+          gate_depth = std::max(gate_depth, gate_level[g->in4]);
+          gate_level[g->out] = gate_depth + 1;
+          break;
+        }
 
         case GateType::kConstAdd:
         case GateType::kConstMul: {
@@ -307,6 +381,19 @@ class Circuit {
           case GateType::kMul: {
             auto* g = static_cast<FIn2Gate*>(gate.get());
             wires[g->out] = wires[g->in1] * wires[g->in2];
+            break;
+          }
+
+          case GateType::kMul3: {
+            auto* g = static_cast<FIn3Gate*>(gate.get());
+            wires[g->out] = wires[g->in1] * wires[g->in2] * wires[g->in3];
+            break;
+          }
+
+          case GateType::kMul4: {
+            auto* g = static_cast<FIn4Gate*>(gate.get());
+            wires[g->out] = wires[g->in1] * wires[g->in2] 
+                              * wires[g->in3] * wires[g->in4];
             break;
           }
 

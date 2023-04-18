@@ -9,6 +9,12 @@ Gate::Gate(GateType type, wire_t out) : type(type), out(out) {}
 FIn2Gate::FIn2Gate(GateType type, wire_t in1, wire_t in2, wire_t out)
     : Gate(type, out), in1{in1}, in2{in2} {}
 
+FIn3Gate::FIn3Gate(GateType type, wire_t in1, wire_t in2, wire_t in3, wire_t out)
+    : Gate(type, out), in1{in1}, in2{in2}, in3{in3} {}
+
+FIn4Gate::FIn4Gate(GateType type, wire_t in1, wire_t in2, wire_t in3, wire_t in4, wire_t out)
+    : Gate(type, out), in1{in1}, in2{in2}, in3{in3}, in4{in4} {}
+
 FIn1Gate::FIn1Gate(GateType type, wire_t in, wire_t out)
     : Gate(type, out), in{in} {}
 
@@ -28,6 +34,14 @@ std::ostream& operator<<(std::ostream& os, GateType type) {
 
     case kMul:
       os << "Multiplication";
+      break;
+
+    case kMul3:
+      os << "Multiplication with Fan-in 3";
+      break;
+
+    case kMul4:
+      os << "Multiplication with Fan-in 4";
       break;
 
     case kSub:

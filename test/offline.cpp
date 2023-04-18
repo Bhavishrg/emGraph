@@ -497,6 +497,126 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   }
 }
 
+BOOST_AUTO_TEST_CASE(Mult3) {
+  int nP = 5;
+  quadsquad::utils::Circuit<Field> circ;
+  std::vector<quadsquad::utils::wire_t> input_wires;
+  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+  
+  for (size_t i = 0; i < 4; ++i) {
+    auto winp = circ.newInputWire();
+    input_wires.push_back(winp);
+    input_pid_map[winp] = 1;
+  }
+
+  auto w_aab =
+      circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
+  auto w_cmd =
+      circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
+      auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
+      auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
+      auto w_mul_th = circ.addGate(quadsquad::utils::GateType::kMul3, w_aab, w_cmd, w_mout);
+  circ.setAsOutput(w_mout);
+  circ.setAsOutput(w_aout);
+  circ.setAsOutput(w_mul_th);
+  auto level_circ = circ.orderGatesByLevel();
+
+  std::vector<std::future<PreprocCircuit<Field>>> parties;
+  parties.reserve(nP+1);
+  
+  for (int i = 0; i <= nP; ++i) {
+    parties.push_back(std::async(std::launch::async, [&, i, input_pid_map]() {
+      
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      RandGenPool vrgen(i, nP);
+      OfflineEvaluator eval(nP, i, std::move(network), 
+                            level_circ, SECURITY_PARAM, 1);
+      return eval.run(input_pid_map);
+    }));
+  }
+
+  std::vector<PreprocCircuit<Field>> v_preproc;
+  v_preproc.reserve(parties.size());
+  for (auto& f : parties) {
+    v_preproc.push_back(f.get());
+  }
+
+  BOOST_TEST(v_preproc[0].gates.size() == level_circ.num_gates);
+  const auto& preproc_0 = v_preproc[0];
+  
+  for (int i = 1; i <= nP; ++i) {
+    BOOST_TEST(v_preproc[i].gates.size() == level_circ.num_gates);
+    const auto& preproc_i = v_preproc[i];
+    for(int j = 0; j < 4; j++) {
+      auto tpmask = preproc_0.gates[j]->tpmask;
+      auto mask_i = preproc_i.gates[j]->mask;
+      BOOST_TEST(mask_i.valueAt() == tpmask.commonValueWithParty(i));
+      BOOST_TEST(mask_i.tagAt() == tpmask.commonTagWithParty(i));
+    }
+  }
+}
+
+
+
+
+BOOST_AUTO_TEST_CASE(Mult4) {
+  int nP = 5;
+  quadsquad::utils::Circuit<Field> circ;
+  std::vector<quadsquad::utils::wire_t> input_wires;
+  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+  
+  for (size_t i = 0; i < 4; ++i) {
+    auto winp = circ.newInputWire();
+    input_wires.push_back(winp);
+    input_pid_map[winp] = 1;
+  }
+  auto w_aab =
+      circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
+  auto w_cmd =
+      circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
+      auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
+      auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
+      auto w_mul_f = circ.addGate(quadsquad::utils::GateType::kMul4, w_aab, w_cmd, w_mout, w_aout);
+  circ.setAsOutput(w_mout);
+  circ.setAsOutput(w_aout);
+  circ.setAsOutput(w_mul_f);
+  auto level_circ = circ.orderGatesByLevel();
+  std::vector<std::future<PreprocCircuit<Field>>> parties;
+  parties.reserve(nP+1);
+  
+  for (int i = 0; i <= nP; ++i) {
+    parties.push_back(std::async(std::launch::async, [&, i, input_pid_map]() {
+      
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      RandGenPool vrgen(i, nP);
+      OfflineEvaluator eval(nP, i, std::move(network), 
+                            level_circ, SECURITY_PARAM, 1);
+      return eval.run(input_pid_map);
+    }));
+  }
+
+  std::vector<PreprocCircuit<Field>> v_preproc;
+  v_preproc.reserve(parties.size());
+  for (auto& f : parties) {
+    v_preproc.push_back(f.get());
+  }
+
+  BOOST_TEST(v_preproc[0].gates.size() == level_circ.num_gates);
+  const auto& preproc_0 = v_preproc[0];
+  
+  for (int i = 1; i <= nP; ++i) {
+    BOOST_TEST(v_preproc[i].gates.size() == level_circ.num_gates);
+    const auto& preproc_i = v_preproc[i];
+    for(int j = 0; j < 4; j++) {
+      auto tpmask = preproc_0.gates[j]->tpmask;
+      auto mask_i = preproc_i.gates[j]->mask;
+      BOOST_TEST(mask_i.valueAt() == tpmask.commonValueWithParty(i));
+      BOOST_TEST(mask_i.tagAt() == tpmask.commonTagWithParty(i));
+    }
+  }
+}
+
+
 
 BOOST_AUTO_TEST_CASE(dot_product) {
   auto seed = emp::makeBlock(100, 200);

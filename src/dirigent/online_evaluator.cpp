@@ -91,27 +91,40 @@ void OnlineEvaluator::setRandomInputs() {
 void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
     
     for (auto& gate : circ_.gates_by_level[depth]) {
+        std::vector<Field> comm;
         switch (gate->type) {
             case quadsquad::utils::GateType::kAdd: {
-            auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
-            if(id_!= 0) wires_[g->out] = wires_[g->in1] + wires_[g->in2];
-            q_val_[g->out] = 0;
-            break;
+                auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+                if(id_!= 0) wires_[g->out] = wires_[g->in1] + wires_[g->in2];
+                q_val_[g->out] = 0;
+                break;
             }
 
             case quadsquad::utils::GateType::kSub: {
-            auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
-            if(id_ != 0) wires_[g->out] = wires_[g->in1] - wires_[g->in2];
-            q_val_[g->out] = 0;
-            break;
+                auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+                if(id_ != 0) wires_[g->out] = wires_[g->in1] - wires_[g->in2];
+                q_val_[g->out] = 0;
+                break;
             }
+
+            case quadsquad::utils::GateType::kConstAdd: {
+                auto* g = static_cast<quadsquad::utils::ConstOpGate<Field>*>(gate.get());
+                wires_[g->out] = wires_[g->in] + g->cval;
+                break;
+            }
+
+            case quadsquad::utils::GateType::kConstMul: {
+                auto* g = static_cast<quadsquad::utils::ConstOpGate<Field>*>(gate.get());
+                wires_[g->out] = wires_[g->in] * g->cval;
+                break;
+            }
+
 
             case quadsquad::utils::GateType::kMul: {
                 // All parties excluding TP sample a common random value r_in
                 auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
                 Field r_sum = 0;
                 q_val_[g->out] = 0;
-                std::vector<Field> qi(nP_ + 1);
                 
                 if(id_ != 0) {
                     std::vector<Field> r_mul(nP_);
@@ -154,14 +167,156 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                 }
                 break;
             }
+
+            case quadsquad::utils::GateType::kMul3: {
+                // All parties excluding TP sample a common random value r_in
+                auto* g = static_cast<quadsquad::utils::FIn3Gate*>(gate.get());
+                Field r_sum = 0;
+                q_val_[g->out] = 0;
+
+                if(id_ != 0) {
+                    std::vector<Field> r_mul3(nP_);
+                    for( int i = 0; i < nP_; i++)   {
+                        rgen_.all_minus_0().random_data(&r_mul3[i], sizeof(Field));
+                        r_sum += r_mul3[i];
+                    }
+
+                    //Field masked_abc = wires_[g->in1] * wires_[g->in2] * wires_[g->in3];
+                    
+                    auto& del_a = preproc_.gates[g->in1]->mask;
+                    auto& del_b = preproc_.gates[g->in2]->mask;
+                    auto& del_c = preproc_.gates[g->in3]->mask;
+
+                    auto& m_a = wires_[g->in1];
+                    auto& m_b = wires_[g->in2];
+                    auto& m_c = wires_[g->in3];
+                    
+                    auto* pre_out = 
+                    static_cast<PreprocMult3Gate<Field>*>(preproc_.gates[g->out].get());
+                    
+                    auto q_share = pre_out->mask;
+                    
+                    q_share -= pre_out->mask_abc;
+
+                    q_share += (pre_out->mask_bc * m_a
+                             + pre_out->mask_ac * m_b
+                             + pre_out->mask_ab * m_c);
+                    
+                    q_share -= ( del_c * m_a * m_b
+                               + del_b * m_a * m_c
+                               + del_a * m_b * m_c); 
+                    
+                      
+                    q_share.add(m_a * m_b * m_c, id_);
+                    for (int i = 1; i <= nP_; i++)  {
+                        q_share.addWithAdder(r_mul3[id_-1], id_, i);
+                    }
+                    network_->send(0, &q_share.valueAt(), sizeof(Field));
+                    
+                    q_sh_[g->out] = q_share;
+                }
+                else
+                    if(id_ == 0) { 
+                        q_val_[g->out] = 0;
+                        for(int i = 1; i <= nP_; ++i) {
+                            
+                            Field q = 0;
+                            network_->recv(i, &q, sizeof(q));
+                            
+                            q_val_[g->out] += q;
+                        }
+                        for(int i = 1; i <= nP_; i++) {
+                            network_->send(i, &q_val_[g->out], sizeof(Field));
+                        }
+                        
+                    }
+                if(id_ != 0) {
+                    network_->recv(0, &q_val_[g->out], sizeof(Field));
+                    wires_[g->out] = q_val_[g->out] - r_sum;
+                }
+                break;
+            }
+
+            case quadsquad::utils::GateType::kMul4: {
+                // All parties excluding TP sample a common random value r_in
+                auto* g = static_cast<quadsquad::utils::FIn4Gate*>(gate.get());
+                Field r_sum = 0;
+                q_val_[g->out] = 0;
+                
+                if(id_ != 0) {
+                    std::vector<Field> r_mul4(nP_);
+                    for( int i = 0; i < nP_; i++)   {
+                        rgen_.all_minus_0().random_data(&r_mul4[i], sizeof(Field));
+                        r_sum += r_mul4[i];
+                    }
+                    auto& del_a = preproc_.gates[g->in1]->mask;
+                    auto& del_b = preproc_.gates[g->in2]->mask;
+                    auto& del_c = preproc_.gates[g->in3]->mask;
+                    auto& del_d = preproc_.gates[g->in4]->mask;
+
+                    auto& m_a = wires_[g->in1];
+                    auto& m_b = wires_[g->in2];
+                    auto& m_c = wires_[g->in3];
+                    auto& m_d = wires_[g->in4];
+
+                    auto* pre_out = 
+                    static_cast<PreprocMult4Gate<Field>*>(preproc_.gates[g->out].get());
+
+                    auto q_share = pre_out->mask;
+
+                    q_share -= (  del_d * m_a * m_b * m_c
+                                + del_c * m_a * m_b * m_d
+                                + del_b * m_a * m_c * m_d
+                                + del_a * m_b * m_c * m_d);
+                    
+                    q_share += (pre_out->mask_cd * m_a * m_b 
+                              + pre_out->mask_bd * m_a * m_c 
+                              + pre_out->mask_bc * m_a * m_d 
+                              + pre_out->mask_ad * m_b * m_c
+                              + pre_out->mask_ac * m_b * m_d 
+                              + pre_out->mask_ab * m_c * m_d);
+
+                    q_share -= (pre_out->mask_bcd * m_a 
+                             +  pre_out->mask_acd * m_b
+                             +  pre_out->mask_abd * m_c
+                             +  pre_out->mask_abc * m_d);
+
+                    q_share += pre_out->mask_abcd;
+
+                    q_share.add(m_a * m_b * m_c * m_d, id_);
+                    for (int i = 1; i <= nP_; i++)  {
+                        q_share.addWithAdder(r_mul4[id_-1], id_, i);
+                    }
+                    network_->send(0, &q_share.valueAt(), sizeof(Field));
+                    
+                    q_sh_[g->out] = q_share;
+                }
+                else {
+                    q_val_[g->out] = 0;
+                    for(int i = 1; i <= nP_; ++i) {
+                            
+                        Field q = 0;
+                        network_->recv(i, &q, sizeof(q));
+                            
+                        q_val_[g->out] += q;
+                    }
+                    for(int i = 1; i <= nP_; i++) {
+                        network_->send(i, &q_val_[g->out], sizeof(Field));
+                    }   
+            }
+                
+                if(id_ != 0) {
+                    network_->recv(0, &q_val_[g->out], sizeof(Field));
+                    wires_[g->out] = q_val_[g->out] - r_sum;
+                }
+                break;
+            }
             
             case::quadsquad::utils::GateType::kDotprod: {
                 // All parties excluding TP sample a common random value r_in
                 
                 Field r_sum = 0;
-                
-                
-
+  
                 auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
                 auto* pre_out =
                     static_cast<PreprocDotpGate<Field>*>(preproc_.gates[g->out].get());
@@ -174,8 +329,8 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                 
                     auto q_share = pre_out->mask + pre_out->mask_prod;
                     for(size_t i = 0; i < g->in1.size(); ++i) {
-                        auto win1 = g->in1[i]; //masked value for left input wires
-                        auto win2 = g->in2[i]; //masked value for right input wires
+                        auto win1 = g->in1[i]; //index for masked value for left input wires
+                        auto win2 = g->in2[i]; //index for masked value for right input wires
                         auto& m_in1 = preproc_.gates[win1]->mask; //masks for left wires
                         auto& m_in2 = preproc_.gates[win2]->mask; //masks for right wires
                         q_share -= (m_in1 * wires_[win2] + m_in2* wires_[win1]);
@@ -246,6 +401,24 @@ bool OnlineEvaluator::MACVerification() {
                         prg.random_data(&rho[g->out], sizeof(Field));
                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
                     }
+                    case quadsquad::utils::GateType::kMul3: {
+                        auto* g = static_cast<quadsquad::utils::FIn3Gate*>(gate.get());
+                        prg.random_data(&rho[g->out], sizeof(Field));
+                        omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
+                    }
+                    case quadsquad::utils::GateType::kMul4: {
+                        auto* g = static_cast<quadsquad::utils::FIn4Gate*>(gate.get());
+                        prg.random_data(&rho[g->out], sizeof(Field));
+                        omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
+                    }
+                    case quadsquad::utils::GateType::kConstAdd:
+                    case quadsquad::utils::GateType::kConstMul:
+                    case quadsquad::utils::GateType::kAdd:
+                    case quadsquad::utils::GateType::kSub: {
+                        break;
+                    }
+
+
                 }
             }
         }
@@ -288,6 +461,7 @@ std::vector<Field> OnlineEvaluator::getOutputs() {
             for(int i = 1; i <= nP_; ++i) {
             network_->send(i, &outmask, sizeof(Field));
         }
+        
     }    
         //for(int i = 1; i <= nP_; ++i) {
         //    network_->send(i, &output_masks, output_masks.size() * sizeof(Field));
