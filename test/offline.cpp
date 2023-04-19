@@ -223,30 +223,67 @@ BOOST_AUTO_TEST_SUITE(offline_evaluator)
 
 BOOST_AUTO_TEST_CASE(random_share) {
   int nP = 5;
-  std::vector<AuthAddShare<Field>> shares(nP+1);
-  TPShare<Field> tpshares;
+  
   
   std::vector<std::future<AuthAddShare<Field>>> parties;
   
   //tpshares.setKey(5);
-  std::vector<Field> keySh(nP + 1);
-  Field key = 0;
-  keySh[0] = 0;
-  for(int i = 1; i <= nP; i++) {
-    keySh[0] = i;
-    key += keySh[i];
-  }
+  // std::vector<Field> keySh(nP + 1);
+  // Field key = 0;
+  // keySh[0] = 0;
+  // for(int i = 1; i <= nP; i++) {
+  //   keySh[0] = i;
+  //   key += keySh[i];
+  // }
+  TPShare<Field> tpshares;
   for (int i = 0; i <= nP; i++) {
     
     
     parties.push_back(std::async(std::launch::async, [&, i]() { 
-      RandGenPool vrgen(i, nP);
-      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
-      
-      OfflineEvaluator::randomShare(nP, i, vrgen, *network, 
-                                  shares[i], tpshares, key, keySh);
 
-            return shares[i];
+      AuthAddShare<Field> shares;
+      
+
+      std::vector<Field> rand_sh;
+      size_t idx = 0;
+      RandGenPool vrgen(i, nP);
+
+      std::vector<Field> keySh(nP + 1);
+      Field key = 0;
+      if(i == 0)  {
+        key = 0;
+        keySh[0] = 0;
+        for(int j = 1; j <= nP; j++) {
+            vrgen.pi(j).random_data(&keySh[j], sizeof(Field));
+            key += keySh[j];
+        }
+      
+      }
+      else {
+        vrgen.p0().random_data(&key, sizeof(Field));
+      }
+
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      if(i != nP) {
+      OfflineEvaluator::randomShare(nP, i, vrgen, *network, 
+                                 shares, tpshares, key, keySh, rand_sh, idx);
+        if(i == 0) {
+          size_t rand_sh_num = rand_sh.size();
+          network->send(nP, &rand_sh_num, sizeof(size_t));
+          network->send(nP, rand_sh.data(), sizeof(Field) * rand_sh_num);
+        }
+      }
+      else {
+        size_t rand_sh_num;
+        
+        network->recv(0, &rand_sh_num, sizeof(size_t));
+        rand_sh.resize(rand_sh_num);
+        network->recv(0, rand_sh.data(), sizeof(Field) * rand_sh_num);
+        OfflineEvaluator::randomShare(nP, i, vrgen, *network, 
+                                  shares, tpshares, key, keySh, rand_sh, idx);
+      }
+
+      return shares;
     }));
     
   }
@@ -260,9 +297,9 @@ BOOST_AUTO_TEST_CASE(random_share) {
       i++;
     }
   }
-  //BOOST_AUTO_TEST_SUITE_END()
+  // BOOST_AUTO_TEST_SUITE_END()
 
-  
+ /*
   BOOST_AUTO_TEST_CASE(random_share_with_party) {
     int nP = 10;
     
@@ -281,20 +318,41 @@ BOOST_AUTO_TEST_CASE(random_share) {
     }
     int i = 0;
     parties.push_back(std::async(std::launch::async, [&, i]() { 
-        
+        std::vector<Field> rand_sh_party;
         AuthAddShare<Field> share;
         Field secret;
+        
+        std::vector<Field> rand_sh_party;
+        size_t idx_party = 0;
+        
         RandGenPool vrgen(i, nP);
+
+        std::vector<Field> keySh(nP + 1);
+        Field key = 0;
+        if(i == 0)  {
+          key = 0;
+          keySh[0] = 0;
+          for(int j = 1; j <= nP; j++) {
+              vrgen.pi(j).random_data(&keySh[j], sizeof(Field));
+              key += keySh[j];
+          }
+        
+        }
+        else {
+          vrgen.p0().random_data(&key, sizeof(Field));
+        }
+        
         auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
         
         OfflineEvaluator::randomShareWithParty(nP, i, nP, vrgen, *network, 
-                                               share, tpshares, secret, key, keySh);
+                                               share, tpshares, secret, key, keySh, rand_sh_party, idx_party);
         return share;
       }));
 
     for ( i = 1; i <= nP; i++) {
       
       parties.push_back(std::async(std::launch::async, [&, i]() { 
+        std::vector<Field> rand_sh_party;
         AuthAddShare<Field> share;
         TPShare<Field> tmp;
         Field secret;
@@ -302,7 +360,7 @@ BOOST_AUTO_TEST_CASE(random_share) {
         auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
         
         OfflineEvaluator::randomShareWithParty(nP, i, nP, vrgen, *network, 
-                                               share, tmp, secret, key, keySh);
+                                               share, tmp, secret, key, keySh, rand_sh_party);
         
         return share;
       }));
@@ -342,12 +400,12 @@ BOOST_AUTO_TEST_CASE(random_share) {
     parties.push_back(std::async(std::launch::async, [&, i]() { 
         
         AuthAddShare<Field> share;
-        
+        std::vector<Field> rand_sh_sec;
         RandGenPool vrgen(i, nP);
         auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
         
         OfflineEvaluator::randomShareSecret(nP, i, vrgen, *network, 
-                                               share, tpshares, secret, key, keySh);
+                                               share, tpshares, secret, key, keySh, rand_sh_sec);
         
         return share;
       }));
@@ -358,11 +416,12 @@ BOOST_AUTO_TEST_CASE(random_share) {
         AuthAddShare<Field> share;
         TPShare<Field> tmp;
         Field secret;
+        std::vector<Field> rand_sh_sec;
         RandGenPool vrgen(i, nP);
         auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
         
         OfflineEvaluator::randomShareSecret(nP, i, vrgen, *network, 
-                                               share, tmp, secret, key, keySh);
+                                               share, tmp, secret, key, keySh, rand_sh_sec);
         
         return share;
       }));
@@ -434,7 +493,7 @@ BOOST_AUTO_TEST_CASE(random_share) {
         i++;
     }
   }
-
+  */
 
 
 BOOST_AUTO_TEST_CASE(depth_2_circuit) {

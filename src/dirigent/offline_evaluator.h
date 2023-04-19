@@ -46,8 +46,8 @@ class OfflineEvaluator {
 
   // Generate sharing of a random unknown value.
   static void randomShare(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
-                                  AuthAddShare<Field>& share, TPShare<Field>& tpShare,
-                                  Field key, std::vector<Field> keySh);
+                          AuthAddShare<Field>& share, TPShare<Field>& tpShare, Field key, 
+                          std::vector<Field> keySh, std::vector<Field>& rand_sh, size_t& idx_rand_sh);
   // Generate sharing of a random value known to dealer (called by all parties
   // except the dealer).
   //static void randomShareWithParty(int pid, int dealer=0, RandGenPool& rgen,
@@ -57,13 +57,13 @@ class OfflineEvaluator {
   // dealer when other parties call other variant.
   static void randomShareSecret(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
                                    AuthAddShare<Field>& share, TPShare<Field>& tpShare, Field secret,
-                                   Field key, std::vector<Field> keySh);
+                                   Field key, std::vector<Field> keySh, std::vector<Field>& rand_sh_sec, size_t& idx_rand_sh_sec);
 
 
   static void randomShareWithParty(int nP, int pid, int dealer, RandGenPool& rgen,
-                                           io::NetIOMP& network, AuthAddShare<Field>& share,
-                                           TPShare<Field>& tpShare, Field& secret,
-                                           Field key, std::vector<Field> keySh); 
+                                  io::NetIOMP& network, AuthAddShare<Field>& share,
+                                  TPShare<Field>& tpShare, Field& secret, Field key,
+                                  std::vector<Field> keySh, std::vector<Field>& rand_sh_party, size_t& idx_rand_sh_party); 
                                           
                                            
 
@@ -71,6 +71,9 @@ class OfflineEvaluator {
 
   // Set masks for each wire. Should be called before running any of the other
   // subprotocols.
+  void setWireMasksParty(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
+          std::vector<Field>& rand_sh, std::vector<Field>& rand_sh_sec, std::vector<Field>& rand_sh_party);
+
   void setWireMasks(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map);
   
   void getOutputMasks(int pid, std::vector<Field>& output_mask);
