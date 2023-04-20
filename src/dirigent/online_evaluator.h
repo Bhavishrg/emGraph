@@ -42,6 +42,18 @@ class OnlineEvaluator {
 
         void setRandomInputs();
 
+        void evaluateGatesAtDepthPartySend(size_t depth, 
+                                std::vector<Field>& mult_nonTP, std::vector<Field>& r_mult_pad,
+                                std::vector<Field>& mult3_nonTP, std::vector<Field>& r_mult3_pad,
+                                std::vector<Field>& numt4_nonTP, std::vector<Field>& r_mult4_pad,
+                                std::vector<Field>& dotprod_nonTP, std::vector<Field>& r_dotprod_pad);
+
+        void evaluateGatesAtDepthPartyRecv(size_t depth, 
+                                    std::vector<Field> mult_all, std::vector<Field> r_mult_pad,
+                                    std::vector<Field> mult3_all, std::vector<Field> r_mult3_pad,
+                                    std::vector<Field> mult4_all, std::vector<Field> r_mult4_pad,
+                                    std::vector<Field> dotprod_all, std::vector<Field> r_dotprod_pad);
+
         void evaluateGatesAtDepth(size_t depth);
 
         bool MACVerification();

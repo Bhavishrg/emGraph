@@ -231,8 +231,9 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
 
 void OfflineEvaluator::setWireMasksParty(
   const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
-  std::vector<Field>& rand_sh, std::vector<Field>& rand_sh_sec, 
-  std::vector<Field>& rand_sh_party) {
+                    std::vector<Field>& rand_sh, 
+                    std::vector<Field>& rand_sh_sec, 
+                    std::vector<Field>& rand_sh_party) {
 
     
       size_t idx_rand_sh = 0;
