@@ -562,28 +562,29 @@ std::vector<Field> OnlineEvaluator::getOutputs() {
         return outvals;
     }
 
-    std::vector<Field> output_masks(circ_.outputs.size());
+    
     if(id_ == 0) {
+        std::vector<Field> output_masks(circ_.outputs.size());
         for (size_t i = 0; i < circ_.outputs.size(); ++i) {
             auto wout = circ_.outputs[i];
             Field outmask = preproc_.gates[wout]->tpmask.secret();
-            output_masks.push_back(outmask);
-            for(int i = 1; i <= nP_; ++i) {
-            network_->send(i, &outmask, sizeof(Field));
-        }
+            output_masks[i] = outmask;
+        //     for(int i = 1; i <= nP_; ++i) {
+        //     network_->send(i, &outmask, sizeof(Field));
+        // }
         
-    }    
-        //for(int i = 1; i <= nP_; ++i) {
-        //    network_->send(i, &output_masks, output_masks.size() * sizeof(Field));
-        //}
-        return output_masks;
+        }    
+        for(int i = 1; i <= nP_; ++i) {
+           network_->send(i, output_masks.data(), output_masks.size() * sizeof(Field));
+        }
+        return outvals;
     }
     else {
         std::vector<Field> output_masks(circ_.outputs.size());
-        // network_->recv(0, &output_masks, output_masks.size() * sizeof(Field));
+        network_->recv(0, output_masks.data(), output_masks.size() * sizeof(Field));
         for(size_t i = 0; i < circ_.outputs.size(); ++i) {
-            Field outmask;
-            network_->recv(0, &outmask, sizeof(Field));
+            Field outmask = output_masks[i];
+            // network_->recv(0, &outmask, sizeof(Field));
             auto wout = circ_.outputs[i]; 
             //outvals[i] = wires_[wout] - output_masks[i];
             outvals[i] = wires_[wout] - outmask; 
