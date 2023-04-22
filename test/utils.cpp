@@ -373,6 +373,59 @@ BOOST_DATA_TEST_CASE(ppa_circuit,
   BOOST_TEST(output == sum_bits);
 }
 
+using Field = int;
+BOOST_DATA_TEST_CASE(Multk,
+                     bdata::random(0, TEST_DATA_MAX_VAL) ^
+                         bdata::random(0, TEST_DATA_MAX_VAL) ^ bdata::xrange(1),
+                     input_a, input_b, idx) {
+  
+  Circuit circ = Circuit<Field>::generateMultK();
+
+  std::vector<Field> input(64);
+  for(int i = 0; i < 64; i++) {
+    if(i < 5){
+      input[i] = i + 1;
+    }
+    else 
+      input[i] = 1;
+  }
+  std::unordered_map<wire_t, Field> input_map;
+  for (size_t i = 0; i < 64; ++i) {
+    input_map[i] = input[i];
+  }
+
+  auto output = circ.evaluate(input_map);
+  Field exp_out = 1;
+  for (int i = 0; i < 64; ++i) {
+    exp_out *= input[i];
+  }
+  BOOST_TEST(output[0] == exp_out);
+}
+
+
+BOOST_DATA_TEST_CASE(MultkBool,
+                     bdata::random(0, TEST_DATA_MAX_VAL) ^
+                         bdata::random(0, TEST_DATA_MAX_VAL) ^ bdata::xrange(1),
+                     input_a, input_b, idx) {
+  
+  Circuit circ = Circuit<BoolRing>::generateMultK();
+
+  std::vector<BoolRing> input(64, 1);
+  std::unordered_map<wire_t, BoolRing> input_map;
+  for (size_t i = 0; i < 64; ++i) {
+    input_map[i] = input[i];
+  }
+
+  auto output = circ.evaluate(input_map);
+  BoolRing exp_out(1);
+  for (int i = 0; i < 64; ++i) {
+    exp_out *= input[i];
+  }
+  BOOST_TEST(output[0] == exp_out);
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 //BOOST_AUTO_TEST_SUITE(rand_gen_pool)

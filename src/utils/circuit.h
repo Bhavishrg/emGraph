@@ -25,6 +25,7 @@ enum GateType {
   kMul,
   kMul3,
   kMul4,
+  kMulK,
   kSub,
   kConstAdd,
   kConstMul,
@@ -33,7 +34,6 @@ enum GateType {
   kDotprod,
   kTrdotp,
   kInvalid,
-  kMulK,
   NumGates
 };
 
@@ -488,6 +488,48 @@ class Circuit {
 
     return outputs;
   }
+
+
+   static Circuit generateMultK() {
+    Circuit circ;
+    size_t k = 64;
+    std::vector<wire_t> input(k);
+    for (int i = 0; i < k; i++) {
+      input[i] = circ.newInputWire();
+    }
+
+    std::vector<wire_t> level_next( k /4 );
+
+    for(size_t level = 1; level <= log(k)/log(4); level++) {
+      //leveli wires are the input for mult4 gates
+      std::vector<wire_t> leveli( k /pow(4,level-1) );
+      if(level == 1) {
+        // at the level 1, it gets the input wires
+        for(size_t l = 0; l < k/pow(4,level-1); l++) {
+          leveli[l] = input[l];
+        }
+      }
+      else {
+        // level != 1, it gets prior levels' wires
+        for(size_t l = 0; l < k/pow(4,level-1); l++) {
+          leveli[l] = level_next[l];
+        }
+      }
+      level_next.clear();
+      level_next.resize(k /pow(4,level));
+      for(size_t j = 1; j < k / pow(4, level); j++) {
+        level_next[j] = circ.addGate(GateType::kMul4, leveli[4 * j-3], leveli[4 * j-2],
+                                               leveli[4 * j-1], leveli[4 * j]);
+      }
+      if(level == log(k)/log(4)){
+        circ.setAsOutput(level_next[1]);
+      }
+    }
+
+    return circ;
+
+  }
+
 
   static Circuit generatePPA() {
     Circuit circ;

@@ -23,6 +23,12 @@ class AuthAddShare {
   explicit AuthAddShare(R key_sh, R value, R tag)
       : key_sh_{key_sh}, value_{value}, tag_{tag} {}
 
+  void randomize(emp::PRG& prg) {
+    prg.random_data(key_sh_.data(), sizeof(R));
+    prg.random_data(value_.data(), sizeof(R));
+    prg.random_data(tag_.data(), sizeof(R));
+  }
+
   R& valueAt() { return value_; }
   R& tagAt() { return tag_; }
   R& keySh() { return key_sh_; }
@@ -211,6 +217,9 @@ class TPShare {
   //Add above
   
 };
+
+template <>
+void AuthAddShare<BoolRing>::randomize(emp::PRG& prg);
 //add the constructor above
 
 

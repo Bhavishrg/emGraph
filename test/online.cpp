@@ -105,7 +105,7 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   auto w_aab =
      circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
   auto w_cmd =
-      circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
+     circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
   auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
   auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
    circ.setAsOutput(w_cmd);
