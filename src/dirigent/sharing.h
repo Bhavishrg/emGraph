@@ -170,10 +170,6 @@ class TPShare {
     for (size_t i = 1; i < values_.size(); i++) {
       values_[i] += rhs.values_[i];
       tags_[i] += rhs.tags_[i];
-      if( this->key_sh_[i] != rhs.key_sh_[i]) {
-        std::cout <<" Inconsistent MAC key shares " << std::endl;
-      }
-      else
         key_sh_[i] = rhs.key_sh_[i];
     }
     key_ = rhs.key_;

@@ -86,4 +86,47 @@ class OfflineEvaluator {
 
   
 };
+
+class OfflineBoolEvaluator {
+  int nP_;  
+  int id_;
+  BoolRing key_sh_;
+  RandGenPool rgen_;
+  std::shared_ptr<io::NetIOMP> network_;
+  quadsquad::utils::LevelOrderedCircuit circ_;
+  PreprocCircuit<BoolRing> preproc_;
+  
+
+  public:
+  
+  OfflineBoolEvaluator(int nP, int my_id, std::shared_ptr<io::NetIOMP> network,
+                   quadsquad::utils::LevelOrderedCircuit circ, int seed = 200);
+
+
+  static void randomShare(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
+                          AuthAddShare<BoolRing>& share, TPShare<BoolRing>& tpShare, BoolRing key, 
+                          std::vector<BoolRing> keySh, std::vector<BoolRing>& rand_sh, size_t& idx_rand_sh);
+  
+  
+  static void randomShareSecret(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
+                          AuthAddShare<BoolRing>& share, TPShare<BoolRing>& tpShare, BoolRing secret,
+                          BoolRing key, std::vector<BoolRing> keySh, std::vector<BoolRing>& rand_sh_sec, size_t& idx_rand_sh_sec);
+
+
+  static void randomShareWithParty(int nP, int pid, int dealer, RandGenPool& rgen, io::NetIOMP& network,
+                          AuthAddShare<BoolRing>& share, TPShare<BoolRing>& tpShare, BoolRing& secret, 
+                          BoolRing key, std::vector<BoolRing> keySh, std::vector<BoolRing>& rand_sh_party, size_t& idx_rand_sh_party);
+                                  
+
+  void setWireMasksParty(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
+          std::vector<BoolRing>& rand_sh, std::vector<BoolRing>& rand_sh_sec, std::vector<BoolRing>& rand_sh_party);
+
+  void setWireMasks(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map);
+  void getOutputMasks(int pid, std::vector<BoolRing>& output_mask);
+  PreprocCircuit<BoolRing> getPreproc();
+   
+  PreprocCircuit<BoolRing> run(
+      const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map);
+
+};
 };  // namespace dirigent

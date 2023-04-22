@@ -28,6 +28,11 @@ BoolRing& BoolRing::operator*=(const BoolRing& rhs) {
   return *this;
 }
 
+BoolRing& BoolRing::operator=(const BoolRing& rhs) noexcept{
+  val_ = rhs.val_;
+  return *this;
+}
+
 std::vector<uint8_t> BoolRing::pack(const BoolRing* data, size_t len) {
   std::vector<uint8_t> res;
   for (size_t i = 0; i < len;) {

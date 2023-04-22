@@ -29,6 +29,7 @@ class BoolRing {
   BoolRing& operator+=(const BoolRing& rhs);
   BoolRing& operator-=(const BoolRing& rhs);
   BoolRing& operator*=(const BoolRing& rhs);
+  BoolRing& operator=(const BoolRing& rhs) noexcept;
 
   static std::vector<uint8_t> pack(const BoolRing* data, size_t len);
   static std::vector<BoolRing> unpack(const uint8_t* packed, size_t len);
