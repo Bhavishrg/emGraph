@@ -424,6 +424,23 @@ BOOST_DATA_TEST_CASE(MultkBool,
   BOOST_TEST(output[0] == exp_out);
 }
 
+BOOST_AUTO_TEST_CASE(eqz) {
+  Circuit<int> circ;
+  auto wa = circ.newInputWire();
+  auto wq = circ.addGate(GateType::kEqz, wa);
+  auto wb = circ.addGate(GateType::kMul, wq, wa);
+  auto wc = circ.addGate(GateType::kEqz, wb);
+  circ.setAsOutput(wq);
+  circ.setAsOutput(wb);
+  circ.setAsOutput(wc);
+  int input_a = 100;
+  for(int i = 0; i < 2; i++) {
+    auto output = circ.evaluate({{wa, i*input_a}});
+    BOOST_TEST(output[0] == (1-i));
+    BOOST_TEST(output[1] == 0);
+    BOOST_TEST(output[2] == 1);
+  }
+}
 
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(mult) {
 
 
 BOOST_AUTO_TEST_CASE(depth_2_circuit) {
-  int nP = 4;
+  int nP = 10;
   auto seed_block = emp::makeBlock(0, 200);
   emp::PRG prg(&seed_block);
   std::mt19937 gen(200);
@@ -332,6 +332,97 @@ BOOST_AUTO_TEST_CASE(mult4) {
 
 }
 BOOST_AUTO_TEST_SUITE_END()
+
+// BOOST_AUTO_TEST_SUITE(online_bool_evaluator)
+
+// BOOST_AUTO_TEST_CASE(mult) {
+//   int nP = 4;
+//   quadsquad::utils::Circuit<BoolRing> circ;
+//   auto wa = circ.newInputWire();
+//   auto wb = circ.newInputWire();
+//   auto wprod = circ.addGate(GateType::kMul, wa, wb);
+//   circ.setAsOutput(wprod);
+//   BoolRing a(0);
+//   BoolRing b(1);
+//   auto output = circ.evaluate({{wa, a}, {wb, b}});
+  // std::vector<quadsquad::utils::wire_t> input_wires;
+  // std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+  // std::unordered_map<quadsquad::utils::wire_t, BoolRing> inputs;
+
+  // for (size_t i = 0; i < 2; ++i) {
+  //   auto winp = circ.newInputWire();
+  //   input_wires.push_back(winp);
+  //   input_pid_map[winp] = 1;
+    
+  //   inputs[winp] = 1;
+  // }
+  // auto w_amb =
+  //    circ.addGate(quadsquad::utils::GateType::kMul, input_wires[0], input_wires[1]);
+  // circ.setAsOutput(w_amb);
+  // auto level_circ = circ.orderGatesByLevel();
+
+  // auto exp_output = circ.evaluate(inputs);
+// }
+//   int nP = 4;
+//   auto seed_block = emp::makeBlock(0, 200);
+//   emp::PRG prg(&seed_block);
+//   std::mt19937 gen(200);
+//   std::uniform_int_distribution<BoolRing> distrib(0, TEST_DATA_MAX_VAL);
+//   quadsquad::utils::Circuit<BoolRing> circ;
+//   std::vector<quadsquad::utils::wire_t> input_wires;
+//   std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+//   std::unordered_map<quadsquad::utils::wire_t, Field> inputs;
+
+//   for (size_t i = 0; i < 2; ++i) {
+//     auto winp = circ.newInputWire();
+//     input_wires.push_back(winp);
+//     input_pid_map[winp] = 1;
+    
+//     inputs[winp] = 1;
+//   }
+//   auto w_amb =
+//      circ.addGate(quadsquad::utils::GateType::kMul, input_wires[0], input_wires[1]);
+//   // auto w_cmd =
+//   //     circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
+//   // auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
+//   // auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
+//   //  circ.setAsOutput(w_cmd);
+//   //  circ.setAsOutput(w_mout);
+//   //  circ.setAsOutput(w_aout);
+//   circ.setAsOutput(w_amb);
+//   auto level_circ = circ.orderGatesByLevel();
+//   auto exp_output = circ.evaluate(inputs);
+//   std::vector<std::future<std::vector<BoolRing>>> parties;
+//   parties.reserve(nP+1);
+//   for (int i = 0; i <= nP; ++i) {
+//       parties.push_back(std::async(std::launch::async, [&, i, input_pid_map, inputs]() {
+      
+//       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      
+//       OfflineBoolEvaluator eval(nP, i, network, 
+//                             level_circ);
+//       auto preproc = eval.run(input_pid_map);
+     
+//       BoolEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
+//                                   level_circ);
+      
+//       auto res = online_eval.evaluateCircuit(inputs);
+//       return res;
+      
+//     }));
+//   }
+//   int i = 0;
+//   for (auto& p : parties) {
+//     auto output = p.get();
+//       if(i > 0) {
+//         BOOST_TEST(exp_output == output);
+//       }
+//       i++;
+//   }
+  
+// }
+
+// BOOST_AUTO_TEST_SUITE_END()
 
 /*
 BOOST_DATA_TEST_CASE(no_op_circuit,

@@ -1,6 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.o"
-  "CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.o.d"
   "CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o"
   "CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o.d"
   "CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o"

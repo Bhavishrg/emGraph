@@ -31,6 +31,8 @@ enum GateType {
   kConstMul,
   kRelu,
   kMsb,
+  kEqz,
+  kLtz,
   kDotprod,
   kTrdotp,
   kInvalid,
@@ -225,7 +227,8 @@ class Circuit {
 
   // Function to add a single input gate.
   wire_t addGate(GateType type, wire_t input) {
-    if (type != GateType::kRelu && type != GateType::kMsb) {
+    if (type != GateType::kRelu && type != GateType::kMsb
+        && type != GateType::kEqz && type != GateType::kLtz) {
       throw std::invalid_argument("Invalid gate type.");
     }
 
@@ -310,6 +313,18 @@ class Circuit {
         case GateType::kConstMul: {
           const auto* g = static_cast<ConstOpGate<R>*>(gate.get());
           gate_level[g->out] = gate_level[g->in];
+          break;
+        }
+
+        case GateType::kEqz: {
+          const auto* g = static_cast<FIn1Gate*>(gate.get());
+          gate_level[g->out] = gate_level[g->in] + 1;
+          break;
+        }
+
+        case GateType::kLtz: {
+          const auto* g = static_cast<FIn1Gate*>(gate.get());
+          gate_level[g->out] = gate_level[g->in] + 1;
           break;
         }
 
@@ -418,6 +433,29 @@ class Circuit {
           case GateType::kConstMul: {
             auto* g = static_cast<ConstOpGate<R>*>(gate.get());
             wires[g->out] = wires[g->in] * g->cval;
+            break;
+          }
+
+          case GateType::kEqz: {
+            auto* g = static_cast<FIn1Gate*>(gate.get());
+            if(wires[g->in] == 0) {
+              wires[g->out] = 1;
+            }
+            else {
+              wires[g->out] = 0;
+            }
+            break;
+          }
+
+          case GateType::kLtz: {
+            auto* g = static_cast<FIn1Gate*>(gate.get());
+
+            if constexpr (std::is_same_v<R, BoolRing>) {
+              wires[g->out] = wires[g->in];
+            } else {
+              std::vector<BoolRing> bin = bitDecompose(wires[g->in]);
+              wires[g->out] = bin[63].val();
+            }
             break;
           }
 

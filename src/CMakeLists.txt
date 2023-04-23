@@ -10,7 +10,6 @@ add_library(QuadSquad
     quadsquad/ot_provider.cpp
     dirigent/types.cpp
     dirigent/sharing.cpp
-    dirigent/helpers.cpp
     dirigent/rand_gen_pool.cpp
     dirigent/offline_evaluator.cpp
     dirigent/online_evaluator.cpp)

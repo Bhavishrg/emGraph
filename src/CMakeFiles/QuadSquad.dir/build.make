@@ -223,24 +223,10 @@ src/CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.s"
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/dirigent/sharing.cpp -o CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.s
 
-src/CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.o: src/CMakeFiles/QuadSquad.dir/flags.make
-src/CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.o: src/dirigent/helpers.cpp
-src/CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.o: src/CMakeFiles/QuadSquad.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.o"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.o -MF CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.o.d -o CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/dirigent/helpers.cpp
-
-src/CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.i"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/dirigent/helpers.cpp > CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.i
-
-src/CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.s"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/dirigent/helpers.cpp -o CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.s
-
 src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o: src/CMakeFiles/QuadSquad.dir/flags.make
 src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o: src/dirigent/rand_gen_pool.cpp
 src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o: src/CMakeFiles/QuadSquad.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o"
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o -MF CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o.d -o CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/dirigent/rand_gen_pool.cpp
 
 src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.i: cmake_force
@@ -254,7 +240,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.s: cmake_force
 src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o: src/CMakeFiles/QuadSquad.dir/flags.make
 src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o: src/dirigent/offline_evaluator.cpp
 src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o: src/CMakeFiles/QuadSquad.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o"
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o -MF CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o.d -o CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/dirigent/offline_evaluator.cpp
 
 src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.i: cmake_force
@@ -268,7 +254,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.s: cmake_force
 src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o: src/CMakeFiles/QuadSquad.dir/flags.make
 src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o: src/dirigent/online_evaluator.cpp
 src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o: src/CMakeFiles/QuadSquad.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o"
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o -MF CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o.d -o CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/dirigent/online_evaluator.cpp
 
 src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.i: cmake_force
@@ -292,7 +278,6 @@ QuadSquad_OBJECTS = \
 "CMakeFiles/QuadSquad.dir/quadsquad/ot_provider.cpp.o" \
 "CMakeFiles/QuadSquad.dir/dirigent/types.cpp.o" \
 "CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.o" \
-"CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.o" \
 "CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o" \
 "CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o" \
 "CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o"
@@ -311,13 +296,12 @@ src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/quadsquad/online_evaluator.cpp.
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/quadsquad/ot_provider.cpp.o
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/dirigent/types.cpp.o
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.o
-src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.o
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/build.make
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Linking CXX static library libQuadSquad.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX static library libQuadSquad.a"
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src && $(CMAKE_COMMAND) -P CMakeFiles/QuadSquad.dir/cmake_clean_target.cmake
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/QuadSquad.dir/link.txt --verbose=$(VERBOSE)
 

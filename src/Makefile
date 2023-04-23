@@ -140,30 +140,6 @@ QuadSquad/fast:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/build
 .PHONY : QuadSquad/fast
 
-dirigent/helpers.o: dirigent/helpers.cpp.o
-.PHONY : dirigent/helpers.o
-
-# target to build an object file
-dirigent/helpers.cpp.o:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.o
-.PHONY : dirigent/helpers.cpp.o
-
-dirigent/helpers.i: dirigent/helpers.cpp.i
-.PHONY : dirigent/helpers.i
-
-# target to preprocess a source file
-dirigent/helpers.cpp.i:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.i
-.PHONY : dirigent/helpers.cpp.i
-
-dirigent/helpers.s: dirigent/helpers.cpp.s
-.PHONY : dirigent/helpers.s
-
-# target to generate assembly for a file
-dirigent/helpers.cpp.s:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/dirigent/helpers.cpp.s
-.PHONY : dirigent/helpers.cpp.s
-
 dirigent/offline_evaluator.o: dirigent/offline_evaluator.cpp.o
 .PHONY : dirigent/offline_evaluator.o
 
@@ -510,9 +486,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... QuadSquad"
-	@echo "... dirigent/helpers.o"
-	@echo "... dirigent/helpers.i"
-	@echo "... dirigent/helpers.s"
 	@echo "... dirigent/offline_evaluator.o"
 	@echo "... dirigent/offline_evaluator.i"
 	@echo "... dirigent/offline_evaluator.s"

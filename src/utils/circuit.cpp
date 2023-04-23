@@ -63,6 +63,13 @@ std::ostream& operator<<(std::ostream& os, GateType type) {
     case kMsb:
       os << "MSB";
       break;
+    
+    case kEqz:
+      os << "Equals to zero";
+      break;
+
+    case kLtz: 
+      os<< "Less than zero";
 
     case kDotprod:
       os << "Dotproduct";
