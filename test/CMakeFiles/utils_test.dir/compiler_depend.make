@@ -885,6 +885,7 @@ test/CMakeFiles/utils_test.dir/utils.cpp.o: test/utils.cpp \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
   src/io/netmp.h \
   src/quadsquad/types.h \
+  src/dirigent/types.h \
   src/utils/liquidity_matching.h \
   /usr/local/include/boost/multi_array.hpp \
   /usr/local/include/boost/multi_array/base.hpp \
@@ -2343,6 +2344,8 @@ test/CMakeFiles/utils_test.dir/utils.cpp.o: test/utils.cpp \
 /usr/local/include/boost/multi_array.hpp:
 
 src/utils/liquidity_matching.h:
+
+src/dirigent/types.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/list:
 

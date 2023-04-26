@@ -8,10 +8,11 @@
 
 namespace dirigent {
 using Ring = uint64_t;
-constexpr uint64_t FRACTION = 16;
+// constexpr uint64_t FRACTION = 16;
 
 // using Field = NTL::ZZ_p;
 using Field = uint64_t;
+constexpr uint64_t FRACTION = 16;
 // using Field = int;
 
 class BoolRing {

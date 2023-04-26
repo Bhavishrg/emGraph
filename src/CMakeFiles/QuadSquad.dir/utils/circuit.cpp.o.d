@@ -865,4 +865,5 @@ src/CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o: \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/utils/../quadsquad/../io/netmp.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/utils/../quadsquad/types.h
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/utils/../quadsquad/types.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/utils/../dirigent/types.h

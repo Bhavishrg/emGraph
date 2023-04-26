@@ -887,7 +887,7 @@ benchmark/CMakeFiles/online_mpc.dir/online_mpc.cpp.o: benchmark/online_mpc.cpp \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
   src/quadsquad/helpers.h \
   src/quadsquad/types.h \
-  src/quadsquad/types.h \
+  src/dirigent/types.h \
   src/quadsquad/jump_provider.h \
   src/quadsquad/ot_provider.h \
   /usr/local/include/emp-ot/emp-ot.h \
@@ -2754,6 +2754,8 @@ src/quadsquad/preproc.h:
 /usr/local/include/emp-ot/ot.h:
 
 /usr/local/include/emp-ot/emp-ot.h:
+
+src/dirigent/types.h:
 
 /usr/local/include/boost/core/cmath.hpp:
 

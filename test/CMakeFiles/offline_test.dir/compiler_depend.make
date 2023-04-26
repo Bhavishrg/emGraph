@@ -890,8 +890,10 @@ test/CMakeFiles/offline_test.dir/offline.cpp.o: test/offline.cpp \
   src/quadsquad/helpers.h \
   src/io/netmp.h \
   src/quadsquad/types.h \
+  src/dirigent/types.h \
   src/dirigent/preproc.h \
   src/dirigent/sharing.h \
+  src/dirigent/types.h \
   src/dirigent/rand_gen_pool.h \
   src/utils/circuit.h \
   /usr/local/include/boost/algorithm/hex.hpp \

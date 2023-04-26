@@ -752,11 +752,12 @@ BOOST_AUTO_TEST_CASE(depth_2_bool_circuit) {
   quadsquad::utils::Circuit<BoolRing> circ;
   std::vector<quadsquad::utils::wire_t> input_wires;
   std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-  
+  std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
   for (size_t i = 0; i < 4; ++i) {
     auto winp = circ.newInputWire();
     input_wires.push_back(winp);
     input_pid_map[winp] = 1;
+    bit_mask_map[winp] = 0;
   }
 
 
@@ -770,7 +771,8 @@ BOOST_AUTO_TEST_CASE(depth_2_bool_circuit) {
   circ.setAsOutput(w_mout);
   circ.setAsOutput(w_aout);
   auto level_circ = circ.orderGatesByLevel();
-
+  std::vector<AuthAddShare<BoolRing>> output_mask;
+  std::vector<TPShare<BoolRing>> output_tpmask;
   std::vector<std::future<PreprocCircuit<BoolRing>>> parties;
   parties.reserve(nP+1);
   std::vector<BoolRing> keySh(nP + 1);
@@ -781,7 +783,7 @@ BOOST_AUTO_TEST_CASE(depth_2_bool_circuit) {
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       RandGenPool vrgen(i, nP);
       OfflineBoolEvaluator eval(nP, i, std::move(network), level_circ);
-      return eval.run(input_pid_map);
+      return eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);
     }));
   }
 
@@ -869,11 +871,12 @@ BOOST_AUTO_TEST_CASE(Mult4_bool) {
   quadsquad::utils::Circuit<BoolRing> circ;
   std::vector<quadsquad::utils::wire_t> input_wires;
   std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-  
+  std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
   for (size_t i = 0; i < 4; ++i) {
     auto winp = circ.newInputWire();
     input_wires.push_back(winp);
     input_pid_map[winp] = 1;
+    bit_mask_map[winp] = 0;
   }
   auto w_aab =
       circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
@@ -886,6 +889,9 @@ BOOST_AUTO_TEST_CASE(Mult4_bool) {
   circ.setAsOutput(w_aout);
   circ.setAsOutput(w_mul_f);
   auto level_circ = circ.orderGatesByLevel();
+  std::vector<AuthAddShare<BoolRing>> output_mask;
+  std::vector<TPShare<BoolRing>> output_tpmask;
+
   std::vector<std::future<PreprocCircuit<BoolRing>>> parties;
   parties.reserve(nP+1);
   
@@ -895,7 +901,7 @@ BOOST_AUTO_TEST_CASE(Mult4_bool) {
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       RandGenPool vrgen(i, nP);
       OfflineBoolEvaluator eval(nP, i, std::move(network), level_circ);
-      return eval.run(input_pid_map);
+      return eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);
     }));
   }
 
@@ -936,9 +942,12 @@ BOOST_AUTO_TEST_CASE(dot_product_bool) {
   auto wdotp = circ.addGate(quadsquad::utils::GateType::kDotprod, vwa, vwb);
   circ.setAsOutput(wdotp);
   auto level_circ = circ.orderGatesByLevel();
+  std::vector<AuthAddShare<BoolRing>> output_mask;
+  std::vector<TPShare<BoolRing>> output_tpmask;
 
   std::unordered_map<quadsquad::utils::wire_t, BoolRing> input_map;
   std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+  std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
   // std::mt19937 gen(200);
   // std::uniform_int_distribution<BoolRing> distrib(0, TEST_DATA_MAX_VAL);
   for (size_t i = 0; i < nf; ++i) {
@@ -946,6 +955,8 @@ BOOST_AUTO_TEST_CASE(dot_product_bool) {
     input_map[vwb[i]] = 1;
     input_pid_map[vwa[i]] = 0;
     input_pid_map[vwb[i]] = 1;
+    bit_mask_map[vwa[i]] = 0;
+    bit_mask_map[vwb[i]] = 0;
   }
 
   // auto exp_output = circ.evaluate(input_map);
@@ -961,7 +972,7 @@ BOOST_AUTO_TEST_CASE(dot_product_bool) {
       
       OfflineBoolEvaluator eval(nP, i, std::move(network), level_circ);
       
-      return eval.run(input_pid_map);
+      return eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);
     }));
   }
 

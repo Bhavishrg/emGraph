@@ -18,7 +18,9 @@ OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> ne
       circ_(std::move(circ)),
       wires_(circ.num_gates),
       q_sh_(circ.num_gates),
-      q_val_(circ.num_gates)
+      q_val_(circ.num_gates),
+      multk_circ_(
+          quadsquad::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel())
       {tpool_ = std::make_shared<ThreadPool>(threads); }
 
 OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
@@ -87,6 +89,23 @@ void OnlineEvaluator::setRandomInputs() {
     }
   }
 }
+
+// void OnlineEvaluator::eqzEvaluate(
+//          const std::vector<quadsquad::utils::FIn1Gate>& eqz_gates) {
+//      auto num_eqz_gates = eqz_gates.size();
+//      std::vector<preprocg_ptr_t<BoolRing>*> vpreproc(num_eqz_gates);
+
+//      std::vector<quadsquad::utils::wire_t> win(num_eqz_gates);
+//      for (size_t i = 0; i < num_eqz_gates; ++i) {
+//         auto* pre_eqz = static_cast<PreprocEqzGate<Field>*>(
+//                     preproc_.gates[eqz_gates[i].out].get());
+//         vpreproc[i] = pre_eqz->multk_gates.data();
+//      }
+
+    
+//     // auto multk_circ = quadsquad::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel();
+//     // dirigent::BoolEvaluator multk_eval(nP_, id_, network_, vpreproc, multk_circ, 200);
+// }
 
 
 
@@ -275,6 +294,12 @@ void OnlineEvaluator::evaluateGatesAtDepthPartySend(size_t depth,
                 }
                 break;
             }
+
+            // case::quadsquad::utils::GateType::kEqz: {
+            //     auto* g = static_cast<quadsquad::utils::FIn1Gate*>(gate.get());
+            //     auto* pre_out =
+            //         static_cast<PreprocEqzGate<Field>*>(preproc_.gates[g->out].get());
+            // }
         default:
             break;
         }
@@ -424,27 +449,29 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
             online_comm_to_TP[i + mult_num + mult3_num + mult4_num]
                                         = dotprod_nonTP[i];
         }
-
         network_->send(0, online_comm_to_TP.data(), sizeof(Field) * total_comm);
 
     }
     else if (id_ == 0) { 
-        std::vector<Field> online_comm_to_TP(total_comm);
-        std::vector<Field> agg_values(total_comm);
+        std::vector<Field> online_comm_to_TP(total_comm, 0);
+        std::vector<Field> agg_values(total_comm, 0);
+        online_comm_to_TP.clear();
+        agg_values.clear();
+        for(int pid = 1; pid <= nP_; pid++) {
+            network_->recv(pid, online_comm_to_TP.data(), sizeof(Field) * total_comm);
         
-        for(int i = 0; i < total_comm; i++) {
-            agg_values[i] = 0;
-            for(int pid = 1; pid <= nP_; pid++) {
-                network_->recv(pid, online_comm_to_TP.data(), sizeof(Field) * total_comm);
-                agg_values[i] += online_comm_to_TP[i];
+            for(int i = 0; i < total_comm; i++) {
                 
+                agg_values[i] += online_comm_to_TP[i];   
             }
         }
+        
 
         
         for(int pid = 1; pid <= nP_; pid++){
             network_->send(pid, agg_values.data(), sizeof(Field) * total_comm);
         }
+        
     }
 
     if(id_ != 0 ) {
@@ -475,6 +502,7 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                                         mult3_all, r_mult3_pad,
                                         mult4_all, r_mult4_pad,
                                         dotprod_all, r_dotprod_pad);
+        
     }
 }
 

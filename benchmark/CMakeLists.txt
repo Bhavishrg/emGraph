@@ -8,6 +8,7 @@ macro(add_benchmark source_name)
     list(APPEND benchbin ${source_name})
 endmacro()
 
+add_benchmark(dirigent_mpc)
 add_benchmark(online_mpc)
 add_benchmark(online_nn)
 add_benchmark(offline_mpc_tp)

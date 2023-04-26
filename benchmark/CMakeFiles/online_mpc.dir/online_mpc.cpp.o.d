@@ -868,7 +868,7 @@ benchmark/CMakeFiles/online_mpc.dir/online_mpc.cpp.o: \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../utils/../quadsquad/helpers.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/types.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../utils/../quadsquad/types.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/../utils/../dirigent/types.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/jump_provider.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/src/quadsquad/ot_provider.h \
   /usr/local/include/emp-ot/emp-ot.h /usr/local/include/emp-ot/ot.h \

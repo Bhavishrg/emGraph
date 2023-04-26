@@ -78,6 +78,7 @@
         "variant": "cpp",
         "vector": "cpp",
         "algorithm": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "filesystem": "cpp"
     }
 }

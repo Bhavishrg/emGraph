@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "../quadsquad/helpers.h"
-#include "../quadsquad/types.h"
+#include "../dirigent/types.h"
 
 namespace quadsquad::utils {
 

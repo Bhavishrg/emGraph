@@ -231,18 +231,20 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
 
 void OfflineEvaluator::setWireMasksParty(
   const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
-                    std::vector<Field>& rand_sh, 
-                    std::vector<Field>& rand_sh_sec, 
-                    std::vector<Field>& rand_sh_party) {
+                    std::vector<Field>& rand_sh, std::vector<BoolRing>& b_rand_sh,
+                    std::vector<Field>& rand_sh_sec, std::vector<BoolRing>& b_rand_sh_sec,
+                    std::vector<Field>& rand_sh_party, std::vector<BoolRing>& b_rand_sh_party) {
 
     
       size_t idx_rand_sh = 0;
-      
+      size_t b_idx_rand_sh = 0;
       
       size_t idx_rand_sh_sec = 0;
-
+      size_t b_idx_rand_sh_sec = 0;
     
       size_t idx_rand_sh_party = 0;
+      size_t b_idx_rand_sh_party = 0;
+
 
     // key setup
       std::vector<Field> keySh(nP_ + 1);
@@ -260,6 +262,25 @@ void OfflineEvaluator::setWireMasksParty(
         rgen_.p0().random_data(&key, sizeof(Field));
         key_sh_ = key;
       }
+
+      //Bool key setup
+      std::vector<BoolRing> bkeySh(nP_ + 1);
+      BoolRing bkey = 0;
+      if(id_ == 0)  {
+        bkey = 0;
+        bkeySh[0] = 0;
+        for(int i = 1; i <= nP_; i++) {
+            rgen_.pi(i).random_data(&bkeySh[i], sizeof(BoolRing));
+            bkey += bkeySh[i];
+        }
+        bkey_sh_ = bkey;
+      }
+      else {
+        rgen_.p0().random_data(&bkey, sizeof(BoolRing));
+        bkey_sh_ = bkey;
+      }
+
+
     for (const auto& level : circ_.gates_by_level) {
     for (const auto& gate : level) {
       switch (gate->type) {
@@ -520,9 +541,106 @@ void OfflineEvaluator::setWireMasksParty(
           break;
         }
 
-        // case quadsquad::utils::GateType::kEqz: {
-        //   break;
-        // }
+        case quadsquad::utils::GateType::kEqz: {
+          preproc_.gates[gate->out] = std::make_unique<PreprocEqzGate<Field>>();
+          const auto* eqz_g = static_cast<quadsquad::utils::FIn1Gate*>(gate.get());
+          // mask for the bit2A step
+          AuthAddShare<Field> mask_w;
+          TPShare<Field> tpmask_w;
+          randomShare(nP_, id_, rgen_, *network_, mask_w, tpmask_w, key, keySh, rand_sh, idx_rand_sh);
+          
+          // padded_val = r - delta_x, sampled by all the parties together
+          Field padded_val;
+          rgen_.all().random_data(&padded_val, sizeof(Field));
+
+          // TP obtains $r = padded_val + delta_x
+          Field r_value = 0;
+          if(id_ == 0) {r_value = padded_val + preproc_.gates[eqz_g->in]->tpmask.secret(); }
+          AuthAddShare<Field> rval;
+          TPShare<Field> tprval;
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                rval, tprval, r_value, key, keySh, rand_sh_sec, idx_rand_sh_sec);
+          
+          std::vector<AuthAddShare<BoolRing>> rval_bits(64);
+          std::vector<TPShare<BoolRing>> tprval_bits(64);
+          std::vector<BoolRing> r_bits(64);
+          // TP bit decomposes r and shares it's bits
+          if(id_ == 0) { r_bits = bitDecompose(r_value);}
+          for(int i = 0; i < 64; i++) {
+            OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, rval_bits[i], tprval_bits[i], 
+                              r_bits[i], bkey, bkeySh, b_rand_sh, b_idx_rand_sh);
+          }
+          
+          // preproc for multk gate 
+          auto multk_circ =
+            quadsquad::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel();
+
+          std::vector<preprocg_ptr_t<BoolRing>> multk_gates(multk_circ.num_gates);
+          // std::vector<AuthAddShare<BoolRing>> multk_wires(multk_circ.num_gates);
+          // std::vector<TPShare<BoolRing>> multk_wires(multk_circ.num_gates);
+
+          OfflineBoolEvaluator eval_multk(nP_, id_, network_, multk_circ);
+          // setting multk inputs
+          std::unordered_map<quadsquad::utils::wire_t, int> multk_input_pid_map;
+          std::unordered_map<quadsquad::utils::wire_t, BoolRing> multk_bit_msak_map;
+          
+          
+          std::vector<AuthAddShare<BoolRing>> multk_mask;
+          std::vector<TPShare<BoolRing>> multk_tpmask;
+          PreprocCircuit<BoolRing> multk_preproc = 
+              eval_multk.run(multk_input_pid_map, multk_bit_msak_map, multk_mask, multk_tpmask);
+
+          auto bitb = multk_tpmask[0].secret();
+          Field arithb;
+          if(bitb == 1) {arithb = 1; }
+          else { arithb = 0;}
+
+          AuthAddShare<Field> mask_b;
+          TPShare<Field> tpmask_b;
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_b, tpmask_b, arithb, key, keySh, rand_sh_sec, idx_rand_sh_sec);
+
+          for (const auto& multk_level : multk_circ.gates_by_level) {
+            for (auto& multk_gate : multk_level) {
+              switch (multk_gate->type) {
+                case quadsquad::utils::GateType::kInp:{
+                  auto* g = static_cast<quadsquad::utils::Gate*>(multk_gate.get());
+                  auto* pre_input =
+                    static_cast<PreprocInput<BoolRing>*>(multk_preproc.gates[g->out].get());
+                  multk_gates[g->out] = std::make_unique<PreprocInput<BoolRing>>(
+                    pre_input->mask, pre_input->tpmask, 0);
+                }
+                case quadsquad::utils::GateType::kMul4:{
+                  auto* g = static_cast<quadsquad::utils::FIn4Gate*>(multk_gate.get());
+                  auto* pre_out = 
+                    static_cast<PreprocMult4Gate<BoolRing>*>(multk_preproc.gates[g->out].get());
+                  multk_gates[g->out] = std::make_unique<PreprocMult4Gate<BoolRing>>(
+                                  pre_out->mask, pre_out->tpmask,
+                                  pre_out->mask_ab, pre_out->tpmask_ab,
+                                  pre_out->mask_ac, pre_out->tpmask_ac,
+                                  pre_out->mask_ad, pre_out->tpmask_ad,
+                                  pre_out->mask_bc, pre_out->tpmask_bc,
+                                      pre_out->mask_bd, pre_out->tpmask_bd,
+                                      pre_out->mask_cd, pre_out->tpmask_cd, 
+                                      pre_out->mask_abc, pre_out->tpmask_abc,
+                                      pre_out->mask_abd, pre_out->tpmask_abd,
+                                      pre_out->mask_acd, pre_out->tpmask_acd,
+                                      pre_out->mask_bcd, pre_out->tpmask_bcd,
+                                      pre_out->mask_abcd, pre_out->tpmask_abcd);
+                }
+              }
+            }
+          }
+          
+          // The above method gives boolean output(sharing)
+          // this method expects Field type values and output is also field type
+          // perform Bit2A
+          
+          preproc_.gates[gate->out] = std::make_unique<PreprocEqzGate<Field>>
+                              (mask_w, tpmask_w, mask_b, tpmask_b, rval, tprval, rval_bits, tprval_bits,
+                              std::move(multk_gates), padded_val);
+          break;
+        }
         
         default: {
           break;
@@ -538,17 +656,24 @@ void OfflineEvaluator::setWireMasks(
       
       std::vector<Field> rand_sh;
       size_t idx_rand_sh;
+      std::vector<BoolRing> b_rand_sh;
+      size_t b_idx_rand_sh;
       
       std::vector<Field> rand_sh_sec;
       size_t idx_rand_sh_sec;
+      std::vector<BoolRing> b_rand_sh_sec;
+      size_t b_idx_rand_sh_sec;
 
       std::vector<Field> rand_sh_party;
       size_t idx_rand_sh_party;
+      std::vector<BoolRing> b_rand_sh_party;
+      size_t b_idx_rand_sh_party;
 
 
       
   if(id_ != nP_) {
-    setWireMasksParty(input_pid_map, rand_sh, rand_sh_sec, rand_sh_party);
+    setWireMasksParty(input_pid_map, rand_sh, b_rand_sh, rand_sh_sec, b_rand_sh_sec,
+                        rand_sh_party, b_rand_sh_party);
 
   
     if(id_ == 0) {
@@ -613,7 +738,8 @@ void OfflineEvaluator::setWireMasks(
     }
 
 
-    setWireMasksParty(input_pid_map, rand_sh, rand_sh_sec, rand_sh_party);
+    setWireMasksParty(input_pid_map, rand_sh, b_rand_sh, rand_sh_sec, b_rand_sh_sec,
+                        rand_sh_party, b_rand_sh_party);
   }
   
 }
@@ -849,11 +975,13 @@ void OfflineBoolEvaluator::randomShareWithParty(int nP, int pid, int dealer, Ran
 
 void OfflineBoolEvaluator::setWireMasksParty(
   const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
+  const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& bit_mask_map,
                     std::vector<BoolRing>& rand_sh, 
                     std::vector<BoolRing>& rand_sh_sec, 
                     std::vector<BoolRing>& rand_sh_party) {
 
-    
+      // auto multk_circ = 
+        // quadsquad::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel();
       size_t idx_rand_sh = 0;
       
       
@@ -885,12 +1013,20 @@ void OfflineBoolEvaluator::setWireMasksParty(
           auto pregate = std::make_unique<PreprocInput<BoolRing>>();
 
           auto pid = input_pid_map.at(gate->out);
+          auto bit_mask = bit_mask_map.at(gate->out);
           pregate->pid = pid;
-          randomShareWithParty(nP_, id_, pid, rgen_, *network_, pregate->mask, 
+          if(pid != 0 ) {
+            randomShareWithParty(nP_, id_, pid, rgen_, *network_, pregate->mask, 
                               pregate->tpmask, pregate->mask_value, key, keySh, rand_sh_party, idx_rand_sh_party);
 
-          preproc_.gates[gate->out] = std::move(pregate);
-          
+            preproc_.gates[gate->out] = std::move(pregate);
+          }
+          else if(pid == 0) {
+            randomShareSecret(nP_, id_, rgen_, *network_, pregate->mask, 
+                      pregate->tpmask, bit_mask, key, keySh, rand_sh_sec, idx_rand_sh_sec);
+            
+            preproc_.gates[gate->out] = std::move(pregate);
+          }
           break;
         }
 
@@ -1139,6 +1275,7 @@ void OfflineBoolEvaluator::setWireMasksParty(
         }
 
         // case quadsquad::utils::GateType::kEqz: {
+          
         //   break;
         // }
         
@@ -1151,7 +1288,8 @@ void OfflineBoolEvaluator::setWireMasksParty(
 }
 
 void OfflineBoolEvaluator::setWireMasks(
-    const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map) {
+    const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map,
+    const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& bit_mask_map) {
       
       std::vector<BoolRing> rand_sh;
       size_t idx_rand_sh;
@@ -1165,7 +1303,7 @@ void OfflineBoolEvaluator::setWireMasks(
 
       
   if(id_ != nP_) {
-    setWireMasksParty(input_pid_map, rand_sh, rand_sh_sec, rand_sh_party);
+    setWireMasksParty(input_pid_map, bit_mask_map, rand_sh, rand_sh_sec, rand_sh_party);
 
   
     if(id_ == 0) {
@@ -1230,23 +1368,23 @@ void OfflineBoolEvaluator::setWireMasks(
     }
 
 
-    setWireMasksParty(input_pid_map, rand_sh, rand_sh_sec, rand_sh_party);
+    setWireMasksParty(input_pid_map, bit_mask_map, rand_sh, rand_sh_sec, rand_sh_party);
   }
 }
 
-void OfflineBoolEvaluator::getOutputMasks(int pid, std::vector<BoolRing>& output_mask) { 
-  output_mask.clear();
+void OfflineBoolEvaluator::getOutputMasks(std::vector<AuthAddShare<BoolRing>>& output_masks,
+                                          std::vector<TPShare<BoolRing>>& output_tpmasks) { 
+  output_masks.clear();
+  output_tpmasks.clear();
   if(circ_.outputs.empty()) {
     return;
   }
-  if(pid == 0) {
+  else{
     for(size_t i = 0; i < circ_.outputs.size(); i++) {
-      output_mask.push_back(preproc_.gates[circ_.outputs[i]]->tpmask.secret());
-    }
-  }
-  else {
-    for(size_t i = 0; i < circ_.outputs.size(); i++) {
-    output_mask.push_back(0);
+      output_masks.push_back(preproc_.gates[circ_.outputs[i]]->mask);
+      if(id_ == 0) {
+        output_tpmasks.push_back(preproc_.gates[circ_.outputs[i]]->tpmask);
+      }
     }
   }
 }
@@ -1256,9 +1394,13 @@ PreprocCircuit<BoolRing> OfflineBoolEvaluator::getPreproc() {
 }
 
 PreprocCircuit<BoolRing> OfflineBoolEvaluator::run(
-    const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map) {
-  setWireMasks(input_pid_map);
-
+    const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
+    const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& bit_mask_map,
+    std::vector<AuthAddShare<BoolRing>>& output_mask,
+    std::vector<TPShare<BoolRing>>& output_tpmask) {
+  
+  setWireMasks(input_pid_map, bit_mask_map);
+  getOutputMasks(output_mask, output_tpmask);
   return std::move(preproc_);
   
 }

@@ -150,6 +150,52 @@ struct PreprocDotpGate : public PreprocGate<R> {
       : PreprocGate<R>(mask, tpmask), mask_prod(mask_prod), tpmask_prod(tpmask_prod) {}
 };
 
+
+template <class R>
+struct PreprocEqzGate : public PreprocGate<R> {
+  AuthAddShare<R> mask;
+  TPShare<R> tpmask;
+
+  AuthAddShare<R> mask_w;
+  TPShare<R> tpmask_w;
+
+  AuthAddShare<R> rval;
+  TPShare<R> tprval;
+
+  std::vector<AuthAddShare<BoolRing>> rval_bits;
+  std::vector<TPShare<BoolRing>> tprval_bits;
+
+  std::vector<preprocg_ptr_t<BoolRing>> multk_gates;
+
+  R padded_val;
+
+  PreprocEqzGate() = default;
+  PreprocEqzGate(AuthAddShare<R> mask_w, TPShare<R> tpmask_w, 
+                  AuthAddShare<R> mask_b, TPShare<R> tpmask_b,
+                  AuthAddShare<R> rval, TPShare<R> tprval,
+                  std::vector<AuthAddShare<BoolRing>> rval_bits,
+                  std::vector<TPShare<BoolRing>> tprval_bits,
+                  std::vector<preprocg_ptr_t<BoolRing>> multk_gates,
+                  R padded_val)
+    : PreprocGate<R>((mask_b - mask_w * 2), (tpmask_b - tpmask_w * 2)),
+      rval(rval), tprval(tprval),
+      rval_bits(std::move(rval_bits)),
+      tprval_bits(std::move(tprval_bits)),
+      multk_gates(std::move(multk_gates)),
+      padded_val(padded_val) {}
+
+    //   PreprocEqzGate(AuthAddShare<R> mask_w, TPShare<R> tpmask_w, 
+    //               AuthAddShare<R> mask_b, TPShare<R> tpmask_b,
+    //               AuthAddShare<R> rval, TPShare<R> tprval,
+    //               std::vector<AuthAddShare<BoolRing>> rval_bits,
+    //               std::vector<TPShare<BoolRing>> tprval_bits,
+    //               R padded_val)
+    // : PreprocGate<R>((mask_b - mask_w * 2), (tpmask_b - tpmask_w * 2)),
+    //   rval(rval), tprval(tprval),
+    //   rval_bits(std::move(rval_bits)),
+    //   tprval_bits(std::move(tprval_bits)),
+    //   padded_val(padded_val) {}
+};
 /*template <class R>
 struct PreprocTrDotpGate : public PreprocGate<R> {
   ReplicatedShare<Ring> mask_prod{};

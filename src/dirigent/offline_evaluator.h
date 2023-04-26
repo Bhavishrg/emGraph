@@ -22,6 +22,7 @@ class OfflineEvaluator {
   int id_;
   int security_param_;
   Field key_sh_;
+  BoolRing bkey_sh_;
   RandGenPool rgen_;
   std::shared_ptr<io::NetIOMP> network_;
   quadsquad::utils::LevelOrderedCircuit circ_;
@@ -72,7 +73,9 @@ class OfflineEvaluator {
   // Set masks for each wire. Should be called before running any of the other
   // subprotocols.
   void setWireMasksParty(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
-          std::vector<Field>& rand_sh, std::vector<Field>& rand_sh_sec, std::vector<Field>& rand_sh_party);
+          std::vector<Field>& rand_sh, std::vector<BoolRing>& b_rand_sh,
+          std::vector<Field>& rand_sh_sec, std::vector<BoolRing>& b_rand_sh_sec,
+          std::vector<Field>& rand_sh_party, std::vector<BoolRing>& b_rand_sh_party);
 
   void setWireMasks(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map);
   
@@ -119,14 +122,22 @@ class OfflineBoolEvaluator {
                                   
 
   void setWireMasksParty(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
+          const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& bit_mask_map,
           std::vector<BoolRing>& rand_sh, std::vector<BoolRing>& rand_sh_sec, std::vector<BoolRing>& rand_sh_party);
 
-  void setWireMasks(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map);
-  void getOutputMasks(int pid, std::vector<BoolRing>& output_mask);
+  void setWireMasks(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map,
+                    const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& bit_mask_map);
+  
+  void getOutputMasks(std::vector<AuthAddShare<BoolRing>>& output_masks,
+                 std::vector<TPShare<BoolRing>>& output_tpmasks);
+
   PreprocCircuit<BoolRing> getPreproc();
    
   PreprocCircuit<BoolRing> run(
-      const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map);
+      const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map,
+      const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& bit_mask_map,
+      std::vector<AuthAddShare<BoolRing>>& output_mask,
+      std::vector<TPShare<BoolRing>>& output_tpmask);
 
 };
 };  // namespace dirigent

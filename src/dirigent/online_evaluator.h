@@ -23,6 +23,7 @@ class OnlineEvaluator {
     std::vector<Field> wires_;
     std::vector<Field> q_val_;
     std::vector<AuthAddShare<Field>> q_sh_;
+    quadsquad::utils::LevelOrderedCircuit multk_circ_;
     std::shared_ptr<ThreadPool> tpool_;
 
     // write reconstruction function
@@ -41,6 +42,8 @@ class OnlineEvaluator {
         void setInputs(const std::unordered_map<quadsquad::utils::wire_t, Field>& inputs);
 
         void setRandomInputs();
+        
+        void eqzEvaluate(const std::vector<quadsquad::utils::FIn1Gate>& eqz_gates);
 
         void evaluateGatesAtDepthPartySend(size_t depth, 
                                 std::vector<Field>& mult_nonTP, std::vector<Field>& r_mult_pad,

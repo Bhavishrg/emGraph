@@ -887,7 +887,7 @@ benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o: benchmark/online_nn.cpp \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
   src/quadsquad/helpers.h \
   src/quadsquad/types.h \
-  src/quadsquad/types.h \
+  src/dirigent/types.h \
   src/quadsquad/jump_provider.h \
   src/quadsquad/ot_provider.h \
   /usr/local/include/emp-ot/emp-ot.h \
@@ -1185,6 +1185,7 @@ benchmark/CMakeFiles/online_nn.dir/online_nn.cpp.o: benchmark/online_nn.cpp \
   /usr/local/include/boost/type_traits/remove_volatile.hpp \
   /usr/local/include/boost/type_traits/integral_promotion.hpp \
   /usr/local/include/boost/type_traits/promote.hpp \
+  src/quadsquad/types.h \
   /usr/local/include/boost/program_options.hpp \
   /usr/local/include/boost/program_options/options_description.hpp \
   /usr/local/include/boost/program_options/config.hpp \
@@ -2973,6 +2974,8 @@ src/quadsquad/preproc.h:
 /usr/local/include/boost/type_traits/has_pre_increment.hpp:
 
 /usr/local/include/emp-ot/emp-ot.h:
+
+src/dirigent/types.h:
 
 /usr/local/include/boost/core/cmath.hpp:
 
