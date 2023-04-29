@@ -424,6 +424,34 @@ BOOST_DATA_TEST_CASE(MultkBool,
   BOOST_TEST(output[0] == exp_out);
 }
 
+BOOST_DATA_TEST_CASE(PrefixAND,
+                     bdata::random(0, TEST_DATA_MAX_VAL) ^
+                         bdata::random(0, TEST_DATA_MAX_VAL) ^ bdata::xrange(1),
+                     input_a, input_b, idx) {
+  
+  Circuit circ = Circuit<BoolRing>::generatePrefixAND();
+
+  std::vector<BoolRing> input(64, 1);
+  std::unordered_map<wire_t, BoolRing> input_map;
+  for (size_t i = 0; i < 64; ++i) {
+    input_map[i] = input[i];
+  }
+
+  auto output = circ.evaluate(input_map);
+  std::vector<BoolRing> exp_out(64, 1);
+  for(int j = 0; j < 64; ++j) {
+    for (int i = 0; i <= j; ++i) {
+      if(input[i] == 0){
+        exp_out[j] = 0;
+      }
+    }
+  }
+  BOOST_TEST(output == exp_out);
+  for(int i = 0; i < 64; i++) {
+    // std::cout<<"output[" << i <<"] = " << output[i] << " || exp_out[" << i <<"] = " << exp_out[i] << std::endl;
+  }
+}
+
 BOOST_AUTO_TEST_CASE(eqz) {
   Circuit<int> circ;
   auto wa = circ.newInputWire();

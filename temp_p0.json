@@ -1,0 +1,1 @@
+{"benchmarks":[{"communication":[0,8000000,8000000,32016032],"time":2610.85358}],"details":{"depth":1000,"gates_per_level":1000,"num-parties":3,"pid":0,"repeat":1,"security_param":128,"seed":200,"threads":6},"stats":{"peak_resident_set_size":646459392,"peak_virtual_memory":646459392}}

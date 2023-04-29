@@ -253,7 +253,6 @@ void OnlineEvaluator::evaluateGatesAtDepthPartySend(size_t depth,
                         q_share.addWithAdder(r_mul4[id_-1], id_, i);
                     }
                     mult4_nonTP.push_back(q_share.valueAt());
-                    
                     q_sh_[g->out] = q_share;
                 }
                 
@@ -315,6 +314,7 @@ void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth,
     size_t idx_mult3 = 0;
     size_t idx_mult4 = 0;
     size_t idx_dotprod = 0;
+
     for (auto& gate : circ_.gates_by_level[depth]) {
         switch (gate->type) {
             case quadsquad::utils::GateType::kAdd: {
@@ -339,35 +339,43 @@ void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth,
 
             case quadsquad::utils::GateType::kConstMul: {
                 auto* g = static_cast<quadsquad::utils::ConstOpGate<Field>*>(gate.get());
-                wires_[g->out] = wires_[g->in] * g->cval;
+                if(id_ != 0)  wires_[g->out] = wires_[g->in] * g->cval;
                 break;
             }
 
             case quadsquad::utils::GateType::kMul: {
                 auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
-                q_val_[g->out] = mult_all[idx_mult];
-                wires_[g->out] = q_val_[g->out] - r_mult_pad[idx_mult];
+                if(id_ != 0) {
+                    q_val_[g->out] = mult_all[idx_mult];
+                    wires_[g->out] = q_val_[g->out] - r_mult_pad[idx_mult];
+                }
                 idx_mult++;
                 break;
             }
             case quadsquad::utils::GateType::kMul3: {
                 auto* g = static_cast<quadsquad::utils::FIn3Gate*>(gate.get());
-                q_val_[g->out] = mult3_all[idx_mult3];
-                wires_[g->out] = q_val_[g->out] - r_mult3_pad[idx_mult3];
+                if(id_ != 0) {
+                    q_val_[g->out] = mult3_all[idx_mult3];
+                    wires_[g->out] = q_val_[g->out] - r_mult3_pad[idx_mult3];
+                }
                 idx_mult3++;
                 break;
             }
             case quadsquad::utils::GateType::kMul4: {
                 auto* g = static_cast<quadsquad::utils::FIn4Gate*>(gate.get());
-                q_val_[g->out] = mult4_all[idx_mult4];
-                wires_[g->out] = q_val_[g->out] - r_mult4_pad[idx_mult4];
+                if(id_ != 0) {
+                    q_val_[g->out] = mult4_all[idx_mult4];
+                    wires_[g->out] = q_val_[g->out] - r_mult4_pad[idx_mult4];
+                }
                 idx_mult4++;
                 break;
             }
             case quadsquad::utils::GateType::kDotprod: {
                 auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
-                q_val_[g->out] = dotprod_all[idx_dotprod];
-                wires_[g->out] = q_val_[g->out] - r_dotprod_pad[idx_dotprod];
+                if(id_ != 0) {
+                    q_val_[g->out] = dotprod_all[idx_dotprod];
+                    wires_[g->out] = q_val_[g->out] - r_dotprod_pad[idx_dotprod];
+                }
                 idx_dotprod++;
                 break;
             }
@@ -387,6 +395,11 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
 
     for (auto& gate : circ_.gates_by_level[depth]) {
         switch (gate->type) {
+            case quadsquad::utils::GateType::kInp:
+            case quadsquad::utils::GateType::kAdd:
+            case quadsquad::utils::GateType::kSub: {
+                break;
+            }
             case quadsquad::utils::GateType::kMul: {
                 mult_num++;
                 break;
@@ -453,20 +466,18 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
 
     }
     else if (id_ == 0) { 
-        std::vector<Field> online_comm_to_TP(total_comm, 0);
+        std::vector<std::vector<Field>> online_comm_to_TP(nP_, std::vector<Field>(total_comm, 0));
         std::vector<Field> agg_values(total_comm, 0);
-        online_comm_to_TP.clear();
-        agg_values.clear();
         for(int pid = 1; pid <= nP_; pid++) {
-            network_->recv(pid, online_comm_to_TP.data(), sizeof(Field) * total_comm);
-        
+            
+            network_->recv(pid, online_comm_to_TP[pid-1].data(), sizeof(Field) * total_comm);
+        }
+        for(int pid = 1; pid <= nP_; pid++ ) {
+            
             for(int i = 0; i < total_comm; i++) {
-                
-                agg_values[i] += online_comm_to_TP[i];   
+                agg_values[i] += online_comm_to_TP[pid-1][i];   
             }
         }
-        
-
         
         for(int pid = 1; pid <= nP_; pid++){
             network_->send(pid, agg_values.data(), sizeof(Field) * total_comm);
@@ -569,12 +580,12 @@ bool OnlineEvaluator::MACVerification() {
             network_->recv(i, &omega, sizeof(Field));
             res += omega;
         }
+        
         for (int i = 1; i <= nP_; i++) {
             network_->send(i, &res, sizeof(Field));
         }
     }
     if( id_ != 0) {
-        
         network_->recv(0, &res, sizeof(Field));
     }
 
@@ -590,17 +601,12 @@ std::vector<Field> OnlineEvaluator::getOutputs() {
         return outvals;
     }
 
-    
     if(id_ == 0) {
         std::vector<Field> output_masks(circ_.outputs.size());
         for (size_t i = 0; i < circ_.outputs.size(); ++i) {
             auto wout = circ_.outputs[i];
             Field outmask = preproc_.gates[wout]->tpmask.secret();
             output_masks[i] = outmask;
-        //     for(int i = 1; i <= nP_; ++i) {
-        //     network_->send(i, &outmask, sizeof(Field));
-        // }
-        
         }    
         for(int i = 1; i <= nP_; ++i) {
            network_->send(i, output_masks.data(), output_masks.size() * sizeof(Field));
@@ -612,16 +618,11 @@ std::vector<Field> OnlineEvaluator::getOutputs() {
         network_->recv(0, output_masks.data(), output_masks.size() * sizeof(Field));
         for(size_t i = 0; i < circ_.outputs.size(); ++i) {
             Field outmask = output_masks[i];
-            // network_->recv(0, &outmask, sizeof(Field));
             auto wout = circ_.outputs[i]; 
-            //outvals[i] = wires_[wout] - output_masks[i];
             outvals[i] = wires_[wout] - outmask; 
         }
         return outvals;
-    }
-
-    
-    
+    } 
 }
 
 Field OnlineEvaluator::reconstruct(AuthAddShare<Field>& shares) {
@@ -1070,15 +1071,16 @@ void BoolEvaluator::evaluateGatesAtDepth(size_t depth) {
 
     }
     else if (id_ == 0) { 
-        std::vector<BoolRing> online_comm_to_TP(total_comm);
-        std::vector<BoolRing> agg_values(total_comm);
+        std::vector<BoolRing> online_comm_to_TP(total_comm, 0);
+        std::vector<BoolRing> agg_values(total_comm, 0);
+        // online_comm_to_TP.clear();
+        // agg_values.clear();
+        for(int pid = 1; pid <= nP_; pid++) {
+            network_->recv(pid, online_comm_to_TP.data(), sizeof(BoolRing) * total_comm);
         
-        for(int i = 0; i < total_comm; i++) {
-            agg_values[i] = 0;
-            for(int pid = 1; pid <= nP_; pid++) {
-                network_->recv(pid, online_comm_to_TP.data(), sizeof(BoolRing) * total_comm);
-                agg_values[i] += online_comm_to_TP[i];
+            for(int i = 0; i < total_comm; i++) {
                 
+                agg_values[i] += online_comm_to_TP[i];   
             }
         }
 
@@ -1122,5 +1124,64 @@ void BoolEvaluator::evaluateAllLevels() {
     for (size_t i = 0; i < circ_.gates_by_level.size(); ++i) {
         evaluateGatesAtDepth(i); 
   }
+}
+
+std::vector<BoolRing> BoolEvaluator::getOutputs() {
+    // if id_ == 0 : send preproc_.gates[wout]->mask
+    // if id_ != 1 : receive the above value and compute masked_value + mask
+    std::vector<BoolRing> outvals(circ_.outputs.size());
+    if (circ_.outputs.empty()) {
+        return outvals;
+    }
+
+    
+    if(id_ == 0) {
+        std::vector<BoolRing> output_masks(circ_.outputs.size());
+        for (size_t i = 0; i < circ_.outputs.size(); ++i) {
+            auto wout = circ_.outputs[i];
+            BoolRing outmask = preproc_.gates[wout]->tpmask.secret();
+            output_masks[i] = outmask;
+        //     for(int i = 1; i <= nP_; ++i) {
+        //     network_->send(i, &outmask, sizeof(Field));
+        // }
+        
+        }    
+        for(int i = 1; i <= nP_; ++i) {
+           network_->send(i, output_masks.data(), output_masks.size() * sizeof(BoolRing));
+        }
+        return outvals;
+    }
+    else {
+        std::vector<BoolRing> output_masks(circ_.outputs.size());
+        network_->recv(0, output_masks.data(), output_masks.size() * sizeof(BoolRing));
+        for(size_t i = 0; i < circ_.outputs.size(); ++i) {
+            BoolRing outmask = output_masks[i];
+            // network_->recv(0, &outmask, sizeof(Field));
+            auto wout = circ_.outputs[i]; 
+            //outvals[i] = wires_[wout] - output_masks[i];
+            outvals[i] = wires_[wout] - outmask; 
+        }
+        return outvals;
+    }
+
+    
+    
+}
+
+std::vector<BoolRing> BoolEvaluator::evaluateCircuit( const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& inputs) {
+    setInputs(inputs);
+    
+  for (size_t i = 0; i < circ_.gates_by_level.size(); ++i) {
+    evaluateGatesAtDepth(i); 
+  }
+  return getOutputs();
+  
+    // if(MACVerification()) { return getOutputs(); }
+    // else { 
+    //     std::cout<< "Malicious Activity Detected!!!" << std::endl;
+    //     std::vector<Field> abort (circ_.outputs.size(), 0);
+    //     return abort;
+    //     }
+
 }
 }; //namespace dirigent

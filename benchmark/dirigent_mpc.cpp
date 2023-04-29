@@ -14,10 +14,10 @@
 using namespace dirigent;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
-int nP = 8;
+
 
 quadsquad::utils::Circuit<Field> generateCircuit(size_t gates_per_level, size_t depth) {
-    quadsquad::utils::Circuit<Ring> circ;
+    quadsquad::utils::Circuit<Field> circ;
 
     std::vector<quadsquad::utils::wire_t> level_inputs(gates_per_level);
     std::generate(level_inputs.begin(), level_inputs.end(),
@@ -42,6 +42,38 @@ quadsquad::utils::Circuit<Field> generateCircuit(size_t gates_per_level, size_t 
 
     return circ;
 }
+quadsquad::utils::Circuit<Field> generateCircuitwM4(size_t gates_per_level, size_t depth) {
+    quadsquad::utils::Circuit<Field> circ;
+
+    std::vector<quadsquad::utils::wire_t> level_inputs(gates_per_level);
+    std::generate(level_inputs.begin(), level_inputs.end(),
+                [&]() { return circ.newInputWire(); });
+
+    for (size_t d = 0; d < depth; ++d) {
+        std::vector<quadsquad::utils::wire_t> level_outputs(gates_per_level);
+
+        for (size_t i = 0; i < gates_per_level - 3; ++i) {
+            level_outputs[i] = circ.addGate(quadsquad::utils::GateType::kMul4, level_inputs[i],
+                                      level_inputs[i + 1], level_inputs[i + 2], level_inputs[i + 3]);
+        }
+        level_outputs[gates_per_level - 3] =
+            circ.addGate(quadsquad::utils::GateType::kMul4, level_inputs[gates_per_level - 3],
+                     level_inputs[gates_per_level - 2], level_inputs[gates_per_level - 1], level_inputs[0]);
+        level_outputs[gates_per_level - 2] =
+            circ.addGate(quadsquad::utils::GateType::kMul4, level_inputs[gates_per_level - 2],
+                     level_inputs[gates_per_level - 1], level_inputs[0], level_inputs[1]);
+        level_outputs[gates_per_level - 1] =
+            circ.addGate(quadsquad::utils::GateType::kMul4, level_inputs[gates_per_level - 1],
+                     level_inputs[0], level_inputs[1], level_inputs[2]);
+        
+        level_inputs = std::move(level_outputs);
+    }
+    for (auto i : level_inputs) {
+        circ.setAsOutput(i);
+    }
+
+    return circ;
+}
 
 void benchmark(const bpo::variables_map& opts) {
     bool save_output = false;
@@ -53,6 +85,7 @@ void benchmark(const bpo::variables_map& opts) {
 
     auto gates_per_level = opts["gates-per-level"].as<size_t>();
     auto depth = opts["depth"].as<size_t>();
+    auto nP = opts["num-parties"].as<size_t>();
     auto pid = opts["pid"].as<size_t>();
     auto security_param = opts["security-param"].as<size_t>();
     auto threads = opts["threads"].as<size_t>();
@@ -87,6 +120,7 @@ void benchmark(const bpo::variables_map& opts) {
     json output_data;
     output_data["details"] = {{"gates_per_level", gates_per_level},
                                 {"depth", depth},
+                                {"num-parties", nP},
                                 {"pid", pid},
                                 {"security_param", security_param},
                                 {"threads", threads},
@@ -179,6 +213,7 @@ bpo::options_description programOptions() {
     desc.add_options()
         ("gates-per-level,g", bpo::value<size_t>()->required(), "Number of gates at each level.")
         ("depth,d", bpo::value<size_t>()->required(), "Multiplicative depth of circuit.")
+        ("num-parties,n", bpo::value<size_t>()->required(), "Number of parties.")
         ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
         ("security-param", bpo::value<size_t>()->default_value(128), "Security parameter in bits.")
         ("threads,t", bpo::value<size_t>()->default_value(6), "Number of threads (recommended 6).")

@@ -268,7 +268,77 @@ BOOST_AUTO_TEST_CASE(mult3) {
 }
 
 
-BOOST_AUTO_TEST_CASE(mult4) {
+// BOOST_AUTO_TEST_CASE(mult4) {
+//   int nP = 4;
+//   auto seed_block = emp::makeBlock(0, 200);
+//   emp::PRG prg(&seed_block);
+//   std::mt19937 gen(200);
+//   std::uniform_int_distribution<Field> distrib(0, TEST_DATA_MAX_VAL);
+//   quadsquad::utils::Circuit<Field> circ;
+//   std::vector<quadsquad::utils::wire_t> input_wires;
+//   std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+//   std::unordered_map<quadsquad::utils::wire_t, Field> inputs;
+
+//   for (size_t i = 0; i < 4; ++i) {
+//     auto winp = circ.newInputWire();
+//     input_wires.push_back(winp);
+//     input_pid_map[winp] = 1;
+    
+//     // inputs[winp] = distrib(gen);
+//     inputs[winp] = 1;
+//   }
+//   auto w_aab =
+//      circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
+//   auto w_cmd =
+//       circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
+//   auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
+//   auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
+//   auto w_mul_f = circ.addGate(quadsquad::utils::GateType::kMul4, w_mout, w_aout, w_cmd, w_aab);
+//   auto w_mul_d = circ.addGate(quadsquad::utils::GateType::kMul4, w_aout, w_cmd, w_aab, w_mul_f);
+//   // auto w_mul_f = circ.addGate(quadsquad::utils::GateType::kMul4, w_aab, w_cmd, w_mout, w_aout);
+//   // auto w_mul_d = circ.addGate(quadsquad::utils::GateType::kMul4, w_mout, w_aout, w_cmd, w_mul_f);
+//    circ.setAsOutput(w_cmd);
+//    circ.setAsOutput(w_mout);
+//    circ.setAsOutput(w_aout);
+//    circ.setAsOutput(w_mul_f);
+//    circ.setAsOutput(w_mul_d);
+
+//   auto level_circ = circ.orderGatesByLevel();
+//   auto exp_output = circ.evaluate(inputs);
+  
+//   std::vector<std::future<std::vector<Field>>> parties;
+//   parties.reserve(nP+1);
+//   for (int i = 0; i <= nP; ++i) {
+//       parties.push_back(std::async(std::launch::async, [&, i, input_pid_map, inputs]() {
+      
+//       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      
+//       OfflineEvaluator eval(nP, i, network, 
+//                             level_circ, SECURITY_PARAM, 4);
+//       auto preproc = eval.run(input_pid_map);
+     
+//       OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
+//                                   level_circ, SECURITY_PARAM, 1);
+      
+//       auto res = online_eval.evaluateCircuit(inputs);
+//       return res;
+      
+//     }));
+//   }
+//   int i = 0;
+//   for (auto& p : parties) {
+//     auto output = p.get();
+//       if(i > 0) {
+//         BOOST_TEST(exp_output == output);
+
+//         std::cout<<"exp_output = " << exp_output[exp_output.size() - 1] << " output = " << output[output.size() - 1] << std::endl;
+//       }
+//       i++;
+//   }
+
+// }
+
+BOOST_AUTO_TEST_CASE(mult4_2) {
   int nP = 4;
   auto seed_block = emp::makeBlock(0, 200);
   emp::PRG prg(&seed_block);
@@ -279,25 +349,42 @@ BOOST_AUTO_TEST_CASE(mult4) {
   std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
   std::unordered_map<quadsquad::utils::wire_t, Field> inputs;
 
-  for (size_t i = 0; i < 4; ++i) {
+  for (size_t i = 0; i < 8; ++i) {
     auto winp = circ.newInputWire();
     input_wires.push_back(winp);
     input_pid_map[winp] = 1;
     
-    inputs[winp] = distrib(gen);
-    //inputs[winp] = 1;
+    // inputs[winp] = distrib(gen);
+    inputs[winp] = 1;
   }
-  auto w_aab =
-     circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
-  auto w_cmd =
-      circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
-  auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
-  auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
-  auto w_mul_f = circ.addGate(quadsquad::utils::GateType::kMul4, w_aab, w_cmd, w_mout, w_aout);
-   circ.setAsOutput(w_cmd);
-   circ.setAsOutput(w_mout);
-   circ.setAsOutput(w_aout);
-   circ.setAsOutput(w_mul_f);
+
+  auto w_m1 = circ.addGate(quadsquad::utils::GateType::kMul, input_wires[0], input_wires[1]);
+  auto w_m3_2 = circ.addGate(quadsquad::utils::GateType::kMul3, input_wires[2], input_wires[3], w_m1);
+  auto w_m3_3 = circ.addGate(quadsquad::utils::GateType::kMul3, input_wires[4], input_wires[5], w_m1);
+  auto w_m4_1 = circ.addGate(quadsquad::utils::GateType::kMul4, input_wires[6], input_wires[7], w_m1, w_m3_2);
+  // auto w_m4_2 = circ.addGate(quadsquad::utils::GateType::kMul4, input_wires[6], input_wires[7], w_m1, w_m3_3);
+  // auto w_m2 = circ.addGate(quadsquad::utils::GateType::kMul, input_wires[0], w_m4_2);
+  // auto w_mult4_1 =
+  //    circ.addGate(quadsquad::utils::GateType::kMul4, input_wires[0], input_wires[1], input_wires[2], input_wires[3]);
+  // auto w_mul = circ.addGate(quadsquad::utils::GateType::kMul, w_mult4_1, input_wires[0]);
+    //  auto w_mult4_2 =
+    //  circ.addGate(quadsquad::utils::GateType::kMul4, input_wires[0], input_wires[1], input_wires[2], input_wires[3]);
+  // auto w_cmd =
+  //     circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
+  // auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
+  // auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
+  // auto w_mul_f = circ.addGate(quadsquad::utils::GateType::kMul4, w_mout, w_aout, w_cmd, w_aab);
+  // auto w_mul_d = circ.addGate(quadsquad::utils::GateType::kMul4, w_aout, w_cmd, w_aab, w_mul_f);
+  // // auto w_mul_f = circ.addGate(quadsquad::utils::GateType::kMul4, w_aab, w_cmd, w_mout, w_aout);
+  // // auto w_mul_d = circ.addGate(quadsquad::utils::GateType::kMul4, w_mout, w_aout, w_cmd, w_mul_f);
+  //  circ.setAsOutput(w_cmd);
+  //  circ.setAsOutput(w_mout);
+  //  circ.setAsOutput(w_aout);
+  //  circ.setAsOutput(w_mul_f);
+  //  circ.setAsOutput(w_mul_d);
+  circ.setAsOutput(w_m1);
+  // circ.setAsOutput(w_m4_1);
+  // circ.setAsOutput(w_m2);
 
   auto level_circ = circ.orderGatesByLevel();
   auto exp_output = circ.evaluate(inputs);
@@ -326,6 +413,8 @@ BOOST_AUTO_TEST_CASE(mult4) {
     auto output = p.get();
       if(i > 0) {
         BOOST_TEST(exp_output == output);
+
+        // std::cout<<"exp_output = " << exp_output[exp_output.size() - 1] << " output = " << output[output.size() - 1] << std::endl;
       }
       i++;
   }
@@ -333,9 +422,153 @@ BOOST_AUTO_TEST_CASE(mult4) {
 }
 BOOST_AUTO_TEST_SUITE_END()
 
-// BOOST_AUTO_TEST_SUITE(online_bool_evaluator)
+// BOOST_AUTO_TEST_CASE(Multk) {
+//   int nP = 5;
+//   quadsquad::utils::Circuit<Field> circ = quadsquad::utils::Circuit<Field>::generateMultK();
+//   std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+//   std::unordered_map<quadsquad::utils::wire_t, Field> inputs;
+//   for(size_t i = 0; i <= 64; i++) {
+//     input_pid_map[i] = 1;
+//     inputs[i] = 1;
+//   }
+//   auto level_circ = circ.orderGatesByLevel();
+//   std::vector<std::future<std::vector<Field>>> parties;
+//   parties.reserve(nP+1);
+//   for (int i = 0; i <= nP; ++i) {
+//       parties.push_back(std::async(std::launch::async, [&, i, input_pid_map, inputs]() {
+      
+//       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      
+//       OfflineEvaluator eval(nP, i, network, level_circ, SECURITY_PARAM, 1);
+//       std::cout<<"OFFLINE STARTED" <<std::endl;
+//       auto preproc = eval.run(input_pid_map);
+//       std::cout<<"OFFLINE COMPLETED" <<std::endl;
+//       OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
+//                                   level_circ, SECURITY_PARAM, 1);
+      
+//           auto res =  online_eval.evaluateCircuit(inputs);
+            
+//       // auto res = online_eval.evaluateCircuit(inputs);
+//       return res;
+//     }));
+//   }
+// }
 
-// BOOST_AUTO_TEST_CASE(mult) {
+// BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(online_bool_evaluator)
+
+BOOST_AUTO_TEST_CASE(Multk_bool) {
+  int nP = 5;
+  quadsquad::utils::Circuit<BoolRing> circ = quadsquad::utils::Circuit<BoolRing>::generateMultK();
+  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+  std::unordered_map<quadsquad::utils::wire_t, BoolRing> input_map;
+  std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
+  std::vector<AuthAddShare<BoolRing>> output_mask;
+  std::vector<TPShare<BoolRing>>   output_tpmask;
+   for (size_t i = 0; i <= 64; ++i) {
+    input_map[i] = 1;
+    input_pid_map[i] = 1;
+    bit_mask_map[i] = 0;
+  }
+  auto level_circ = circ.orderGatesByLevel();
+  std::vector<std::future<std::vector<BoolRing>>> parties;
+  parties.reserve(nP+1);
+  for (int i = 0; i <= nP; ++i) {
+      parties.push_back(std::async(std::launch::async, [&, i, input_pid_map, input_map]() {
+      
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      
+      OfflineBoolEvaluator eval(nP, i, network, level_circ);
+      
+      auto preproc = eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);
+      
+      BoolEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
+                                  level_circ);
+      
+          auto res =  online_eval.evaluateCircuit(input_map);
+            
+      // auto res = online_eval.evaluateCircuit(inputs);
+      return res;
+    }));
+  }
+}
+
+
+
+BOOST_AUTO_TEST_CASE(PrefixAND) {
+  int nP = 4;
+  quadsquad::utils::Circuit<BoolRing> circ = quadsquad::utils::Circuit<BoolRing>::generatePrefixAND();
+  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+  std::unordered_map<quadsquad::utils::wire_t, BoolRing> inputs;
+  std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
+  std::vector<AuthAddShare<BoolRing>> output_mask;
+  std::vector<TPShare<BoolRing>>   output_tpmask;
+  for(size_t i = 0; i <= 64; i++) {
+    input_pid_map[i] = 1;
+    inputs[i] = 1;
+    bit_mask_map[i] = 0; 
+  }
+  auto level_circ = circ.orderGatesByLevel();
+  std::vector<std::future<std::vector<BoolRing>>> parties;
+  parties.reserve(nP+1);
+  for (int i = 0; i <= nP; ++i) {
+      parties.push_back(std::async(std::launch::async, [&, i, input_pid_map, inputs]() {
+      
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      
+      OfflineBoolEvaluator eval(nP, i, network, level_circ);
+      auto preproc = eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);
+      BoolEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
+                                  level_circ);
+      
+          auto res =  online_eval.evaluateCircuit(inputs);
+            
+      // auto res = online_eval.evaluateCircuit(inputs);
+      return res;
+    }));
+  }
+}
+
+BOOST_AUTO_TEST_CASE(ParaPrefixAND) {
+  int nP = 4;
+  int repeat =2;
+  int k = 64;
+  quadsquad::utils::Circuit<BoolRing> circ = quadsquad::utils::Circuit<BoolRing>::generateParaPrefixAND(repeat);
+  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+  std::unordered_map<quadsquad::utils::wire_t, BoolRing> inputs;
+  std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
+  std::vector<AuthAddShare<BoolRing>> output_mask;
+  std::vector<TPShare<BoolRing>>   output_tpmask;
+  for (int rep = 0; rep < repeat; rep++) {
+    for(size_t i = 0; i <= k; i++) {
+      input_pid_map[(rep*(k+1)) + i] = 1;
+      inputs[(rep*(k+1)) + i] = 1;
+      bit_mask_map[(rep*(k+1)) + i] = 0; 
+    }
+  }
+  auto level_circ = circ.orderGatesByLevel();
+  std::vector<std::future<std::vector<BoolRing>>> parties;
+  parties.reserve(nP+1);
+  for (int i = 0; i <= nP; ++i) {
+      parties.push_back(std::async(std::launch::async, [&, i, input_pid_map, inputs]() {
+      
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      
+      OfflineBoolEvaluator eval(nP, i, network, level_circ);
+      auto preproc = eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);
+      BoolEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
+                                  level_circ);
+      
+          auto res =  online_eval.evaluateCircuit(inputs);
+            
+      // auto res = online_eval.evaluateCircuit(inputs);
+      return res;
+    }));
+  }
+}
+
+BOOST_AUTO_TEST_SUITE_END()
 //   int nP = 4;
 //   quadsquad::utils::Circuit<BoolRing> circ;
 //   auto wa = circ.newInputWire();

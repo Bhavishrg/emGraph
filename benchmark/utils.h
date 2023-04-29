@@ -18,10 +18,10 @@ struct TimePoint {
 };
 
 struct CommPoint {
-  std::array<uint64_t, 4> stats;
+  std::vector<uint64_t> stats;
 
   explicit CommPoint(io::NetIOMP& network);
-  std::array<uint64_t, 4> operator-(const CommPoint& rhs) const;
+  std::vector<uint64_t> operator-(const CommPoint& rhs) const;
 };
 
 class StatsPoint {

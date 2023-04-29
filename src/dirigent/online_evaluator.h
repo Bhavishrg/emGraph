@@ -115,6 +115,8 @@ public:
                                 std::vector<BoolRing> dotprod_all, std::vector<BoolRing> r_dotprod_pad);
   void evaluateGatesAtDepth(size_t depth);
   void evaluateAllLevels();
+  std::vector<BoolRing> getOutputs();
+  std::vector<BoolRing> evaluateCircuit( const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& inputs);
 
 //   std::vector<std::vector<BoolRing>> getOutputShares();
 };

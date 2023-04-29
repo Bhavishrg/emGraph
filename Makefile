@@ -140,6 +140,32 @@ QuadSquad/fast:
 .PHONY : QuadSquad/fast
 
 #=============================================================================
+# Target rules for targets named LTZ
+
+# Build rule for target.
+LTZ: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 LTZ
+.PHONY : LTZ
+
+# fast build rule for target.
+LTZ/fast:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/build
+.PHONY : LTZ/fast
+
+#=============================================================================
+# Target rules for targets named dirigent_bool_mpc
+
+# Build rule for target.
+dirigent_bool_mpc: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 dirigent_bool_mpc
+.PHONY : dirigent_bool_mpc
+
+# fast build rule for target.
+dirigent_bool_mpc/fast:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_bool_mpc.dir/build.make benchmark/CMakeFiles/dirigent_bool_mpc.dir/build
+.PHONY : dirigent_bool_mpc/fast
+
+#=============================================================================
 # Target rules for targets named dirigent_mpc
 
 # Build rule for target.
@@ -332,7 +358,9 @@ help:
 	@echo "... test"
 	@echo "... benchmarks"
 	@echo "... tests"
+	@echo "... LTZ"
 	@echo "... QuadSquad"
+	@echo "... dirigent_bool_mpc"
 	@echo "... dirigent_mpc"
 	@echo "... io_test"
 	@echo "... offline_mpc_sub"

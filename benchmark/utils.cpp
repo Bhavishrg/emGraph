@@ -13,17 +13,17 @@ double TimePoint::operator-(const TimePoint& rhs) const {
   return std::chrono::duration_cast<timeunit_t>(time - rhs.time).count();
 }
 
-CommPoint::CommPoint(io::NetIOMP& network) : stats{} {
-  for (size_t i = 0; i < 4; ++i) {
+CommPoint::CommPoint(io::NetIOMP& network) : stats(network.nP) {
+  for (size_t i = 0; i < network.nP; ++i) {
     if (i != network.party) {
       stats[i] = network.get(i, false)->counter + network.get(i, true)->counter;
     }
   }
 }
 
-std::array<uint64_t, 4> CommPoint::operator-(const CommPoint& rhs) const {
-  std::array<uint64_t, 4> res{};
-  for (size_t i = 0; i < 4; ++i) {
+std::vector<uint64_t> CommPoint::operator-(const CommPoint& rhs) const {
+  std::vector<uint64_t> res(stats.size());
+  for (size_t i = 0; i < stats.size(); ++i) {
     res[i] = stats[i] - rhs.stats[i];
   }
   return res;
