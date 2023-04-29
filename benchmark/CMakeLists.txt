@@ -8,6 +8,7 @@ macro(add_benchmark source_name)
     list(APPEND benchbin ${source_name})
 endmacro()
 
+add_benchmark(auction)
 add_benchmark(LTZ)
 add_benchmark(dirigent_bool_mpc)
 add_benchmark(dirigent_mpc)

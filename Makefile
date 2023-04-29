@@ -140,6 +140,19 @@ QuadSquad/fast:
 .PHONY : QuadSquad/fast
 
 #=============================================================================
+# Target rules for targets named auction
+
+# Build rule for target.
+auction: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 auction
+.PHONY : auction
+
+# fast build rule for target.
+auction/fast:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/build
+.PHONY : auction/fast
+
+#=============================================================================
 # Target rules for targets named LTZ
 
 # Build rule for target.
@@ -360,6 +373,7 @@ help:
 	@echo "... tests"
 	@echo "... LTZ"
 	@echo "... QuadSquad"
+	@echo "... auction"
 	@echo "... dirigent_bool_mpc"
 	@echo "... dirigent_mpc"
 	@echo "... io_test"

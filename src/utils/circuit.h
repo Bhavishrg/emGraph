@@ -607,10 +607,12 @@ class Circuit {
                 circ.setAsOutput(leveli[(rep * (k + 1)) + i]);
               }
             }
-          
-            // wire_t lastAND = circ.addGate(GateType::kMul, level_next[1], level_next[2]);
           }
-      }
+    }
+          std::vector<wire_t> lastAND(repeat);
+          for(int rep = 0; rep < repeat; rep++) {
+            lastAND[rep] = circ.addGate(GateType::kMul, leveli[1], leveli[2]);
+          }
     return circ;
   }
 

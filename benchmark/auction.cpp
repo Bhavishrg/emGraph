@@ -15,8 +15,24 @@ using namespace dirigent;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-quadsquad::utils::Circuit<BoolRing> LTZCircuit(int repeat) {
-    quadsquad::utils::Circuit<BoolRing> circ = quadsquad::utils::Circuit<BoolRing>::generateParaPrefixAND(repeat);
+quadsquad::utils::Circuit<Field> ShuffleCircuit(int N) {
+    quadsquad::utils::Circuit<Field> circ;
+    std::vector<std::vector<quadsquad::utils::wire_t>> 
+            M_pi(N, std::vector<quadsquad::utils::wire_t>(N));
+    std::vector<quadsquad::utils::wire_t> x(N);
+    for(size_t i = 0; i < N; i++) {
+        for(size_t j = 0; j < N; j++) {
+            M_pi[i][j] = circ.newInputWire();
+        }
+        x[i] = circ.newInputWire();
+    }
+    std::vector<quadsquad::utils::wire_t> pi_x(N);
+    for(int i = 0; i < N; i++) {
+        pi_x[i] = circ.addGate(quadsquad::utils::GateType::kDotprod, M_pi[i], x);
+        circ.setAsOutput(pi_x[i]);
+    }
+    
+
     return circ;  
 }
 
@@ -79,37 +95,63 @@ void benchmark(const bpo::variables_map& opts) {
         std::cout << key << ": " << value << "\n";
     }
     std::cout << std::endl;
-
-    auto circ = LTZCircuit(nP).orderGatesByLevel();
-    std::cout << "--- Circuit ---\n";
-    std::cout << circ << std::endl;
-
-    std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-    std::unordered_map<quadsquad::utils::wire_t, BoolRing> input_map;
-    std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
-    std::vector<AuthAddShare<BoolRing>> output_mask;
-    std::vector<TPShare<BoolRing>>   output_tpmask;
-    for (const auto& g : circ.gates_by_level[0]) {
+    std::vector<quadsquad::utils::LevelOrderedCircuit> circ(log(nP)/log(2));
+    int rep = nP;
+    for(int i = 0; i < log(nP)/log(2); i++) {
+        circ[i] = quadsquad::utils::Circuit<BoolRing>::generateParaPrefixAND(rep).orderGatesByLevel();
+        rep = rep/2;
+    }
+    auto shuff_circ = ShuffleCircuit(nP).orderGatesByLevel();
+    std::unordered_map<quadsquad::utils::wire_t, int> shuff_input_pid_map;
+    std::unordered_map<quadsquad::utils::wire_t, Field> shuff_input_map;
+    for (const auto& g : shuff_circ.gates_by_level[0]) {
         if (g->type == quadsquad::utils::GateType::kInp) {
-        input_pid_map[g->out] = 1;
-        input_map[g->out] = 1;
-        bit_mask_map[g->out] = 0;
+            shuff_input_pid_map[g->out] = 1;
+            shuff_input_map[g->out] = 5;
         }
     }
+
+    for(int i = 0; i < log(nP)/log(2); i++) {
+        std::cout << "--- Circuit ---\n";
+        std::cout << circ[i] << std::endl;
+    }
+        std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
+        std::unordered_map<quadsquad::utils::wire_t, BoolRing> input_map;
+        std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
+        std::vector<AuthAddShare<BoolRing>> output_mask;
+        std::vector<TPShare<BoolRing>>   output_tpmask;
+        for(int i = 0; i < log(nP)/log(2); i++) {
+            for (const auto& g : circ[i].gates_by_level[0]) {
+                if (g->type == quadsquad::utils::GateType::kInp) {
+                input_pid_map[g->out] = 1;
+                input_map[g->out] = 1;
+                bit_mask_map[g->out] = 0;
+                }
+            }
+        }
 
     emp::PRG prg(&emp::zero_block, seed);
     
 
     for (size_t r = 0; r < repeat; ++r) {
-        OfflineBoolEvaluator off_eval(nP, pid, network, circ, seed);
         
         network->sync();
         
         StatsPoint start(*network);
+
+        OfflineEvaluator shuff_off_eval(nP, pid, network, shuff_circ, security_param, threads, seed);
+        auto shuff_preproc = shuff_off_eval.run(shuff_input_pid_map);
+        OnlineEvaluator shuff_eval(nP, pid, network, std::move(shuff_preproc), shuff_circ, 
+                    security_param, threads, seed);
+        auto res = shuff_eval.evaluateCircuit(shuff_input_map);
+
+        for(int i = 0; i < log(nP)/log(2); i++) {
+        OfflineBoolEvaluator off_eval(nP, pid, network, circ[i], seed);
+        
         auto preproc = off_eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);
         // StatsPoint end_pre(*network);
         
-        BoolEvaluator eval(nP, pid, network, std::move(preproc), circ, seed);
+        BoolEvaluator eval(nP, pid, network, std::move(preproc), circ[i], seed);
 
         
         
@@ -118,12 +160,12 @@ void benchmark(const bpo::variables_map& opts) {
         // network->sync();
         
         // StatsPoint start(*network);
-        for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
-            eval.evaluateGatesAtDepth(i);
+        for (size_t d = 0; d < circ[i].gates_by_level.size(); ++d) {
+            eval.evaluateGatesAtDepth(d);
             
         }
         // auto res = eval.evaluateCircuit(input_map);
-        
+        }
         StatsPoint end(*network);
         auto rbench = end - start;
         output_data["benchmarks"].push_back(rbench);

@@ -84,6 +84,7 @@ clean: test/clean
 # Directory level rules for directory benchmark
 
 # Recursive "all" directory target.
+benchmark/all: benchmark/CMakeFiles/auction.dir/all
 benchmark/all: benchmark/CMakeFiles/LTZ.dir/all
 benchmark/all: benchmark/CMakeFiles/dirigent_bool_mpc.dir/all
 benchmark/all: benchmark/CMakeFiles/dirigent_mpc.dir/all
@@ -99,6 +100,7 @@ benchmark/preinstall:
 .PHONY : benchmark/preinstall
 
 # Recursive "clean" directory target.
+benchmark/clean: benchmark/CMakeFiles/auction.dir/clean
 benchmark/clean: benchmark/CMakeFiles/LTZ.dir/clean
 benchmark/clean: benchmark/CMakeFiles/dirigent_bool_mpc.dir/clean
 benchmark/clean: benchmark/CMakeFiles/dirigent_mpc.dir/clean
@@ -178,6 +180,32 @@ src/CMakeFiles/QuadSquad.dir/clean:
 .PHONY : src/CMakeFiles/QuadSquad.dir/clean
 
 #=============================================================================
+# Target rules for target benchmark/CMakeFiles/auction.dir
+
+# All Build rule for target.
+benchmark/CMakeFiles/auction.dir/all: src/CMakeFiles/QuadSquad.dir/all
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/depend
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=19,20,21 "Built target auction"
+.PHONY : benchmark/CMakeFiles/auction.dir/all
+
+# Build rule for subdir invocation for target.
+benchmark/CMakeFiles/auction.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles 18
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/auction.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles 0
+.PHONY : benchmark/CMakeFiles/auction.dir/rule
+
+# Convenience name for target.
+auction: benchmark/CMakeFiles/auction.dir/rule
+.PHONY : auction
+
+# clean rule for target.
+benchmark/CMakeFiles/auction.dir/clean:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/clean
+.PHONY : benchmark/CMakeFiles/auction.dir/clean
+
+#=============================================================================
 # Target rules for target benchmark/CMakeFiles/LTZ.dir
 
 # All Build rule for target.
@@ -210,7 +238,7 @@ benchmark/CMakeFiles/LTZ.dir/clean:
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_bool_mpc.dir/build.make benchmark/CMakeFiles/dirigent_bool_mpc.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_bool_mpc.dir/build.make benchmark/CMakeFiles/dirigent_bool_mpc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=19,20,21 "Built target dirigent_bool_mpc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=22,23,24 "Built target dirigent_bool_mpc"
 .PHONY : benchmark/CMakeFiles/dirigent_bool_mpc.dir/all
 
 # Build rule for subdir invocation for target.
@@ -236,7 +264,7 @@ benchmark/CMakeFiles/dirigent_bool_mpc.dir/clean:
 benchmark/CMakeFiles/dirigent_mpc.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_mpc.dir/build.make benchmark/CMakeFiles/dirigent_mpc.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_mpc.dir/build.make benchmark/CMakeFiles/dirigent_mpc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=22,23,24 "Built target dirigent_mpc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=25,26,27 "Built target dirigent_mpc"
 .PHONY : benchmark/CMakeFiles/dirigent_mpc.dir/all
 
 # Build rule for subdir invocation for target.
@@ -262,7 +290,7 @@ benchmark/CMakeFiles/dirigent_mpc.dir/clean:
 benchmark/CMakeFiles/online_mpc.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_mpc.dir/build.make benchmark/CMakeFiles/online_mpc.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_mpc.dir/build.make benchmark/CMakeFiles/online_mpc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=35,36,37 "Built target online_mpc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=38,39,40 "Built target online_mpc"
 .PHONY : benchmark/CMakeFiles/online_mpc.dir/all
 
 # Build rule for subdir invocation for target.
@@ -288,7 +316,7 @@ benchmark/CMakeFiles/online_mpc.dir/clean:
 benchmark/CMakeFiles/online_nn.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_nn.dir/build.make benchmark/CMakeFiles/online_nn.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_nn.dir/build.make benchmark/CMakeFiles/online_nn.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=38,39,40 "Built target online_nn"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=41,42,43 "Built target online_nn"
 .PHONY : benchmark/CMakeFiles/online_nn.dir/all
 
 # Build rule for subdir invocation for target.
@@ -314,7 +342,7 @@ benchmark/CMakeFiles/online_nn.dir/clean:
 benchmark/CMakeFiles/offline_mpc_tp.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_tp.dir/build.make benchmark/CMakeFiles/offline_mpc_tp.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_tp.dir/build.make benchmark/CMakeFiles/offline_mpc_tp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=30,31,32 "Built target offline_mpc_tp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=33,34,35 "Built target offline_mpc_tp"
 .PHONY : benchmark/CMakeFiles/offline_mpc_tp.dir/all
 
 # Build rule for subdir invocation for target.
@@ -340,7 +368,7 @@ benchmark/CMakeFiles/offline_mpc_tp.dir/clean:
 benchmark/CMakeFiles/offline_mpc_sub.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_sub.dir/build.make benchmark/CMakeFiles/offline_mpc_sub.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_sub.dir/build.make benchmark/CMakeFiles/offline_mpc_sub.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=27,28,29 "Built target offline_mpc_sub"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=30,31,32 "Built target offline_mpc_sub"
 .PHONY : benchmark/CMakeFiles/offline_mpc_sub.dir/all
 
 # Build rule for subdir invocation for target.
@@ -366,7 +394,7 @@ benchmark/CMakeFiles/offline_mpc_sub.dir/clean:
 benchmark/CMakeFiles/sodo_gridlock_iter.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/sodo_gridlock_iter.dir/build.make benchmark/CMakeFiles/sodo_gridlock_iter.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/sodo_gridlock_iter.dir/build.make benchmark/CMakeFiles/sodo_gridlock_iter.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=47,48,49 "Built target sodo_gridlock_iter"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=50,51,52 "Built target sodo_gridlock_iter"
 .PHONY : benchmark/CMakeFiles/sodo_gridlock_iter.dir/all
 
 # Build rule for subdir invocation for target.
@@ -389,6 +417,7 @@ benchmark/CMakeFiles/sodo_gridlock_iter.dir/clean:
 # Target rules for target benchmark/CMakeFiles/benchmarks.dir
 
 # All Build rule for target.
+benchmark/CMakeFiles/benchmarks.dir/all: benchmark/CMakeFiles/auction.dir/all
 benchmark/CMakeFiles/benchmarks.dir/all: benchmark/CMakeFiles/LTZ.dir/all
 benchmark/CMakeFiles/benchmarks.dir/all: benchmark/CMakeFiles/dirigent_bool_mpc.dir/all
 benchmark/CMakeFiles/benchmarks.dir/all: benchmark/CMakeFiles/dirigent_mpc.dir/all
@@ -404,7 +433,7 @@ benchmark/CMakeFiles/benchmarks.dir/all: benchmark/CMakeFiles/sodo_gridlock_iter
 
 # Build rule for subdir invocation for target.
 benchmark/CMakeFiles/benchmarks.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles 39
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles 42
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/benchmarks.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles 0
 .PHONY : benchmark/CMakeFiles/benchmarks.dir/rule
@@ -425,7 +454,7 @@ benchmark/CMakeFiles/benchmarks.dir/clean:
 test/CMakeFiles/io_test.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/io_test.dir/build.make test/CMakeFiles/io_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/io_test.dir/build.make test/CMakeFiles/io_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=25,26 "Built target io_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=28,29 "Built target io_test"
 .PHONY : test/CMakeFiles/io_test.dir/all
 
 # Build rule for subdir invocation for target.
@@ -451,7 +480,7 @@ test/CMakeFiles/io_test.dir/clean:
 test/CMakeFiles/sharing_test.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/sharing_test.dir/build.make test/CMakeFiles/sharing_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/sharing_test.dir/build.make test/CMakeFiles/sharing_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=45,46 "Built target sharing_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=48,49 "Built target sharing_test"
 .PHONY : test/CMakeFiles/sharing_test.dir/all
 
 # Build rule for subdir invocation for target.
@@ -477,7 +506,7 @@ test/CMakeFiles/sharing_test.dir/clean:
 test/CMakeFiles/utils_test.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/utils_test.dir/build.make test/CMakeFiles/utils_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/utils_test.dir/build.make test/CMakeFiles/utils_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=50,51 "Built target utils_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=53,54 "Built target utils_test"
 .PHONY : test/CMakeFiles/utils_test.dir/all
 
 # Build rule for subdir invocation for target.
@@ -503,7 +532,7 @@ test/CMakeFiles/utils_test.dir/clean:
 test/CMakeFiles/rand_test.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/rand_test.dir/build.make test/CMakeFiles/rand_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/rand_test.dir/build.make test/CMakeFiles/rand_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=43,44 "Built target rand_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=46,47 "Built target rand_test"
 .PHONY : test/CMakeFiles/rand_test.dir/all
 
 # Build rule for subdir invocation for target.
@@ -529,7 +558,7 @@ test/CMakeFiles/rand_test.dir/clean:
 test/CMakeFiles/offline_test.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/offline_test.dir/build.make test/CMakeFiles/offline_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/offline_test.dir/build.make test/CMakeFiles/offline_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=33,34 "Built target offline_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=36,37 "Built target offline_test"
 .PHONY : test/CMakeFiles/offline_test.dir/all
 
 # Build rule for subdir invocation for target.
@@ -555,7 +584,7 @@ test/CMakeFiles/offline_test.dir/clean:
 test/CMakeFiles/online_test.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=41,42 "Built target online_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=44,45 "Built target online_test"
 .PHONY : test/CMakeFiles/online_test.dir/all
 
 # Build rule for subdir invocation for target.

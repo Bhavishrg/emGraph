@@ -127,6 +127,20 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
+benchmark/CMakeFiles/auction.dir/rule:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/auction.dir/rule
+.PHONY : benchmark/CMakeFiles/auction.dir/rule
+
+# Convenience name for target.
+auction: benchmark/CMakeFiles/auction.dir/rule
+.PHONY : auction
+
+# fast build rule for target.
+auction/fast:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/build
+.PHONY : auction/fast
+
+# Convenience name for target.
 benchmark/CMakeFiles/LTZ.dir/rule:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/LTZ.dir/rule
 .PHONY : benchmark/CMakeFiles/LTZ.dir/rule
@@ -275,6 +289,30 @@ LTZ.s: LTZ.cpp.s
 LTZ.cpp.s:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/LTZ.cpp.s
 .PHONY : LTZ.cpp.s
+
+auction.o: auction.cpp.o
+.PHONY : auction.o
+
+# target to build an object file
+auction.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/auction.cpp.o
+.PHONY : auction.cpp.o
+
+auction.i: auction.cpp.i
+.PHONY : auction.i
+
+# target to preprocess a source file
+auction.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/auction.cpp.i
+.PHONY : auction.cpp.i
+
+auction.s: auction.cpp.s
+.PHONY : auction.s
+
+# target to generate assembly for a file
+auction.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/auction.cpp.s
+.PHONY : auction.cpp.s
 
 dirigent_bool_mpc.o: dirigent_bool_mpc.cpp.o
 .PHONY : dirigent_bool_mpc.o
@@ -449,6 +487,7 @@ utils.o: utils.cpp.o
 
 # target to build an object file
 utils.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_bool_mpc.dir/build.make benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_mpc.dir/build.make benchmark/CMakeFiles/dirigent_mpc.dir/utils.cpp.o
@@ -464,6 +503,7 @@ utils.i: utils.cpp.i
 
 # target to preprocess a source file
 utils.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_bool_mpc.dir/build.make benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_mpc.dir/build.make benchmark/CMakeFiles/dirigent_mpc.dir/utils.cpp.i
@@ -479,6 +519,7 @@ utils.s: utils.cpp.s
 
 # target to generate assembly for a file
 utils.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_bool_mpc.dir/build.make benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_mpc.dir/build.make benchmark/CMakeFiles/dirigent_mpc.dir/utils.cpp.s
@@ -500,6 +541,7 @@ help:
 	@echo "... test"
 	@echo "... benchmarks"
 	@echo "... LTZ"
+	@echo "... auction"
 	@echo "... dirigent_bool_mpc"
 	@echo "... dirigent_mpc"
 	@echo "... offline_mpc_sub"
@@ -510,6 +552,9 @@ help:
 	@echo "... LTZ.o"
 	@echo "... LTZ.i"
 	@echo "... LTZ.s"
+	@echo "... auction.o"
+	@echo "... auction.i"
+	@echo "... auction.s"
 	@echo "... dirigent_bool_mpc.o"
 	@echo "... dirigent_bool_mpc.i"
 	@echo "... dirigent_bool_mpc.s"
