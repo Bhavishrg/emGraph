@@ -140,6 +140,19 @@ QuadSquad/fast:
 .PHONY : QuadSquad/fast
 
 #=============================================================================
+# Target rules for targets named Darkpool_VM
+
+# Build rule for target.
+Darkpool_VM: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Darkpool_VM
+.PHONY : Darkpool_VM
+
+# fast build rule for target.
+Darkpool_VM/fast:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_VM.dir/build.make benchmark/CMakeFiles/Darkpool_VM.dir/build
+.PHONY : Darkpool_VM/fast
+
+#=============================================================================
 # Target rules for targets named Darkpool_CDA
 
 # Build rule for target.
@@ -385,6 +398,7 @@ help:
 	@echo "... benchmarks"
 	@echo "... tests"
 	@echo "... Darkpool_CDA"
+	@echo "... Darkpool_VM"
 	@echo "... LTZ"
 	@echo "... QuadSquad"
 	@echo "... auction"

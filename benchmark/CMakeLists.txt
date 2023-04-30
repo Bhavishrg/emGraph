@@ -8,6 +8,7 @@ macro(add_benchmark source_name)
     list(APPEND benchbin ${source_name})
 endmacro()
 
+add_benchmark(Darkpool_VM)
 add_benchmark(Darkpool_CDA)
 add_benchmark(auction)
 add_benchmark(LTZ)

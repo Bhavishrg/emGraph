@@ -127,6 +127,20 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
+benchmark/CMakeFiles/Darkpool_VM.dir/rule:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/Darkpool_VM.dir/rule
+.PHONY : benchmark/CMakeFiles/Darkpool_VM.dir/rule
+
+# Convenience name for target.
+Darkpool_VM: benchmark/CMakeFiles/Darkpool_VM.dir/rule
+.PHONY : Darkpool_VM
+
+# fast build rule for target.
+Darkpool_VM/fast:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_VM.dir/build.make benchmark/CMakeFiles/Darkpool_VM.dir/build
+.PHONY : Darkpool_VM/fast
+
+# Convenience name for target.
 benchmark/CMakeFiles/Darkpool_CDA.dir/rule:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/Darkpool_CDA.dir/rule
 .PHONY : benchmark/CMakeFiles/Darkpool_CDA.dir/rule
@@ -303,6 +317,30 @@ Darkpool_CDA.s: Darkpool_CDA.cpp.s
 Darkpool_CDA.cpp.s:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_CDA.dir/build.make benchmark/CMakeFiles/Darkpool_CDA.dir/Darkpool_CDA.cpp.s
 .PHONY : Darkpool_CDA.cpp.s
+
+Darkpool_VM.o: Darkpool_VM.cpp.o
+.PHONY : Darkpool_VM.o
+
+# target to build an object file
+Darkpool_VM.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_VM.dir/build.make benchmark/CMakeFiles/Darkpool_VM.dir/Darkpool_VM.cpp.o
+.PHONY : Darkpool_VM.cpp.o
+
+Darkpool_VM.i: Darkpool_VM.cpp.i
+.PHONY : Darkpool_VM.i
+
+# target to preprocess a source file
+Darkpool_VM.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_VM.dir/build.make benchmark/CMakeFiles/Darkpool_VM.dir/Darkpool_VM.cpp.i
+.PHONY : Darkpool_VM.cpp.i
+
+Darkpool_VM.s: Darkpool_VM.cpp.s
+.PHONY : Darkpool_VM.s
+
+# target to generate assembly for a file
+Darkpool_VM.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_VM.dir/build.make benchmark/CMakeFiles/Darkpool_VM.dir/Darkpool_VM.cpp.s
+.PHONY : Darkpool_VM.cpp.s
 
 LTZ.o: LTZ.cpp.o
 .PHONY : LTZ.o
@@ -525,6 +563,7 @@ utils.o: utils.cpp.o
 
 # target to build an object file
 utils.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_VM.dir/build.make benchmark/CMakeFiles/Darkpool_VM.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_CDA.dir/build.make benchmark/CMakeFiles/Darkpool_CDA.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/utils.cpp.o
@@ -542,6 +581,7 @@ utils.i: utils.cpp.i
 
 # target to preprocess a source file
 utils.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_VM.dir/build.make benchmark/CMakeFiles/Darkpool_VM.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_CDA.dir/build.make benchmark/CMakeFiles/Darkpool_CDA.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/utils.cpp.i
@@ -559,6 +599,7 @@ utils.s: utils.cpp.s
 
 # target to generate assembly for a file
 utils.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_VM.dir/build.make benchmark/CMakeFiles/Darkpool_VM.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_CDA.dir/build.make benchmark/CMakeFiles/Darkpool_CDA.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/utils.cpp.s
@@ -582,6 +623,7 @@ help:
 	@echo "... test"
 	@echo "... benchmarks"
 	@echo "... Darkpool_CDA"
+	@echo "... Darkpool_VM"
 	@echo "... LTZ"
 	@echo "... auction"
 	@echo "... dirigent_bool_mpc"
@@ -594,6 +636,9 @@ help:
 	@echo "... Darkpool_CDA.o"
 	@echo "... Darkpool_CDA.i"
 	@echo "... Darkpool_CDA.s"
+	@echo "... Darkpool_VM.o"
+	@echo "... Darkpool_VM.i"
+	@echo "... Darkpool_VM.s"
 	@echo "... LTZ.o"
 	@echo "... LTZ.i"
 	@echo "... LTZ.s"
