@@ -31,9 +31,21 @@ quadsquad::utils::Circuit<Field> ShuffleCircuit(int N) {
         pi_x[i] = circ.addGate(quadsquad::utils::GateType::kDotprod, M_pi[i], x);
         circ.setAsOutput(pi_x[i]);
     }
-    
-
     return circ;  
+}
+
+quadsquad::utils::Circuit<Field> BitACircuit(int N) {
+    quadsquad::utils::Circuit<Field> circ;
+    std::vector<quadsquad::utils::wire_t> inp(N);
+    std::vector<quadsquad::utils::wire_t> bita(N);
+    for(size_t i = 0; i < N; i++) {
+        inp[i] = circ.newInputWire();
+    }
+    for(size_t i = 0; i < N-1; i++) {
+        bita[i] = circ.addGate(quadsquad::utils::GateType::kMul, inp[i], inp[i+1]);
+    }
+    bita[N-1] = circ.addGate(quadsquad::utils::GateType::kMul, inp[N-1], inp[0]);
+    return circ;
 }
 
 
@@ -96,9 +108,11 @@ void benchmark(const bpo::variables_map& opts) {
     }
     std::cout << std::endl;
     std::vector<quadsquad::utils::LevelOrderedCircuit> circ(log(nP)/log(2));
+    std::vector<quadsquad::utils::LevelOrderedCircuit> bita_circ(log(nP)/log(2));
     int rep = nP;
     for(int i = 0; i < log(nP)/log(2); i++) {
         circ[i] = quadsquad::utils::Circuit<BoolRing>::generateParaPrefixAND(rep).orderGatesByLevel();
+        bita_circ[i] = BitACircuit(rep).orderGatesByLevel();
         rep = rep/2;
     }
     auto shuff_circ = ShuffleCircuit(nP).orderGatesByLevel();
@@ -120,12 +134,21 @@ void benchmark(const bpo::variables_map& opts) {
         std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
         std::vector<AuthAddShare<BoolRing>> output_mask;
         std::vector<TPShare<BoolRing>>   output_tpmask;
+
+        std::unordered_map<quadsquad::utils::wire_t, int> bita_input_pid_map;
+        std::unordered_map<quadsquad::utils::wire_t, Field> bita_input_map;
         for(int i = 0; i < log(nP)/log(2); i++) {
             for (const auto& g : circ[i].gates_by_level[0]) {
                 if (g->type == quadsquad::utils::GateType::kInp) {
-                input_pid_map[g->out] = 1;
-                input_map[g->out] = 1;
-                bit_mask_map[g->out] = 0;
+                    input_pid_map[g->out] = 1;
+                    input_map[g->out] = 1;
+                    bit_mask_map[g->out] = 0;
+                }
+            }
+            for (const auto& g : bita_circ[i].gates_by_level[0]) {
+                if (g->type == quadsquad::utils::GateType::kInp) {
+                    bita_input_pid_map[g->out] = 1;
+                    bita_input_map[g->out] = 5;
                 }
             }
         }
@@ -164,6 +187,11 @@ void benchmark(const bpo::variables_map& opts) {
             eval.evaluateGatesAtDepth(d);
             
         }
+        OfflineEvaluator bita_off_eval(nP, pid, network, bita_circ[i], security_param, threads, seed);
+        auto bita_preproc = bita_off_eval.run(bita_input_pid_map);
+        OnlineEvaluator bita_eval(nP, pid, network, std::move(bita_preproc), bita_circ[i], 
+                    security_param, threads, seed);
+        auto res = bita_eval.evaluateCircuit(bita_input_map);
         // auto res = eval.evaluateCircuit(input_map);
         }
         StatsPoint end(*network);

@@ -25,6 +25,20 @@ std::vector<BoolRing> bitDecompose(R val) {
   return res;
 }
 
+// size_t perfectPow(size_t val) {
+//   size_t temp = val;
+//   std::vector<int> bits;
+//   int len = 0;
+//   while (temp > 0)
+//   {
+//     bits.push_back(temp%2);
+//     temp = temp/2;
+//     len++;
+//   }
+//   size_t res = pow(2, len);
+//   return res;
+// }
+
 std::vector<uint64_t> packBool(const bool* data, size_t len);
 void unpackBool(const std::vector<uint64_t>& packed, bool* data, size_t len);
 };  // namespace dirigent

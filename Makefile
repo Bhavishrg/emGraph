@@ -140,6 +140,19 @@ QuadSquad/fast:
 .PHONY : QuadSquad/fast
 
 #=============================================================================
+# Target rules for targets named Darkpool_CDA
+
+# Build rule for target.
+Darkpool_CDA: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Darkpool_CDA
+.PHONY : Darkpool_CDA
+
+# fast build rule for target.
+Darkpool_CDA/fast:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_CDA.dir/build.make benchmark/CMakeFiles/Darkpool_CDA.dir/build
+.PHONY : Darkpool_CDA/fast
+
+#=============================================================================
 # Target rules for targets named auction
 
 # Build rule for target.
@@ -371,6 +384,7 @@ help:
 	@echo "... test"
 	@echo "... benchmarks"
 	@echo "... tests"
+	@echo "... Darkpool_CDA"
 	@echo "... LTZ"
 	@echo "... QuadSquad"
 	@echo "... auction"
