@@ -100,6 +100,8 @@ set(CMAKE_DEPEND_INFO_FILES
   "benchmark/CMakeFiles/LTZ.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/dirigent_bool_mpc.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/dirigent_mpc.dir/DependInfo.cmake"
+  "benchmark/CMakeFiles/dirigent_online.dir/DependInfo.cmake"
+  "benchmark/CMakeFiles/dirigent_offline.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/online_mpc.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/online_nn.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/offline_mpc_tp.dir/DependInfo.cmake"

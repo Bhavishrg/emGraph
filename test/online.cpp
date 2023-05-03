@@ -362,8 +362,8 @@ BOOST_AUTO_TEST_CASE(mult4_2) {
   auto w_m3_2 = circ.addGate(quadsquad::utils::GateType::kMul3, input_wires[2], input_wires[3], w_m1);
   auto w_m3_3 = circ.addGate(quadsquad::utils::GateType::kMul3, input_wires[4], input_wires[5], w_m1);
   auto w_m4_1 = circ.addGate(quadsquad::utils::GateType::kMul4, input_wires[6], input_wires[7], w_m1, w_m3_2);
-  // auto w_m4_2 = circ.addGate(quadsquad::utils::GateType::kMul4, input_wires[6], input_wires[7], w_m1, w_m3_3);
-  // auto w_m2 = circ.addGate(quadsquad::utils::GateType::kMul, input_wires[0], w_m4_2);
+  auto w_m4_2 = circ.addGate(quadsquad::utils::GateType::kMul4, input_wires[6], input_wires[7], w_m1, w_m3_3);
+  auto w_m2 = circ.addGate(quadsquad::utils::GateType::kMul, input_wires[0], w_m4_2);
   // auto w_mult4_1 =
   //    circ.addGate(quadsquad::utils::GateType::kMul4, input_wires[0], input_wires[1], input_wires[2], input_wires[3]);
   // auto w_mul = circ.addGate(quadsquad::utils::GateType::kMul, w_mult4_1, input_wires[0]);
@@ -383,8 +383,8 @@ BOOST_AUTO_TEST_CASE(mult4_2) {
   //  circ.setAsOutput(w_mul_f);
   //  circ.setAsOutput(w_mul_d);
   circ.setAsOutput(w_m1);
-  // circ.setAsOutput(w_m4_1);
-  // circ.setAsOutput(w_m2);
+  circ.setAsOutput(w_m4_1);
+  circ.setAsOutput(w_m2);
 
   auto level_circ = circ.orderGatesByLevel();
   auto exp_output = circ.evaluate(inputs);

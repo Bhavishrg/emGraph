@@ -11,6 +11,8 @@
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/CMakeFiles/LTZ.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/CMakeFiles/dirigent_bool_mpc.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/CMakeFiles/dirigent_mpc.dir
+/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/CMakeFiles/dirigent_online.dir
+/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/CMakeFiles/dirigent_offline.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/CMakeFiles/online_mpc.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/CMakeFiles/online_nn.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/CMakeFiles/offline_mpc_tp.dir

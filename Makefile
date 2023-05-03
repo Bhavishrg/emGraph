@@ -218,6 +218,32 @@ dirigent_mpc/fast:
 .PHONY : dirigent_mpc/fast
 
 #=============================================================================
+# Target rules for targets named dirigent_online
+
+# Build rule for target.
+dirigent_online: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 dirigent_online
+.PHONY : dirigent_online
+
+# fast build rule for target.
+dirigent_online/fast:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_online.dir/build.make benchmark/CMakeFiles/dirigent_online.dir/build
+.PHONY : dirigent_online/fast
+
+#=============================================================================
+# Target rules for targets named dirigent_offline
+
+# Build rule for target.
+dirigent_offline: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 dirigent_offline
+.PHONY : dirigent_offline
+
+# fast build rule for target.
+dirigent_offline/fast:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_offline.dir/build.make benchmark/CMakeFiles/dirigent_offline.dir/build
+.PHONY : dirigent_offline/fast
+
+#=============================================================================
 # Target rules for targets named online_mpc
 
 # Build rule for target.
@@ -404,6 +430,8 @@ help:
 	@echo "... auction"
 	@echo "... dirigent_bool_mpc"
 	@echo "... dirigent_mpc"
+	@echo "... dirigent_offline"
+	@echo "... dirigent_online"
 	@echo "... io_test"
 	@echo "... offline_mpc_sub"
 	@echo "... offline_mpc_tp"

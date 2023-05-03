@@ -211,6 +211,34 @@ dirigent_mpc/fast:
 .PHONY : dirigent_mpc/fast
 
 # Convenience name for target.
+benchmark/CMakeFiles/dirigent_online.dir/rule:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/dirigent_online.dir/rule
+.PHONY : benchmark/CMakeFiles/dirigent_online.dir/rule
+
+# Convenience name for target.
+dirigent_online: benchmark/CMakeFiles/dirigent_online.dir/rule
+.PHONY : dirigent_online
+
+# fast build rule for target.
+dirigent_online/fast:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_online.dir/build.make benchmark/CMakeFiles/dirigent_online.dir/build
+.PHONY : dirigent_online/fast
+
+# Convenience name for target.
+benchmark/CMakeFiles/dirigent_offline.dir/rule:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/dirigent_offline.dir/rule
+.PHONY : benchmark/CMakeFiles/dirigent_offline.dir/rule
+
+# Convenience name for target.
+dirigent_offline: benchmark/CMakeFiles/dirigent_offline.dir/rule
+.PHONY : dirigent_offline
+
+# fast build rule for target.
+dirigent_offline/fast:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_offline.dir/build.make benchmark/CMakeFiles/dirigent_offline.dir/build
+.PHONY : dirigent_offline/fast
+
+# Convenience name for target.
 benchmark/CMakeFiles/online_mpc.dir/rule:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/online_mpc.dir/rule
 .PHONY : benchmark/CMakeFiles/online_mpc.dir/rule
@@ -438,6 +466,54 @@ dirigent_mpc.cpp.s:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_mpc.dir/build.make benchmark/CMakeFiles/dirigent_mpc.dir/dirigent_mpc.cpp.s
 .PHONY : dirigent_mpc.cpp.s
 
+dirigent_offline.o: dirigent_offline.cpp.o
+.PHONY : dirigent_offline.o
+
+# target to build an object file
+dirigent_offline.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_offline.dir/build.make benchmark/CMakeFiles/dirigent_offline.dir/dirigent_offline.cpp.o
+.PHONY : dirigent_offline.cpp.o
+
+dirigent_offline.i: dirigent_offline.cpp.i
+.PHONY : dirigent_offline.i
+
+# target to preprocess a source file
+dirigent_offline.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_offline.dir/build.make benchmark/CMakeFiles/dirigent_offline.dir/dirigent_offline.cpp.i
+.PHONY : dirigent_offline.cpp.i
+
+dirigent_offline.s: dirigent_offline.cpp.s
+.PHONY : dirigent_offline.s
+
+# target to generate assembly for a file
+dirigent_offline.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_offline.dir/build.make benchmark/CMakeFiles/dirigent_offline.dir/dirigent_offline.cpp.s
+.PHONY : dirigent_offline.cpp.s
+
+dirigent_online.o: dirigent_online.cpp.o
+.PHONY : dirigent_online.o
+
+# target to build an object file
+dirigent_online.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_online.dir/build.make benchmark/CMakeFiles/dirigent_online.dir/dirigent_online.cpp.o
+.PHONY : dirigent_online.cpp.o
+
+dirigent_online.i: dirigent_online.cpp.i
+.PHONY : dirigent_online.i
+
+# target to preprocess a source file
+dirigent_online.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_online.dir/build.make benchmark/CMakeFiles/dirigent_online.dir/dirigent_online.cpp.i
+.PHONY : dirigent_online.cpp.i
+
+dirigent_online.s: dirigent_online.cpp.s
+.PHONY : dirigent_online.s
+
+# target to generate assembly for a file
+dirigent_online.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_online.dir/build.make benchmark/CMakeFiles/dirigent_online.dir/dirigent_online.cpp.s
+.PHONY : dirigent_online.cpp.s
+
 offline_mpc_sub.o: offline_mpc_sub.cpp.o
 .PHONY : offline_mpc_sub.o
 
@@ -569,6 +645,8 @@ utils.cpp.o:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_bool_mpc.dir/build.make benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_mpc.dir/build.make benchmark/CMakeFiles/dirigent_mpc.dir/utils.cpp.o
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_online.dir/build.make benchmark/CMakeFiles/dirigent_online.dir/utils.cpp.o
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_offline.dir/build.make benchmark/CMakeFiles/dirigent_offline.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_mpc.dir/build.make benchmark/CMakeFiles/online_mpc.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_nn.dir/build.make benchmark/CMakeFiles/online_nn.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_tp.dir/build.make benchmark/CMakeFiles/offline_mpc_tp.dir/utils.cpp.o
@@ -587,6 +665,8 @@ utils.cpp.i:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_bool_mpc.dir/build.make benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_mpc.dir/build.make benchmark/CMakeFiles/dirigent_mpc.dir/utils.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_online.dir/build.make benchmark/CMakeFiles/dirigent_online.dir/utils.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_offline.dir/build.make benchmark/CMakeFiles/dirigent_offline.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_mpc.dir/build.make benchmark/CMakeFiles/online_mpc.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_nn.dir/build.make benchmark/CMakeFiles/online_nn.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_tp.dir/build.make benchmark/CMakeFiles/offline_mpc_tp.dir/utils.cpp.i
@@ -605,6 +685,8 @@ utils.cpp.s:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_bool_mpc.dir/build.make benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_mpc.dir/build.make benchmark/CMakeFiles/dirigent_mpc.dir/utils.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_online.dir/build.make benchmark/CMakeFiles/dirigent_online.dir/utils.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_offline.dir/build.make benchmark/CMakeFiles/dirigent_offline.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_mpc.dir/build.make benchmark/CMakeFiles/online_mpc.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_nn.dir/build.make benchmark/CMakeFiles/online_nn.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_tp.dir/build.make benchmark/CMakeFiles/offline_mpc_tp.dir/utils.cpp.s
@@ -628,6 +710,8 @@ help:
 	@echo "... auction"
 	@echo "... dirigent_bool_mpc"
 	@echo "... dirigent_mpc"
+	@echo "... dirigent_offline"
+	@echo "... dirigent_online"
 	@echo "... offline_mpc_sub"
 	@echo "... offline_mpc_tp"
 	@echo "... online_mpc"
@@ -651,6 +735,12 @@ help:
 	@echo "... dirigent_mpc.o"
 	@echo "... dirigent_mpc.i"
 	@echo "... dirigent_mpc.s"
+	@echo "... dirigent_offline.o"
+	@echo "... dirigent_offline.i"
+	@echo "... dirigent_offline.s"
+	@echo "... dirigent_online.o"
+	@echo "... dirigent_online.i"
+	@echo "... dirigent_online.s"
 	@echo "... offline_mpc_sub.o"
 	@echo "... offline_mpc_sub.i"
 	@echo "... offline_mpc_sub.s"

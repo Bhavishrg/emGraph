@@ -107,15 +107,19 @@ void benchmark(const bpo::variables_map& opts) {
         std::cout << key << ": " << value << "\n";
     }
     std::cout << std::endl;
-    std::vector<quadsquad::utils::LevelOrderedCircuit> circ(log(nP)/log(2));
-    std::vector<quadsquad::utils::LevelOrderedCircuit> bita_circ(log(nP)/log(2));
-    int rep = nP;
-    for(int i = 0; i < log(nP)/log(2); i++) {
+    int p = 1;
+    while (p < nP) {
+        p *= 2;
+    }
+    std::vector<quadsquad::utils::LevelOrderedCircuit> circ(log(p)/log(2));
+    std::vector<quadsquad::utils::LevelOrderedCircuit> bita_circ(log(p)/log(2));
+    int rep = p/2;
+    for(int i = 0; i < log(p)/log(2); i++) {
         circ[i] = quadsquad::utils::Circuit<BoolRing>::generateParaPrefixAND(rep).orderGatesByLevel();
         bita_circ[i] = BitACircuit(rep).orderGatesByLevel();
         rep = rep/2;
     }
-    auto shuff_circ = ShuffleCircuit(nP).orderGatesByLevel();
+    auto shuff_circ = ShuffleCircuit(p).orderGatesByLevel();
     std::unordered_map<quadsquad::utils::wire_t, int> shuff_input_pid_map;
     std::unordered_map<quadsquad::utils::wire_t, Field> shuff_input_map;
     for (const auto& g : shuff_circ.gates_by_level[0]) {
@@ -125,7 +129,7 @@ void benchmark(const bpo::variables_map& opts) {
         }
     }
 
-    for(int i = 0; i < log(nP)/log(2); i++) {
+    for(int i = 0; i < log(p)/log(2); i++) {
         std::cout << "--- Circuit ---\n";
         std::cout << circ[i] << std::endl;
     }
@@ -137,7 +141,7 @@ void benchmark(const bpo::variables_map& opts) {
 
         std::unordered_map<quadsquad::utils::wire_t, int> bita_input_pid_map;
         std::unordered_map<quadsquad::utils::wire_t, Field> bita_input_map;
-        for(int i = 0; i < log(nP)/log(2); i++) {
+        for(int i = 0; i < log(p)/log(2); i++) {
             for (const auto& g : circ[i].gates_by_level[0]) {
                 if (g->type == quadsquad::utils::GateType::kInp) {
                     input_pid_map[g->out] = 1;
@@ -168,7 +172,7 @@ void benchmark(const bpo::variables_map& opts) {
                     security_param, threads, seed);
         auto res = shuff_eval.evaluateCircuit(shuff_input_map);
 
-        for(int i = 0; i < log(nP)/log(2); i++) {
+        for(int i = 0; i < log(p)/log(2); i++) {
         OfflineBoolEvaluator off_eval(nP, pid, network, circ[i], seed);
         
         auto preproc = off_eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);

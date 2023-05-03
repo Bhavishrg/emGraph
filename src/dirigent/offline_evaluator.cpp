@@ -459,7 +459,7 @@ void OfflineEvaluator::setWireMasksParty(
           AuthAddShare<Field> rand_mask;
           randomShare(nP_, id_, rgen_, *network_, 
                           rand_mask, tprand_mask, key, keySh, rand_sh, idx_rand_sh);
-          idx_rand_sh++;
+          
           TPShare<Field> tpmask_ab;
           AuthAddShare<Field> mask_ab; 
           randomShareSecret(nP_, id_, rgen_, *network_, 

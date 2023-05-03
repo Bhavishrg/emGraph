@@ -13,8 +13,8 @@ src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o: src/dirigent/offl
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__mbstate_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/wchar.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stddef.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stddef.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__stddef_max_align_t.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stddef.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__stddef_max_align_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__nullptr \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/wchar.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types.h \
@@ -46,7 +46,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o: src/dirigent/offl
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_ct_rune_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_rune_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_wchar_t.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdarg.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdarg.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_stdio.h \
@@ -106,7 +106,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o: src/dirigent/offl
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uid_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/resource.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdint.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdint.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint8_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint16_t.h \
@@ -152,7 +152,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o: src/dirigent/offl
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/ratio \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/climits \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/limits.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/limits.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/limits.h \
@@ -421,86 +421,86 @@ src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o: src/dirigent/offl
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__bsd_locale_defaults.h \
   /usr/local/include/emp-tool/io/io_channel.h \
   /usr/local/include/emp-tool/utils/block.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/immintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/x86gprintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/hresetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/uintrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/crc32intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mm_malloc.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/emmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/smmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/popcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_aes.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_pclmul.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clflushoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clwbintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/f16cintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/lzcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512fintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512cdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqvlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512dqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlcdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vldqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512erintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmavlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmivlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512pfintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pkuintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vpclmulqdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vaesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/gfniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rtmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xtestintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/shaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fxsrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavecintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/adxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rdseedintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wbnoinvdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cldemoteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/waitpkgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/movdirintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pconfigintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/sgxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/ptwriteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/invpcidintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/keylockerintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/amxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/enqcmdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/serializeintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tsxldtrkintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/immintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/x86gprintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/hresetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/uintrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/crc32intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mm_malloc.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/emmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/smmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/popcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_aes.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_pclmul.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clflushoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clwbintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/f16cintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/lzcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512fintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512cdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqvlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512dqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlcdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vldqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512erintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmavlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmivlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512pfintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pkuintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vpclmulqdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vaesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/gfniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rtmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xtestintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/shaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fxsrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavecintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/adxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rdseedintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wbnoinvdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cldemoteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/waitpkgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/movdirintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pconfigintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/sgxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/ptwriteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/invpcidintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/keylockerintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/amxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/enqcmdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/serializeintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tsxldtrkintrin.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/iomanip \
   /usr/local/include/emp-tool/utils/prg.h \
   /usr/local/include/emp-tool/utils/aes.h \
@@ -911,8 +911,8 @@ src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o: src/dirigent/onlin
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/type_traits \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cstddef \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/version \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stddef.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__stddef_max_align_t.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stddef.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__stddef_max_align_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__nullptr \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/forward.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/move.h \
@@ -968,7 +968,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o: src/dirigent/onlin
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uid_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/resource.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdint.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdint.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint8_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint16_t.h \
@@ -1001,7 +1001,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o: src/dirigent/onlin
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stddef.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/wchar.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_mbstate_t.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdarg.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdarg.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_stdio.h \
@@ -1103,7 +1103,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o: src/dirigent/onlin
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/ratio \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/climits \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/limits.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/limits.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/limits.h \
@@ -1327,86 +1327,86 @@ src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o: src/dirigent/onlin
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__bsd_locale_defaults.h \
   /usr/local/include/emp-tool/io/io_channel.h \
   /usr/local/include/emp-tool/utils/block.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/immintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/x86gprintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/hresetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/uintrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/crc32intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mm_malloc.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/emmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/smmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/popcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_aes.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_pclmul.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clflushoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clwbintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/f16cintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/lzcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512fintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512cdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqvlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512dqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlcdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vldqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512erintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmavlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmivlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512pfintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pkuintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vpclmulqdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vaesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/gfniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rtmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xtestintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/shaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fxsrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavecintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/adxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rdseedintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wbnoinvdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cldemoteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/waitpkgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/movdirintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pconfigintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/sgxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/ptwriteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/invpcidintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/keylockerintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/amxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/enqcmdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/serializeintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tsxldtrkintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/immintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/x86gprintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/hresetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/uintrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/crc32intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mm_malloc.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/emmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/smmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/popcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_aes.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_pclmul.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clflushoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clwbintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/f16cintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/lzcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512fintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512cdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqvlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512dqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlcdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vldqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512erintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmavlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmivlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512pfintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pkuintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vpclmulqdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vaesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/gfniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rtmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xtestintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/shaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fxsrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavecintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/adxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rdseedintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wbnoinvdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cldemoteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/waitpkgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/movdirintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pconfigintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/sgxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/ptwriteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/invpcidintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/keylockerintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/amxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/enqcmdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/serializeintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tsxldtrkintrin.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/iomanip \
   /usr/local/include/emp-tool/utils/prg.h \
   /usr/local/include/emp-tool/utils/aes.h \
@@ -1802,8 +1802,8 @@ src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o: src/dirigent/rand_gen
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__mbstate_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/wchar.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stddef.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stddef.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__stddef_max_align_t.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stddef.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__stddef_max_align_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__nullptr \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/wchar.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types.h \
@@ -1835,7 +1835,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o: src/dirigent/rand_gen
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_ct_rune_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_rune_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_wchar_t.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdarg.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdarg.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_stdio.h \
@@ -1895,7 +1895,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o: src/dirigent/rand_gen
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uid_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/resource.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdint.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdint.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint8_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint16_t.h \
@@ -1941,7 +1941,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o: src/dirigent/rand_gen
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/ratio \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/climits \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/limits.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/limits.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/limits.h \
@@ -2210,86 +2210,86 @@ src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o: src/dirigent/rand_gen
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__bsd_locale_defaults.h \
   /usr/local/include/emp-tool/io/io_channel.h \
   /usr/local/include/emp-tool/utils/block.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/immintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/x86gprintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/hresetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/uintrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/crc32intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mm_malloc.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/emmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/smmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/popcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_aes.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_pclmul.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clflushoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clwbintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/f16cintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/lzcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512fintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512cdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqvlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512dqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlcdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vldqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512erintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmavlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmivlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512pfintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pkuintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vpclmulqdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vaesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/gfniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rtmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xtestintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/shaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fxsrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavecintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/adxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rdseedintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wbnoinvdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cldemoteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/waitpkgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/movdirintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pconfigintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/sgxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/ptwriteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/invpcidintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/keylockerintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/amxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/enqcmdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/serializeintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tsxldtrkintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/immintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/x86gprintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/hresetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/uintrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/crc32intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mm_malloc.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/emmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/smmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/popcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_aes.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_pclmul.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clflushoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clwbintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/f16cintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/lzcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512fintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512cdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqvlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512dqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlcdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vldqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512erintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmavlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmivlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512pfintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pkuintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vpclmulqdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vaesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/gfniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rtmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xtestintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/shaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fxsrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavecintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/adxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rdseedintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wbnoinvdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cldemoteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/waitpkgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/movdirintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pconfigintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/sgxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/ptwriteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/invpcidintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/keylockerintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/amxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/enqcmdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/serializeintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tsxldtrkintrin.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/iomanip \
   /usr/local/include/emp-tool/utils/prg.h \
   /usr/local/include/emp-tool/utils/aes.h \
@@ -2454,8 +2454,8 @@ src/CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.o: src/dirigent/sharing.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__mbstate_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/wchar.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stddef.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stddef.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__stddef_max_align_t.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stddef.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__stddef_max_align_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__nullptr \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/wchar.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types.h \
@@ -2487,7 +2487,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.o: src/dirigent/sharing.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_ct_rune_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_rune_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_wchar_t.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdarg.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdarg.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_stdio.h \
@@ -2547,7 +2547,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.o: src/dirigent/sharing.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uid_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/resource.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdint.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdint.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint8_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint16_t.h \
@@ -2593,7 +2593,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.o: src/dirigent/sharing.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/ratio \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/climits \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/limits.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/limits.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/limits.h \
@@ -2862,86 +2862,86 @@ src/CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.o: src/dirigent/sharing.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__bsd_locale_defaults.h \
   /usr/local/include/emp-tool/io/io_channel.h \
   /usr/local/include/emp-tool/utils/block.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/immintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/x86gprintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/hresetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/uintrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/crc32intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mm_malloc.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/emmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/smmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/popcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_aes.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_pclmul.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clflushoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clwbintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/f16cintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/lzcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512fintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512cdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqvlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512dqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlcdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vldqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512erintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmavlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmivlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512pfintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pkuintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vpclmulqdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vaesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/gfniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rtmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xtestintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/shaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fxsrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavecintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/adxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rdseedintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wbnoinvdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cldemoteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/waitpkgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/movdirintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pconfigintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/sgxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/ptwriteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/invpcidintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/keylockerintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/amxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/enqcmdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/serializeintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tsxldtrkintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/immintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/x86gprintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/hresetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/uintrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/crc32intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mm_malloc.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/emmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/smmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/popcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_aes.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_pclmul.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clflushoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clwbintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/f16cintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/lzcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512fintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512cdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqvlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512dqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlcdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vldqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512erintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmavlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmivlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512pfintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pkuintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vpclmulqdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vaesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/gfniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rtmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xtestintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/shaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fxsrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavecintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/adxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rdseedintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wbnoinvdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cldemoteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/waitpkgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/movdirintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pconfigintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/sgxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/ptwriteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/invpcidintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/keylockerintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/amxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/enqcmdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/serializeintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tsxldtrkintrin.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/iomanip \
   /usr/local/include/emp-tool/utils/prg.h \
   /usr/local/include/emp-tool/utils/aes.h \
@@ -3131,8 +3131,8 @@ src/CMakeFiles/QuadSquad.dir/dirigent/types.cpp.o: src/dirigent/types.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/pthread.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cstddef \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/version \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stddef.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__stddef_max_align_t.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stddef.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__stddef_max_align_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__nullptr \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cstdlib \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdlib.h \
@@ -3179,7 +3179,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/types.cpp.o: src/dirigent/types.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uid_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/resource.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdint.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdint.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint8_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint16_t.h \
@@ -3215,7 +3215,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/types.cpp.o: src/dirigent/types.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stddef.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/wchar.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_mbstate_t.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdarg.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdarg.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_stdio.h \
@@ -3309,7 +3309,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/types.cpp.o: src/dirigent/types.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/ratio \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/climits \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/limits.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/limits.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/limits.h \
@@ -5117,8 +5117,8 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o: src/quadsquad/of
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/pthread.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cstddef \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/version \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stddef.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__stddef_max_align_t.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stddef.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__stddef_max_align_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__nullptr \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cstdlib \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdlib.h \
@@ -5165,7 +5165,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o: src/quadsquad/of
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uid_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/resource.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdint.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdint.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint8_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint16_t.h \
@@ -5201,7 +5201,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o: src/quadsquad/of
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stddef.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/wchar.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_mbstate_t.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdarg.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdarg.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_stdio.h \
@@ -5295,7 +5295,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o: src/quadsquad/of
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/ratio \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/climits \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/limits.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/limits.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/limits.h \
@@ -5547,86 +5547,86 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o: src/quadsquad/of
   /usr/local/include/emp-tool/io/file_io_channel.h \
   /usr/local/include/emp-tool/io/io_channel.h \
   /usr/local/include/emp-tool/utils/block.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/immintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/x86gprintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/hresetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/uintrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/crc32intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mm_malloc.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/emmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/smmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/popcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_aes.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_pclmul.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clflushoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clwbintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/f16cintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/lzcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512fintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512cdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqvlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512dqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlcdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vldqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512erintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmavlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmivlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512pfintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pkuintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vpclmulqdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vaesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/gfniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rtmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xtestintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/shaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fxsrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavecintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/adxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rdseedintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wbnoinvdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cldemoteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/waitpkgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/movdirintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pconfigintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/sgxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/ptwriteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/invpcidintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/keylockerintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/amxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/enqcmdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/serializeintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tsxldtrkintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/immintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/x86gprintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/hresetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/uintrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/crc32intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mm_malloc.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/emmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/smmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/popcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_aes.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_pclmul.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clflushoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clwbintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/f16cintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/lzcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512fintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512cdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqvlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512dqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlcdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vldqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512erintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmavlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmivlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512pfintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pkuintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vpclmulqdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vaesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/gfniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rtmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xtestintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/shaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fxsrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavecintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/adxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rdseedintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wbnoinvdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cldemoteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/waitpkgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/movdirintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pconfigintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/sgxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/ptwriteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/invpcidintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/keylockerintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/amxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/enqcmdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/serializeintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tsxldtrkintrin.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/iomanip \
   /usr/local/include/emp-tool/utils/prg.h \
   /usr/local/include/emp-tool/utils/aes.h \
@@ -6011,8 +6011,8 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/online_evaluator.cpp.o: src/quadsquad/onl
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/type_traits \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cstddef \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/version \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stddef.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__stddef_max_align_t.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stddef.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__stddef_max_align_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__nullptr \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/forward.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/move.h \
@@ -6068,7 +6068,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/online_evaluator.cpp.o: src/quadsquad/onl
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uid_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/resource.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdint.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdint.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint8_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint16_t.h \
@@ -6101,7 +6101,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/online_evaluator.cpp.o: src/quadsquad/onl
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stddef.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/wchar.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_mbstate_t.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdarg.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdarg.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_stdio.h \
@@ -6203,7 +6203,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/online_evaluator.cpp.o: src/quadsquad/onl
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/ratio \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/climits \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/limits.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/limits.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/limits.h \
@@ -6427,86 +6427,86 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/online_evaluator.cpp.o: src/quadsquad/onl
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__bsd_locale_defaults.h \
   /usr/local/include/emp-tool/io/io_channel.h \
   /usr/local/include/emp-tool/utils/block.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/immintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/x86gprintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/hresetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/uintrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/crc32intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mm_malloc.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/emmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/smmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/popcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_aes.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_pclmul.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clflushoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clwbintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/f16cintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/lzcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512fintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512cdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqvlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512dqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlcdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vldqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512erintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmavlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmivlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512pfintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pkuintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vpclmulqdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vaesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/gfniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rtmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xtestintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/shaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fxsrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavecintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/adxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rdseedintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wbnoinvdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cldemoteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/waitpkgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/movdirintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pconfigintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/sgxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/ptwriteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/invpcidintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/keylockerintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/amxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/enqcmdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/serializeintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tsxldtrkintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/immintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/x86gprintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/hresetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/uintrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/crc32intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mm_malloc.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/emmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/smmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/popcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_aes.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_pclmul.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clflushoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clwbintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/f16cintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/lzcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512fintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512cdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqvlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512dqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlcdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vldqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512erintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmavlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmivlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512pfintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pkuintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vpclmulqdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vaesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/gfniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rtmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xtestintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/shaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fxsrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavecintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/adxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rdseedintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wbnoinvdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cldemoteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/waitpkgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/movdirintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pconfigintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/sgxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/ptwriteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/invpcidintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/keylockerintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/amxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/enqcmdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/serializeintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tsxldtrkintrin.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/iomanip \
   /usr/local/include/emp-tool/utils/prg.h \
   /usr/local/include/emp-tool/utils/aes.h \
@@ -9478,8 +9478,8 @@ src/CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o: src/utils/circuit.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__mbstate_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/wchar.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stddef.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stddef.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__stddef_max_align_t.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stddef.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__stddef_max_align_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__nullptr \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/wchar.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types.h \
@@ -9511,7 +9511,7 @@ src/CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o: src/utils/circuit.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_ct_rune_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_rune_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_wchar_t.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdarg.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdarg.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_stdio.h \
@@ -9584,7 +9584,7 @@ src/CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o: src/utils/circuit.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uid_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/resource.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdint.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdint.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint8_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint16_t.h \
@@ -9649,7 +9649,7 @@ src/CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o: src/utils/circuit.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/ratio \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/climits \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/limits.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/limits.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/limits.h \
@@ -10179,86 +10179,86 @@ src/CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o: src/utils/circuit.cpp \
   /usr/local/include/emp-tool/io/file_io_channel.h \
   /usr/local/include/emp-tool/io/io_channel.h \
   /usr/local/include/emp-tool/utils/block.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/immintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/x86gprintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/hresetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/uintrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/crc32intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mm_malloc.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/emmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/smmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/popcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wmmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_aes.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_pclmul.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clflushoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clwbintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/f16cintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/lzcntintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512fintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512cdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqvlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxvnniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512dqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbitalgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbwintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlcdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vldqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512erintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmavlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmiintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmivlintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvbmi2intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512pfintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbf16intrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pkuintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vpclmulqdqintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vaesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/gfniintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rtmintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xtestintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/shaintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fxsrintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsaveoptintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavecintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavesintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cetintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/adxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rdseedintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wbnoinvdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cldemoteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/waitpkgintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/movdirintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pconfigintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/sgxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/ptwriteintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/invpcidintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/keylockerintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/amxintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvp2intersectintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/enqcmdintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/serializeintrin.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tsxldtrkintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/immintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/x86gprintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/hresetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/uintrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/crc32intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mm_malloc.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/emmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/smmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/popcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wmmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_aes.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_pclmul.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clflushoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clwbintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/f16cintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/lzcntintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512fintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512cdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqvlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxvnniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512dqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbitalgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbwintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlcdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vldqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512erintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmavlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmiintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmivlintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvbmi2intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512pfintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbf16intrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pkuintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vpclmulqdqintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vaesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/gfniintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rtmintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xtestintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/shaintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fxsrintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveoptintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavecintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavesintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cetintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/adxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rdseedintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wbnoinvdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cldemoteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/waitpkgintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/movdirintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pconfigintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/sgxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/ptwriteintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/invpcidintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/keylockerintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/amxintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvp2intersectintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/enqcmdintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/serializeintrin.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tsxldtrkintrin.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/iomanip \
   /usr/local/include/emp-tool/utils/prg.h \
   /usr/local/include/emp-tool/utils/aes.h \
@@ -10356,8 +10356,6 @@ src/CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o: src/utils/circuit.cpp \
 
 src/quadsquad/sharing.cpp:
 
-src/quadsquad/rand_gen_pool.cpp:
-
 src/quadsquad/online_evaluator.cpp:
 
 src/quadsquad/online_evaluator.h:
@@ -10380,8 +10378,6 @@ src/quadsquad/preproc.h:
 
 /usr/local/include/emp-ot/iknp.h:
 
-/usr/local/include/emp-ot/np.h:
-
 /usr/local/include/emp-ot/co.h:
 
 /usr/local/include/emp-ot/ideal.h:
@@ -10395,6 +10391,110 @@ src/quadsquad/offline_evaluator.h:
 src/quadsquad/offline_evaluator.cpp:
 
 src/quadsquad/jump_provider.cpp:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/amxintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/keylockerintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/invpcidintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pconfigintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/movdirintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rdseedintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/adxintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cetintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavecintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fxsrintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rtmintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/gfniintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vaesintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vpclmulqdqintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bf16intrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvbmi2intrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmivlintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmavlintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmaintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512erintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vldqintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbwintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbitalgintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxvnniintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvnniintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vnniintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqvlintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bitalgintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bwintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vp2intersectintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fmaintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/lzcntintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmiintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clwbintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clflushoptintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_pclmul.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wmmintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/popcntintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmiintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tmmintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mmintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/crc32intrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/uintrintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/hresetintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xtestintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/immintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/limits.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdarg.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdint.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stddef.h:
 
 src/quadsquad/helpers.cpp:
 
@@ -10416,8 +10516,6 @@ src/dirigent/preproc.h:
 
 src/dirigent/types.h:
 
-src/quadsquad/types.h:
-
 /usr/local/include/NTL/vec_vec_ZZ_p.h:
 
 /usr/local/include/NTL/mat_ZZ_p.h:
@@ -10425,6 +10523,10 @@ src/quadsquad/types.h:
 /usr/local/include/NTL/vec_ZZ_p.h:
 
 /usr/local/include/NTL/vec_ZZ.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqintrin.h:
+
+/usr/local/include/NTL/ZZ_pX.h:
 
 /usr/local/include/NTL/vec_long.h:
 
@@ -10437,6 +10539,10 @@ src/quadsquad/types.h:
 /usr/local/include/NTL/new.h:
 
 /usr/local/include/NTL/gmp_aux.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mm_malloc.h:
+
+/usr/local/include/NTL/PackageInfo.h:
 
 /usr/local/include/NTL/HAVE_KMA.h:
 
@@ -10453,6 +10559,10 @@ src/quadsquad/types.h:
 /usr/local/include/NTL/HAVE_AVX2.h:
 
 /usr/local/include/NTL/HAVE_SSSE3.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/ptwriteintrin.h:
+
+/usr/local/include/NTL/HAVE_LL_TYPE.h:
 
 /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h:
 
@@ -10504,6 +10614,10 @@ src/quadsquad/types.h:
 
 /usr/local/include/boost/preprocessor/logical/and.hpp:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmi2intrin.h:
+
+/usr/local/include/boost/preprocessor/logical/not.hpp:
+
 /usr/local/include/boost/preprocessor/arithmetic/detail/is_minimum_number.hpp:
 
 /usr/local/include/boost/preprocessor/comparison/limits/not_equal_256.hpp:
@@ -10530,6 +10644,14 @@ src/quadsquad/types.h:
 
 /usr/local/include/boost/preprocessor/control/detail/while.hpp:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__debug:
+
+/usr/local/include/boost/core/pointer_traits.hpp:
+
+/usr/local/include/emp-tool/circuits/number.h:
+
+/usr/local/include/boost/preprocessor/list/reverse.hpp:
+
 /usr/local/include/boost/preprocessor/list/detail/fold_right.hpp:
 
 /usr/local/include/boost/preprocessor/list/limits/fold_left_256.hpp:
@@ -10537,6 +10659,8 @@ src/quadsquad/types.h:
 /usr/local/include/boost/preprocessor/list/detail/limits/fold_left_256.hpp:
 
 /usr/local/include/boost/preprocessor/detail/is_binary.hpp:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvbmi2intrin.h:
 
 /usr/local/include/boost/preprocessor/list/adt.hpp:
 
@@ -10566,7 +10690,7 @@ src/quadsquad/types.h:
 
 /usr/local/include/boost/preprocessor/detail/limits/auto_rec_256.hpp:
 
-/usr/local/include/boost/preprocessor/detail/auto_rec.hpp:
+/usr/local/include/boost/preprocessor/facilities/empty.hpp:
 
 /usr/local/include/boost/preprocessor/control/iif.hpp:
 
@@ -10586,9 +10710,13 @@ src/quadsquad/types.h:
 
 /usr/local/include/boost/optional/detail/optional_aligned_storage.hpp:
 
-src/dirigent/rand_gen_pool.cpp:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/default_sentinel.h:
+
+/usr/local/include/boost/optional/detail/optional_factory_support.hpp:
 
 /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512dqintrin.h:
+
+src/dirigent/rand_gen_pool.cpp:
 
 /usr/local/include/boost/preprocessor/list/detail/limits/fold_right_256.hpp:
 
@@ -10596,17 +10724,17 @@ src/dirigent/rand_gen_pool.cpp:
 
 /usr/local/include/boost/optional/detail/optional_config.hpp:
 
+/usr/local/include/boost/optional/optional_fwd.hpp:
+
 /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pmmintrin.h:
 
 /usr/local/include/boost/utility/detail/result_of_variadic.hpp:
 
 /usr/local/include/boost/move/detail/type_traits.hpp:
 
+/usr/local/include/boost/move/detail/addressof.hpp:
+
 /usr/local/include/boost/move/detail/meta_utils.hpp:
-
-/usr/local/include/boost/core/addressof.hpp:
-
-/usr/local/include/boost/move/detail/workaround.hpp:
 
 /usr/local/include/boost/none_t.hpp:
 
@@ -10618,6 +10746,8 @@ src/dirigent/rand_gen_pool.cpp:
 
 /usr/local/include/boost/type_traits/is_nothrow_move_assignable.hpp:
 
+/usr/local/include/boost/type_traits/is_const.hpp:
+
 /usr/local/include/boost/preprocessor/facilities/check_empty.hpp:
 
 /usr/local/include/boost/type_traits/type_identity.hpp:
@@ -10626,21 +10756,13 @@ src/dirigent/rand_gen_pool.cpp:
 
 /usr/local/include/boost/type_traits/is_class.hpp:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/mach/machine/_structs.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/compressed_pair.h:
-
-/usr/local/include/boost/utility/compare_pointees.hpp:
-
-/usr/local/include/boost/type_traits/is_same.hpp:
-
 /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/emmintrin.h:
 
 /usr/local/include/boost/type_traits/is_base_of.hpp:
 
 /usr/local/include/boost/type_traits/is_assignable.hpp:
 
-/usr/local/include/boost/type_traits/remove_extent.hpp:
+/usr/local/include/boost/type_traits/add_pointer.hpp:
 
 /usr/local/include/boost/type_traits/detail/is_member_function_pointer_cxx_11.hpp:
 
@@ -10656,7 +10778,11 @@ src/dirigent/rand_gen_pool.cpp:
 
 /usr/local/include/boost/type_traits/type_with_alignment.hpp:
 
+/usr/local/include/boost/type_traits/remove_reference.hpp:
+
 /usr/local/include/boost/type_traits/is_default_constructible.hpp:
+
+/usr/local/include/boost/type_traits/has_nothrow_constructor.hpp:
 
 /usr/local/include/boost/preprocessor/comparison/not_equal.hpp:
 
@@ -10679,10 +10805,6 @@ src/dirigent/rand_gen_pool.cpp:
 /usr/local/include/boost/type.hpp:
 
 /usr/local/include/boost/static_assert.hpp:
-
-/usr/local/include/boost/type_traits/conditional.hpp:
-
-/usr/local/include/boost/core/enable_if.hpp:
 
 /usr/local/include/boost/format/detail/compat_workarounds.hpp:
 
@@ -10726,6 +10848,8 @@ src/dirigent/rand_gen_pool.cpp:
 
 src/io/netmp.h:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__node_handle:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__hash_table:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cstddef:
@@ -10737,12 +10861,6 @@ src/io/netmp.h:
 /usr/local/include/emp-tool/execution/plain_circ.h:
 
 /usr/local/include/emp-tool/gc/privacy_free_eva.h:
-
-/usr/local/include/emp-tool/gc/halfgate_gen.h:
-
-/usr/local/include/boost/config/stdlib/libcpp.hpp:
-
-/usr/local/include/emp-tool/gc/halfgate_eva.h:
 
 /usr/local/include/emp-tool/utils/aes_opt.h:
 
@@ -10766,23 +10884,19 @@ src/utils/circuit.h:
 
 /usr/local/include/emp-tool/utils/crh.h:
 
-/usr/local/include/boost/preprocessor/control/expr_iif.hpp:
-
-/usr/local/include/NTL/HAVE_CHRONO_TIME.h:
-
-/usr/local/include/emp-tool/utils/prp.h:
-
 /usr/local/include/NTL/FFT.h:
 
 /usr/local/include/emp-tool/utils/hash.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__debug:
+/usr/local/include/emp-ot/ferret/twokeyprp.h:
 
-/usr/local/include/boost/core/pointer_traits.hpp:
+/usr/local/opt/openssl/include/openssl/core_dispatch.h:
 
-/usr/local/include/boost/preprocessor/list/reverse.hpp:
+/usr/local/include/boost/type_traits/is_function.hpp:
 
-/usr/local/include/emp-tool/circuits/number.h:
+/usr/local/opt/openssl/include/openssl/evp.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/crc32intrin.h:
 
 /usr/local/include/emp-tool/circuits/integer.h:
 
@@ -10820,7 +10934,13 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/netinet6/in6.h:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_fd_def.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_sa_family_t.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/net/net_kev.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/_param.h:
 
 /usr/local/include/boost/format/detail/msvc_disambiguater.hpp:
 
@@ -10836,7 +10956,7 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uuid_t.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_select.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/select.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cstring:
 
@@ -10858,8 +10978,6 @@ src/utils/circuit.h:
 
 /usr/local/opt/openssl/include/openssl/ecerr.h:
 
-/usr/local/opt/openssl/include/openssl/bnerr.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/fstream:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/bind_front.h:
@@ -10867,6 +10985,10 @@ src/utils/circuit.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__split_buffer:
 
 /usr/local/opt/openssl/include/openssl/bn.h:
+
+/usr/local/include/boost/type_traits/is_complete.hpp:
+
+/usr/local/opt/openssl/include/openssl/asn1.h:
 
 /usr/local/opt/openssl/include/openssl/stack.h:
 
@@ -10900,9 +11022,15 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cmath:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/movdirintrin.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/random:
 
 /usr/local/include/emp-tool/utils/utils.hpp:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/optional:
+
+/usr/local/include/emp-tool/utils/constants.h:
 
 /usr/local/include/boost/smart_ptr/detail/sp_convertible.hpp:
 
@@ -10916,9 +11044,9 @@ src/utils/circuit.h:
 
 /usr/local/include/emp-tool/utils/aes.h:
 
-/usr/local/include/emp-tool/utils/prg.h:
-
 /usr/local/include/NTL/ZZ.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlintrin.h:
 
 /usr/local/include/boost/type_traits/decay.hpp:
 
@@ -10928,185 +11056,171 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/iomanip:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__variant/monostate.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/serializeintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tsxldtrkintrin.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/concepts.h:
 
-/usr/local/include/boost/core/checked_delete.hpp:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/enqcmdintrin.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/partition.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvp2intersectintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/serializeintrin.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_select.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/keylockerintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/ptwriteintrin.h:
 
-/usr/local/include/NTL/HAVE_LL_TYPE.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/sgxintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/ptwriteintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pconfigintrin.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_fd_def.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/waitpkgintrin.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_sa_family_t.h:
+/usr/local/include/boost/type_traits/remove_extent.hpp:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pconfigintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rdseedintrin.h:
 
-/usr/local/include/boost/type_traits/is_const.hpp:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/adxintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/movdirintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cetintrin.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_intptr_t.h:
+/usr/local/include/boost/format/detail/workarounds_gcc-2_95.hpp:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/default_searcher.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavecintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/waitpkgintrin.h:
+/usr/local/include/boost/type_traits/remove_cv.hpp:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rdseedintrin.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_nl_item.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/adxintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/cetintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xtestintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavecintrin.h:
+/usr/local/include/boost/type_traits/declval.hpp:
 
-/usr/local/include/boost/move/detail/addressof.hpp:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/gfniintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fxsrintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vaesintrin.h:
 
-/usr/local/include/emp-ot/ferret/twokeyprp.h:
+/usr/local/include/boost/core/addressof.hpp:
 
-/usr/local/opt/openssl/include/openssl/core_dispatch.h:
+/usr/local/include/boost/move/detail/workaround.hpp:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/immintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/vpclmulqdqintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xtestintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbf16intrin.h:
 
-/usr/local/include/boost/type_traits/has_nothrow_constructor.hpp:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bf16intrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/gfniintrin.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/shared_ptr.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/socket.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmi2intrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/shaintrin.h:
+/usr/local/include/boost/config/stdlib/libcpp.hpp:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vaesintrin.h:
+/usr/local/include/emp-tool/gc/halfgate_eva.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__node_handle:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmivlintrin.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/move_iterator.h:
+/usr/local/include/boost/preprocessor/list/fold_left.hpp:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pkuintrin.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/xlocale.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/wctype.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vbmiintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbf16intrin.h:
+/usr/local/include/boost/preprocessor/detail/auto_rec.hpp:
 
-/usr/local/include/boost/preprocessor/arithmetic/inc.hpp:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/ostreambuf_iterator.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512pfintrin.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvbmi2intrin.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/default_sentinel.h:
-
-/usr/local/include/boost/optional/detail/optional_factory_support.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/locale.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmavlintrin.h:
 
 /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmi2intrin.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/select.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/locale.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tmmintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512erintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmiintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbwintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512erintrin.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_null.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vldqintrin.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/ranges_operations.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbwintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlbitalgintrin.h:
+
+/usr/local/include/emp-tool/gc/halfgate_gen.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/function.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_fsfilcnt_t.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512dqintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlvnniintrin.h:
+
+/usr/local/include/boost/preprocessor/control/expr_iif.hpp:
+
+/usr/local/include/NTL/HAVE_CHRONO_TIME.h:
+
+/usr/local/include/emp-tool/utils/prp.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vnniintrin.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_posix_availability.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/sort.h:
+
+/usr/local/include/boost/move/detail/config_begin.hpp:
+
+/usr/local/include/boost/type_traits/integral_constant.hpp:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fmaintrin.h:
 
 /usr/local/include/boost/detail/workaround.hpp:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbitalgintrin.h:
+src/quadsquad/rand_gen_pool.cpp:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxvnniintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmi2intrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvnniintrin.h:
+/usr/local/opt/openssl/include/openssl/bnerr.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqvlintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/f16cintrin.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/_param.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdint.h:
 
-/usr/local/include/NTL/ZZVec.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx2intrin.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/empty.h:
+/usr/local/include/boost/type_traits/add_rvalue_reference.hpp:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512cdintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bitalgintrin.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bwintrin.h:
-
-/usr/local/include/boost/type_traits/is_function.hpp:
-
-/usr/local/opt/openssl/include/openssl/evp.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vp2intersectintrin.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/fmaintrin.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/lzcntintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clwbintrin.h:
 
 /usr/local/include/emp-tool/io/net_io_channel.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmiintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_pclmul.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/algorithm:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/popcntintrin.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/limits.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pmmintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/f16cintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xmmintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avxintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/uintrintrin.h:
 
-/usr/local/include/boost/preprocessor/facilities/empty.hpp:
+/usr/local/include/boost/type_traits/conditional.hpp:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clwbintrin.h:
+/usr/local/include/boost/core/enable_if.hpp:
 
-/usr/local/include/boost/type_traits/is_complete.hpp:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/hresetintrin.h:
 
-/usr/local/opt/openssl/include/openssl/asn1.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/x86gprintrin.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/clflushoptintrin.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/set_intersection.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_pclmul.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tmmintrin.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/optional:
-
-/usr/local/include/emp-tool/utils/constants.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_wctype.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_aes.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/popcntintrin.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/queue:
-
-/usr/local/include/boost/core/ignore_unused.hpp:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/smmintrin.h:
-
-/usr/local/include/NTL/PackageInfo.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mm_malloc.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/mmintrin.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/crc32intrin.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/hresetintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/immintrin.h:
 
 /usr/local/include/emp-tool/utils/block.h:
 
@@ -11120,9 +11234,7 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__bsd_locale_defaults.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/function.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_fsfilcnt_t.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512cdintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_fsblkcnt_t.h:
 
@@ -11147,6 +11259,10 @@ src/utils/circuit.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional_base:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_ino64_t.h:
+
+/usr/local/include/boost/preprocessor/config/config.hpp:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/cldemoteintrin.h:
 
 /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xmmintrin.h:
 
@@ -11178,6 +11294,10 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/locale:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512pfintrin.h:
+
+/usr/local/include/boost/preprocessor/arithmetic/inc.hpp:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/Availability.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_sigset_t.h:
@@ -11185,10 +11305,6 @@ src/utils/circuit.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_pthread/_pthread_rwlockattr_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/istream:
-
-/usr/local/include/NTL/ZZ_pX.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vpopcntdqintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/tuple:
 
@@ -11214,14 +11330,6 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/xlocale/_string.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_posix_availability.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/sort.h:
-
-/usr/local/include/boost/move/detail/config_begin.hpp:
-
-/usr/local/include/boost/type_traits/integral_constant.hpp:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_posix_vdisable.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_uint32_t.h:
@@ -11229,8 +11337,6 @@ src/utils/circuit.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/xlocale/_stdio.h:
 
 /usr/local/opt/openssl/include/openssl/macros.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vbmivlintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_xlocale.h:
 
@@ -11248,7 +11354,13 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/pointer_to_binary_function.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlbf16intrin.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/wctype.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cctype:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/tsxldtrkintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__mutex_base:
 
@@ -11274,17 +11386,15 @@ src/utils/circuit.h:
 
 /usr/local/include/boost/assert/source_location.hpp:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/shift_right.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512fintrin.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/unique_copy.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/equal_range.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/stable_partition.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/set_intersection.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512fintrin.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/shift_right.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/move.h:
 
@@ -11308,17 +11418,9 @@ src/quadsquad/jump_provider.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/remove_copy_if.h:
 
-/usr/local/include/boost/preprocessor/list/fold_left.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/xlocale.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/remove_copy.h:
 
 /usr/local/opt/openssl/include/openssl/bio.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/data.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/enqcmdintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/for_each.h:
 
@@ -11340,13 +11442,13 @@ src/quadsquad/jump_provider.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/partition_copy.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlintrin.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_pthread/_pthread_key_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_int32_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/partial_sort_copy.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/pkuintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/sort_heap.h:
 
@@ -11420,8 +11522,6 @@ src/quadsquad/jump_provider.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/min_element.h:
 
-/usr/local/include/boost/format/detail/workarounds_gcc-2_95.hpp:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/size.h:
 
 /usr/local/include/emp-tool/circuits/aes_128_ctr.h:
@@ -11466,6 +11566,8 @@ src/quadsquad/ot_provider.h:
 
 /usr/local/include/boost/type_traits/is_base_and_derived.hpp:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512fintrin.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cassert:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/clamp.h:
@@ -11479,6 +11581,10 @@ src/quadsquad/ot_provider.h:
 /usr/local/include/emp-tool/circuits/swappable.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/not_fn.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/tsxldtrkintrin.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__variant/monostate.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/pair.h:
 
@@ -11505,6 +11611,8 @@ src/quadsquad/ot_provider.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_pid_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/weak_result_type.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/limits.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/ios:
 
@@ -11538,6 +11646,10 @@ src/quadsquad/ot_provider.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/binary_search.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/pkuintrin.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/move_iterator.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/types.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/limits:
@@ -11547,6 +11659,8 @@ src/quadsquad/ot_provider.cpp:
 /usr/local/include/NTL/ALL_FEATURES.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/istream_iterator.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vpopcntdqvlintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/iosfwd:
 
@@ -11558,11 +11672,11 @@ src/quadsquad/ot_provider.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/min.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vnniintrin.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/string.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/distance.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mmintrin.h:
 
 /usr/local/include/emp-tool/utils/mitccrh.h:
 
@@ -11584,7 +11698,7 @@ src/quadsquad/ot_provider.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/advance.h:
 
-/usr/local/include/boost/preprocessor/config/config.hpp:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsavesintrin.h:
 
 /usr/local/include/emp-tool/gc/privacy_free_gen.h:
 
@@ -11599,6 +11713,10 @@ src/quadsquad/types.cpp:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/set:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/remove.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/shaintrin.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/socket.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/types.h:
 
@@ -11618,13 +11736,19 @@ src/quadsquad/types.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/unary_function.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avxvnniintrin.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/allocation_guard.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_fd_clr.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/assert.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/shared_ptr.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/fxsrintrin.h:
+
+/usr/local/include/emp-ot/np.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512pfintrin.h:
 
 src/quadsquad/rand_gen_pool.h:
 
@@ -11637,12 +11761,6 @@ src/quadsquad/rand_gen_pool.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/allocator_traits.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_u_int32_t.h:
-
-/usr/local/include/boost/preprocessor/tuple/elem.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/access.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__string:
 
 /usr/local/include/NTL/HAVE_COPY_TRAITS2.h:
 
@@ -11670,17 +11788,19 @@ src/quadsquad/rand_gen_pool.h:
 
 /usr/local/include/boost/format/detail/config_macros.hpp:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/comp.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/f16cintrin.h:
 
-/usr/local/include/boost/type_traits/add_rvalue_reference.hpp:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/algorithm:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/limits.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/comp.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/integer_sequence.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/iter_swap.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/search.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/rtmintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_stdio.h:
 
@@ -11696,13 +11816,27 @@ src/quadsquad/rand_gen_pool.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/minmax_element.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bitalgintrin.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/find.h:
 
 /usr/local/include/emp-tool/utils/group.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/enqcmdintrin.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/data.h:
+
 /usr/local/include/NTL/thread.h:
 
 /usr/local/include/boost/config.hpp:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/invpcidintrin.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/mach/machine/_structs.h:
+
+/usr/local/include/boost/utility/compare_pointees.hpp:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/compressed_pair.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/front_insert_iterator.h:
 
@@ -11730,6 +11864,8 @@ src/quadsquad/rand_gen_pool.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_errno_t.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vlcdintrin.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_caddr_t.h:
 
 /usr/local/include/boost/type_traits/is_integral.hpp:
@@ -11743,6 +11879,10 @@ src/quadsquad/rand_gen_pool.h:
 /usr/local/include/boost/preprocessor/repetition/repeat.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_mach_port_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cwctype:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/emmintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/copy.h:
 
@@ -11758,15 +11898,13 @@ src/quadsquad/rand_gen_pool.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/limits.h:
 
-/usr/local/include/boost/type_traits/remove_reference.hpp:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/limits.h:
+/usr/local/include/boost/type_traits/is_same.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/streambuf:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512bf16intrin.h:
-
 /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512vlvp2intersectintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdarg.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/ctime:
 
@@ -11786,6 +11924,18 @@ src/quadsquad/rand_gen_pool.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__threading_support:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/_types.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/sample.h:
+
+/usr/local/include/boost/preprocessor/repetition/enum_binary_params.hpp:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/reference_wrapper.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/limits.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__stddef_max_align_t.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/gethostuuid.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_rune_t.h:
@@ -11794,25 +11944,13 @@ src/quadsquad/rand_gen_pool.h:
 
 /usr/local/include/boost/optional/optional.hpp:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/_types.h:
-
-/usr/local/include/boost/preprocessor/repetition/enum_binary_params.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/sample.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vp2intersectintrin.h:
 
 /usr/local/include/NTL/ZZ_pE.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/swap.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wmmintrin.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_null.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/ranges_operations.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/piecewise_construct.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/stdint.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_off_t.h:
 
@@ -11824,9 +11962,23 @@ src/quadsquad/rand_gen_pool.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__utility/in_place.h:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__config:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wmmintrin.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/unordered_map:
 
+src/quadsquad/types.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512bwintrin.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/wchar.h:
+
+/usr/local/include/boost/preprocessor/tuple/elem.hpp:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512ifmaintrin.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/clflushoptintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__tuple:
 
@@ -11868,12 +12020,6 @@ src/quadsquad/rand_gen_pool.h:
 
 /usr/local/include/boost/config/compiler/clang_version.hpp:
 
-src/utils/circuit.cpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/mem_fn.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wbnoinvdintrin.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/libkern/_OSByteOrder.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/pointer_traits.h:
@@ -11888,7 +12034,11 @@ src/utils/circuit.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/unwrap_ref.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/ostreambuf_iterator.h:
+src/utils/circuit.cpp:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/wbnoinvdintrin.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/mem_fn.h:
 
 /usr/local/include/boost/preprocessor/arithmetic/limits/dec_256.hpp:
 
@@ -11902,6 +12052,8 @@ src/utils/circuit.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/libkern/i386/_OSByteOrder.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/lzcntintrin.h:
+
 /usr/local/include/emp-tool/utils/ThreadPool.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/memory:
@@ -11910,15 +12062,21 @@ src/utils/circuit.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/stdint.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdint.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/swap_ranges.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/resource.h:
+
+/usr/local/include/boost/type_traits/detail/is_function_cxx_11.hpp:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/rtmintrin.h:
 
 /Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/xsavesintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/includes.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/vpclmulqdqintrin.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/bmiintrin.h:
 
 /usr/local/include/boost/preprocessor/logical/bool.hpp:
 
@@ -11927,6 +12085,8 @@ src/utils/circuit.cpp:
 /usr/local/include/boost/limits.hpp:
 
 /usr/local/include/boost/type_traits/is_array.hpp:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/keylockerintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_ucontext.h:
 
@@ -11940,15 +12100,29 @@ src/utils/circuit.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/shuffle.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/serializeintrin.h:
+
+/usr/local/include/boost/core/checked_delete.hpp:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/partition.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_ctermid.h:
 
 /usr/local/include/boost/move/core.hpp:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/smmintrin.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/queue:
+
+/usr/local/include/boost/core/ignore_unused.hpp:
 
 /usr/local/include/NTL/vector.h:
 
 /usr/local/include/boost/type_traits/is_constructible.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/i386/_mcontext.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/wbnoinvdintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/is_sorted_until.h:
 
@@ -11958,9 +12132,11 @@ src/utils/circuit.cpp:
 
 /usr/local/include/boost/assert.hpp:
 
-/usr/local/include/boost/type_traits/remove_cv.hpp:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512cdintrin.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_types/_nl_item.h:
+/usr/local/include/NTL/ZZVec.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/empty.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/exception:
 
@@ -11969,12 +12145,6 @@ src/utils/circuit.cpp:
 /usr/local/include/NTL/config.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/fill_n.h:
-
-/usr/local/include/boost/preprocessor/logical/not.hpp:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/bmi2intrin.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/cwctype:
 
 /usr/local/include/boost/type_traits/is_pointer.hpp:
 
@@ -11997,8 +12167,6 @@ src/utils/circuit.cpp:
 /usr/local/include/boost/core/allocator_access.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_mode_t.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmaintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/binary_function.h:
 
@@ -12032,6 +12200,8 @@ src/utils/circuit.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_locale.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/mm_malloc.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/runetype.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/replace_copy.h:
@@ -12039,8 +12209,6 @@ src/utils/circuit.cpp:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/version:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/pthread/sched.h:
-
-/usr/local/include/boost/type_traits/detail/is_function_cxx_11.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/time.h:
 
@@ -12052,9 +12220,13 @@ src/utils/circuit.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/nl_types.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/smmintrin.h:
+
 /usr/local/include/boost/core/swap.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_size_t.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/shaintrin.h:
 
 /usr/local/include/emp-tool/circuits/integer.hpp:
 
@@ -12062,15 +12234,15 @@ src/utils/circuit.cpp:
 
 /usr/local/include/boost/preprocessor/variadic/limits/size_64.hpp:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/invpcidintrin.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/concepts.h:
-
 /usr/local/include/boost/smart_ptr/detail/sp_noexcept.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_u_int64_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/appleapiopts.h:
+
+/usr/local/include/emp-tool/utils/prg.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stddef.h:
 
 /usr/local/include/boost/preprocessor/logical/compl.hpp:
 
@@ -12084,6 +12256,8 @@ src/utils/circuit.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_wchar_t.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/__wmmintrin_aes.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/AvailabilityInternal.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__ranges/enable_view.h:
@@ -12091,6 +12265,8 @@ src/utils/circuit.cpp:
 /usr/local/include/emp-tool/emp-tool.h:
 
 /usr/local/opt/openssl/include/openssl/opensslv.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/avx512vldqintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/rotate_copy.h:
 
@@ -12118,15 +12294,11 @@ src/utils/circuit.cpp:
 
 /usr/local/include/boost/utility/result_of.hpp:
 
-/usr/local/include/boost/type_traits/declval.hpp:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_uintptr_t.h:
 
 /usr/local/include/emp-tool/circuits/circuit_file.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/replace.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/uintrintrin.h:
 
 src/quadsquad/helpers.h:
 
@@ -12136,7 +12308,13 @@ src/quadsquad/helpers.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/half_positive.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/climits:
+/usr/local/include/boost/config/workaround.hpp:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/generate_n.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/string_view:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/fill.h:
 
 /usr/local/include/boost/preprocessor/arithmetic/dec.hpp:
 
@@ -12145,6 +12323,10 @@ src/quadsquad/helpers.h:
 /usr/local/include/boost/smart_ptr/detail/spinlock.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_mbstate_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/signal.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/climits:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_suseconds_t.h:
 
@@ -12162,24 +12344,6 @@ src/quadsquad/helpers.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/ctype.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/machine/signal.h:
-
-/usr/local/include/boost/config/workaround.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/generate_n.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/string_view:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/reference_wrapper.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/limits.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/avx512ifmavlintrin.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__algorithm/fill.h:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/amxintrin.h:
-
 /usr/local/include/boost/preprocessor/debug/error.hpp:
 
 /usr/local/include/boost/config/platform/macos.hpp:
@@ -12188,32 +12352,38 @@ src/quadsquad/helpers.h:
 
 src/dirigent/offline_evaluator.cpp:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/pthread/qos.h:
-
 /usr/local/include/boost/config/detail/select_stdlib_config.hpp:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/__wmmintrin_aes.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/_wctype.h:
+
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/waitpkgintrin.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__functional/default_searcher.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_intptr_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/allocator.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/typeinfo:
 
-/usr/local/include/boost/optional/optional_fwd.hpp:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stddef.h:
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/xsaveoptintrin.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_u_int8_t.h:
 
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdint.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__config:
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__string:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/istreambuf_iterator.h:
 
+/Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/amxintrin.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__memory/addressof.h:
-
-/usr/local/include/boost/type_traits/add_pointer.hpp:
-
-/Library/Developer/CommandLineTools/usr/lib/clang/14.0.0/include/stdarg.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/ostream:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/sys/_types/_ssize_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/pthread/qos.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/c++/v1/__iterator/access.h:

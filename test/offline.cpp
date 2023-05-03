@@ -1044,7 +1044,6 @@ BOOST_AUTO_TEST_CASE(PrefixAND) {
 }
 
 BOOST_AUTO_TEST_CASE(ParaPrefixAND) {
-  std::cout<<"PARA PREFIXAND " <<std::endl;
   int nP = 5;
   int repeat = 2;
   int k = 64;
