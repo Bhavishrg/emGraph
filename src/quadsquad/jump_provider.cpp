@@ -5,7 +5,7 @@
 #include <future>
 #include <stdexcept>
 
-#include "helpers.h"
+#include "../utils/helpers.h"
 
 namespace quadsquad {
 JumpProvider::JumpProvider(int my_id) : id_(my_id), recv_lengths_{}, send_{} {}

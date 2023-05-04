@@ -14,19 +14,19 @@ using namespace quadsquad;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-utils::Circuit<Ring> generateCircuit(size_t num_mult_gates) {
-  utils::Circuit<Ring> circ;
+common::utils::Circuit<Ring> generateCircuit(size_t num_mult_gates) {
+  common::utils::Circuit<Ring> circ;
 
-  std::vector<utils::wire_t> inputs(num_mult_gates);
+  std::vector<common::utils::wire_t> inputs(num_mult_gates);
   std::generate(inputs.begin(), inputs.end(),
                 [&]() { return circ.newInputWire(); });
 
-  std::vector<utils::wire_t> outputs(num_mult_gates);
+  std::vector<common::utils::wire_t> outputs(num_mult_gates);
   for (size_t i = 0; i < num_mult_gates - 1; ++i) {
-    outputs[i] = circ.addGate(utils::GateType::kMul, inputs[i], inputs[i + 1]);
+    outputs[i] = circ.addGate(common::utils::GateType::kMul, inputs[i], inputs[i + 1]);
   }
   outputs[num_mult_gates - 1] = circ.addGate(
-      utils::GateType::kMul, inputs[num_mult_gates - 1], inputs[0]);
+      common::utils::GateType::kMul, inputs[num_mult_gates - 1], inputs[0]);
 
   return circ;
 }
@@ -93,9 +93,9 @@ void benchmark(const bpo::variables_map& opts) {
 
   auto circ = generateCircuit(gates).orderGatesByLevel();
 
-  std::unordered_map<utils::wire_t, int> input_pid_map;
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
   for (const auto& g : circ.gates_by_level[0]) {
-    if (g->type == utils::GateType::kInp) {
+    if (g->type == common::utils::GateType::kInp) {
       input_pid_map[g->out] = 0;
     }
   }

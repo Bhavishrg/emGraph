@@ -1,6 +1,6 @@
 #include "types.h"
 
-namespace quadsquad {
+namespace common::utils {
 BoolRing::BoolRing() : val_(false) {}
 
 BoolRing::BoolRing(bool val) : val_(val) {}
@@ -25,6 +25,11 @@ BoolRing& BoolRing::operator-=(const BoolRing& rhs) {
 
 BoolRing& BoolRing::operator*=(const BoolRing& rhs) {
   val_ = val_ && rhs.val_;
+  return *this;
+}
+
+BoolRing& BoolRing::operator=(const BoolRing& rhs) noexcept{
+  val_ = rhs.val_;
   return *this;
 }
 
@@ -75,4 +80,4 @@ std::ostream& operator<<(std::ostream& os, const BoolRing& b) {
   os << b.val_;
   return os;
 }
-};  // namespace quadsquad
+};  // namespace common::utils

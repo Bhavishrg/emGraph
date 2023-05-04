@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "helpers.h"
+#include "../utils/helpers.h"
 
 namespace dirigent {
 

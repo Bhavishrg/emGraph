@@ -5,10 +5,10 @@
 #include <stdexcept>
 #include <unordered_map>
 
-#include "../quadsquad/types.h"
+#include "types.h"
 #include "circuit.h"
 
-namespace quadsquad::utils {
+namespace common::utils {
 
 // Source-open Destination-open Transaction
 struct SoDoTxn {
@@ -200,4 +200,4 @@ class SoDoGridLock {
     return output;
   }
 };
-}  // namespace quadsquad::utils
+}  // namespace common::utils

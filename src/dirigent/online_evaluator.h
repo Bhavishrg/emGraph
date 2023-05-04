@@ -9,7 +9,9 @@
 #include "preproc.h"
 #include "rand_gen_pool.h"
 #include "sharing.h"
-#include "types.h"
+#include "../utils/types.h"
+
+using namespace common::utils;
 
 namespace dirigent{
 class OnlineEvaluator {
@@ -19,31 +21,31 @@ class OnlineEvaluator {
     RandGenPool rgen_;
     std::shared_ptr<io::NetIOMP> network_;
     PreprocCircuit<Field> preproc_;
-    quadsquad::utils::LevelOrderedCircuit circ_;
+    common::utils::LevelOrderedCircuit circ_;
     std::vector<Field> wires_;
     std::vector<Field> q_val_;
     std::vector<AuthAddShare<Field>> q_sh_;
-    quadsquad::utils::LevelOrderedCircuit multk_circ_;
+    common::utils::LevelOrderedCircuit multk_circ_;
     std::shared_ptr<ThreadPool> tpool_;
 
     // write reconstruction function
      public:
         OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                         PreprocCircuit<Field> preproc, 
-                        quadsquad::utils::LevelOrderedCircuit circ,
+                        common::utils::LevelOrderedCircuit circ,
                         int security_param, int threads, int seed = 200);
                         
         OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                         PreprocCircuit<Field> preproc, 
-                        quadsquad::utils::LevelOrderedCircuit circ,
+                        common::utils::LevelOrderedCircuit circ,
                         int security_param, 
                         std::shared_ptr<ThreadPool> tpool, int seed = 200);
 
-        void setInputs(const std::unordered_map<quadsquad::utils::wire_t, Field>& inputs);
+        void setInputs(const std::unordered_map<common::utils::wire_t, Field>& inputs);
 
         void setRandomInputs();
         
-        void eqzEvaluate(const std::vector<quadsquad::utils::FIn1Gate>& eqz_gates);
+        void eqzEvaluate(const std::vector<common::utils::FIn1Gate>& eqz_gates);
 
         void evaluateGatesAtDepthPartySend(size_t depth, 
                                 std::vector<Field>& mult_nonTP, std::vector<Field>& r_mult_pad,
@@ -70,7 +72,7 @@ class OnlineEvaluator {
 
         // Evaluate online phase for circuit
         std::vector<Field> evaluateCircuit(
-            const std::unordered_map<quadsquad::utils::wire_t, Field>& inputs);
+            const std::unordered_map<common::utils::wire_t, Field>& inputs);
         
 
     };
@@ -82,21 +84,21 @@ class BoolEvaluator {
   RandGenPool rgen_;
   std::shared_ptr<io::NetIOMP> network_;
   PreprocCircuit<BoolRing> preproc_;
-  quadsquad::utils::LevelOrderedCircuit circ_;
+  common::utils::LevelOrderedCircuit circ_;
   std::vector<BoolRing> wires_;
   std::vector<BoolRing> q_val_;
   std::vector<AuthAddShare<BoolRing>> q_sh_;
 //   std::vector<BoolRing> vwires;
 //   preprocg_ptr_t<BoolRing>* vpreproc;
-//   quadsquad::utils::LevelOrderedCircuit circ;
+//   common::utils::LevelOrderedCircuit circ;
 
 public:
   BoolEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network, 
                 PreprocCircuit<BoolRing> preproc, 
-                quadsquad::utils::LevelOrderedCircuit circ,
+                common::utils::LevelOrderedCircuit circ,
                 int seed = 200);
   
-  void setInputs(const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& inputs);
+  void setInputs(const std::unordered_map<common::utils::wire_t, BoolRing>& inputs);
 
   void setRandomInputs();
 
@@ -116,7 +118,7 @@ public:
   void evaluateGatesAtDepth(size_t depth);
   void evaluateAllLevels();
   std::vector<BoolRing> getOutputs();
-  std::vector<BoolRing> evaluateCircuit( const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& inputs);
+  std::vector<BoolRing> evaluateCircuit( const std::unordered_map<common::utils::wire_t, BoolRing>& inputs);
 
 //   std::vector<std::vector<BoolRing>> getOutputShares();
 };

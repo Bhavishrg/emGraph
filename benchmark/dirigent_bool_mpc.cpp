@@ -16,22 +16,22 @@ using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
 
-quadsquad::utils::Circuit<BoolRing> generateCircuit(size_t gates_per_level, size_t depth) {
-    quadsquad::utils::Circuit<BoolRing> circ;
+common::utils::Circuit<BoolRing> generateCircuit(size_t gates_per_level, size_t depth) {
+    common::utils::Circuit<BoolRing> circ;
 
-    std::vector<quadsquad::utils::wire_t> level_inputs(gates_per_level);
+    std::vector<common::utils::wire_t> level_inputs(gates_per_level);
     std::generate(level_inputs.begin(), level_inputs.end(),
                 [&]() { return circ.newInputWire(); });
 
     for (size_t d = 0; d < depth; ++d) {
-        std::vector<quadsquad::utils::wire_t> level_outputs(gates_per_level);
+        std::vector<common::utils::wire_t> level_outputs(gates_per_level);
 
         for (size_t i = 0; i < gates_per_level - 1; ++i) {
-            level_outputs[i] = circ.addGate(quadsquad::utils::GateType::kMul, level_inputs[i],
+            level_outputs[i] = circ.addGate(common::utils::GateType::kMul, level_inputs[i],
                                       level_inputs[i + 1]);
         }
         level_outputs[gates_per_level - 1] =
-            circ.addGate(quadsquad::utils::GateType::kMul, level_inputs[gates_per_level - 1],
+            circ.addGate(common::utils::GateType::kMul, level_inputs[gates_per_level - 1],
                      level_inputs[0]);
         
         level_inputs = std::move(level_outputs);
@@ -106,13 +106,13 @@ void benchmark(const bpo::variables_map& opts) {
     std::cout << "--- Circuit ---\n";
     std::cout << circ << std::endl;
 
-    std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-    std::unordered_map<quadsquad::utils::wire_t, BoolRing> input_map;
-    std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
+    std::unordered_map<common::utils::wire_t, int> input_pid_map;
+    std::unordered_map<common::utils::wire_t, BoolRing> input_map;
+    std::unordered_map<common::utils::wire_t, BoolRing> bit_mask_map;
     std::vector<AuthAddShare<BoolRing>> output_mask;
     std::vector<TPShare<BoolRing>>   output_tpmask;
     for (const auto& g : circ.gates_by_level[0]) {
-        if (g->type == quadsquad::utils::GateType::kInp) {
+        if (g->type == common::utils::GateType::kInp) {
         input_pid_map[g->out] = 1;
         input_map[g->out] = 1;
         bit_mask_map[g->out] = 0;

@@ -2,6 +2,9 @@
 #include <emp-tool/emp-tool.h>
 
 #include <vector>
+#include "../utils/helpers.h"
+
+using namespace common::utils;
 
 namespace quadsquad {
 

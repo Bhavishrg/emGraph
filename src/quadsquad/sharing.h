@@ -5,8 +5,10 @@
 #include <array>
 #include <vector>
 
-#include "helpers.h"
-#include "types.h"
+#include "../utils/helpers.h"
+#include "../utils/types.h"
+
+using namespace common::utils;
 
 namespace quadsquad {
 

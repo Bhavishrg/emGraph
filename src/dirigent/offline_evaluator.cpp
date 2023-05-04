@@ -7,17 +7,17 @@
 #include <cmath>
 #include <thread>
 
-// #include "helpers.h"
+// #include "../utils/helpers.h"
 
 namespace dirigent {
 OfflineEvaluator::OfflineEvaluator(int nP, int my_id,
                                    std::shared_ptr<io::NetIOMP> network,
-                                   quadsquad::utils::LevelOrderedCircuit circ,
+                                   common::utils::LevelOrderedCircuit circ,
                                    int security_param, int threads, int seed)
     : nP_(nP),
       id_(my_id),
       security_param_(security_param),
-      rgen_(my_id, seed),
+      rgen_(my_id, seed), //Banashri: doubt - no matching constructor
       network_(std::move(network)),
       circ_(std::move(circ)),
       preproc_(circ.num_gates)
@@ -35,7 +35,7 @@ void OfflineEvaluator::keyGen(int nP, int pid, RandGenPool& rgen,
         key += keySh[i];
     }
   }
-  else {
+  else { 
     rgen.p0().random_data(&key, sizeof(Field));
   }
 }
@@ -131,6 +131,7 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io:
         tagn += tag;
         tpShare.setKeySh(keySh[i]);
       }
+      //Banashri: doubt - tpShare.setKeySh(keySh[nP]); missing
       valn = secret - valn;
       tagn = key * secret - tagn;
       tpShare.pushValues(valn);
@@ -230,7 +231,7 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
 }
 
 void OfflineEvaluator::setWireMasksParty(
-  const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
+  const std::unordered_map<common::utils::wire_t, int>& input_pid_map, 
                     std::vector<Field>& rand_sh, std::vector<BoolRing>& b_rand_sh,
                     std::vector<Field>& rand_sh_sec, std::vector<BoolRing>& b_rand_sh_sec,
                     std::vector<Field>& rand_sh_party, std::vector<BoolRing>& b_rand_sh_party) {
@@ -284,7 +285,7 @@ void OfflineEvaluator::setWireMasksParty(
     for (const auto& level : circ_.gates_by_level) {
     for (const auto& gate : level) {
       switch (gate->type) {
-        case quadsquad::utils::GateType::kInp: {
+        case common::utils::GateType::kInp: {
           auto pregate = std::make_unique<PreprocInput<Field>>();
 
           auto pid = input_pid_map.at(gate->out);
@@ -297,8 +298,8 @@ void OfflineEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kAdd: {
-          const auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+        case common::utils::GateType::kAdd: {
+          const auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           const auto& mask_in1 = preproc_.gates[g->in1]->mask;
           const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
           const auto& mask_in2 = preproc_.gates[g->in2]->mask;
@@ -310,8 +311,8 @@ void OfflineEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kConstAdd: {
-          const auto* g = static_cast<quadsquad::utils::ConstOpGate<Field>*>(gate.get());
+        case common::utils::GateType::kConstAdd: {
+          const auto* g = static_cast<common::utils::ConstOpGate<Field>*>(gate.get());
           const auto& mask = preproc_.gates[g->in]->mask;
           const auto& tpmask = preproc_.gates[g->in]->tpmask;
           preproc_.gates[gate->out] =
@@ -319,8 +320,8 @@ void OfflineEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kConstMul: {
-          const auto* g = static_cast<quadsquad::utils::ConstOpGate<Field>*>(gate.get());
+        case common::utils::GateType::kConstMul: {
+          const auto* g = static_cast<common::utils::ConstOpGate<Field>*>(gate.get());
           const auto& mask = preproc_.gates[g->in]->mask * g->cval;
           const auto& tpmask = preproc_.gates[g->in]->tpmask * g->cval;
           preproc_.gates[gate->out] =
@@ -328,8 +329,8 @@ void OfflineEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kSub: {
-          const auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+        case common::utils::GateType::kSub: {
+          const auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           const auto& mask_in1 = preproc_.gates[g->in1]->mask;
           const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
           const auto& mask_in2 = preproc_.gates[g->in2]->mask;
@@ -341,9 +342,9 @@ void OfflineEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kMul: {
+        case common::utils::GateType::kMul: {
           preproc_.gates[gate->out] = std::make_unique<PreprocMultGate<Field>>();
-          const auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+          const auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           const auto& mask_in1 = preproc_.gates[g->in1]->mask;
           const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
           const auto& mask_in2 = preproc_.gates[g->in2]->mask;
@@ -365,9 +366,9 @@ void OfflineEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kMul3: {
+        case common::utils::GateType::kMul3: {
           preproc_.gates[gate->out] = std::make_unique<PreprocMult3Gate<Field>>();
-          const auto* g = static_cast<quadsquad::utils::FIn3Gate*>(gate.get());
+          const auto* g = static_cast<common::utils::FIn3Gate*>(gate.get());
           
           const auto& mask_in1 = preproc_.gates[g->in1]->mask;
           const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
@@ -423,9 +424,9 @@ void OfflineEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kMul4: {
+        case common::utils::GateType::kMul4: {
           preproc_.gates[gate->out] = std::make_unique<PreprocMult4Gate<Field>>();
-          const auto* g = static_cast<quadsquad::utils::FIn4Gate*>(gate.get());
+          const auto* g = static_cast<common::utils::FIn4Gate*>(gate.get());
 
           const auto& mask_in1 = preproc_.gates[g->in1]->mask;
           const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
@@ -533,9 +534,9 @@ void OfflineEvaluator::setWireMasksParty(
           break;    
         }
 
-        case quadsquad::utils::GateType::kDotprod: {
+        case common::utils::GateType::kDotprod: {
           preproc_.gates[gate->out] = std::make_unique<PreprocDotpGate<Field>>();
-          const auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
+          const auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
           Field mask_prod = 0;
           if(id_ ==0) {
             for(size_t i = 0; i < g->in1.size(); i++) {
@@ -559,9 +560,9 @@ void OfflineEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kEqz: {
+        case common::utils::GateType::kEqz: {
           preproc_.gates[gate->out] = std::make_unique<PreprocEqzGate<Field>>();
-          const auto* eqz_g = static_cast<quadsquad::utils::FIn1Gate*>(gate.get());
+          const auto* eqz_g = static_cast<common::utils::FIn1Gate*>(gate.get());
           // mask for the bit2A step
           AuthAddShare<Field> mask_w;
           TPShare<Field> tpmask_w;
@@ -591,7 +592,7 @@ void OfflineEvaluator::setWireMasksParty(
           
           // preproc for multk gate 
           auto multk_circ =
-            quadsquad::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel();
+            common::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel();
 
           std::vector<preprocg_ptr_t<BoolRing>> multk_gates(multk_circ.num_gates);
           // std::vector<AuthAddShare<BoolRing>> multk_wires(multk_circ.num_gates);
@@ -599,8 +600,8 @@ void OfflineEvaluator::setWireMasksParty(
 
           OfflineBoolEvaluator eval_multk(nP_, id_, network_, multk_circ);
           // setting multk inputs
-          std::unordered_map<quadsquad::utils::wire_t, int> multk_input_pid_map;
-          std::unordered_map<quadsquad::utils::wire_t, BoolRing> multk_bit_msak_map;
+          std::unordered_map<common::utils::wire_t, int> multk_input_pid_map;
+          std::unordered_map<common::utils::wire_t, BoolRing> multk_bit_msak_map;
           
           
           std::vector<AuthAddShare<BoolRing>> multk_mask;
@@ -621,15 +622,15 @@ void OfflineEvaluator::setWireMasksParty(
           for (const auto& multk_level : multk_circ.gates_by_level) {
             for (auto& multk_gate : multk_level) {
               switch (multk_gate->type) {
-                case quadsquad::utils::GateType::kInp:{
-                  auto* g = static_cast<quadsquad::utils::Gate*>(multk_gate.get());
+                case common::utils::GateType::kInp:{
+                  auto* g = static_cast<common::utils::Gate*>(multk_gate.get());
                   auto* pre_input =
                     static_cast<PreprocInput<BoolRing>*>(multk_preproc.gates[g->out].get());
                   multk_gates[g->out] = std::make_unique<PreprocInput<BoolRing>>(
                     pre_input->mask, pre_input->tpmask, 0);
                 }
-                case quadsquad::utils::GateType::kMul4:{
-                  auto* g = static_cast<quadsquad::utils::FIn4Gate*>(multk_gate.get());
+                case common::utils::GateType::kMul4:{
+                  auto* g = static_cast<common::utils::FIn4Gate*>(multk_gate.get());
                   auto* pre_out = 
                     static_cast<PreprocMult4Gate<BoolRing>*>(multk_preproc.gates[g->out].get());
                   multk_gates[g->out] = std::make_unique<PreprocMult4Gate<BoolRing>>(
@@ -670,7 +671,7 @@ void OfflineEvaluator::setWireMasksParty(
 
 
 void OfflineEvaluator::setWireMasks(
-    const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map) {
+    const std::unordered_map<common::utils::wire_t, int>& input_pid_map) {
       
       std::vector<Field> rand_sh;
       size_t idx_rand_sh;
@@ -788,7 +789,7 @@ PreprocCircuit<Field> OfflineEvaluator::getPreproc() {
 }
 
 PreprocCircuit<Field> OfflineEvaluator::run(
-    const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map) {
+    const std::unordered_map<common::utils::wire_t, int>& input_pid_map) {
   setWireMasks(input_pid_map);
 
   return std::move(preproc_);
@@ -796,7 +797,7 @@ PreprocCircuit<Field> OfflineEvaluator::run(
 }
 
 OfflineBoolEvaluator::OfflineBoolEvaluator(int nP, int my_id, std::shared_ptr<io::NetIOMP> network,
-                   quadsquad::utils::LevelOrderedCircuit circ, int seed)
+                   common::utils::LevelOrderedCircuit circ, int seed)
   : nP_(nP),
     id_(my_id),
     rgen_(my_id, seed),
@@ -992,8 +993,8 @@ void OfflineBoolEvaluator::randomShareWithParty(int nP, int pid, int dealer, Ran
 }
 
 void OfflineBoolEvaluator::setWireMasksParty(
-  const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
-  const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& bit_mask_map,
+  const std::unordered_map<common::utils::wire_t, int>& input_pid_map, 
+  const std::unordered_map<common::utils::wire_t, BoolRing>& bit_mask_map,
                     std::vector<BoolRing>& rand_sh, 
                     std::vector<BoolRing>& rand_sh_sec, 
                     std::vector<BoolRing>& rand_sh_party) {
@@ -1027,7 +1028,7 @@ void OfflineBoolEvaluator::setWireMasksParty(
     for (const auto& level : circ_.gates_by_level) {
     for (const auto& gate : level) {
       switch (gate->type) {
-        case quadsquad::utils::GateType::kInp: {
+        case common::utils::GateType::kInp: {
           auto pregate = std::make_unique<PreprocInput<BoolRing>>();
           auto pid = input_pid_map.at(gate->out);
           auto bit_mask = bit_mask_map.at(gate->out);
@@ -1047,8 +1048,8 @@ void OfflineBoolEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kConstAdd: {
-          const auto* g = static_cast<quadsquad::utils::ConstOpGate<BoolRing>*>(gate.get());
+        case common::utils::GateType::kConstAdd: {
+          const auto* g = static_cast<common::utils::ConstOpGate<BoolRing>*>(gate.get());
           const auto& mask = preproc_.gates[g->in]->mask;
           const auto& tpmask = preproc_.gates[g->in]->tpmask;
           preproc_.gates[g->out] = 
@@ -1056,8 +1057,8 @@ void OfflineBoolEvaluator::setWireMasksParty(
           break;
         }
         
-        case quadsquad::utils::GateType::kConstMul: {
-          const auto* g = static_cast<quadsquad::utils::ConstOpGate<BoolRing>*>(gate.get());
+        case common::utils::GateType::kConstMul: {
+          const auto* g = static_cast<common::utils::ConstOpGate<BoolRing>*>(gate.get());
           const auto& mask = preproc_.gates[g->in]->mask * g->cval;
           const auto& tpmask = preproc_.gates[g->in]->tpmask * g->cval;
           preproc_.gates[g->out] = 
@@ -1065,8 +1066,8 @@ void OfflineBoolEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kAdd: {
-          const auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+        case common::utils::GateType::kAdd: {
+          const auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           const auto& mask_in1 = preproc_.gates[g->in1]->mask;
           const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
           const auto& mask_in2 = preproc_.gates[g->in2]->mask;
@@ -1078,8 +1079,8 @@ void OfflineBoolEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kSub: {
-          const auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+        case common::utils::GateType::kSub: {
+          const auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           const auto& mask_in1 = preproc_.gates[g->in1]->mask;
           const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
           const auto& mask_in2 = preproc_.gates[g->in2]->mask;
@@ -1091,9 +1092,9 @@ void OfflineBoolEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kMul: {
+        case common::utils::GateType::kMul: {
           preproc_.gates[gate->out] = std::make_unique<PreprocMultGate<BoolRing>>();
-          const auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+          const auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           const auto& mask_in1 = preproc_.gates[g->in1]->mask;
           const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
           const auto& mask_in2 = preproc_.gates[g->in2]->mask;
@@ -1115,9 +1116,9 @@ void OfflineBoolEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kMul3: {
+        case common::utils::GateType::kMul3: {
           preproc_.gates[gate->out] = std::make_unique<PreprocMult3Gate<BoolRing>>();
-          const auto* g = static_cast<quadsquad::utils::FIn3Gate*>(gate.get());
+          const auto* g = static_cast<common::utils::FIn3Gate*>(gate.get());
           
           const auto& mask_in1 = preproc_.gates[g->in1]->mask;
           const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
@@ -1173,9 +1174,9 @@ void OfflineBoolEvaluator::setWireMasksParty(
           break;
         }
 
-        case quadsquad::utils::GateType::kMul4: {
+        case common::utils::GateType::kMul4: {
           preproc_.gates[gate->out] = std::make_unique<PreprocMult4Gate<BoolRing>>();
-          const auto* g = static_cast<quadsquad::utils::FIn4Gate*>(gate.get());
+          const auto* g = static_cast<common::utils::FIn4Gate*>(gate.get());
 
           const auto& mask_in1 = preproc_.gates[g->in1]->mask;
           const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
@@ -1283,9 +1284,9 @@ void OfflineBoolEvaluator::setWireMasksParty(
           break;    
         }
 
-        case quadsquad::utils::GateType::kDotprod: {
+        case common::utils::GateType::kDotprod: {
           preproc_.gates[gate->out] = std::make_unique<PreprocDotpGate<BoolRing>>();
-          const auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
+          const auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
           BoolRing mask_prod = 0;
           if(id_ ==0) {
             for(size_t i = 0; i < g->in1.size(); i++) {
@@ -1309,7 +1310,7 @@ void OfflineBoolEvaluator::setWireMasksParty(
           break;
         }
 
-        // case quadsquad::utils::GateType::kEqz: {
+        // case common::utils::GateType::kEqz: {
           
         //   break;
         // }
@@ -1323,8 +1324,8 @@ void OfflineBoolEvaluator::setWireMasksParty(
 }
 
 void OfflineBoolEvaluator::setWireMasks(
-    const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map,
-    const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& bit_mask_map) {
+    const std::unordered_map<common::utils::wire_t, int>& input_pid_map,
+    const std::unordered_map<common::utils::wire_t, BoolRing>& bit_mask_map) {
       
       std::vector<BoolRing> rand_sh;
       size_t idx_rand_sh;
@@ -1423,8 +1424,8 @@ PreprocCircuit<BoolRing> OfflineBoolEvaluator::getPreproc() {
 }
 
 PreprocCircuit<BoolRing> OfflineBoolEvaluator::run(
-    const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
-    const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& bit_mask_map,
+    const std::unordered_map<common::utils::wire_t, int>& input_pid_map, 
+    const std::unordered_map<common::utils::wire_t, BoolRing>& bit_mask_map,
     std::vector<AuthAddShare<BoolRing>>& output_mask,
     std::vector<TPShare<BoolRing>>& output_tpmask) {
       

@@ -15,36 +15,36 @@ using namespace dirigent;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-quadsquad::utils::Circuit<Field> ShuffleCircuit(int N) {
-    quadsquad::utils::Circuit<Field> circ;
-    std::vector<std::vector<quadsquad::utils::wire_t>> 
-            M_pi(N, std::vector<quadsquad::utils::wire_t>(N));
-    std::vector<quadsquad::utils::wire_t> x(N);
+common::utils::Circuit<Field> ShuffleCircuit(int N) {
+    common::utils::Circuit<Field> circ;
+    std::vector<std::vector<common::utils::wire_t>> 
+            M_pi(N, std::vector<common::utils::wire_t>(N));
+    std::vector<common::utils::wire_t> x(N);
     for(size_t i = 0; i < N; i++) {
         for(size_t j = 0; j < N; j++) {
             M_pi[i][j] = circ.newInputWire();
         }
         x[i] = circ.newInputWire();
     }
-    std::vector<quadsquad::utils::wire_t> pi_x(N);
+    std::vector<common::utils::wire_t> pi_x(N);
     for(int i = 0; i < N; i++) {
-        pi_x[i] = circ.addGate(quadsquad::utils::GateType::kDotprod, M_pi[i], x);
+        pi_x[i] = circ.addGate(common::utils::GateType::kDotprod, M_pi[i], x);
         circ.setAsOutput(pi_x[i]);
     }
     return circ;  
 }
 
-quadsquad::utils::Circuit<Field> BitACircuit(int N) {
-    quadsquad::utils::Circuit<Field> circ;
-    std::vector<quadsquad::utils::wire_t> inp(N);
-    std::vector<quadsquad::utils::wire_t> bita(N);
+common::utils::Circuit<Field> BitACircuit(int N) {
+    common::utils::Circuit<Field> circ;
+    std::vector<common::utils::wire_t> inp(N);
+    std::vector<common::utils::wire_t> bita(N);
     for(size_t i = 0; i < N; i++) {
         inp[i] = circ.newInputWire();
     }
     for(size_t i = 0; i < N-1; i++) {
-        bita[i] = circ.addGate(quadsquad::utils::GateType::kMul, inp[i], inp[i+1]);
+        bita[i] = circ.addGate(common::utils::GateType::kMul, inp[i], inp[i+1]);
     }
-    bita[N-1] = circ.addGate(quadsquad::utils::GateType::kMul, inp[N-1], inp[0]);
+    bita[N-1] = circ.addGate(common::utils::GateType::kMul, inp[N-1], inp[0]);
     return circ;
 }
 
@@ -107,19 +107,19 @@ void benchmark(const bpo::variables_map& opts) {
         std::cout << key << ": " << value << "\n";
     }
     std::cout << std::endl;
-    std::vector<quadsquad::utils::LevelOrderedCircuit> circ(log(nP)/log(2));
-    std::vector<quadsquad::utils::LevelOrderedCircuit> bita_circ(log(nP)/log(2));
+    std::vector<common::utils::LevelOrderedCircuit> circ(log(nP)/log(2));
+    std::vector<common::utils::LevelOrderedCircuit> bita_circ(log(nP)/log(2));
     int rep = nP;
     for(int i = 0; i < log(nP)/log(2); i++) {
-        circ[i] = quadsquad::utils::Circuit<BoolRing>::generateParaPrefixAND(rep).orderGatesByLevel();
+        circ[i] = common::utils::Circuit<BoolRing>::generateParaPrefixAND(rep).orderGatesByLevel();
         bita_circ[i] = BitACircuit(rep).orderGatesByLevel();
         rep = rep/2;
     }
     auto shuff_circ = ShuffleCircuit(nP).orderGatesByLevel();
-    std::unordered_map<quadsquad::utils::wire_t, int> shuff_input_pid_map;
-    std::unordered_map<quadsquad::utils::wire_t, Field> shuff_input_map;
+    std::unordered_map<common::utils::wire_t, int> shuff_input_pid_map;
+    std::unordered_map<common::utils::wire_t, Field> shuff_input_map;
     for (const auto& g : shuff_circ.gates_by_level[0]) {
-        if (g->type == quadsquad::utils::GateType::kInp) {
+        if (g->type == common::utils::GateType::kInp) {
             shuff_input_pid_map[g->out] = 1;
             shuff_input_map[g->out] = 5;
         }
@@ -129,24 +129,24 @@ void benchmark(const bpo::variables_map& opts) {
         std::cout << "--- Circuit ---\n";
         std::cout << circ[i] << std::endl;
     }
-        std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-        std::unordered_map<quadsquad::utils::wire_t, BoolRing> input_map;
-        std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
+        std::unordered_map<common::utils::wire_t, int> input_pid_map;
+        std::unordered_map<common::utils::wire_t, BoolRing> input_map;
+        std::unordered_map<common::utils::wire_t, BoolRing> bit_mask_map;
         std::vector<AuthAddShare<BoolRing>> output_mask;
         std::vector<TPShare<BoolRing>>   output_tpmask;
 
-        std::unordered_map<quadsquad::utils::wire_t, int> bita_input_pid_map;
-        std::unordered_map<quadsquad::utils::wire_t, Field> bita_input_map;
+        std::unordered_map<common::utils::wire_t, int> bita_input_pid_map;
+        std::unordered_map<common::utils::wire_t, Field> bita_input_map;
         for(int i = 0; i < log(nP)/log(2); i++) {
             for (const auto& g : circ[i].gates_by_level[0]) {
-                if (g->type == quadsquad::utils::GateType::kInp) {
+                if (g->type == common::utils::GateType::kInp) {
                     input_pid_map[g->out] = 1;
                     input_map[g->out] = 1;
                     bit_mask_map[g->out] = 0;
                 }
             }
             for (const auto& g : bita_circ[i].gates_by_level[0]) {
-                if (g->type == quadsquad::utils::GateType::kInp) {
+                if (g->type == common::utils::GateType::kInp) {
                     bita_input_pid_map[g->out] = 1;
                     bita_input_map[g->out] = 5;
                 }

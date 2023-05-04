@@ -2,12 +2,12 @@
 
 #include <array>
 
-#include"dirigent/helpers.h"
+#include "../utils/helpers.h"
 
 namespace dirigent {
 OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                                 PreprocCircuit<Field> preproc,
-                                quadsquad::utils::LevelOrderedCircuit circ,
+                                common::utils::LevelOrderedCircuit circ,
                                 int security_param, int threads, int seed)
     : nP_(nP),
       id_(id),
@@ -20,12 +20,12 @@ OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> ne
       q_sh_(circ.num_gates),
       q_val_(circ.num_gates),
       multk_circ_(
-          quadsquad::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel())
+          common::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel())
       {tpool_ = std::make_shared<ThreadPool>(threads); }
 
 OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                                 PreprocCircuit<Field> preproc,
-                                quadsquad::utils::LevelOrderedCircuit circ,
+                                common::utils::LevelOrderedCircuit circ,
                                 int security_param,
                                 std::shared_ptr<ThreadPool> tpool, int seed)
     : nP_(nP),
@@ -40,14 +40,14 @@ OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> ne
       q_sh_(circ.num_gates),        
       q_val_(circ.num_gates) {}
 
-void OnlineEvaluator::setInputs(const std::unordered_map<quadsquad::utils::wire_t, Field>& inputs) {
+void OnlineEvaluator::setInputs(const std::unordered_map<common::utils::wire_t, Field>& inputs) {
     //Field q_value=0;
     std::vector<Field> masked_values;
     std::vector<size_t> num_inp_pid(nP_, 0);
     
     // Input gates have depth 0
     for(auto& g : circ_.gates_by_level[0]) {
-        if(g->type == quadsquad::utils::GateType::kInp) {
+        if(g->type == common::utils::GateType::kInp) {
             auto* pre_input = static_cast<PreprocInput<Field>*>(preproc_.gates[g->out].get());
             auto pid = pre_input->pid;
             
@@ -84,18 +84,18 @@ void OnlineEvaluator::setInputs(const std::unordered_map<quadsquad::utils::wire_
 void OnlineEvaluator::setRandomInputs() {
     // Input gates have depth 0.
     for (auto& g : circ_.gates_by_level[0]) {
-    if (g->type == quadsquad::utils::GateType::kInp) {
+    if (g->type == common::utils::GateType::kInp) {
       rgen_.all().random_data(&wires_[g->out], sizeof(Field));
     }
   }
 }
 
 // void OnlineEvaluator::eqzEvaluate(
-//          const std::vector<quadsquad::utils::FIn1Gate>& eqz_gates) {
+//          const std::vector<common::utils::FIn1Gate>& eqz_gates) {
 //      auto num_eqz_gates = eqz_gates.size();
 //      std::vector<preprocg_ptr_t<BoolRing>*> vpreproc(num_eqz_gates);
 
-//      std::vector<quadsquad::utils::wire_t> win(num_eqz_gates);
+//      std::vector<common::utils::wire_t> win(num_eqz_gates);
 //      for (size_t i = 0; i < num_eqz_gates; ++i) {
 //         auto* pre_eqz = static_cast<PreprocEqzGate<Field>*>(
 //                     preproc_.gates[eqz_gates[i].out].get());
@@ -103,7 +103,7 @@ void OnlineEvaluator::setRandomInputs() {
 //      }
 
     
-//     // auto multk_circ = quadsquad::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel();
+//     // auto multk_circ = common::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel();
 //     // dirigent::BoolEvaluator multk_eval(nP_, id_, network_, vpreproc, multk_circ, 200);
 // }
 
@@ -117,9 +117,9 @@ void OnlineEvaluator::evaluateGatesAtDepthPartySend(size_t depth,
     
     for (auto& gate : circ_.gates_by_level[depth]) {
         switch (gate->type) {
-            case quadsquad::utils::GateType::kMul: {
+            case common::utils::GateType::kMul: {
                 // All parties excluding TP sample a common random value r_in
-                auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+                auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
                 Field r_sum = 0;
                 q_val_[g->out] = 0;
                 
@@ -150,9 +150,9 @@ void OnlineEvaluator::evaluateGatesAtDepthPartySend(size_t depth,
                 break;
             }
 
-            case quadsquad::utils::GateType::kMul3: {
+            case common::utils::GateType::kMul3: {
                 // All parties excluding TP sample a common random value r_in
-                auto* g = static_cast<quadsquad::utils::FIn3Gate*>(gate.get());
+                auto* g = static_cast<common::utils::FIn3Gate*>(gate.get());
                 Field r_sum = 0;
                 q_val_[g->out] = 0;
 
@@ -199,9 +199,9 @@ void OnlineEvaluator::evaluateGatesAtDepthPartySend(size_t depth,
                 break;
             }
 
-            case quadsquad::utils::GateType::kMul4: {
+            case common::utils::GateType::kMul4: {
                 // All parties excluding TP sample a common random value r_in
-                auto* g = static_cast<quadsquad::utils::FIn4Gate*>(gate.get());
+                auto* g = static_cast<common::utils::FIn4Gate*>(gate.get());
                 Field r_sum = 0;
                 q_val_[g->out] = 0;
                 
@@ -259,12 +259,12 @@ void OnlineEvaluator::evaluateGatesAtDepthPartySend(size_t depth,
                 break;
             }
             
-            case::quadsquad::utils::GateType::kDotprod: {
+            case::common::utils::GateType::kDotprod: {
                 // All parties excluding TP sample a common random value r_in
                 
                 Field r_sum = 0;
   
-                auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
+                auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
                 auto* pre_out =
                     static_cast<PreprocDotpGate<Field>*>(preproc_.gates[g->out].get());
                 if(id_ != 0) {
@@ -294,8 +294,8 @@ void OnlineEvaluator::evaluateGatesAtDepthPartySend(size_t depth,
                 break;
             }
 
-            // case::quadsquad::utils::GateType::kEqz: {
-            //     auto* g = static_cast<quadsquad::utils::FIn1Gate*>(gate.get());
+            // case::common::utils::GateType::kEqz: {
+            //     auto* g = static_cast<common::utils::FIn1Gate*>(gate.get());
             //     auto* pre_out =
             //         static_cast<PreprocEqzGate<Field>*>(preproc_.gates[g->out].get());
             // }
@@ -317,34 +317,34 @@ void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth,
 
     for (auto& gate : circ_.gates_by_level[depth]) {
         switch (gate->type) {
-            case quadsquad::utils::GateType::kAdd: {
-                auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+            case common::utils::GateType::kAdd: {
+                auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
                 if(id_!= 0) wires_[g->out] = wires_[g->in1] + wires_[g->in2];
                 q_val_[g->out] = 0;
                 break;
             }
 
-            case quadsquad::utils::GateType::kSub: {
-                auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+            case common::utils::GateType::kSub: {
+                auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
                 if(id_ != 0) wires_[g->out] = wires_[g->in1] - wires_[g->in2];
                 q_val_[g->out] = 0;
                 break;
             }
 
-            case quadsquad::utils::GateType::kConstAdd: {
-                auto* g = static_cast<quadsquad::utils::ConstOpGate<Field>*>(gate.get());
+            case common::utils::GateType::kConstAdd: {
+                auto* g = static_cast<common::utils::ConstOpGate<Field>*>(gate.get());
                 wires_[g->out] = wires_[g->in] + g->cval;
                 break;
             }
 
-            case quadsquad::utils::GateType::kConstMul: {
-                auto* g = static_cast<quadsquad::utils::ConstOpGate<Field>*>(gate.get());
+            case common::utils::GateType::kConstMul: {
+                auto* g = static_cast<common::utils::ConstOpGate<Field>*>(gate.get());
                 if(id_ != 0)  wires_[g->out] = wires_[g->in] * g->cval;
                 break;
             }
 
-            case quadsquad::utils::GateType::kMul: {
-                auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+            case common::utils::GateType::kMul: {
+                auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
                 if(id_ != 0) {
                     q_val_[g->out] = mult_all[idx_mult];
                     wires_[g->out] = q_val_[g->out] - r_mult_pad[idx_mult];
@@ -352,8 +352,8 @@ void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth,
                 idx_mult++;
                 break;
             }
-            case quadsquad::utils::GateType::kMul3: {
-                auto* g = static_cast<quadsquad::utils::FIn3Gate*>(gate.get());
+            case common::utils::GateType::kMul3: {
+                auto* g = static_cast<common::utils::FIn3Gate*>(gate.get());
                 if(id_ != 0) {
                     q_val_[g->out] = mult3_all[idx_mult3];
                     wires_[g->out] = q_val_[g->out] - r_mult3_pad[idx_mult3];
@@ -361,8 +361,8 @@ void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth,
                 idx_mult3++;
                 break;
             }
-            case quadsquad::utils::GateType::kMul4: {
-                auto* g = static_cast<quadsquad::utils::FIn4Gate*>(gate.get());
+            case common::utils::GateType::kMul4: {
+                auto* g = static_cast<common::utils::FIn4Gate*>(gate.get());
                 if(id_ != 0) {
                     q_val_[g->out] = mult4_all[idx_mult4];
                     wires_[g->out] = q_val_[g->out] - r_mult4_pad[idx_mult4];
@@ -370,8 +370,8 @@ void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth,
                 idx_mult4++;
                 break;
             }
-            case quadsquad::utils::GateType::kDotprod: {
-                auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
+            case common::utils::GateType::kDotprod: {
+                auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
                 if(id_ != 0) {
                     q_val_[g->out] = dotprod_all[idx_dotprod];
                     wires_[g->out] = q_val_[g->out] - r_dotprod_pad[idx_dotprod];
@@ -395,27 +395,27 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
 
     for (auto& gate : circ_.gates_by_level[depth]) {
         switch (gate->type) {
-            case quadsquad::utils::GateType::kInp:
-            case quadsquad::utils::GateType::kAdd:
-            case quadsquad::utils::GateType::kSub: {
+            case common::utils::GateType::kInp:
+            case common::utils::GateType::kAdd:
+            case common::utils::GateType::kSub: {
                 break;
             }
-            case quadsquad::utils::GateType::kMul: {
+            case common::utils::GateType::kMul: {
                 mult_num++;
                 break;
             }
 
-            case quadsquad::utils::GateType::kMul3: {
+            case common::utils::GateType::kMul3: {
                 mult3_num++;
                 break;
             }
 
-            case quadsquad::utils::GateType::kMul4: {
+            case common::utils::GateType::kMul4: {
                 mult4_num++;
                 break;
             }
 
-            case quadsquad::utils::GateType::kDotprod: {
+            case common::utils::GateType::kDotprod: {
                 dotprod_num++;
                 break;
             }
@@ -535,35 +535,35 @@ bool OnlineEvaluator::MACVerification() {
         Field key = preproc_.gates[0]->mask.keySh();
         int m = circ_.num_gates;
         Field omega = 0;
-        std::unordered_map<quadsquad::utils::wire_t, Field> rho;
+        std::unordered_map<common::utils::wire_t, Field> rho;
 
         for (size_t i = 0; i < circ_.gates_by_level.size(); ++i) {
             for (auto& gate : circ_.gates_by_level[i]) {
                 switch (gate->type) {
-                    case quadsquad::utils::GateType::kMul: {
-                        auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+                    case common::utils::GateType::kMul: {
+                        auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
                         prg.random_data(&rho[g->out], sizeof(Field));
                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
                     }
-                    case quadsquad::utils::GateType::kDotprod: {
-                        auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
+                    case common::utils::GateType::kDotprod: {
+                        auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
                         prg.random_data(&rho[g->out], sizeof(Field));
                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
                     }
-                    case quadsquad::utils::GateType::kMul3: {
-                        auto* g = static_cast<quadsquad::utils::FIn3Gate*>(gate.get());
+                    case common::utils::GateType::kMul3: {
+                        auto* g = static_cast<common::utils::FIn3Gate*>(gate.get());
                         prg.random_data(&rho[g->out], sizeof(Field));
                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
                     }
-                    case quadsquad::utils::GateType::kMul4: {
-                        auto* g = static_cast<quadsquad::utils::FIn4Gate*>(gate.get());
+                    case common::utils::GateType::kMul4: {
+                        auto* g = static_cast<common::utils::FIn4Gate*>(gate.get());
                         prg.random_data(&rho[g->out], sizeof(Field));
                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
                     }
-                    case quadsquad::utils::GateType::kConstAdd:
-                    case quadsquad::utils::GateType::kConstMul:
-                    case quadsquad::utils::GateType::kAdd:
-                    case quadsquad::utils::GateType::kSub: {
+                    case common::utils::GateType::kConstAdd:
+                    case common::utils::GateType::kConstMul:
+                    case common::utils::GateType::kAdd:
+                    case common::utils::GateType::kSub: {
                         break;
                     }
 
@@ -641,7 +641,7 @@ Field OnlineEvaluator::reconstruct(AuthAddShare<Field>& shares) {
     return reconstructed_value;
 }
 
-std::vector<Field> OnlineEvaluator::evaluateCircuit( const std::unordered_map<quadsquad::utils::wire_t, Field>& inputs) {
+std::vector<Field> OnlineEvaluator::evaluateCircuit( const std::unordered_map<common::utils::wire_t, Field>& inputs) {
     setInputs(inputs);
     
   for (size_t i = 0; i < circ_.gates_by_level.size(); ++i) {
@@ -662,7 +662,7 @@ std::vector<Field> OnlineEvaluator::evaluateCircuit( const std::unordered_map<qu
 BoolEvaluator::BoolEvaluator(int nP, int id, 
                 std::shared_ptr<io::NetIOMP> network, 
                 PreprocCircuit<BoolRing> preproc, 
-                quadsquad::utils::LevelOrderedCircuit circ,
+                common::utils::LevelOrderedCircuit circ,
                 int seed)
     : nP_(nP),
       id_(id),
@@ -683,14 +683,14 @@ BoolEvaluator::BoolEvaluator(int nP, int id,
 //       circ(std::move(circ)) {}
 
 void BoolEvaluator::setInputs(
-    const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& inputs) {
+    const std::unordered_map<common::utils::wire_t, BoolRing>& inputs) {
   // Input gates have depth 0.
    std::vector<BoolRing> masked_values;
     std::vector<size_t> num_inp_pid(nP_, 0);
     
     // Input gates have depth 0
     for(auto& g : circ_.gates_by_level[0]) {
-        if(g->type == quadsquad::utils::GateType::kInp) {
+        if(g->type == common::utils::GateType::kInp) {
             auto* pre_input = static_cast<PreprocInput<BoolRing>*>(preproc_.gates[g->out].get());
             auto pid = pre_input->pid;
             
@@ -726,7 +726,7 @@ void BoolEvaluator::setInputs(
 void BoolEvaluator::setRandomInputs() {
     // Input gates have depth 0.
     for (auto& g : circ_.gates_by_level[0]) {
-    if (g->type == quadsquad::utils::GateType::kInp) {
+    if (g->type == common::utils::GateType::kInp) {
       rgen_.all().random_data(&wires_[g->out], sizeof(BoolRing));
     }
   }
@@ -742,9 +742,9 @@ void BoolEvaluator::evaluateGatesAtDepthPartySend(size_t depth,
                     std::vector<BoolRing>& dotprod_nonTP, std::vector<BoolRing>& r_dotprod_pad) {
     for (auto& gate : circ_.gates_by_level[depth]) {
         switch (gate->type) {
-            case quadsquad::utils::GateType::kMul: {
+            case common::utils::GateType::kMul: {
                 // All parties excluding TP sample a common random value r_in
-                auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+                auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
                 BoolRing r_sum(0);
                 q_val_[g->out] = 0;
                 
@@ -775,9 +775,9 @@ void BoolEvaluator::evaluateGatesAtDepthPartySend(size_t depth,
                 break;
             }
 
-            case quadsquad::utils::GateType::kMul3: {
+            case common::utils::GateType::kMul3: {
                 // All parties excluding TP sample a common random value r_in
-                auto* g = static_cast<quadsquad::utils::FIn3Gate*>(gate.get());
+                auto* g = static_cast<common::utils::FIn3Gate*>(gate.get());
                 BoolRing r_sum(0);
                 q_val_[g->out] = 0;
 
@@ -824,9 +824,9 @@ void BoolEvaluator::evaluateGatesAtDepthPartySend(size_t depth,
                 break;
             }
 
-            case quadsquad::utils::GateType::kMul4: {
+            case common::utils::GateType::kMul4: {
                 // All parties excluding TP sample a common random value r_in
-                auto* g = static_cast<quadsquad::utils::FIn4Gate*>(gate.get());
+                auto* g = static_cast<common::utils::FIn4Gate*>(gate.get());
                 BoolRing r_sum = 0;
                 q_val_[g->out] = 0;
                 
@@ -885,12 +885,12 @@ void BoolEvaluator::evaluateGatesAtDepthPartySend(size_t depth,
                 break;
             }
             
-            case::quadsquad::utils::GateType::kDotprod: {
+            case::common::utils::GateType::kDotprod: {
                 // All parties excluding TP sample a common random value r_in
                 
                 BoolRing r_sum = 0;
   
-                auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
+                auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
                 auto* pre_out =
                     static_cast<PreprocDotpGate<BoolRing>*>(preproc_.gates[g->out].get());
                 if(id_ != 0) {
@@ -935,55 +935,55 @@ void BoolEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth,
     size_t idx_dotprod = 0;
     for (auto& gate : circ_.gates_by_level[depth]) {
         switch (gate->type) {
-            case quadsquad::utils::GateType::kAdd: {
-                auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+            case common::utils::GateType::kAdd: {
+                auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
                 if(id_!= 0) wires_[g->out] = wires_[g->in1] + wires_[g->in2];
                 q_val_[g->out] = 0;
                 break;
             }
 
-            case quadsquad::utils::GateType::kSub: {
-                auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+            case common::utils::GateType::kSub: {
+                auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
                 if(id_ != 0) wires_[g->out] = wires_[g->in1] - wires_[g->in2];
                 q_val_[g->out] = 0;
                 break;
             }
 
-            case quadsquad::utils::GateType::kConstAdd: {
-                auto* g = static_cast<quadsquad::utils::ConstOpGate<BoolRing>*>(gate.get());
+            case common::utils::GateType::kConstAdd: {
+                auto* g = static_cast<common::utils::ConstOpGate<BoolRing>*>(gate.get());
                 wires_[g->out] = wires_[g->in] + g->cval;
                 break;
             }
 
-            case quadsquad::utils::GateType::kConstMul: {
-                auto* g = static_cast<quadsquad::utils::ConstOpGate<BoolRing>*>(gate.get());
+            case common::utils::GateType::kConstMul: {
+                auto* g = static_cast<common::utils::ConstOpGate<BoolRing>*>(gate.get());
                 wires_[g->out] = wires_[g->in] * g->cval;
                 break;
             }
 
-            case quadsquad::utils::GateType::kMul: {
-                auto* g = static_cast<quadsquad::utils::FIn2Gate*>(gate.get());
+            case common::utils::GateType::kMul: {
+                auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
                 q_val_[g->out] = mult_all[idx_mult];
                 wires_[g->out] = q_val_[g->out] - r_mult_pad[idx_mult];
                 idx_mult++;
                 break;
             }
-            case quadsquad::utils::GateType::kMul3: {
-                auto* g = static_cast<quadsquad::utils::FIn3Gate*>(gate.get());
+            case common::utils::GateType::kMul3: {
+                auto* g = static_cast<common::utils::FIn3Gate*>(gate.get());
                 q_val_[g->out] = mult3_all[idx_mult3];
                 wires_[g->out] = q_val_[g->out] - r_mult3_pad[idx_mult3];
                 idx_mult3++;
                 break;
             }
-            case quadsquad::utils::GateType::kMul4: {
-                auto* g = static_cast<quadsquad::utils::FIn4Gate*>(gate.get());
+            case common::utils::GateType::kMul4: {
+                auto* g = static_cast<common::utils::FIn4Gate*>(gate.get());
                 q_val_[g->out] = mult4_all[idx_mult4];
                 wires_[g->out] = q_val_[g->out] - r_mult4_pad[idx_mult4];
                 idx_mult4++;
                 break;
             }
-            case quadsquad::utils::GateType::kDotprod: {
-                auto* g = static_cast<quadsquad::utils::SIMDGate*>(gate.get());
+            case common::utils::GateType::kDotprod: {
+                auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
                 q_val_[g->out] = dotprod_all[idx_dotprod];
                 wires_[g->out] = q_val_[g->out] - r_dotprod_pad[idx_dotprod];
                 idx_dotprod++;
@@ -1004,22 +1004,22 @@ void BoolEvaluator::evaluateGatesAtDepth(size_t depth) {
 
     for (auto& gate : circ_.gates_by_level[depth]) {
         switch (gate->type) {
-            case quadsquad::utils::GateType::kMul: {
+            case common::utils::GateType::kMul: {
                 mult_num++;
                 break;
             }
 
-            case quadsquad::utils::GateType::kMul3: {
+            case common::utils::GateType::kMul3: {
                 mult3_num++;
                 break;
             }
 
-            case quadsquad::utils::GateType::kMul4: {
+            case common::utils::GateType::kMul4: {
                 mult4_num++;
                 break;
             }
 
-            case quadsquad::utils::GateType::kDotprod: {
+            case common::utils::GateType::kDotprod: {
                 dotprod_num++;
                 break;
             }
@@ -1168,7 +1168,7 @@ std::vector<BoolRing> BoolEvaluator::getOutputs() {
     
 }
 
-std::vector<BoolRing> BoolEvaluator::evaluateCircuit( const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& inputs) {
+std::vector<BoolRing> BoolEvaluator::evaluateCircuit( const std::unordered_map<common::utils::wire_t, BoolRing>& inputs) {
     setInputs(inputs);
     
   for (size_t i = 0; i < circ_.gates_by_level.size(); ++i) {

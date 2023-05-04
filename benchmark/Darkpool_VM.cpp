@@ -15,50 +15,50 @@ using namespace dirigent;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-quadsquad::utils::Circuit<Field> Post_LTZ_Circuit(int N, int M) {
-    quadsquad::utils::Circuit<Field> circ;
-    std::vector<quadsquad::utils::wire_t> inp(3);
+common::utils::Circuit<Field> Post_LTZ_Circuit(int N, int M) {
+    common::utils::Circuit<Field> circ;
+    std::vector<common::utils::wire_t> inp(3);
     for(int i = 0; i < 3; i++) {
         inp[i] = circ.newInputWire();
     }
     // Mult for BitA
-    quadsquad::utils::wire_t bita = circ.addGate(quadsquad::utils::GateType::kMul, inp[0], inp[1]);
+    common::utils::wire_t bita = circ.addGate(common::utils::GateType::kMul, inp[0], inp[1]);
     // Mult for ObSel
-    quadsquad::utils::wire_t sel = circ.addGate(quadsquad::utils::GateType::kMul, bita, inp[2]);
-    std::vector<quadsquad::utils::wire_t> add_gates(N + M + N*N + M*M);
-    add_gates[0] = circ.addGate(quadsquad::utils::GateType::kAdd, inp[0], inp[1]);
-    add_gates[1] = circ.addGate(quadsquad::utils::GateType::kAdd, inp[0], inp[2]);
+    common::utils::wire_t sel = circ.addGate(common::utils::GateType::kMul, bita, inp[2]);
+    std::vector<common::utils::wire_t> add_gates(N + M + N*N + M*M);
+    add_gates[0] = circ.addGate(common::utils::GateType::kAdd, inp[0], inp[1]);
+    add_gates[1] = circ.addGate(common::utils::GateType::kAdd, inp[0], inp[2]);
     for(int i = 2 ; i < N + M + N*N + M*M - 1; i++) {
-        add_gates[i] = circ.addGate(quadsquad::utils::GateType::kAdd, add_gates[i-2], add_gates[i-1]);
+        add_gates[i] = circ.addGate(common::utils::GateType::kAdd, add_gates[i-2], add_gates[i-1]);
     }
     return circ;
 }
 
-quadsquad::utils::Circuit<Field> Post_Para_LTZ_Circuit(int N, int M) {
-    quadsquad::utils::Circuit<Field> circ;
+common::utils::Circuit<Field> Post_Para_LTZ_Circuit(int N, int M) {
+    common::utils::Circuit<Field> circ;
     int T = N + M;
-    std::vector<quadsquad::utils::wire_t> inp(2 * T);
+    std::vector<common::utils::wire_t> inp(2 * T);
     for(int i = 0; i < 2 * T; i++) {
         inp[i] = circ.newInputWire();
     }
     // Mult for BitA
-    std::vector<quadsquad::utils::wire_t> bita(2 * T);
+    std::vector<common::utils::wire_t> bita(2 * T);
     for(int i = 0; i < (2 * T) - 1; i++) {
-        bita[i] = circ.addGate(quadsquad::utils::GateType::kMul, inp[i], inp[i + 1]);
+        bita[i] = circ.addGate(common::utils::GateType::kMul, inp[i], inp[i + 1]);
     }
-    bita[(2 * T) - 1] = circ.addGate(quadsquad::utils::GateType::kMul, inp[(2 * T) - 1], inp[0]);
+    bita[(2 * T) - 1] = circ.addGate(common::utils::GateType::kMul, inp[(2 * T) - 1], inp[0]);
     Field cons = 5;
-    std::vector<quadsquad::utils::wire_t> add1(T);
-    std::vector<quadsquad::utils::wire_t> mul1(T);
-    std::vector<quadsquad::utils::wire_t> add2(T);
-    std::vector<quadsquad::utils::wire_t> cons_add1(T);
-    std::vector<quadsquad::utils::wire_t> mul2(T);
+    std::vector<common::utils::wire_t> add1(T);
+    std::vector<common::utils::wire_t> mul1(T);
+    std::vector<common::utils::wire_t> add2(T);
+    std::vector<common::utils::wire_t> cons_add1(T);
+    std::vector<common::utils::wire_t> mul2(T);
     for(int i = 0; i < T; i++) {
-        add1[i] = circ.addGate(quadsquad::utils::GateType::kAdd, bita[2*i], inp[2 * i + 1]);
-        mul1[i] = circ.addGate(quadsquad::utils::GateType::kMul, bita[i], add1[i]);
-        add2[i] = circ.addGate(quadsquad::utils::GateType::kAdd, mul1[i], add1[i]); 
-        cons_add1[i] = circ.addConstOpGate(quadsquad::utils::GateType::kConstAdd, add2[i], cons);
-        mul2[i] = circ.addGate(quadsquad::utils::GateType::kMul, cons_add1[i], mul1[i]);
+        add1[i] = circ.addGate(common::utils::GateType::kAdd, bita[2*i], inp[2 * i + 1]);
+        mul1[i] = circ.addGate(common::utils::GateType::kMul, bita[i], add1[i]);
+        add2[i] = circ.addGate(common::utils::GateType::kAdd, mul1[i], add1[i]); 
+        cons_add1[i] = circ.addConstOpGate(common::utils::GateType::kConstAdd, add2[i], cons);
+        mul2[i] = circ.addGate(common::utils::GateType::kMul, cons_add1[i], mul1[i]);
     }
     return circ;
 
@@ -127,54 +127,54 @@ void benchmark(const bpo::variables_map& opts) {
     size_t N = sell_list_size;
     size_t M = buy_list_size;
 
-    auto LTZ_circ = quadsquad::utils::Circuit<BoolRing>::generatePrefixAND().orderGatesByLevel();
+    auto LTZ_circ = common::utils::Circuit<BoolRing>::generatePrefixAND().orderGatesByLevel();
     auto post_LTZ_circ = Post_LTZ_Circuit(N,M).orderGatesByLevel();
-    auto para_LTZ_circ = quadsquad::utils::Circuit<BoolRing>::generateParaPrefixAND(2 * (N + M)).orderGatesByLevel();
+    auto para_LTZ_circ = common::utils::Circuit<BoolRing>::generateParaPrefixAND(2 * (N + M)).orderGatesByLevel();
     auto post_para_LTZ_circ = Post_Para_LTZ_Circuit(N,M).orderGatesByLevel();
 
-    std::unordered_map<quadsquad::utils::wire_t, int> LTZ_input_pid_map;
-    std::unordered_map<quadsquad::utils::wire_t, BoolRing> LTZ_input_map;
-    std::unordered_map<quadsquad::utils::wire_t, BoolRing> LTZ_bit_mask_map;
+    std::unordered_map<common::utils::wire_t, int> LTZ_input_pid_map;
+    std::unordered_map<common::utils::wire_t, BoolRing> LTZ_input_map;
+    std::unordered_map<common::utils::wire_t, BoolRing> LTZ_bit_mask_map;
     std::vector<AuthAddShare<BoolRing>> LTZ_output_mask;
     std::vector<TPShare<BoolRing>> LTZ_output_tpmask;
 
     for (const auto& g : LTZ_circ.gates_by_level[0]) {
-        if (g->type == quadsquad::utils::GateType::kInp) {
+        if (g->type == common::utils::GateType::kInp) {
             LTZ_input_pid_map[g->out] = 1;
             LTZ_input_map[g->out] = 1;
             LTZ_bit_mask_map[g->out] = 0;
         }
     }
 
-    std::unordered_map<quadsquad::utils::wire_t, int> post_LTZ_input_pid_map;
-    std::unordered_map<quadsquad::utils::wire_t, Field> post_LTZ_input_map;
+    std::unordered_map<common::utils::wire_t, int> post_LTZ_input_pid_map;
+    std::unordered_map<common::utils::wire_t, Field> post_LTZ_input_map;
 
     for (const auto& g : post_LTZ_circ.gates_by_level[0]) {
-        if (g->type == quadsquad::utils::GateType::kInp) {
+        if (g->type == common::utils::GateType::kInp) {
             post_LTZ_input_pid_map[g->out] = 1;
             post_LTZ_input_map[g->out] = 1;
         }
     }
 
-    std::unordered_map<quadsquad::utils::wire_t, int> para_LTZ_input_pid_map;
-    std::unordered_map<quadsquad::utils::wire_t, BoolRing> para_LTZ_input_map;
-    std::unordered_map<quadsquad::utils::wire_t, BoolRing> para_LTZ_bit_mask_map;
+    std::unordered_map<common::utils::wire_t, int> para_LTZ_input_pid_map;
+    std::unordered_map<common::utils::wire_t, BoolRing> para_LTZ_input_map;
+    std::unordered_map<common::utils::wire_t, BoolRing> para_LTZ_bit_mask_map;
     std::vector<AuthAddShare<BoolRing>> para_LTZ_output_mask;
     std::vector<TPShare<BoolRing>> para_LTZ_output_tpmask;
 
     for (const auto& g : para_LTZ_circ.gates_by_level[0]) {
-        if (g->type == quadsquad::utils::GateType::kInp) {
+        if (g->type == common::utils::GateType::kInp) {
             para_LTZ_input_pid_map[g->out] = 1;
             para_LTZ_input_map[g->out] = 1;
             para_LTZ_bit_mask_map[g->out] = 0;
         }
     }
 
-    std::unordered_map<quadsquad::utils::wire_t, int> post_para_LTZ_input_pid_map;
-    std::unordered_map<quadsquad::utils::wire_t, Field> post_para_LTZ_input_map;
+    std::unordered_map<common::utils::wire_t, int> post_para_LTZ_input_pid_map;
+    std::unordered_map<common::utils::wire_t, Field> post_para_LTZ_input_map;
 
     for (const auto& g : post_para_LTZ_circ.gates_by_level[0]) {
-        if (g->type == quadsquad::utils::GateType::kInp) {
+        if (g->type == common::utils::GateType::kInp) {
             post_para_LTZ_input_pid_map[g->out] = 1;
             post_para_LTZ_input_map[g->out] = 1;
         }

@@ -4,7 +4,7 @@
 
 #include <cmath>
 
-namespace quadsquad {
+namespace common::utils {
 int pidFromOffset(int id, int offset) {
   int pid = (id + offset) % 4;
   if (pid < 0) {
@@ -117,4 +117,4 @@ void sendZZpE(emp::NetIO* ios, const NTL::ZZ_pE* data, size_t length) {
   }
   ios->flush();
 }
-};  // namespace quadsquad
+};  // namespace common::utils 

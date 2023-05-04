@@ -1,11 +1,19 @@
 #pragma once
+
+#include <NTL/ZZ_p.h>
+
 #include <cstdint>
 #include <iostream>
 #include <vector>
 
-namespace quadsquad {
+namespace common::utils {
 using Ring = uint64_t;
+// constexpr uint64_t FRACTION = 16;
+
+// using Field = NTL::ZZ_p;
+using Field = uint64_t;
 constexpr uint64_t FRACTION = 16;
+// using Field = int;
 
 class BoolRing {
   bool val_;
@@ -22,6 +30,7 @@ class BoolRing {
   BoolRing& operator+=(const BoolRing& rhs);
   BoolRing& operator-=(const BoolRing& rhs);
   BoolRing& operator*=(const BoolRing& rhs);
+  BoolRing& operator=(const BoolRing& rhs) noexcept;
 
   static std::vector<uint8_t> pack(const BoolRing* data, size_t len);
   static std::vector<BoolRing> unpack(const uint8_t* packed, size_t len);
@@ -32,4 +41,4 @@ class BoolRing {
 
   friend std::ostream& operator<<(std::ostream& os, const BoolRing& b);
 };
-};  // namespace quadsquad
+};  // namespace common::utils 

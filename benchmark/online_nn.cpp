@@ -72,13 +72,13 @@ void benchmark(const bpo::variables_map& opts) {
   }
   std::cout << std::endl;
 
-  utils::LevelOrderedCircuit circ;
+  common::utils::LevelOrderedCircuit circ;
   if (neural_network == "fcn") {
-    circ = utils::NeuralNetwork<Ring>::fcnMNIST(batch_size)
+    circ = common::utils::NeuralNetwork<Ring>::fcnMNIST(batch_size)
                .getCircuit()
                .orderGatesByLevel();
   } else {
-    circ = utils::NeuralNetwork<Ring>::lenetMNIST(batch_size)
+    circ = common::utils::NeuralNetwork<Ring>::lenetMNIST(batch_size)
                .getCircuit()
                .orderGatesByLevel();
   }
@@ -86,9 +86,9 @@ void benchmark(const bpo::variables_map& opts) {
   std::cout << "--- Circuit ---\n";
   std::cout << circ << std::endl;
 
-  std::unordered_map<utils::wire_t, int> input_pid_map;
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
   for (const auto& g : circ.gates_by_level[0]) {
-    if (g->type == utils::GateType::kInp) {
+    if (g->type == common::utils::GateType::kInp) {
       input_pid_map[g->out] = 0;
     }
   }

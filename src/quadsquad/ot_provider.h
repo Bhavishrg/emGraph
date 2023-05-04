@@ -6,7 +6,9 @@
 #include <array>
 #include <vector>
 
-#include "types.h"
+#include "../utils/types.h"
+
+using namespace common::utils;
 
 namespace quadsquad {
 

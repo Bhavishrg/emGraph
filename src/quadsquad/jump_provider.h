@@ -5,6 +5,9 @@
 #include <array>
 
 #include "../io/netmp.h"
+#include "../utils/helpers.h"
+
+using namespace common::utils;
 
 namespace quadsquad {
 

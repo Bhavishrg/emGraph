@@ -8,7 +8,7 @@
 #include <cmath>
 #include <thread>
 
-#include "helpers.h"
+#include "../utils/helpers.h"
 #include "jump_provider.h"
 #include "online_evaluator.h"
 
@@ -16,7 +16,7 @@ namespace quadsquad {
 OfflineEvaluator::OfflineEvaluator(int my_id,
                                    std::shared_ptr<io::NetIOMP> network1,
                                    std::shared_ptr<io::NetIOMP> network2,
-                                   utils::LevelOrderedCircuit circ,
+                                   common::utils::LevelOrderedCircuit circ,
                                    int security_param, int threads, int seed)
     : id_(my_id),
       security_param_(security_param),
@@ -107,11 +107,11 @@ void OfflineEvaluator::randomShareWithParty(int id, RandGenPool& rgen,
 }
 
 void OfflineEvaluator::setWireMasks(
-    const std::unordered_map<utils::wire_t, int>& input_pid_map) {
+    const std::unordered_map<common::utils::wire_t, int>& input_pid_map) {
   for (const auto& level : circ_.gates_by_level) {
     for (const auto& gate : level) {
       switch (gate->type) {
-        case utils::GateType::kInp: {
+        case common::utils::GateType::kInp: {
           auto pregate = std::make_unique<PreprocInput<Ring>>();
 
           auto pid = input_pid_map.at(gate->out);
@@ -127,16 +127,16 @@ void OfflineEvaluator::setWireMasks(
           break;
         }
 
-        case utils::GateType::kMul: {
+        case common::utils::GateType::kMul: {
           preproc_.gates[gate->out] = std::make_unique<PreprocMultGate<Ring>>();
           randomShare(rgen_, preproc_.gates[gate->out]->mask);
-          const auto* g = static_cast<utils::FIn2Gate*>(gate.get());
+          const auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           mult_gates_.push_back(*g);
           break;
         }
 
-        case utils::GateType::kAdd: {
-          const auto* g = static_cast<utils::FIn2Gate*>(gate.get());
+        case common::utils::GateType::kAdd: {
+          const auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           const auto& mask_in1 = preproc_.gates[g->in1]->mask;
           const auto& mask_in2 = preproc_.gates[g->in2]->mask;
           preproc_.gates[gate->out] =
@@ -144,8 +144,8 @@ void OfflineEvaluator::setWireMasks(
           break;
         }
 
-        case utils::GateType::kSub: {
-          const auto* g = static_cast<utils::FIn2Gate*>(gate.get());
+        case common::utils::GateType::kSub: {
+          const auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           const auto& mask_in1 = preproc_.gates[g->in1]->mask;
           const auto& mask_in2 = preproc_.gates[g->in2]->mask;
           preproc_.gates[gate->out] =
@@ -425,7 +425,7 @@ PreprocCircuit<Ring> OfflineEvaluator::getPreproc() {
 }
 
 PreprocCircuit<Ring> OfflineEvaluator::run(
-    const std::unordered_map<utils::wire_t, int>& input_pid_map) {
+    const std::unordered_map<common::utils::wire_t, int>& input_pid_map) {
   setWireMasks(input_pid_map);
   auto c_terms_f = tpool_->enqueue([&]() { computeCCrossTerms(); });
 
@@ -446,7 +446,7 @@ emp::block OfflineEvaluator::commonCoinKey() {
   randomShare(rgen_, key_shares[1]);
 
   OnlineEvaluator oeval(id_, network_, PreprocCircuit<Ring>(),
-                        utils::LevelOrderedCircuit(), security_param_, tpool_);
+                        common::utils::LevelOrderedCircuit(), security_param_, tpool_);
   auto key = oeval.reconstruct(key_shares);
   return emp::makeBlock(key[0], key[1]);
 }
@@ -843,18 +843,18 @@ void OfflineEvaluator::zkVerifyBase(int prover_id, emp::block cc_key,
 }
 
 PreprocCircuit<Ring> OfflineEvaluator::dummy(
-    const utils::LevelOrderedCircuit& circ,
-    const std::unordered_map<utils::wire_t, int>& input_pid_map,
+    const common::utils::LevelOrderedCircuit& circ,
+    const std::unordered_map<common::utils::wire_t, int>& input_pid_map,
     size_t security_param, int pid, emp::PRG& prg) {
   PreprocCircuit<Ring> preproc(circ.num_gates, circ.outputs.size());
   auto msb_circ =
-      utils::Circuit<BoolRing>::generatePPAMSB().orderGatesByLevel();
+      common::utils::Circuit<BoolRing>::generatePPAMSB().orderGatesByLevel();
 
   std::vector<DummyShare<Ring>> wires(circ.num_gates);
   for (const auto& level : circ.gates_by_level) {
     for (const auto& gate : level) {
       switch (gate->type) {
-        case utils::GateType::kInp: {
+        case common::utils::GateType::kInp: {
           wires[gate->out].randomize(prg);
 
           auto input_pid = input_pid_map.at(gate->out);
@@ -868,24 +868,24 @@ PreprocCircuit<Ring> OfflineEvaluator::dummy(
           break;
         }
 
-        case utils::GateType::kAdd: {
-          const auto* g = static_cast<utils::FIn2Gate*>(gate.get());
+        case common::utils::GateType::kAdd: {
+          const auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           wires[g->out] = wires[g->in1] + wires[g->in2];
           preproc.gates[gate->out] =
               std::make_unique<PreprocGate<Ring>>(wires[gate->out].getRSS(pid));
           break;
         }
 
-        case utils::GateType::kSub: {
-          const auto* g = static_cast<utils::FIn2Gate*>(gate.get());
+        case common::utils::GateType::kSub: {
+          const auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           wires[g->out] = wires[g->in1] - wires[g->in2];
           preproc.gates[gate->out] =
               std::make_unique<PreprocGate<Ring>>(wires[gate->out].getRSS(pid));
           break;
         }
 
-        case utils::GateType::kMul: {
-          const auto* g = static_cast<utils::FIn2Gate*>(gate.get());
+        case common::utils::GateType::kMul: {
+          const auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           wires[g->out].randomize(prg);
           Ring prod = wires[g->in1].secret() * wires[g->in2].secret();
           preproc.gates[gate->out] = std::make_unique<PreprocMultGate<Ring>>(
@@ -894,24 +894,24 @@ PreprocCircuit<Ring> OfflineEvaluator::dummy(
           break;
         }
 
-        case utils::GateType::kConstAdd: {
-          const auto* g = static_cast<utils::ConstOpGate<Ring>*>(gate.get());
+        case common::utils::GateType::kConstAdd: {
+          const auto* g = static_cast<common::utils::ConstOpGate<Ring>*>(gate.get());
           wires[g->out] = wires[g->in];
           preproc.gates[g->out] =
               std::make_unique<PreprocGate<Ring>>(wires[g->out].getRSS(pid));
           break;
         }
 
-        case utils::GateType::kConstMul: {
-          const auto* g = static_cast<utils::ConstOpGate<Ring>*>(gate.get());
+        case common::utils::GateType::kConstMul: {
+          const auto* g = static_cast<common::utils::ConstOpGate<Ring>*>(gate.get());
           wires[g->out] = wires[g->in] * g->cval;
           preproc.gates[g->out] =
               std::make_unique<PreprocGate<Ring>>(wires[g->out].getRSS(pid));
           break;
         }
 
-        case utils::GateType::kDotprod: {
-          const auto* g = static_cast<utils::SIMDGate*>(gate.get());
+        case common::utils::GateType::kDotprod: {
+          const auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
           wires[g->out].randomize(prg);
 
           Ring mask_prod = 0;
@@ -925,8 +925,8 @@ PreprocCircuit<Ring> OfflineEvaluator::dummy(
           break;
         }
 
-        case utils::GateType::kTrdotp: {
-          const auto* g = static_cast<utils::SIMDGate*>(gate.get());
+        case common::utils::GateType::kTrdotp: {
+          const auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
 
           DummyShare<Ring> non_trunc_mask;
           non_trunc_mask.randomize(prg);
@@ -945,8 +945,8 @@ PreprocCircuit<Ring> OfflineEvaluator::dummy(
           break;
         }
 
-        case utils::GateType::kRelu: {
-          const auto* relu_g = static_cast<utils::FIn1Gate*>(gate.get());
+        case common::utils::GateType::kRelu: {
+          const auto* relu_g = static_cast<common::utils::FIn1Gate*>(gate.get());
           auto alpha = -1 * wires[relu_g->in].secret();
           auto alpha_bits = bitDecompose(alpha);
 
@@ -961,7 +961,7 @@ PreprocCircuit<Ring> OfflineEvaluator::dummy(
           for (const auto& msb_level : msb_circ.gates_by_level) {
             for (const auto& msb_gate : msb_level) {
               switch (msb_gate->type) {
-                case utils::GateType::kInp: {
+                case common::utils::GateType::kInp: {
                   auto mask = zero_share;
                   if (inp_counter < 64) {
                     mask = DummyShare<BoolRing>(alpha_bits[inp_counter], prg);
@@ -973,16 +973,16 @@ PreprocCircuit<Ring> OfflineEvaluator::dummy(
                   break;
                 }
 
-                case utils::GateType::kAdd: {
-                  const auto* g = static_cast<utils::FIn2Gate*>(msb_gate.get());
+                case common::utils::GateType::kAdd: {
+                  const auto* g = static_cast<common::utils::FIn2Gate*>(msb_gate.get());
                   msb_wires[g->out] = msb_wires[g->in1] + msb_wires[g->in2];
                   msb_gates[g->out] = std::make_unique<PreprocGate<BoolRing>>(
                       msb_wires[g->out].getRSS(pid));
                   break;
                 }
 
-                case utils::GateType::kMul: {
-                  const auto* g = static_cast<utils::FIn2Gate*>(msb_gate.get());
+                case common::utils::GateType::kMul: {
+                  const auto* g = static_cast<common::utils::FIn2Gate*>(msb_gate.get());
                   msb_wires[g->out].randomize(prg);
                   BoolRing prod =
                       msb_wires[g->in1].secret() * msb_wires[g->in2].secret();
@@ -1028,8 +1028,8 @@ PreprocCircuit<Ring> OfflineEvaluator::dummy(
           break;
         }
 
-        case utils::GateType::kMsb: {
-          const auto* msb_g = static_cast<utils::FIn1Gate*>(gate.get());
+        case common::utils::GateType::kMsb: {
+          const auto* msb_g = static_cast<common::utils::FIn1Gate*>(gate.get());
           auto alpha =
               -1 * wires[msb_g->in].secret();  // Removed multiplication by -1
           auto alpha_bits = bitDecompose(alpha);
@@ -1045,7 +1045,7 @@ PreprocCircuit<Ring> OfflineEvaluator::dummy(
           for (const auto& msb_level : msb_circ.gates_by_level) {
             for (const auto& msb_gate : msb_level) {
               switch (msb_gate->type) {
-                case utils::GateType::kInp: {
+                case common::utils::GateType::kInp: {
                   auto mask = zero_share;
                   if (inp_counter < 64) {
                     mask = DummyShare<BoolRing>(alpha_bits[inp_counter], prg);
@@ -1057,16 +1057,16 @@ PreprocCircuit<Ring> OfflineEvaluator::dummy(
                   break;
                 }
 
-                case utils::GateType::kAdd: {
-                  const auto* g = static_cast<utils::FIn2Gate*>(msb_gate.get());
+                case common::utils::GateType::kAdd: {
+                  const auto* g = static_cast<common::utils::FIn2Gate*>(msb_gate.get());
                   msb_wires[g->out] = msb_wires[g->in1] + msb_wires[g->in2];
                   msb_gates[g->out] = std::make_unique<PreprocGate<BoolRing>>(
                       msb_wires[g->out].getRSS(pid));
                   break;
                 }
 
-                case utils::GateType::kMul: {
-                  const auto* g = static_cast<utils::FIn2Gate*>(msb_gate.get());
+                case common::utils::GateType::kMul: {
+                  const auto* g = static_cast<common::utils::FIn2Gate*>(msb_gate.get());
                   msb_wires[g->out].randomize(prg);
                   BoolRing prod =
                       msb_wires[g->in1].secret() * msb_wires[g->in2].secret();

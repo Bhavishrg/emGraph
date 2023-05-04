@@ -3,10 +3,10 @@
 #include <boost/multi_array.hpp>
 #include <stdexcept>
 
-#include "../quadsquad/types.h"
+#include "types.h"
 #include "circuit.h"
 
-namespace quadsquad::utils {
+namespace common::utils {
 using wmat2_t = boost::multi_array<wire_t, 2>;
 using wmat3_t = boost::multi_array<wire_t, 3>;
 using wmat4_t = boost::multi_array<wire_t, 4>;
@@ -272,4 +272,4 @@ class NeuralNetwork {
     return std::move(nn);
   }
 };
-}  // namespace quadsquad::utils
+}  // namespace common::utils

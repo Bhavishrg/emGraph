@@ -2,7 +2,9 @@
 
 #include "../utils/circuit.h"
 #include "sharing.h"
-#include "types.h"
+#include "../utils/types.h"
+
+using namespace common::utils;
 
 namespace dirigent {
 // Preprocessed data for a gate.

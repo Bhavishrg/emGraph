@@ -18,7 +18,9 @@
 #include "preproc.h"
 #include "quadsquad/rand_gen_pool.h"
 #include "sharing.h"
-#include "types.h"
+#include "../utils/types.h"
+
+using namespace common::utils;
 
 namespace quadsquad {
 class OfflineEvaluator {
@@ -27,7 +29,7 @@ class OfflineEvaluator {
   RandGenPool rgen_;
   std::shared_ptr<io::NetIOMP> network_;
   std::shared_ptr<io::NetIOMP> network_ot_;
-  utils::LevelOrderedCircuit circ_;
+  common::utils::LevelOrderedCircuit circ_;
   std::shared_ptr<ThreadPool> tpool_;
   PreprocCircuit<Ring> preproc_;
   std::vector<std::unique_ptr<OTProvider>> ot_;
@@ -36,7 +38,7 @@ class OfflineEvaluator {
   NTL::ZZ_pEContext ZZ_pE_ctx_;
 
   // Data members used for book-keeping across methods.
-  std::vector<utils::FIn2Gate> mult_gates_;
+  std::vector<common::utils::FIn2Gate> mult_gates_;
   std::array<std::vector<Ring>, 3> ab_terms_;
   std::array<std::vector<Ring>, 6> c_terms_;
 
@@ -68,7 +70,7 @@ class OfflineEvaluator {
   // `network_2` is used for OT while `network_1` is used for all other tasks.
   OfflineEvaluator(int my_id, std::shared_ptr<io::NetIOMP> network1,
                    std::shared_ptr<io::NetIOMP> network2,
-                   utils::LevelOrderedCircuit circ, int security_param,
+                   common::utils::LevelOrderedCircuit circ, int security_param,
                    int threads, int seed = 200);
 
   // Generate sharing of a random unknown value.
@@ -87,7 +89,7 @@ class OfflineEvaluator {
   // Set masks for each wire. Should be called before running any of the other
   // subprotocols.
   void setWireMasks(
-      const std::unordered_map<utils::wire_t, int>& input_pid_map);
+      const std::unordered_map<common::utils::wire_t, int>& input_pid_map);
   // Computes S_1 and S_2 summands.
   void computeABCrossTerms();
   // Computes S_0 summands by running instances of disMult.
@@ -105,13 +107,13 @@ class OfflineEvaluator {
 
   // Efficiently runs above subprotocols.
   PreprocCircuit<Ring> run(
-      const std::unordered_map<utils::wire_t, int>& input_pid_map);
+      const std::unordered_map<common::utils::wire_t, int>& input_pid_map);
 
   // Insecure preprocessing. All preprocessing data is generated in clear but
   // cast in a form that can be used in the online phase.
   static PreprocCircuit<Ring> dummy(
-      const utils::LevelOrderedCircuit& circ,
-      const std::unordered_map<utils::wire_t, int>& input_pid_map,
+      const common::utils::LevelOrderedCircuit& circ,
+      const std::unordered_map<common::utils::wire_t, int>& input_pid_map,
       size_t security_param, int pid, emp::PRG& prg);
 };
 };  // namespace quadsquad

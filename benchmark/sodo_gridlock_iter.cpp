@@ -18,10 +18,10 @@ using namespace quadsquad;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-std::unordered_map<utils::wire_t, Ring> generateRandomTxns(
-    utils::SoDoGridLock<Ring>& gl, size_t num_banks, size_t num_txns,
+std::unordered_map<common::utils::wire_t, Ring> generateRandomTxns(
+    common::utils::SoDoGridLock<Ring>& gl, size_t num_banks, size_t num_txns,
     size_t seed) {
-  std::unordered_map<utils::wire_t, Ring> imap;
+  std::unordered_map<common::utils::wire_t, Ring> imap;
 
   std::mt19937 gen(seed);
   std::uniform_int_distribution<> amt_dist(1, 1000);
@@ -104,11 +104,11 @@ void benchmark(const bpo::variables_map& opts) {
   }
   std::cout << std::endl;
 
-  utils::SoDoGridLock<Ring> gl(num_banks);
+  common::utils::SoDoGridLock<Ring> gl(num_banks);
   auto imap = generateRandomTxns(gl, num_banks, num_txns, seed);
   auto circ = gl.getCircuit().orderGatesByLevel();
 
-  std::unordered_map<utils::wire_t, int> input_pid_map;
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
   for (const auto& it : imap) {
     input_pid_map[it.first] = 0;
   }

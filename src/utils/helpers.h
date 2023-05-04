@@ -9,9 +9,12 @@
 #include <vector>
 
 #include "../io/netmp.h"
-#include "../dirigent/types.h"
+#include "types.h"
 
-namespace dirigent{
+namespace common::utils  {
+int pidFromOffset(int id, int offset);
+int offsetFromPid(int id, int pid);
+size_t upperTriangularToArray(size_t i, size_t j);
 
 // Supports only native int type.
 template <class R>
@@ -25,20 +28,11 @@ std::vector<BoolRing> bitDecompose(R val) {
   return res;
 }
 
-// size_t perfectPow(size_t val) {
-//   size_t temp = val;
-//   std::vector<int> bits;
-//   int len = 0;
-//   while (temp > 0)
-//   {
-//     bits.push_back(temp%2);
-//     temp = temp/2;
-//     len++;
-//   }
-//   size_t res = pow(2, len);
-//   return res;
-// }
-
 std::vector<uint64_t> packBool(const bool* data, size_t len);
 void unpackBool(const std::vector<uint64_t>& packed, bool* data, size_t len);
-};  // namespace dirigent
+void randomizeZZpE(emp::PRG& prg, NTL::ZZ_pE& val);
+void randomizeZZpE(emp::PRG& prg, NTL::ZZ_pE& val, Ring rval);
+
+void sendZZpE(emp::NetIO* ios, const NTL::ZZ_pE* data, size_t length);
+void receiveZZpE(emp::NetIO* ios, NTL::ZZ_pE* data, size_t length);
+};  // namespace common::utils 

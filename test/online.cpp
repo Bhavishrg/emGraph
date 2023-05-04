@@ -16,7 +16,7 @@
 #include <thread>
 
 using namespace dirigent;
-using namespace quadsquad::utils;
+using namespace common::utils;
 namespace bdata = boost::unit_test::data;
 constexpr int TEST_DATA_MAX_VAL = 1000;
 constexpr int SECURITY_PARAM = 128;
@@ -29,10 +29,10 @@ BOOST_AUTO_TEST_CASE(mult) {
   emp::PRG prg(&seed_block);
   std::mt19937 gen(200);
   std::uniform_int_distribution<Field> distrib(0, TEST_DATA_MAX_VAL);
-  quadsquad::utils::Circuit<Field> circ;
-  std::vector<quadsquad::utils::wire_t> input_wires;
-  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-  std::unordered_map<quadsquad::utils::wire_t, Field> inputs;
+  common::utils::Circuit<Field> circ;
+  std::vector<common::utils::wire_t> input_wires;
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
+  std::unordered_map<common::utils::wire_t, Field> inputs;
 
   for (size_t i = 0; i < 2; ++i) {
     auto winp = circ.newInputWire();
@@ -42,11 +42,11 @@ BOOST_AUTO_TEST_CASE(mult) {
     inputs[winp] = distrib(gen);
   }
   auto w_amb =
-     circ.addGate(quadsquad::utils::GateType::kMul, input_wires[0], input_wires[1]);
+     circ.addGate(common::utils::GateType::kMul, input_wires[0], input_wires[1]);
   // auto w_cmd =
-  //     circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
-  // auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
-  // auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
+  //     circ.addGate(common::utils::GateType::kMul, input_wires[2], input_wires[3]);
+  // auto w_mout = circ.addGate(common::utils::GateType::kMul, w_aab, w_cmd);
+  // auto w_aout = circ.addGate(common::utils::GateType::kAdd, w_aab, w_cmd);
   //  circ.setAsOutput(w_cmd);
   //  circ.setAsOutput(w_mout);
   //  circ.setAsOutput(w_aout);
@@ -90,10 +90,10 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   emp::PRG prg(&seed_block);
   std::mt19937 gen(200);
   std::uniform_int_distribution<Field> distrib(0, TEST_DATA_MAX_VAL);
-  quadsquad::utils::Circuit<Field> circ;
-  std::vector<quadsquad::utils::wire_t> input_wires;
-  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-  std::unordered_map<quadsquad::utils::wire_t, Field> inputs;
+  common::utils::Circuit<Field> circ;
+  std::vector<common::utils::wire_t> input_wires;
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
+  std::unordered_map<common::utils::wire_t, Field> inputs;
 
   for (size_t i = 0; i < 4; ++i) {
     auto winp = circ.newInputWire();
@@ -103,11 +103,11 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
     inputs[winp] = distrib(gen);
   }
   auto w_aab =
-     circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
+     circ.addGate(common::utils::GateType::kAdd, input_wires[0], input_wires[1]);
   auto w_cmd =
-     circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
-  auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
-  auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
+     circ.addGate(common::utils::GateType::kMul, input_wires[2], input_wires[3]);
+  auto w_mout = circ.addGate(common::utils::GateType::kMul, w_aab, w_cmd);
+  auto w_aout = circ.addGate(common::utils::GateType::kAdd, w_aab, w_cmd);
    circ.setAsOutput(w_cmd);
    circ.setAsOutput(w_mout);
    circ.setAsOutput(w_aout);
@@ -209,10 +209,10 @@ BOOST_AUTO_TEST_CASE(mult3) {
   emp::PRG prg(&seed_block);
   std::mt19937 gen(200);
   std::uniform_int_distribution<Field> distrib(0, TEST_DATA_MAX_VAL);
-  quadsquad::utils::Circuit<Field> circ;
-  std::vector<quadsquad::utils::wire_t> input_wires;
-  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-  std::unordered_map<quadsquad::utils::wire_t, Field> inputs;
+  common::utils::Circuit<Field> circ;
+  std::vector<common::utils::wire_t> input_wires;
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
+  std::unordered_map<common::utils::wire_t, Field> inputs;
 
   for (size_t i = 0; i < 4; ++i) {
     auto winp = circ.newInputWire();
@@ -223,12 +223,12 @@ BOOST_AUTO_TEST_CASE(mult3) {
     
   }
   auto w_aab =
-     circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
+     circ.addGate(common::utils::GateType::kAdd, input_wires[0], input_wires[1]);
   auto w_cmd =
-      circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
-  auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
-  auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
-  auto w_mul_th = circ.addGate(quadsquad::utils::GateType::kMul3, w_aab, w_cmd, w_mout);
+      circ.addGate(common::utils::GateType::kMul, input_wires[2], input_wires[3]);
+  auto w_mout = circ.addGate(common::utils::GateType::kMul, w_aab, w_cmd);
+  auto w_aout = circ.addGate(common::utils::GateType::kAdd, w_aab, w_cmd);
+  auto w_mul_th = circ.addGate(common::utils::GateType::kMul3, w_aab, w_cmd, w_mout);
    circ.setAsOutput(w_cmd);
    circ.setAsOutput(w_mout);
    circ.setAsOutput(w_aout);
@@ -274,10 +274,10 @@ BOOST_AUTO_TEST_CASE(mult3) {
 //   emp::PRG prg(&seed_block);
 //   std::mt19937 gen(200);
 //   std::uniform_int_distribution<Field> distrib(0, TEST_DATA_MAX_VAL);
-//   quadsquad::utils::Circuit<Field> circ;
-//   std::vector<quadsquad::utils::wire_t> input_wires;
-//   std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-//   std::unordered_map<quadsquad::utils::wire_t, Field> inputs;
+//   common::utils::Circuit<Field> circ;
+//   std::vector<common::utils::wire_t> input_wires;
+//   std::unordered_map<common::utils::wire_t, int> input_pid_map;
+//   std::unordered_map<common::utils::wire_t, Field> inputs;
 
 //   for (size_t i = 0; i < 4; ++i) {
 //     auto winp = circ.newInputWire();
@@ -288,15 +288,15 @@ BOOST_AUTO_TEST_CASE(mult3) {
 //     inputs[winp] = 1;
 //   }
 //   auto w_aab =
-//      circ.addGate(quadsquad::utils::GateType::kAdd, input_wires[0], input_wires[1]);
+//      circ.addGate(common::utils::GateType::kAdd, input_wires[0], input_wires[1]);
 //   auto w_cmd =
-//       circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
-//   auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
-//   auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
-//   auto w_mul_f = circ.addGate(quadsquad::utils::GateType::kMul4, w_mout, w_aout, w_cmd, w_aab);
-//   auto w_mul_d = circ.addGate(quadsquad::utils::GateType::kMul4, w_aout, w_cmd, w_aab, w_mul_f);
-//   // auto w_mul_f = circ.addGate(quadsquad::utils::GateType::kMul4, w_aab, w_cmd, w_mout, w_aout);
-//   // auto w_mul_d = circ.addGate(quadsquad::utils::GateType::kMul4, w_mout, w_aout, w_cmd, w_mul_f);
+//       circ.addGate(common::utils::GateType::kMul, input_wires[2], input_wires[3]);
+//   auto w_mout = circ.addGate(common::utils::GateType::kMul, w_aab, w_cmd);
+//   auto w_aout = circ.addGate(common::utils::GateType::kAdd, w_aab, w_cmd);
+//   auto w_mul_f = circ.addGate(common::utils::GateType::kMul4, w_mout, w_aout, w_cmd, w_aab);
+//   auto w_mul_d = circ.addGate(common::utils::GateType::kMul4, w_aout, w_cmd, w_aab, w_mul_f);
+//   // auto w_mul_f = circ.addGate(common::utils::GateType::kMul4, w_aab, w_cmd, w_mout, w_aout);
+//   // auto w_mul_d = circ.addGate(common::utils::GateType::kMul4, w_mout, w_aout, w_cmd, w_mul_f);
 //    circ.setAsOutput(w_cmd);
 //    circ.setAsOutput(w_mout);
 //    circ.setAsOutput(w_aout);
@@ -344,10 +344,10 @@ BOOST_AUTO_TEST_CASE(mult4_2) {
   emp::PRG prg(&seed_block);
   std::mt19937 gen(200);
   std::uniform_int_distribution<Field> distrib(0, TEST_DATA_MAX_VAL);
-  quadsquad::utils::Circuit<Field> circ;
-  std::vector<quadsquad::utils::wire_t> input_wires;
-  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-  std::unordered_map<quadsquad::utils::wire_t, Field> inputs;
+  common::utils::Circuit<Field> circ;
+  std::vector<common::utils::wire_t> input_wires;
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
+  std::unordered_map<common::utils::wire_t, Field> inputs;
 
   for (size_t i = 0; i < 8; ++i) {
     auto winp = circ.newInputWire();
@@ -358,25 +358,25 @@ BOOST_AUTO_TEST_CASE(mult4_2) {
     inputs[winp] = 1;
   }
 
-  auto w_m1 = circ.addGate(quadsquad::utils::GateType::kMul, input_wires[0], input_wires[1]);
-  auto w_m3_2 = circ.addGate(quadsquad::utils::GateType::kMul3, input_wires[2], input_wires[3], w_m1);
-  auto w_m3_3 = circ.addGate(quadsquad::utils::GateType::kMul3, input_wires[4], input_wires[5], w_m1);
-  auto w_m4_1 = circ.addGate(quadsquad::utils::GateType::kMul4, input_wires[6], input_wires[7], w_m1, w_m3_2);
-  // auto w_m4_2 = circ.addGate(quadsquad::utils::GateType::kMul4, input_wires[6], input_wires[7], w_m1, w_m3_3);
-  // auto w_m2 = circ.addGate(quadsquad::utils::GateType::kMul, input_wires[0], w_m4_2);
+  auto w_m1 = circ.addGate(common::utils::GateType::kMul, input_wires[0], input_wires[1]);
+  auto w_m3_2 = circ.addGate(common::utils::GateType::kMul3, input_wires[2], input_wires[3], w_m1);
+  auto w_m3_3 = circ.addGate(common::utils::GateType::kMul3, input_wires[4], input_wires[5], w_m1);
+  auto w_m4_1 = circ.addGate(common::utils::GateType::kMul4, input_wires[6], input_wires[7], w_m1, w_m3_2);
+  // auto w_m4_2 = circ.addGate(common::utils::GateType::kMul4, input_wires[6], input_wires[7], w_m1, w_m3_3);
+  // auto w_m2 = circ.addGate(common::utils::GateType::kMul, input_wires[0], w_m4_2);
   // auto w_mult4_1 =
-  //    circ.addGate(quadsquad::utils::GateType::kMul4, input_wires[0], input_wires[1], input_wires[2], input_wires[3]);
-  // auto w_mul = circ.addGate(quadsquad::utils::GateType::kMul, w_mult4_1, input_wires[0]);
+  //    circ.addGate(common::utils::GateType::kMul4, input_wires[0], input_wires[1], input_wires[2], input_wires[3]);
+  // auto w_mul = circ.addGate(common::utils::GateType::kMul, w_mult4_1, input_wires[0]);
     //  auto w_mult4_2 =
-    //  circ.addGate(quadsquad::utils::GateType::kMul4, input_wires[0], input_wires[1], input_wires[2], input_wires[3]);
+    //  circ.addGate(common::utils::GateType::kMul4, input_wires[0], input_wires[1], input_wires[2], input_wires[3]);
   // auto w_cmd =
-  //     circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
-  // auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
-  // auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
-  // auto w_mul_f = circ.addGate(quadsquad::utils::GateType::kMul4, w_mout, w_aout, w_cmd, w_aab);
-  // auto w_mul_d = circ.addGate(quadsquad::utils::GateType::kMul4, w_aout, w_cmd, w_aab, w_mul_f);
-  // // auto w_mul_f = circ.addGate(quadsquad::utils::GateType::kMul4, w_aab, w_cmd, w_mout, w_aout);
-  // // auto w_mul_d = circ.addGate(quadsquad::utils::GateType::kMul4, w_mout, w_aout, w_cmd, w_mul_f);
+  //     circ.addGate(common::utils::GateType::kMul, input_wires[2], input_wires[3]);
+  // auto w_mout = circ.addGate(common::utils::GateType::kMul, w_aab, w_cmd);
+  // auto w_aout = circ.addGate(common::utils::GateType::kAdd, w_aab, w_cmd);
+  // auto w_mul_f = circ.addGate(common::utils::GateType::kMul4, w_mout, w_aout, w_cmd, w_aab);
+  // auto w_mul_d = circ.addGate(common::utils::GateType::kMul4, w_aout, w_cmd, w_aab, w_mul_f);
+  // // auto w_mul_f = circ.addGate(common::utils::GateType::kMul4, w_aab, w_cmd, w_mout, w_aout);
+  // // auto w_mul_d = circ.addGate(common::utils::GateType::kMul4, w_mout, w_aout, w_cmd, w_mul_f);
   //  circ.setAsOutput(w_cmd);
   //  circ.setAsOutput(w_mout);
   //  circ.setAsOutput(w_aout);
@@ -424,9 +424,9 @@ BOOST_AUTO_TEST_SUITE_END()
 
 // BOOST_AUTO_TEST_CASE(Multk) {
 //   int nP = 5;
-//   quadsquad::utils::Circuit<Field> circ = quadsquad::utils::Circuit<Field>::generateMultK();
-//   std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-//   std::unordered_map<quadsquad::utils::wire_t, Field> inputs;
+//   common::utils::Circuit<Field> circ = common::utils::Circuit<Field>::generateMultK();
+//   std::unordered_map<common::utils::wire_t, int> input_pid_map;
+//   std::unordered_map<common::utils::wire_t, Field> inputs;
 //   for(size_t i = 0; i <= 64; i++) {
 //     input_pid_map[i] = 1;
 //     inputs[i] = 1;
@@ -460,10 +460,10 @@ BOOST_AUTO_TEST_SUITE(online_bool_evaluator)
 
 BOOST_AUTO_TEST_CASE(Multk_bool) {
   int nP = 5;
-  quadsquad::utils::Circuit<BoolRing> circ = quadsquad::utils::Circuit<BoolRing>::generateMultK();
-  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-  std::unordered_map<quadsquad::utils::wire_t, BoolRing> input_map;
-  std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
+  common::utils::Circuit<BoolRing> circ = common::utils::Circuit<BoolRing>::generateMultK();
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
+  std::unordered_map<common::utils::wire_t, BoolRing> input_map;
+  std::unordered_map<common::utils::wire_t, BoolRing> bit_mask_map;
   std::vector<AuthAddShare<BoolRing>> output_mask;
   std::vector<TPShare<BoolRing>>   output_tpmask;
    for (size_t i = 0; i <= 64; ++i) {
@@ -498,10 +498,10 @@ BOOST_AUTO_TEST_CASE(Multk_bool) {
 
 BOOST_AUTO_TEST_CASE(PrefixAND) {
   int nP = 4;
-  quadsquad::utils::Circuit<BoolRing> circ = quadsquad::utils::Circuit<BoolRing>::generatePrefixAND();
-  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-  std::unordered_map<quadsquad::utils::wire_t, BoolRing> inputs;
-  std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
+  common::utils::Circuit<BoolRing> circ = common::utils::Circuit<BoolRing>::generatePrefixAND();
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
+  std::unordered_map<common::utils::wire_t, BoolRing> inputs;
+  std::unordered_map<common::utils::wire_t, BoolRing> bit_mask_map;
   std::vector<AuthAddShare<BoolRing>> output_mask;
   std::vector<TPShare<BoolRing>>   output_tpmask;
   for(size_t i = 0; i <= 64; i++) {
@@ -534,10 +534,10 @@ BOOST_AUTO_TEST_CASE(ParaPrefixAND) {
   int nP = 4;
   int repeat =2;
   int k = 64;
-  quadsquad::utils::Circuit<BoolRing> circ = quadsquad::utils::Circuit<BoolRing>::generateParaPrefixAND(repeat);
-  std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-  std::unordered_map<quadsquad::utils::wire_t, BoolRing> inputs;
-  std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
+  common::utils::Circuit<BoolRing> circ = common::utils::Circuit<BoolRing>::generateParaPrefixAND(repeat);
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
+  std::unordered_map<common::utils::wire_t, BoolRing> inputs;
+  std::unordered_map<common::utils::wire_t, BoolRing> bit_mask_map;
   std::vector<AuthAddShare<BoolRing>> output_mask;
   std::vector<TPShare<BoolRing>>   output_tpmask;
   for (int rep = 0; rep < repeat; rep++) {
@@ -570,7 +570,7 @@ BOOST_AUTO_TEST_CASE(ParaPrefixAND) {
 
 BOOST_AUTO_TEST_SUITE_END()
 //   int nP = 4;
-//   quadsquad::utils::Circuit<BoolRing> circ;
+//   common::utils::Circuit<BoolRing> circ;
 //   auto wa = circ.newInputWire();
 //   auto wb = circ.newInputWire();
 //   auto wprod = circ.addGate(GateType::kMul, wa, wb);
@@ -578,9 +578,9 @@ BOOST_AUTO_TEST_SUITE_END()
 //   BoolRing a(0);
 //   BoolRing b(1);
 //   auto output = circ.evaluate({{wa, a}, {wb, b}});
-  // std::vector<quadsquad::utils::wire_t> input_wires;
-  // std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-  // std::unordered_map<quadsquad::utils::wire_t, BoolRing> inputs;
+  // std::vector<common::utils::wire_t> input_wires;
+  // std::unordered_map<common::utils::wire_t, int> input_pid_map;
+  // std::unordered_map<common::utils::wire_t, BoolRing> inputs;
 
   // for (size_t i = 0; i < 2; ++i) {
   //   auto winp = circ.newInputWire();
@@ -590,7 +590,7 @@ BOOST_AUTO_TEST_SUITE_END()
   //   inputs[winp] = 1;
   // }
   // auto w_amb =
-  //    circ.addGate(quadsquad::utils::GateType::kMul, input_wires[0], input_wires[1]);
+  //    circ.addGate(common::utils::GateType::kMul, input_wires[0], input_wires[1]);
   // circ.setAsOutput(w_amb);
   // auto level_circ = circ.orderGatesByLevel();
 
@@ -601,10 +601,10 @@ BOOST_AUTO_TEST_SUITE_END()
 //   emp::PRG prg(&seed_block);
 //   std::mt19937 gen(200);
 //   std::uniform_int_distribution<BoolRing> distrib(0, TEST_DATA_MAX_VAL);
-//   quadsquad::utils::Circuit<BoolRing> circ;
-//   std::vector<quadsquad::utils::wire_t> input_wires;
-//   std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-//   std::unordered_map<quadsquad::utils::wire_t, Field> inputs;
+//   common::utils::Circuit<BoolRing> circ;
+//   std::vector<common::utils::wire_t> input_wires;
+//   std::unordered_map<common::utils::wire_t, int> input_pid_map;
+//   std::unordered_map<common::utils::wire_t, Field> inputs;
 
 //   for (size_t i = 0; i < 2; ++i) {
 //     auto winp = circ.newInputWire();
@@ -614,11 +614,11 @@ BOOST_AUTO_TEST_SUITE_END()
 //     inputs[winp] = 1;
 //   }
 //   auto w_amb =
-//      circ.addGate(quadsquad::utils::GateType::kMul, input_wires[0], input_wires[1]);
+//      circ.addGate(common::utils::GateType::kMul, input_wires[0], input_wires[1]);
 //   // auto w_cmd =
-//   //     circ.addGate(quadsquad::utils::GateType::kMul, input_wires[2], input_wires[3]);
-//   // auto w_mout = circ.addGate(quadsquad::utils::GateType::kMul, w_aab, w_cmd);
-//   // auto w_aout = circ.addGate(quadsquad::utils::GateType::kAdd, w_aab, w_cmd);
+//   //     circ.addGate(common::utils::GateType::kMul, input_wires[2], input_wires[3]);
+//   // auto w_mout = circ.addGate(common::utils::GateType::kMul, w_aab, w_cmd);
+//   // auto w_aout = circ.addGate(common::utils::GateType::kAdd, w_aab, w_cmd);
 //   //  circ.setAsOutput(w_cmd);
 //   //  circ.setAsOutput(w_mout);
 //   //  circ.setAsOutput(w_aout);

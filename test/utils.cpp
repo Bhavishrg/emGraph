@@ -11,8 +11,8 @@
 #include <map>
 #include <random>
 
-using namespace quadsquad;
-using namespace quadsquad::utils;
+//using namespace quadsquad;
+using namespace common::utils;
 
 namespace bdata = boost::unit_test::data;
 

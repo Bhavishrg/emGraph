@@ -12,10 +12,10 @@
 #include <unordered_map>
 #include <vector>
 
-#include "../quadsquad/helpers.h"
-#include "../dirigent/types.h"
+#include "helpers.h"
+#include "types.h"
 
-namespace quadsquad::utils {
+namespace common::utils {
 
 using wire_t = size_t;
 
@@ -771,4 +771,4 @@ class Circuit {
     return circ;
   }
 };
-};  // namespace quadsquad::utils
+};  // namespace common::utils

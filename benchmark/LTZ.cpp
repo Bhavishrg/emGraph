@@ -15,8 +15,8 @@ using namespace dirigent;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-quadsquad::utils::Circuit<BoolRing> LTZCircuit(int repeat) {
-    quadsquad::utils::Circuit<BoolRing> circ = quadsquad::utils::Circuit<BoolRing>::generateParaPrefixAND(repeat);
+common::utils::Circuit<BoolRing> LTZCircuit(int repeat) {
+    common::utils::Circuit<BoolRing> circ = common::utils::Circuit<BoolRing>::generateParaPrefixAND(repeat);
     return circ;  
 }
 
@@ -84,13 +84,13 @@ void benchmark(const bpo::variables_map& opts) {
     std::cout << "--- Circuit ---\n";
     std::cout << circ << std::endl;
 
-    std::unordered_map<quadsquad::utils::wire_t, int> input_pid_map;
-    std::unordered_map<quadsquad::utils::wire_t, BoolRing> input_map;
-    std::unordered_map<quadsquad::utils::wire_t, BoolRing> bit_mask_map;
+    std::unordered_map<common::utils::wire_t, int> input_pid_map;
+    std::unordered_map<common::utils::wire_t, BoolRing> input_map;
+    std::unordered_map<common::utils::wire_t, BoolRing> bit_mask_map;
     std::vector<AuthAddShare<BoolRing>> output_mask;
     std::vector<TPShare<BoolRing>>   output_tpmask;
     for (const auto& g : circ.gates_by_level[0]) {
-        if (g->type == quadsquad::utils::GateType::kInp) {
+        if (g->type == common::utils::GateType::kInp) {
         input_pid_map[g->out] = 1;
         input_map[g->out] = 1;
         bit_mask_map[g->out] = 0;

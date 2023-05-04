@@ -2,13 +2,13 @@
 
 #include <array>
 
-#include "quadsquad/helpers.h"
+#include "../utils/helpers.h"
 
 namespace quadsquad {
 OnlineEvaluator::OnlineEvaluator(int id,
                                  std::shared_ptr<io::NetIOMP> network,
                                  PreprocCircuit<Ring> preproc,
-                                 utils::LevelOrderedCircuit circ,
+                                 common::utils::LevelOrderedCircuit circ,
                                  int security_param, int threads, int seed)
     : id_(id),
       security_param_(security_param),
@@ -19,14 +19,14 @@ OnlineEvaluator::OnlineEvaluator(int id,
       wires_(circ.num_gates),
       jump_(id),
       msb_circ_(
-          utils::Circuit<BoolRing>::generatePPAMSB().orderGatesByLevel()) {
+          common::utils::Circuit<BoolRing>::generatePPAMSB().orderGatesByLevel()) {
   tpool_ = std::make_shared<ThreadPool>(threads);
 }
 
 OnlineEvaluator::OnlineEvaluator(int id,
                                  std::shared_ptr<io::NetIOMP> network,
                                  PreprocCircuit<Ring> preproc,
-                                 utils::LevelOrderedCircuit circ,
+                                 common::utils::LevelOrderedCircuit circ,
                                  int security_param,
                                  std::shared_ptr<ThreadPool> tpool, int seed)
     : id_(id),
@@ -40,13 +40,13 @@ OnlineEvaluator::OnlineEvaluator(int id,
       jump_(id) {}
 
 void OnlineEvaluator::setInputs(
-    const std::unordered_map<utils::wire_t, Ring>& inputs) {
+    const std::unordered_map<common::utils::wire_t, Ring>& inputs) {
   // Input gates have depth 0.
   std::vector<Ring> my_betas;
   std::vector<size_t> num_inp_pid(4, 0);
 
   for (auto& g : circ_.gates_by_level[0]) {
-    if (g->type == utils::GateType::kInp) {
+    if (g->type == common::utils::GateType::kInp) {
       auto* pre_input =
           static_cast<PreprocInput<Ring>*>(preproc_.gates[g->out].get());
       auto pid = pre_input->pid;
@@ -107,7 +107,7 @@ void OnlineEvaluator::setInputs(
 
   std::vector<size_t> pid_inp_idx(4, 0);
   for (auto& g : circ_.gates_by_level[0]) {
-    if (g->type == utils::GateType::kInp) {
+    if (g->type == common::utils::GateType::kInp) {
       auto* pre_input =
           static_cast<PreprocInput<Ring>*>(preproc_.gates[g->out].get());
       auto pid = pre_input->pid;
@@ -130,19 +130,19 @@ void OnlineEvaluator::setInputs(
 void OnlineEvaluator::setRandomInputs() {
   // Input gates have depth 0.
   for (auto& g : circ_.gates_by_level[0]) {
-    if (g->type == utils::GateType::kInp) {
+    if (g->type == common::utils::GateType::kInp) {
       rgen_.all().random_data(&wires_[g->out], sizeof(Ring));
     }
   }
 }
 
 std::array<std::vector<Ring>, 3> OnlineEvaluator::reluEvaluate(
-    const std::vector<utils::FIn1Gate>& relu_gates) {
+    const std::vector<common::utils::FIn1Gate>& relu_gates) {
   auto num_relu_gates = relu_gates.size();
   std::vector<preprocg_ptr_t<BoolRing>*> vpreproc(num_relu_gates);
 
   // Iterate through preproc_ and extract info of relu gates.
-  std::vector<utils::wire_t> win(num_relu_gates);
+  std::vector<common::utils::wire_t> win(num_relu_gates);
   for (size_t i = 0; i < num_relu_gates; ++i) {
     auto* pre_relu = static_cast<PreprocReluGate<Ring>*>(
         preproc_.gates[relu_gates[i].out].get());
@@ -159,7 +159,7 @@ std::array<std::vector<Ring>, 3> OnlineEvaluator::reluEvaluate(
     for (size_t j = 0; j < msb_circ_.gates_by_level[0].size(); ++j) {
       const auto& gate = msb_circ_.gates_by_level[0][j];
 
-      if (gate->type == utils::GateType::kInp) {
+      if (gate->type == common::utils::GateType::kInp) {
         bool_eval.vwires[i][gate->out] = 0;
         if (gate->out > 63) {
           bool_eval.vwires[i][gate->out] = val_bits[j - 64];
@@ -223,12 +223,12 @@ std::array<std::vector<Ring>, 3> OnlineEvaluator::reluEvaluate(
 }
 
 std::array<std::vector<Ring>, 3> OnlineEvaluator::msbEvaluate(
-    const std::vector<utils::FIn1Gate>& msb_gates) {
+    const std::vector<common::utils::FIn1Gate>& msb_gates) {
   auto num_msb_gates = msb_gates.size();
   std::vector<preprocg_ptr_t<BoolRing>*> vpreproc(num_msb_gates);
 
   // Iterate through preproc_ and extract info of msb gates.
-  std::vector<utils::wire_t> win(num_msb_gates);
+  std::vector<common::utils::wire_t> win(num_msb_gates);
   for (size_t i = 0; i < num_msb_gates; ++i) {
     auto* pre_msb = static_cast<PreprocMsbGate<Ring>*>(
         preproc_.gates[msb_gates[i].out].get());
@@ -245,7 +245,7 @@ std::array<std::vector<Ring>, 3> OnlineEvaluator::msbEvaluate(
     for (size_t j = 0; j < msb_circ_.gates_by_level[0].size(); ++j) {
       const auto& gate = msb_circ_.gates_by_level[0][j];
 
-      if (gate->type == utils::GateType::kInp) {
+      if (gate->type == common::utils::GateType::kInp) {
         bool_eval.vwires[i][gate->out] = 0;
         if (gate->out > 63) {
           bool_eval.vwires[i][gate->out] = val_bits[j - 64];
@@ -431,13 +431,13 @@ std::vector<Ring> OnlineEvaluator::reconstruct(
 
 void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
   std::array<std::vector<Ring>, 3> recon_shares;
-  std::vector<utils::FIn1Gate> relu_gates;
-  std::vector<utils::FIn1Gate> msb_gates;
+  std::vector<common::utils::FIn1Gate> relu_gates;
+  std::vector<common::utils::FIn1Gate> msb_gates;
 
   for (auto& gate : circ_.gates_by_level[depth]) {
     switch (gate->type) {
-      case utils::GateType::kMul: {
-        auto* g = static_cast<utils::FIn2Gate*>(gate.get());
+      case common::utils::GateType::kMul: {
+        auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
         auto& m_in1 = preproc_.gates[g->in1]->mask;
         auto& m_in2 = preproc_.gates[g->in2]->mask;
         auto* pre_out =
@@ -453,8 +453,8 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
         break;
       }
 
-      case utils::GateType::kDotprod: {
-        auto* g = static_cast<utils::SIMDGate*>(gate.get());
+      case common::utils::GateType::kDotprod: {
+        auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
         auto* pre_out =
             static_cast<PreprocDotpGate<Ring>*>(preproc_.gates[g->out].get());
 
@@ -475,8 +475,8 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
         break;
       }
 
-      case utils::GateType::kTrdotp: {
-        auto* g = static_cast<utils::SIMDGate*>(gate.get());
+      case common::utils::GateType::kTrdotp: {
+        auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
         auto* pre_out =
             static_cast<PreprocTrDotpGate<Ring>*>(preproc_.gates[g->out].get());
 
@@ -498,14 +498,14 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
         break;
       }
 
-      case utils::GateType::kRelu: {
-        auto* g = static_cast<utils::FIn1Gate*>(gate.get());
+      case common::utils::GateType::kRelu: {
+        auto* g = static_cast<common::utils::FIn1Gate*>(gate.get());
         relu_gates.push_back(*g);
         break;
       }
 
-      case utils::GateType::kMsb: {
-        auto* g = static_cast<utils::FIn1Gate*>(gate.get());
+      case common::utils::GateType::kMsb: {
+        auto* g = static_cast<common::utils::FIn1Gate*>(gate.get());
         msb_gates.push_back(*g);
         break;
       }
@@ -539,49 +539,49 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
   size_t msb_idx = 0;
   for (auto& gate : circ_.gates_by_level[depth]) {
     switch (gate->type) {
-      case utils::GateType::kAdd: {
-        auto* g = static_cast<utils::FIn2Gate*>(gate.get());
+      case common::utils::GateType::kAdd: {
+        auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
         wires_[g->out] = wires_[g->in1] + wires_[g->in2];
         break;
       }
 
-      case utils::GateType::kSub: {
-        auto* g = static_cast<utils::FIn2Gate*>(gate.get());
+      case common::utils::GateType::kSub: {
+        auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
         wires_[g->out] = wires_[g->in1] - wires_[g->in2];
         break;
       }
 
-      case utils::GateType::kMul:
-      case utils::GateType::kDotprod: {
+      case common::utils::GateType::kMul:
+      case common::utils::GateType::kDotprod: {
         wires_[gate->out] = vres[idx++];
         break;
       }
 
-      case utils::GateType::kRelu: {
+      case common::utils::GateType::kRelu: {
         wires_[gate->out] = vres[non_relu_recon + relu_idx];
         relu_idx++;
         break;
       }
 
-      case utils::GateType::kMsb: {
+      case common::utils::GateType::kMsb: {
         wires_[gate->out] = vres[non_relu_recon + relu_idx + msb_idx];
         msb_idx++;
         break;
       }
 
-      case utils::GateType::kTrdotp: {
+      case common::utils::GateType::kTrdotp: {
         wires_[gate->out] = vres[idx++] >> FRACTION;
         break;
       }
 
-      case utils::GateType::kConstAdd: {
-        auto* g = static_cast<utils::ConstOpGate<Ring>*>(gate.get());
+      case common::utils::GateType::kConstAdd: {
+        auto* g = static_cast<common::utils::ConstOpGate<Ring>*>(gate.get());
         wires_[g->out] = wires_[g->in] + g->cval;
         break;
       }
 
-      case utils::GateType::kConstMul: {
-        auto* g = static_cast<utils::ConstOpGate<Ring>*>(gate.get());
+      case common::utils::GateType::kConstMul: {
+        auto* g = static_cast<common::utils::ConstOpGate<Ring>*>(gate.get());
         wires_[g->out] = wires_[g->in] * g->cval;
         break;
       }
@@ -703,7 +703,7 @@ std::vector<Ring> OnlineEvaluator::getOutputs() {
 }
 
 std::vector<Ring> OnlineEvaluator::evaluateCircuit(
-    const std::unordered_map<utils::wire_t, Ring>& inputs) {
+    const std::unordered_map<common::utils::wire_t, Ring>& inputs) {
   setInputs(inputs);
   for (size_t i = 0; i < circ_.gates_by_level.size(); ++i) {
     evaluateGatesAtDepth(i);
@@ -713,7 +713,7 @@ std::vector<Ring> OnlineEvaluator::evaluateCircuit(
 
 BoolEvaluator::BoolEvaluator(int my_id,
                              std::vector<preprocg_ptr_t<BoolRing>*> vpreproc,
-                             utils::LevelOrderedCircuit circ)
+                             common::utils::LevelOrderedCircuit circ)
     : id(my_id),
       vwires(vpreproc.size(), std::vector<BoolRing>(circ.num_gates)),
       vpreproc(std::move(vpreproc)),
@@ -876,8 +876,8 @@ void BoolEvaluator::evaluateGatesAtDepth(size_t depth, io::NetIOMP& network,
 
     for (auto& gate : circ.gates_by_level[depth]) {
       switch (gate->type) {
-        case utils::GateType::kMul: {
-          auto* g = static_cast<utils::FIn2Gate*>(gate.get());
+        case common::utils::GateType::kMul: {
+          auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           auto& m_in1 = preproc[g->in1]->mask;
           auto& m_in2 = preproc[g->in2]->mask;
           auto* pre_out =
@@ -906,31 +906,31 @@ void BoolEvaluator::evaluateGatesAtDepth(size_t depth, io::NetIOMP& network,
   for (auto& wires : vwires) {
     for (auto& gate : circ.gates_by_level[depth]) {
       switch (gate->type) {
-        case utils::GateType::kAdd: {
-          auto* g = static_cast<utils::FIn2Gate*>(gate.get());
+        case common::utils::GateType::kAdd: {
+          auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           wires[g->out] = wires[g->in1] + wires[g->in2];
           break;
         }
 
-        case utils::GateType::kSub: {
-          auto* g = static_cast<utils::FIn2Gate*>(gate.get());
+        case common::utils::GateType::kSub: {
+          auto* g = static_cast<common::utils::FIn2Gate*>(gate.get());
           wires[g->out] = wires[g->in1] - wires[g->in2];
           break;
         }
 
-        case utils::GateType::kMul: {
+        case common::utils::GateType::kMul: {
           wires[gate->out] = vres[idx++];
           break;
         }
 
-        case utils::GateType::kConstAdd: {
-          auto* g = static_cast<utils::ConstOpGate<BoolRing>*>(gate.get());
+        case common::utils::GateType::kConstAdd: {
+          auto* g = static_cast<common::utils::ConstOpGate<BoolRing>*>(gate.get());
           wires[g->out] = wires[g->in] + g->cval;
           break;
         }
 
-        case utils::GateType::kConstMul: {
-          auto* g = static_cast<utils::ConstOpGate<BoolRing>*>(gate.get());
+        case common::utils::GateType::kConstMul: {
+          auto* g = static_cast<common::utils::ConstOpGate<BoolRing>*>(gate.get());
           wires[g->out] = wires[g->in] * g->cval;
           break;
         }

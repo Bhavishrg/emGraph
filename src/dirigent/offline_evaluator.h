@@ -14,7 +14,9 @@
 #include "preproc.h"
 #include "dirigent/rand_gen_pool.h"
 #include "sharing.h"
-#include "types.h"
+#include "../utils/types.h"
+
+using namespace common::utils;
 
 namespace dirigent {
 class OfflineEvaluator {
@@ -25,7 +27,7 @@ class OfflineEvaluator {
   BoolRing bkey_sh_;
   RandGenPool rgen_;
   std::shared_ptr<io::NetIOMP> network_;
-  quadsquad::utils::LevelOrderedCircuit circ_;
+  common::utils::LevelOrderedCircuit circ_;
   std::shared_ptr<ThreadPool> tpool_;
   PreprocCircuit<Field> preproc_;
   
@@ -39,7 +41,7 @@ class OfflineEvaluator {
  public:
   
   OfflineEvaluator(int nP, int my_id, std::shared_ptr<io::NetIOMP> network,
-                   quadsquad::utils::LevelOrderedCircuit circ, int security_param,
+                   common::utils::LevelOrderedCircuit circ, int security_param,
                    int threads, int seed = 200);
 
   static void keyGen(int nP, int pid, RandGenPool& rgen, 
@@ -72,12 +74,12 @@ class OfflineEvaluator {
 
   // Set masks for each wire. Should be called before running any of the other
   // subprotocols.
-  void setWireMasksParty(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
+  void setWireMasksParty(const std::unordered_map<common::utils::wire_t, int>& input_pid_map, 
           std::vector<Field>& rand_sh, std::vector<BoolRing>& b_rand_sh,
           std::vector<Field>& rand_sh_sec, std::vector<BoolRing>& b_rand_sh_sec,
           std::vector<Field>& rand_sh_party, std::vector<BoolRing>& b_rand_sh_party);
 
-  void setWireMasks(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map);
+  void setWireMasks(const std::unordered_map<common::utils::wire_t, int>& input_pid_map);
   
   void getOutputMasks(int pid, std::vector<Field>& output_mask);
 
@@ -85,7 +87,7 @@ class OfflineEvaluator {
 
   // Efficiently runs above subprotocols.
   PreprocCircuit<Field> run(
-      const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map);
+      const std::unordered_map<common::utils::wire_t, int>& input_pid_map);
 
   
 };
@@ -96,14 +98,14 @@ class OfflineBoolEvaluator {
   BoolRing key_sh_;
   RandGenPool rgen_;
   std::shared_ptr<io::NetIOMP> network_;
-  quadsquad::utils::LevelOrderedCircuit circ_;
+  common::utils::LevelOrderedCircuit circ_;
   PreprocCircuit<BoolRing> preproc_;
   
 
   public:
   
   OfflineBoolEvaluator(int nP, int my_id, std::shared_ptr<io::NetIOMP> network,
-                   quadsquad::utils::LevelOrderedCircuit circ, int seed = 200);
+                   common::utils::LevelOrderedCircuit circ, int seed = 200);
 
 
   static void randomShare(int nP, int pid, RandGenPool& rgen, io::NetIOMP& network,
@@ -121,12 +123,12 @@ class OfflineBoolEvaluator {
                           BoolRing key, std::vector<BoolRing> keySh, std::vector<BoolRing>& rand_sh_party, size_t& idx_rand_sh_party);
                                   
 
-  void setWireMasksParty(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map, 
-          const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& bit_mask_map,
+  void setWireMasksParty(const std::unordered_map<common::utils::wire_t, int>& input_pid_map, 
+          const std::unordered_map<common::utils::wire_t, BoolRing>& bit_mask_map,
           std::vector<BoolRing>& rand_sh, std::vector<BoolRing>& rand_sh_sec, std::vector<BoolRing>& rand_sh_party);
 
-  void setWireMasks(const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map,
-                    const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& bit_mask_map);
+  void setWireMasks(const std::unordered_map<common::utils::wire_t, int>& input_pid_map,
+                    const std::unordered_map<common::utils::wire_t, BoolRing>& bit_mask_map);
   
   void getOutputMasks(std::vector<AuthAddShare<BoolRing>>& output_masks,
                  std::vector<TPShare<BoolRing>>& output_tpmasks);
@@ -134,8 +136,8 @@ class OfflineBoolEvaluator {
   PreprocCircuit<BoolRing> getPreproc();
    
   PreprocCircuit<BoolRing> run(
-      const std::unordered_map<quadsquad::utils::wire_t, int>& input_pid_map,
-      const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& bit_mask_map,
+      const std::unordered_map<common::utils::wire_t, int>& input_pid_map,
+      const std::unordered_map<common::utils::wire_t, BoolRing>& bit_mask_map,
       std::vector<AuthAddShare<BoolRing>>& output_mask,
       std::vector<TPShare<BoolRing>>& output_tpmask);
 

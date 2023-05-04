@@ -2,7 +2,9 @@
 
 #include "../utils/circuit.h"
 #include "sharing.h"
-#include "types.h"
+#include "../utils/types.h"
+
+using namespace common::utils;
 
 namespace quadsquad {
 // Preprocessed data for a gate.
