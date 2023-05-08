@@ -131,7 +131,7 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io:
         tagn += tag;
         tpShare.setKeySh(keySh[i]);
       }
-      //Banashri: doubt - tpShare.setKeySh(keySh[nP]); missing
+      tpShare.setKeySh(keySh[nP]);
       valn = secret - valn;
       tagn = key * secret - tagn;
       tpShare.pushValues(valn);
