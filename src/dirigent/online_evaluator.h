@@ -64,7 +64,9 @@ class OnlineEvaluator {
                                     std::vector<Field> mult4_all, std::vector<Field> r_mult4_pad,
                                     std::vector<Field> dotprod_all, std::vector<Field> r_dotprod_pad,
                                     std::vector<Field> eqz_all, std::vector<Field> r_eqz_pad, 
-                                    std::vector<AuthAddShare<Field>> eqz_q_share, std::vector<Field> masked_b);
+                                    std::vector<AuthAddShare<Field>> eqz_q_share, std::vector<Field> eqz_masked_b,
+                                    std::vector<Field> ltz_all, std::vector<Field> r_ltz_pad, 
+                                    std::vector<AuthAddShare<Field>> ltz_q_share, std::vector<Field> ltz_masked_b);
 
         void evaluateGatesAtDepth(size_t depth);
 

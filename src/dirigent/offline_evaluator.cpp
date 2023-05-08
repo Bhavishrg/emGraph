@@ -792,7 +792,7 @@ void OfflineEvaluator::setWireMasksParty(
                   auto* g = static_cast<quadsquad::utils::Gate*>(prefixAND_gate.get());
                   auto pregate = std::make_unique<PreprocInput<BoolRing>>();
                   auto pid = 0;
-                  if(inp_ctr < 63 ) {
+                  if(inp_ctr < 64 ) {
                     auto bit_mask = r_bits[63 - inp_ctr];
                     pregate->pid = pid;
                     pregate->mask_value = r_bits[63 -inp_ctr];
