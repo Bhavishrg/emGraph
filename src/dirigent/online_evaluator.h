@@ -24,6 +24,7 @@ class OnlineEvaluator {
     std::vector<Field> q_val_;
     std::vector<AuthAddShare<Field>> q_sh_;
     quadsquad::utils::LevelOrderedCircuit multk_circ_;
+    quadsquad::utils::LevelOrderedCircuit prefixAND_circ_;
     std::shared_ptr<ThreadPool> tpool_;
 
     // write reconstruction function
@@ -43,7 +44,13 @@ class OnlineEvaluator {
 
         void setRandomInputs();
         
-        void eqzEvaluate(const std::vector<quadsquad::utils::FIn1Gate>& eqz_gates);
+        void eqzEvaluate(const std::vector<quadsquad::utils::FIn1Gate>& eqz_gates,
+                          std::vector<Field>& eqz_nonTP, std::vector<Field>& r_eqz_pad,
+                          std::vector<AuthAddShare<Field>>& q_share, std::vector<Field>& masked_b);
+        
+        void ltzEvaluate(const std::vector<quadsquad::utils::FIn1Gate>& ltz_gates,
+                          std::vector<Field>& ltz_nonTP, std::vector<Field>& r_ltz_pad,
+                          std::vector<AuthAddShare<Field>>& q_share, std::vector<Field>& masked_b);
 
         void evaluateGatesAtDepthPartySend(size_t depth, 
                                 std::vector<Field>& mult_nonTP, std::vector<Field>& r_mult_pad,
@@ -55,7 +62,9 @@ class OnlineEvaluator {
                                     std::vector<Field> mult_all, std::vector<Field> r_mult_pad,
                                     std::vector<Field> mult3_all, std::vector<Field> r_mult3_pad,
                                     std::vector<Field> mult4_all, std::vector<Field> r_mult4_pad,
-                                    std::vector<Field> dotprod_all, std::vector<Field> r_dotprod_pad);
+                                    std::vector<Field> dotprod_all, std::vector<Field> r_dotprod_pad,
+                                    std::vector<Field> eqz_all, std::vector<Field> r_eqz_pad, 
+                                    std::vector<AuthAddShare<Field>> eqz_q_share, std::vector<Field> masked_b);
 
         void evaluateGatesAtDepth(size_t depth);
 
@@ -119,5 +128,41 @@ public:
   std::vector<BoolRing> evaluateCircuit( const std::unordered_map<quadsquad::utils::wire_t, BoolRing>& inputs);
 
 //   std::vector<std::vector<BoolRing>> getOutputShares();
+};
+
+struct BoolEval {
+  int id;
+  int nP;
+  RandGenPool rgen;
+  std::vector<std::vector<BoolRing>> vwires;
+  std::vector<std::vector<BoolRing>> vqval;
+  std::vector<std::vector<AuthAddShare<BoolRing>>> vqsh;
+  std::vector<preprocg_ptr_t<BoolRing>*> vpreproc;
+  quadsquad::utils::LevelOrderedCircuit circ;
+
+  explicit BoolEval(int my_id, int nP,
+                         std::vector<preprocg_ptr_t<BoolRing>*> vpreproc,
+                         quadsquad::utils::LevelOrderedCircuit circ, int seed=200);
+
+  // static std::vector<BoolRing> reconstruct(
+      // int id, const std::array<std::vector<BoolRing>, 3>& recon_shares,
+      // io::NetIOMP& network, JumpProvider& jump, ThreadPool& tpool);
+
+  void evaluateGatesAtDepthPartySend(size_t depth,  
+                    std::vector<BoolRing>& mult_nonTP, std::vector<BoolRing>& r_mult_pad,
+                    std::vector<BoolRing>& mult3_nonTP, std::vector<BoolRing>& r_mult3_pad,
+                    std::vector<BoolRing>& mult4_nonTP, std::vector<BoolRing>& r_mult4_pad,
+                    std::vector<BoolRing>& dotprod_nonTP, std::vector<BoolRing>& r_dotprod_pad);
+  
+  void evaluateGatesAtDepthPartyRecv(size_t depth, 
+                                std::vector<BoolRing> mult_all, std::vector<BoolRing> r_mult_pad,
+                                std::vector<BoolRing> mult3_all, std::vector<BoolRing> r_mult3_pad,
+                                std::vector<BoolRing> mult4_all, std::vector<BoolRing> r_mult4_pad,
+                                std::vector<BoolRing> dotprod_all, std::vector<BoolRing> r_dotprod_pad);
+
+  void evaluateGatesAtDepth(size_t depth, io::NetIOMP& network);
+  void evaluateAllLevels(io::NetIOMP& network);
+
+  std::vector<std::vector<BoolRing>> getOutputShares();
 };
 }; //namespace dirigent
