@@ -530,70 +530,75 @@ class Circuit {
    static Circuit generatePrefixAND() {
     Circuit circ;
     size_t k = 64;
-    std::vector<wire_t> input(k+1);
-    
-    for (int i = 0; i <= k; i++) {
+    std::vector<wire_t> input(k);
+    std::vector<wire_t> inp_d(k);
+    for (int i = 0; i < k; i++) {
       input[i] = circ.newInputWire();
+      inp_d[i] = circ.newInputWire();
     }
     R zero = 0;
     
-    std::vector<wire_t> leveli(k+1);
+    std::vector<wire_t> leveli(k);
     leveli = std::move(input);
     
     
     for(size_t level = 1; level <= log(k)/log(4); level++) {
-        std::vector<wire_t> level_next(k+1);
+        std::vector<wire_t> level_next(k);
         
         for(size_t j = 1; j <= k/pow(4, level); j++) {
+            
             size_t p = (j-1) * pow(4, level);
             size_t q = (j-1) * pow(4, level) + pow(4,level - 1);
             size_t r = (j-1) * pow(4, level) + 2 * pow(4,level - 1);
             size_t s = (j-1) * pow(4, level) + 3 * pow(4,level - 1);
         
-            for(size_t i = 1; i <= pow(4, level -1); i++) {
-              level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
+            for(size_t i = 0; i < pow(4, level - 1); i++) {
+              // level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
+              level_next[p + i] = leveli[p+i];
               level_next[q + i] = circ.addGate(GateType::kMul, leveli[q], leveli[q+i]);
               level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q], leveli[r], leveli[r+i]);
               level_next[s + i] = circ.addGate(GateType::kMul4, leveli[q], leveli[r], leveli[s], leveli[s+i]);
               }
           }
           leveli = std::move(level_next);
-          if(level == log(k)/log(4)) {
-            for(size_t i = 1; i <= k; i++) {
-              circ.setAsOutput(leveli[i]);
-            }
-          
-            // wire_t lastAND = circ.addGate(GateType::kMul, level_next[1], level_next[2]);
-          }
       }
-
+    std::vector<wire_t> wz(k);
+    wz[0] = circ.addConstOpGate(GateType::kConstAdd, leveli[0], zero);
+    wz[1] = circ.addConstOpGate(GateType::kConstAdd, leveli[1], zero);
+    circ.setAsOutput(wz[1]);
+    for(size_t i = 2; i < k; i++) {
+      wz[i] = circ.addGate(GateType::kAdd, leveli[i], leveli[i-1]);
+      circ.setAsOutput(wz[i]);
+    }
+    wire_t wv;
+    wv = circ.addGate(GateType::kDotprod, wz, inp_d);
+    circ.setAsOutput(wv);
     return circ;
-
   }
 
   static Circuit generateParaPrefixAND(int repeat) {
     Circuit circ;
     size_t k = 64;
-    std::vector<wire_t> input(repeat*(k+1));
+    std::vector<wire_t> input(repeat * k);
     for(int rep = 0; rep < repeat; rep++) {
-      for (int i = 0; i <= k; i++) {
-        input[(rep * (k+1)) + i] = circ.newInputWire();
+      for (int i = 0; i < k; i++) {
+        input[(rep * (k)) + i] = circ.newInputWire();
       }
     }
     R zero = 0;
     
-    std::vector<wire_t> leveli(repeat*(k+1));
+    std::vector<wire_t> leveli(repeat * k);
     leveli = std::move(input);
     
     for(size_t level = 1; level <= log(k)/log(4); level++) {
-        std::vector<wire_t> level_next(repeat*(k+1));
+        std::vector<wire_t> level_next(repeat * k);
           for(size_t j = 1; j <= repeat * k/pow(4, level); j++) {
             size_t p = (j-1) * pow(4, level);
             size_t q = (j-1) * pow(4, level) + pow(4,level - 1);
             size_t r = (j-1) * pow(4, level) + 2 * pow(4,level - 1);
             size_t s = (j-1) * pow(4, level) + 3 * pow(4,level - 1);
         
-            for(size_t i = 1; i <= pow(4, level -1); i++) {
+            for(size_t i = 0; i < pow(4, level -1); i++) {
               level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
               level_next[q + i] = circ.addGate(GateType::kMul, leveli[q], leveli[q+i]);
               level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q], leveli[r], leveli[r+i]);
@@ -603,8 +608,8 @@ class Circuit {
           leveli = std::move(level_next);
           if(level == log(k)/log(4)) {
             for(int rep = 0; rep < repeat; rep++) {
-              for(size_t i = 1; i <= k; i++) {
-                circ.setAsOutput(leveli[(rep * (k + 1)) + i]);
+              for(size_t i = 1; i < k; i++) {
+                circ.setAsOutput(leveli[(rep * k) + i]);
               }
             }
           }
@@ -626,36 +631,20 @@ class Circuit {
       input[i] = circ.newInputWire();
     }
     
-    std::vector<wire_t> level_next( k /4 );
+    std::vector<wire_t> leveli(k);
+    leveli = std::move(input);
 
     for(size_t level = 1; level <= log(k)/log(4); level++) {
-      //leveli wires are the input for mult4 gates
-      std::vector<wire_t> leveli( k /pow(4,level-1) );
-      if(level == 1) {
-        // at the level 1, it gets the input wires
-        for(size_t l = 0; l < k/pow(4,level-1); l++) {
-          leveli[l] = input[l];
-        }
+      std::vector<wire_t> level_next(k/pow(4, level));
+      for(size_t j = 1; j <= k / pow(4, level); j++) {
+        level_next[j-1] = circ.addGate(GateType::kMul4, leveli[(4 * j)-4], leveli[(4 * j)-3],
+                                               leveli[(4 * j)-2], leveli[(4 * j) - 1]);
       }
-      else {
-        // level != 1, it gets prior levels' wires
-        for(size_t l = 0; l < k/pow(4,level-1); l++) {
-          leveli[l] = level_next[l];
-        }
-      }
-      level_next.clear();
-      level_next.resize(k /pow(4,level));
-      for(size_t j = 1; j < k / pow(4, level); j++) {
-        level_next[j] = circ.addGate(GateType::kMul4, leveli[4 * j-3], leveli[4 * j-2],
-                                               leveli[4 * j-1], leveli[4 * j]);
-      }
-      if(level == log(k)/log(4)){
-        circ.setAsOutput(level_next[1]);
-      }
+      leveli.resize(k/pow(4, level));
+      leveli = std::move(level_next);
     }
-
+    circ.setAsOutput(leveli[0]);
     return circ;
-
   }
 
 

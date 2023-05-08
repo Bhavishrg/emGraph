@@ -35,7 +35,7 @@ void OfflineEvaluator::keyGen(int nP, int pid, RandGenPool& rgen,
         key += keySh[i];
     }
   }
-  else { 
+  else {
     rgen.p0().random_data(&key, sizeof(Field));
   }
 }
@@ -271,13 +271,17 @@ void OfflineEvaluator::setWireMasksParty(
         bkey = 0;
         bkeySh[0] = 0;
         for(int i = 1; i <= nP_; i++) {
-            rgen_.pi(i).random_data(&bkeySh[i], sizeof(BoolRing));
-            bkey += bkeySh[i];
+          uint8_t tmp;
+          rgen_.pi(i).random_data(&bkeySh[i], sizeof(BoolRing));
+          bkeySh[i] = tmp % 2;
+          bkey += bkeySh[i];
         }
         bkey_sh_ = bkey;
       }
       else {
-        rgen_.p0().random_data(&bkey, sizeof(BoolRing));
+        uint8_t tmp;
+        rgen_.p0().random_data(&tmp, sizeof(BoolRing));
+        bkey = tmp % 2;
         bkey_sh_ = bkey;
       }
 
@@ -574,90 +578,534 @@ void OfflineEvaluator::setWireMasksParty(
 
           // TP obtains $r = padded_val + delta_x
           Field r_value = 0;
-          if(id_ == 0) {r_value = padded_val + preproc_.gates[eqz_g->in]->tpmask.secret(); }
+          if(id_ == 0) {
+            r_value = padded_val + preproc_.gates[eqz_g->in]->tpmask.secret();
+          }
           AuthAddShare<Field> rval;
           TPShare<Field> tprval;
           randomShareSecret(nP_, id_, rgen_, *network_, 
                                 rval, tprval, r_value, key, keySh, rand_sh_sec, idx_rand_sh_sec);
           
-          std::vector<AuthAddShare<BoolRing>> rval_bits(64);
-          std::vector<TPShare<BoolRing>> tprval_bits(64);
           std::vector<BoolRing> r_bits(64);
           // TP bit decomposes r and shares it's bits
-          if(id_ == 0) { r_bits = bitDecompose(r_value);}
-          for(int i = 0; i < 64; i++) {
-            OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, rval_bits[i], tprval_bits[i], 
-                              r_bits[i], bkey, bkeySh, b_rand_sh, b_idx_rand_sh);
+          if(id_ == 0) { 
+            r_bits = bitDecompose(r_value);
           }
           
           // preproc for multk gate 
           auto multk_circ =
             common::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel();
-
+   
           std::vector<preprocg_ptr_t<BoolRing>> multk_gates(multk_circ.num_gates);
-          // std::vector<AuthAddShare<BoolRing>> multk_wires(multk_circ.num_gates);
-          // std::vector<TPShare<BoolRing>> multk_wires(multk_circ.num_gates);
-
-          OfflineBoolEvaluator eval_multk(nP_, id_, network_, multk_circ);
-          // setting multk inputs
-          std::unordered_map<common::utils::wire_t, int> multk_input_pid_map;
-          std::unordered_map<common::utils::wire_t, BoolRing> multk_bit_msak_map;
-          
-          
-          std::vector<AuthAddShare<BoolRing>> multk_mask;
-          std::vector<TPShare<BoolRing>> multk_tpmask;
-          PreprocCircuit<BoolRing> multk_preproc = 
-              eval_multk.run(multk_input_pid_map, multk_bit_msak_map, multk_mask, multk_tpmask);
-
-          auto bitb = multk_tpmask[0].secret();
-          Field arithb;
-          if(bitb == 1) {arithb = 1; }
-          else { arithb = 0;}
-
-          AuthAddShare<Field> mask_b;
-          TPShare<Field> tpmask_b;
-          randomShareSecret(nP_, id_, rgen_, *network_, 
-                                mask_b, tpmask_b, arithb, key, keySh, rand_sh_sec, idx_rand_sh_sec);
-
+          size_t inp_ctr = 0;
           for (const auto& multk_level : multk_circ.gates_by_level) {
             for (auto& multk_gate : multk_level) {
               switch (multk_gate->type) {
                 case common::utils::GateType::kInp:{
                   auto* g = static_cast<common::utils::Gate*>(multk_gate.get());
-                  auto* pre_input =
-                    static_cast<PreprocInput<BoolRing>*>(multk_preproc.gates[g->out].get());
-                  multk_gates[g->out] = std::make_unique<PreprocInput<BoolRing>>(
-                    pre_input->mask, pre_input->tpmask, 0);
+
+                  auto pregate = std::make_unique<PreprocInput<BoolRing>>();
+                  auto pid = 0;
+                  auto bit_mask = r_bits[inp_ctr];
+                  pregate->pid = pid;
+                  pregate->mask_value = r_bits[inp_ctr];
+                  
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, pregate->mask, 
+                      pregate->tpmask, pregate->mask_value, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  
+                  multk_gates[g->out] = std::move(pregate);
+                  inp_ctr++;
+                  break;
                 }
                 case common::utils::GateType::kMul4:{
-                  auto* g = static_cast<common::utils::FIn4Gate*>(multk_gate.get());
-                  auto* pre_out = 
-                    static_cast<PreprocMult4Gate<BoolRing>*>(multk_preproc.gates[g->out].get());
+                  const auto* g = static_cast<common::utils::FIn4Gate*>(multk_gate.get());
+                  
+                  const auto& mask_in1 = multk_gates[g->in1]->mask;
+                  const auto& tpmask_in1 = multk_gates[g->in1]->tpmask;
+
+                  const auto& mask_in2 = multk_gates[g->in2]->mask;
+                  const auto& tpmask_in2 = multk_gates[g->in2]->tpmask;
+
+                  const auto& mask_in3 = multk_gates[g->in3]->mask;
+                  const auto& tpmask_in3 = multk_gates[g->in3]->tpmask;
+
+                  const auto& mask_in4 = multk_gates[g->in4]->mask;
+                  const auto& tpmask_in4 = multk_gates[g->in4]->tpmask;
+
+                  BoolRing tp_ab, tp_ac, tp_ad, tp_bc, tp_bd, tp_cd, tp_abc, tp_abd, tp_acd, tp_bcd, tp_abcd;
+                  if(id_ == 0) {
+                    tp_ab = tpmask_in1.secret() * tpmask_in2.secret();
+                    tp_ac = tpmask_in1.secret() * tpmask_in3.secret();
+                    tp_ad = tpmask_in1.secret() * tpmask_in4.secret();
+                    tp_bc = tpmask_in2.secret() * tpmask_in3.secret();
+                    tp_bd = tpmask_in2.secret() * tpmask_in4.secret();
+                    tp_cd = tpmask_in3.secret() * tpmask_in4.secret();
+                    tp_abc = tpmask_in1.secret() * tpmask_in2.secret() * tpmask_in3.secret();
+                    tp_abd = tpmask_in1.secret() * tpmask_in2.secret() * tpmask_in4.secret();
+                    tp_acd = tpmask_in1.secret() * tpmask_in3.secret() * tpmask_in4.secret();
+                    tp_bcd = tpmask_in2.secret() * tpmask_in3.secret() * tpmask_in4.secret();
+                    tp_abcd = tpmask_in1.secret() * tpmask_in2.secret() 
+                                * tpmask_in3.secret() * tpmask_in4.secret();
+                  }
+                  
+
+                  TPShare<BoolRing> tprand_mask;
+                  AuthAddShare<BoolRing> rand_mask;
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, *network_, 
+                                  rand_mask, tprand_mask, bkey, bkeySh, b_rand_sh, b_idx_rand_sh);
+                 
+                  TPShare<BoolRing> tpmask_ab;
+                  AuthAddShare<BoolRing> mask_ab; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_ab, tpmask_ab, tp_ab, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  
+                  TPShare<BoolRing> tpmask_ac;
+                  AuthAddShare<BoolRing> mask_ac; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_ac, tpmask_ac, tp_ac, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_ad;
+                  AuthAddShare<BoolRing> mask_ad; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_ad, tpmask_ad, tp_ad, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_bc;
+                  AuthAddShare<BoolRing> mask_bc; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_bc, tpmask_bc, tp_bc, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_bd;
+                  AuthAddShare<BoolRing> mask_bd; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_bd, tpmask_bd, tp_bd, bkey,bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+                
+                
+                  TPShare<BoolRing> tpmask_cd;
+                  AuthAddShare<BoolRing> mask_cd; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_cd, tpmask_cd, tp_cd, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_abc;
+                  AuthAddShare<BoolRing> mask_abc; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_abc, tpmask_abc, tp_abc, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  
+                  TPShare<BoolRing> tpmask_abd;
+                  AuthAddShare<BoolRing> mask_abd; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_abd, tpmask_abd, tp_abd, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+                
+                  TPShare<BoolRing> tpmask_acd;
+                  AuthAddShare<BoolRing> mask_acd; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_acd, tpmask_acd, tp_acd, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_bcd;
+                  AuthAddShare<BoolRing> mask_bcd; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_bcd, tpmask_bcd, tp_bcd, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_abcd;
+                  AuthAddShare<BoolRing> mask_abcd; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_abcd, tpmask_abcd, tp_abcd, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  
+                  
                   multk_gates[g->out] = std::make_unique<PreprocMult4Gate<BoolRing>>(
-                                  pre_out->mask, pre_out->tpmask,
-                                  pre_out->mask_ab, pre_out->tpmask_ab,
-                                  pre_out->mask_ac, pre_out->tpmask_ac,
-                                  pre_out->mask_ad, pre_out->tpmask_ad,
-                                  pre_out->mask_bc, pre_out->tpmask_bc,
-                                      pre_out->mask_bd, pre_out->tpmask_bd,
-                                      pre_out->mask_cd, pre_out->tpmask_cd, 
-                                      pre_out->mask_abc, pre_out->tpmask_abc,
-                                      pre_out->mask_abd, pre_out->tpmask_abd,
-                                      pre_out->mask_acd, pre_out->tpmask_acd,
-                                      pre_out->mask_bcd, pre_out->tpmask_bcd,
-                                      pre_out->mask_abcd, pre_out->tpmask_abcd);
+                                      rand_mask, tprand_mask,
+                                      mask_ab, tpmask_ab,
+                                      mask_ac, tpmask_ac,
+                                      mask_ad, tpmask_ad,
+                                      mask_bc, tpmask_bc,
+                                      mask_bd, tpmask_bd,
+                                      mask_cd, tpmask_cd, 
+                                      mask_abc, tpmask_abc,
+                                      mask_abd, tpmask_abd,
+                                      mask_acd, tpmask_acd,
+                                      mask_bcd, tpmask_bcd,
+                                      mask_abcd, tpmask_abcd);
+                  
+                  break;
+                }
+              }
+            }
+          }
+          // The above method gives boolean output(sharing)
+          // this method expects Field type values and output is also field type
+          // perform Bit2A
+          Field arith_b;
+          AuthAddShare<Field> mask_b;
+          TPShare<Field> tpmask_b;
+          if(id_ == 0) { 
+            auto wout = multk_circ.outputs[0];
+            BoolRing bitb;
+            bitb = multk_gates[wout]->tpmask.secret();
+            if(bitb == 1) {arith_b = 1; }
+            else { arith_b = 0;}
+          }
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                mask_b, tpmask_b, arith_b, key, keySh, rand_sh_sec, idx_rand_sh_sec);
+
+
+          preproc_.gates[eqz_g->out] = std::make_unique<PreprocEqzGate<Field>>
+                              (mask_w, tpmask_w, 
+                              mask_b, tpmask_b, 
+                              rval, tprval,
+                              std::move(multk_gates), padded_val);
+          break;
+        }
+        case common::utils::GateType::kLtz: {
+          preproc_.gates[gate->out] = std::make_unique<PreprocLtzGate<Field>>();
+          const auto* ltz_g = static_cast<common::utils::FIn1Gate*>(gate.get());
+          // padded_val
+          Field padded_val;
+          rgen_.all().random_data(&padded_val, sizeof(Field));
+
+          // TP obtains $r = padded_val + delta_x
+          Field r_value = 0;
+          if(id_ == 0) {
+            r_value = padded_val + preproc_.gates[ltz_g->in]->tpmask.secret();
+          }
+
+          AuthAddShare<Field> r_val;
+          TPShare<Field> tpr_val;
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                r_val, tpr_val, r_value, key, keySh, rand_sh_sec, idx_rand_sh_sec);
+          
+
+          std::vector<BoolRing> r_bits(64);
+          // TP bit decomposes r and shares it's bits
+          if(id_ == 0) { 
+            r_bits = bitDecompose(r_value);
+          }
+
+          // preproc for prefixAND gate 
+          auto prefixAND_circ =
+            common::utils::Circuit<BoolRing>::generatePrefixAND().orderGatesByLevel();
+          
+          std::vector<preprocg_ptr_t<BoolRing>> prefixAND_gates(prefixAND_circ.num_gates);
+          size_t inp_ctr = 0;
+          for (const auto& prefixAND_level : prefixAND_circ.gates_by_level) {
+            for (auto& prefixAND_gate : prefixAND_level) {
+              switch (prefixAND_gate->type) {
+                case common::utils::GateType::kInp: {
+                  auto* g = static_cast<common::utils::Gate*>(prefixAND_gate.get());
+                  auto pregate = std::make_unique<PreprocInput<BoolRing>>();
+                  auto pid = 0;
+                  if(inp_ctr < 64 ) {
+                    auto bit_mask = r_bits[63 - inp_ctr];
+                    pregate->pid = pid;
+                    pregate->mask_value = r_bits[63 -inp_ctr];
+                    OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, pregate->mask, 
+                      pregate->tpmask, pregate->mask_value, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  }
+                  else {
+                    auto bit_mask = 0;
+                    pregate->pid = pid;
+                    pregate->mask_value = 0;
+                    OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, pregate->mask, 
+                      pregate->tpmask, pregate->mask_value, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  }
+                  
+                    prefixAND_gates[g->out] = std::move(pregate);
+                  inp_ctr++;
+                  break;
+                }
+                case common::utils::GateType::kAdd: {
+                  const auto* g = static_cast<common::utils::FIn2Gate*>(prefixAND_gate.get());
+                  
+                  const auto& mask_in1 = prefixAND_gates[g->in1]->mask;
+                  const auto& tpmask_in1 = prefixAND_gates[g->in1]->tpmask;
+
+                  const auto& mask_in2 = prefixAND_gates[g->in2]->mask;
+                  const auto& tpmask_in2 = prefixAND_gates[g->in2]->tpmask;
+                  
+                  prefixAND_gates[g->out] =
+                    std::make_unique<PreprocGate<BoolRing>>((mask_in1 + mask_in2), (tpmask_in1 + tpmask_in2));
+                  break;
+                }
+                case common::utils::GateType::kSub: {
+                  const auto* g = static_cast<common::utils::FIn2Gate*>(prefixAND_gate.get());
+                  
+                  const auto& mask_in1 = prefixAND_gates[g->in1]->mask;
+                  const auto& tpmask_in1 = prefixAND_gates[g->in1]->tpmask;
+
+                  const auto& mask_in2 = prefixAND_gates[g->in2]->mask;
+                  const auto& tpmask_in2 = prefixAND_gates[g->in2]->tpmask;
+                  
+                  prefixAND_gates[g->out] =
+                    std::make_unique<PreprocGate<BoolRing>>((mask_in1 - mask_in2), (tpmask_in1 - tpmask_in2));
+                  break;
+                }
+                case common::utils::GateType::kConstAdd: {
+                  const auto* g = static_cast<common::utils::ConstOpGate<BoolRing>*>(prefixAND_gate.get());
+                  const auto& mask = prefixAND_gates[g->in]->mask;
+                  const auto& tpmask = prefixAND_gates[g->in]->tpmask;
+                  
+                  prefixAND_gates[g->out] =
+                    std::make_unique<PreprocGate<BoolRing>>((mask), (tpmask));
+                  break;
+                }
+                case common::utils::GateType::kConstMul: {
+                  const auto* g = static_cast<common::utils::ConstOpGate<BoolRing>*>(prefixAND_gate.get());
+                  const auto& mask = prefixAND_gates[g->in]->mask * g->cval;
+                  const auto& tpmask = prefixAND_gates[g->in]->tpmask * g->cval;
+                  
+                  prefixAND_gates[g->out] =
+                    std::make_unique<PreprocGate<BoolRing>>((mask), (tpmask));
+                  break;
+                }
+                case common::utils::GateType::kMul: {
+                  const auto* g = static_cast<common::utils::FIn2Gate*>(prefixAND_gate.get());
+                  
+                  const auto& mask_in1 = prefixAND_gates[g->in1]->mask;
+                  const auto& tpmask_in1 = prefixAND_gates[g->in1]->tpmask;
+
+                  const auto& mask_in2 = prefixAND_gates[g->in2]->mask;
+                  const auto& tpmask_in2 = prefixAND_gates[g->in2]->tpmask;
+
+                  BoolRing tp_prod;
+                  if(id_ == 0) {
+                    tp_prod = tpmask_in1.secret() * tpmask_in2.secret();
+                  }
+
+                  TPShare<BoolRing> tprand_mask;
+                  AuthAddShare<BoolRing> rand_mask;
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, *network_, 
+                                  rand_mask, tprand_mask, bkey, bkeySh, b_rand_sh, b_idx_rand_sh);
+
+                  TPShare<BoolRing> tpmask_prod;
+                  AuthAddShare<BoolRing> mask_prod; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_prod, tpmask_prod, tp_prod, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+
+                  prefixAND_gates[g->out] = std::make_unique<PreprocMultGate<BoolRing>>(
+                                      rand_mask, tprand_mask,
+                                      mask_prod, tpmask_prod);
+
+
+                  break;
+                }
+                case common::utils::GateType::kMul3: {
+                  const auto* g = static_cast<common::utils::FIn3Gate*>(prefixAND_gate.get());
+                  
+                  const auto& mask_in1 = prefixAND_gates[g->in1]->mask;
+                  const auto& tpmask_in1 = prefixAND_gates[g->in1]->tpmask;
+
+                  const auto& mask_in2 = prefixAND_gates[g->in2]->mask;
+                  const auto& tpmask_in2 = prefixAND_gates[g->in2]->tpmask;
+
+                  const auto& mask_in3 = prefixAND_gates[g->in3]->mask;
+                  const auto& tpmask_in3 = prefixAND_gates[g->in3]->tpmask;
+
+                  BoolRing tp_ab, tp_ac, tp_bc, tp_abc;
+                  if(id_ == 0) {
+                    tp_ab = tpmask_in1.secret() * tpmask_in2.secret();
+                    tp_ac = tpmask_in1.secret() * tpmask_in3.secret();
+                    tp_bc = tpmask_in2.secret() * tpmask_in3.secret();
+                    tp_abc = tpmask_in1.secret() * tpmask_in2.secret() * tpmask_in3.secret();
+                  }
+
+                  TPShare<BoolRing> tprand_mask;
+                  AuthAddShare<BoolRing> rand_mask;
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, *network_, 
+                                  rand_mask, tprand_mask, bkey, bkeySh, b_rand_sh, b_idx_rand_sh);
+                 
+                  TPShare<BoolRing> tpmask_ab;
+                  AuthAddShare<BoolRing> mask_ab; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_ab, tpmask_ab, tp_ab, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  
+                  TPShare<BoolRing> tpmask_ac;
+                  AuthAddShare<BoolRing> mask_ac; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_ac, tpmask_ac, tp_ac, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_bc;
+                  AuthAddShare<BoolRing> mask_bc; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_bc, tpmask_bc, tp_bc, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  
+                  TPShare<BoolRing> tpmask_abc;
+                  AuthAddShare<BoolRing> mask_abc; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_abc, tpmask_abc, tp_abc, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  prefixAND_gates[g->out] = std::make_unique<PreprocMult3Gate<BoolRing>>(
+                                      rand_mask, tprand_mask,
+                                      mask_ab, tpmask_ab,
+                                      mask_ac, tpmask_ac,
+                                      mask_bc, tpmask_bc,
+                                      mask_abc, tpmask_abc);
+
+                  break;
+                }
+                case common::utils::GateType::kMul4:{
+                  const auto* g = static_cast<common::utils::FIn4Gate*>(prefixAND_gate.get());
+                  
+                  const auto& mask_in1 = prefixAND_gates[g->in1]->mask;
+                  const auto& tpmask_in1 = prefixAND_gates[g->in1]->tpmask;
+
+                  const auto& mask_in2 = prefixAND_gates[g->in2]->mask;
+                  const auto& tpmask_in2 = prefixAND_gates[g->in2]->tpmask;
+
+                  const auto& mask_in3 = prefixAND_gates[g->in3]->mask;
+                  const auto& tpmask_in3 = prefixAND_gates[g->in3]->tpmask;
+
+                  const auto& mask_in4 = prefixAND_gates[g->in4]->mask;
+                  const auto& tpmask_in4 = prefixAND_gates[g->in4]->tpmask;
+
+                  BoolRing tp_ab, tp_ac, tp_ad, tp_bc, tp_bd, tp_cd, tp_abc, tp_abd, tp_acd, tp_bcd, tp_abcd;
+                  if(id_ == 0) {
+                    tp_ab = tpmask_in1.secret() * tpmask_in2.secret();
+                    tp_ac = tpmask_in1.secret() * tpmask_in3.secret();
+                    tp_ad = tpmask_in1.secret() * tpmask_in4.secret();
+                    tp_bc = tpmask_in2.secret() * tpmask_in3.secret();
+                    tp_bd = tpmask_in2.secret() * tpmask_in4.secret();
+                    tp_cd = tpmask_in3.secret() * tpmask_in4.secret();
+                    tp_abc = tpmask_in1.secret() * tpmask_in2.secret() * tpmask_in3.secret();
+                    tp_abd = tpmask_in1.secret() * tpmask_in2.secret() * tpmask_in4.secret();
+                    tp_acd = tpmask_in1.secret() * tpmask_in3.secret() * tpmask_in4.secret();
+                    tp_bcd = tpmask_in2.secret() * tpmask_in3.secret() * tpmask_in4.secret();
+                    tp_abcd = tpmask_in1.secret() * tpmask_in2.secret() 
+                                * tpmask_in3.secret() * tpmask_in4.secret();
+                  }
+                  
+
+                  TPShare<BoolRing> tprand_mask;
+                  AuthAddShare<BoolRing> rand_mask;
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, *network_, 
+                                  rand_mask, tprand_mask, bkey, bkeySh, b_rand_sh, b_idx_rand_sh);
+                 
+                  TPShare<BoolRing> tpmask_ab;
+                  AuthAddShare<BoolRing> mask_ab; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_ab, tpmask_ab, tp_ab, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  
+                  TPShare<BoolRing> tpmask_ac;
+                  AuthAddShare<BoolRing> mask_ac; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_ac, tpmask_ac, tp_ac, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_ad;
+                  AuthAddShare<BoolRing> mask_ad; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_ad, tpmask_ad, tp_ad, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_bc;
+                  AuthAddShare<BoolRing> mask_bc; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_bc, tpmask_bc, tp_bc, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_bd;
+                  AuthAddShare<BoolRing> mask_bd; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_bd, tpmask_bd, tp_bd, bkey,bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+                
+                
+                  TPShare<BoolRing> tpmask_cd;
+                  AuthAddShare<BoolRing> mask_cd; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_cd, tpmask_cd, tp_cd, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_abc;
+                  AuthAddShare<BoolRing> mask_abc; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_abc, tpmask_abc, tp_abc, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  
+                  TPShare<BoolRing> tpmask_abd;
+                  AuthAddShare<BoolRing> mask_abd; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_abd, tpmask_abd, tp_abd, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+                
+                  TPShare<BoolRing> tpmask_acd;
+                  AuthAddShare<BoolRing> mask_acd; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_acd, tpmask_acd, tp_acd, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_bcd;
+                  AuthAddShare<BoolRing> mask_bcd; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_bcd, tpmask_bcd, tp_bcd, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+                  TPShare<BoolRing> tpmask_abcd;
+                  AuthAddShare<BoolRing> mask_abcd; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                    mask_abcd, tpmask_abcd, tp_abcd, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  
+                  
+                  prefixAND_gates[g->out] = std::make_unique<PreprocMult4Gate<BoolRing>>(
+                                      rand_mask, tprand_mask,
+                                      mask_ab, tpmask_ab,
+                                      mask_ac, tpmask_ac,
+                                      mask_ad, tpmask_ad,
+                                      mask_bc, tpmask_bc,
+                                      mask_bd, tpmask_bd,
+                                      mask_cd, tpmask_cd, 
+                                      mask_abc, tpmask_abc,
+                                      mask_abd, tpmask_abd,
+                                      mask_acd, tpmask_acd,
+                                      mask_bcd, tpmask_bcd,
+                                      mask_abcd, tpmask_abcd);
+                  
+                  break;
+                }
+                case common::utils::GateType::kDotprod: {
+                  const auto* g = static_cast<common::utils::SIMDGate*>(prefixAND_gate.get());
+                  BoolRing mask_prod = 0;
+                  if(id_ == 0) {
+                    for(size_t i = 0; i < g->in1.size(); i++) {
+                      mask_prod += prefixAND_gates[g->in1[i]]->tpmask.secret() 
+                                        * prefixAND_gates[g->in2[i]]->tpmask.secret();
+                    }
+                  }
+                  TPShare<BoolRing> tprand_mask;
+                  AuthAddShare<BoolRing> rand_mask;
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, *network_, rand_mask, tprand_mask, bkey, bkeySh, b_rand_sh, b_idx_rand_sh);
+                
+
+                  TPShare<BoolRing> tpmask_product;
+                  AuthAddShare<BoolRing> mask_product; 
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
+                                  mask_product, tpmask_product, mask_prod, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
+
+
+                  prefixAND_gates[g->out] = std::make_unique<PreprocDotpGate<BoolRing>>
+                              (rand_mask, tprand_mask, mask_product, tpmask_product);
+                  break;
                 }
               }
             }
           }
           
-          // The above method gives boolean output(sharing)
-          // this method expects Field type values and output is also field type
-          // perform Bit2A
+          Field arith_b;
+          AuthAddShare<Field> mask_b;
+          TPShare<Field> tpmask_b;
+          if(id_ == 0) { 
+            auto wout = prefixAND_circ.outputs[0];
+            BoolRing bitb;
+            bitb = prefixAND_gates[wout]->tpmask.secret();
+            if(bitb == 1) {arith_b = 1; }
+            else { arith_b = 0;}
+          }
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                            mask_b, tpmask_b, arith_b, key, keySh, rand_sh_sec, idx_rand_sh_sec);
           
-          preproc_.gates[gate->out] = std::make_unique<PreprocEqzGate<Field>>
-                              (mask_w, tpmask_w, mask_b, tpmask_b, rval, tprval, rval_bits, tprval_bits,
-                              std::move(multk_gates), padded_val);
+          AuthAddShare<Field> mask_w;
+          TPShare<Field> tpmask_w;
+          randomShare(nP_, id_, rgen_, *network_, mask_w, tpmask_w, key, keySh, rand_sh, idx_rand_sh);
+
+          preproc_.gates[ltz_g->out] = std::make_unique<PreprocLtzGate<Field>>
+                                           (mask_w, tpmask_w, 
+                                            mask_b, tpmask_b, 
+                                            r_val, tpr_val,
+                                            std::move(prefixAND_gates), padded_val);
+
           break;
         }
         
@@ -674,20 +1122,11 @@ void OfflineEvaluator::setWireMasks(
     const std::unordered_map<common::utils::wire_t, int>& input_pid_map) {
       
       std::vector<Field> rand_sh;
-      size_t idx_rand_sh;
       std::vector<BoolRing> b_rand_sh;
-      size_t b_idx_rand_sh;
-      
       std::vector<Field> rand_sh_sec;
-      size_t idx_rand_sh_sec;
       std::vector<BoolRing> b_rand_sh_sec;
-      size_t b_idx_rand_sh_sec;
-
       std::vector<Field> rand_sh_party;
-      size_t idx_rand_sh_party;
       std::vector<BoolRing> b_rand_sh_party;
-      size_t b_idx_rand_sh_party;
-
 
       
   if(id_ != nP_) {
@@ -697,66 +1136,102 @@ void OfflineEvaluator::setWireMasks(
   
     if(id_ == 0) {
       size_t rand_sh_num = rand_sh.size();
+      size_t b_rand_sh_num = b_rand_sh.size();
       size_t rand_sh_sec_num = rand_sh_sec.size();
+      size_t b_rand_sh_sec_num = b_rand_sh_sec.size();
       size_t rand_sh_party_num = rand_sh_party.size();
-      size_t total_comm = rand_sh_num + rand_sh_sec_num + rand_sh_party_num;
-      std::vector<size_t> lengths(4);
-      lengths[0] = total_comm;
+      size_t b_rand_sh_party_num = b_rand_sh_party.size();
+      size_t arith_comm = rand_sh_num + rand_sh_sec_num + rand_sh_party_num;
+      size_t bool_comm = b_rand_sh_num + b_rand_sh_sec_num + b_rand_sh_party_num;
+      std::vector<size_t> lengths(8);
+      lengths[0] = arith_comm;
       lengths[1] = rand_sh_num;
       lengths[2] = rand_sh_sec_num;
       lengths[3] = rand_sh_party_num;
+      lengths[4] = bool_comm;
+      lengths[5] = b_rand_sh_num;
+      lengths[6] = b_rand_sh_sec_num;
+      lengths[7] = b_rand_sh_party_num;
 
 
-      network_->send(nP_, lengths.data(), sizeof(size_t) * 4);
 
-      std::vector<Field> offline_comm(total_comm);
+      network_->send(nP_, lengths.data(), sizeof(size_t) * 8);
+
+      std::vector<Field> offline_arith_comm(arith_comm);
+      std::vector<BoolRing> offline_bool_comm(bool_comm);
       for(size_t i = 0; i < rand_sh_num; i++) {
-        offline_comm[i] = rand_sh[i];
+        offline_arith_comm[i] = rand_sh[i];
       }
       for(size_t i = 0; i < rand_sh_sec_num; i++) {
-        offline_comm[rand_sh_num + i] = rand_sh_sec[i];
+        offline_arith_comm[rand_sh_num + i] = rand_sh_sec[i];
       }
       for(size_t i = 0; i < rand_sh_party_num; i++) {
-        offline_comm[rand_sh_sec_num + rand_sh_num + i] = rand_sh_party[i];
+        offline_arith_comm[rand_sh_sec_num + rand_sh_num + i] = rand_sh_party[i];
       }
-      network_->send(nP_, offline_comm.data(), sizeof(Field) * total_comm);
+      for(size_t i = 0; i < b_rand_sh_num; i++) {
+        offline_bool_comm[i] = b_rand_sh[i];
+      }
+      for(size_t i = 0; i < b_rand_sh_sec_num; i++) {
+        offline_bool_comm[b_rand_sh_num + i] = b_rand_sh_sec[i];
+      }
+      for(size_t i = 0; i < b_rand_sh_party_num; i++) {
+        offline_bool_comm[b_rand_sh_sec_num + b_rand_sh_num + i] = b_rand_sh_party[i];
+      }
+      network_->send(nP_, offline_arith_comm.data(), sizeof(Field) * arith_comm);
+      network_->send(nP_, offline_bool_comm.data(), sizeof(BoolRing) * bool_comm);
     }
   }
   else if(id_ == nP_ ) {
-    std::vector<size_t> lengths(4);
+    std::vector<size_t> lengths(8);
     
-    network_->recv(0, lengths.data(), sizeof(size_t) * 4);
+    network_->recv(0, lengths.data(), sizeof(size_t) * 8);
     
-    size_t total_comm = lengths[0];
+    size_t arith_comm = lengths[0];
     size_t rand_sh_num = lengths[1];
     size_t rand_sh_sec_num = lengths[2];
     size_t rand_sh_party_num = lengths[3];
-
+    size_t bool_comm = lengths[4];
+    size_t b_rand_sh_num = lengths[5];
+    size_t b_rand_sh_sec_num = lengths[6];
+    size_t b_rand_sh_party_num = lengths[7];
     
 
-    std::vector<Field> offline_comm(total_comm);
-
-    network_->recv(0, offline_comm.data(), sizeof(Field) * total_comm);
+    std::vector<Field> offline_arith_comm(arith_comm);
+    std::vector<BoolRing> offline_bool_comm(bool_comm);
+    
+    network_->recv(0, offline_arith_comm.data(), sizeof(Field) * arith_comm);
+    network_->recv(0, offline_bool_comm.data(), sizeof(BoolRing) * bool_comm);
     
     rand_sh.resize(rand_sh_num);
-    
     for(int i = 0; i < rand_sh_num; i++) {
-      rand_sh[i] = offline_comm[i];
+      rand_sh[i] = offline_arith_comm[i];
     }
-
-    rand_sh_sec.resize(rand_sh_sec_num);
     
+    rand_sh_sec.resize(rand_sh_sec_num);
     for(int i = 0; i < rand_sh_sec_num; i++) {
-      rand_sh_sec[i] = offline_comm[rand_sh_num + i];
+      rand_sh_sec[i] = offline_arith_comm[rand_sh_num + i];
     }
     
     rand_sh_party.resize(rand_sh_party_num);
-    
     for(int i = 0; i < rand_sh_party_num; i++) {
-      rand_sh_party[i] = offline_comm[rand_sh_num + rand_sh_sec_num + i];
+      rand_sh_party[i] = offline_arith_comm[rand_sh_num + rand_sh_sec_num + i];
     }
-
-
+    
+    b_rand_sh.resize(b_rand_sh_num);
+    for(int i = 0; i < b_rand_sh_num; i++) {
+      b_rand_sh[i] = offline_bool_comm[i];
+    }
+    
+    b_rand_sh_sec.resize(b_rand_sh_sec_num);
+    for(int i = 0; i < b_rand_sh_sec_num; i++) {
+      b_rand_sh_sec[i] = offline_bool_comm[b_rand_sh_num + i];
+    }
+    
+    b_rand_sh_party.resize(b_rand_sh_party_num);
+    for(int i = 0; i < b_rand_sh_party_num; i++) {
+      b_rand_sh_party[i] = offline_bool_comm[b_rand_sh_num + b_rand_sh_sec_num + i];
+    }
+    
     setWireMasksParty(input_pid_map, rand_sh, b_rand_sh, rand_sh_sec, b_rand_sh_sec,
                         rand_sh_party, b_rand_sh_party);
   }
@@ -821,7 +1296,7 @@ void OfflineBoolEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::N
   BoolRing val = 0;
   BoolRing tag = 0;
   BoolRing tagn = 0;
-  
+  // std::cout<< "  Inside randomShare  Before sampling :  tagn = " << tagn << std::endl;
     if(pid == 0) {
       share.pushValue(0);
       share.pushTag(0);
@@ -832,11 +1307,13 @@ void OfflineBoolEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::N
       tpShare.setKey(key);
       
       for(int i = 1; i <= nP; i++) {
-
-        rgen.pi(i).random_data(&val, sizeof(BoolRing));
+        uint8_t tmp;
+        rgen.pi(i).random_data(&tmp, sizeof(BoolRing));
+        val = tmp % 2;
         tpShare.pushValues(val);
         tpShare.setKeySh(keySh[i]);
-        rgen.pi(i).random_data(&tag, sizeof(BoolRing));
+        rgen.pi(i).random_data(&tmp, sizeof(BoolRing));
+        tag = tmp % 2;
         if( i != nP) {
           tpShare.pushTags(tag);
           tagn += tag;
@@ -844,7 +1321,6 @@ void OfflineBoolEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::N
         }
       }
       BoolRing secret = tpShare.secret();
-      
       tag = key * secret;
       tagn = tag - tagn;
       tpShare.pushTags(tagn);
@@ -852,11 +1328,13 @@ void OfflineBoolEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::N
     }
     else if(pid > 0) {
       share.setKey(key);
-      rgen.p0().random_data(&val, sizeof(BoolRing));
+      uint8_t tmp;
+      rgen.p0().random_data(&tmp, sizeof(BoolRing));
+      val = tmp % 2;
       share.pushValue(val);
       
-      rgen.p0().random_data(&tag, sizeof(BoolRing));
-      
+      rgen.p0().random_data(&tmp, sizeof(BoolRing));
+      tag = tmp % 2;
       if( pid != nP) {
         share.pushTag(tag);
       }
@@ -887,10 +1365,13 @@ void OfflineBoolEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen,
       tpShare.setKeySh(keySh[0]);
       tpShare.setKey(key);
       for(int i = 1; i < nP; i++) {
-        rgen.pi(i).random_data(&val, sizeof(BoolRing));
+        uint8_t tmp;
+        rgen.pi(i).random_data(&tmp, sizeof(BoolRing));
+        val = tmp % 2; 
         tpShare.pushValues(val);
         valn += val;
-        rgen.pi(i).random_data(&tag, sizeof(BoolRing));
+        rgen.pi(i).random_data(&tmp, sizeof(BoolRing));
+        tag = tmp % 2;
         tpShare.pushTags(tag);
         tagn += tag;
         tpShare.setKeySh(keySh[i]);
@@ -905,9 +1386,12 @@ void OfflineBoolEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen,
     else if(pid > 0) {
       share.setKey(key);
       if( pid != nP) {
-        rgen.p0().random_data(&val, sizeof(BoolRing));
+        uint8_t tmp;
+        rgen.p0().random_data(&tmp, sizeof(BoolRing));
+        val = tmp % 2;
         share.pushValue(val);
-        rgen.p0().random_data(&tag, sizeof(BoolRing));
+        rgen.p0().random_data(&tmp, sizeof(BoolRing));
+        tag = tmp % 2;
         share.pushTag(tag);
       }
       else if(pid == nP) {
@@ -935,10 +1419,14 @@ void OfflineBoolEvaluator::randomShareWithParty(int nP, int pid, int dealer, Ran
   BoolRing tagn = 0;
   if( pid == 0) {
     if(dealer != 0) {
-      rgen.pi(dealer).random_data(&secret, sizeof(BoolRing));
+      uint8_t tmp;
+      rgen.pi(dealer).random_data(&tmp, sizeof(BoolRing));
+      secret = tmp % 2;
     }
     else {
-      rgen.self().random_data(&secret, sizeof(BoolRing));
+      uint8_t tmp;
+      rgen.self().random_data(&tmp, sizeof(BoolRing));
+      secret = tmp % 2;
     }
     
     share.pushValue(0);
@@ -952,11 +1440,14 @@ void OfflineBoolEvaluator::randomShareWithParty(int nP, int pid, int dealer, Ran
     tagF = key * secret;
     for(int i = 1; i < nP; i++) {
       tpShare.setKeySh(keySh[i]);
-      rgen.pi(i).random_data(&val, sizeof(BoolRing));
+      uint8_t tmp; 
+      rgen.pi(i).random_data(&tmp, sizeof(BoolRing));
+      val = tmp % 2;
       
       tpShare.pushValues(val);
-      rgen.pi(i).random_data(&tag, sizeof(BoolRing));
-      
+      rgen.pi(i).random_data(&tmp, sizeof(BoolRing));
+      tag = tmp % 2;
+
       tpShare.pushTags(tag);
       valn += val;
       tagn += tag;
@@ -972,13 +1463,17 @@ void OfflineBoolEvaluator::randomShareWithParty(int nP, int pid, int dealer, Ran
   }
   else if ( pid > 0) {
     share.setKey(key);
+    uint8_t tmp;
     if(pid == dealer) {
-      rgen.p0().random_data(&secret, sizeof(BoolRing));
+      rgen.p0().random_data(&tmp, sizeof(BoolRing));
+      secret = tmp % 2;
     }
     if(pid != nP) {
-      rgen.p0().random_data(&val, sizeof(BoolRing));
+      rgen.p0().random_data(&tmp, sizeof(BoolRing));
+      val = tmp % 2;
       share.pushValue(val);
-      rgen.p0().random_data(&tag, sizeof(BoolRing)); 
+      rgen.p0().random_data(&tmp, sizeof(BoolRing)); 
+      tag = tmp  % 2;
       share.pushTag(tag);
     }
     else if (pid == nP) {
@@ -1012,16 +1507,20 @@ void OfflineBoolEvaluator::setWireMasksParty(
       std::vector<BoolRing> keySh(nP_ + 1);
       BoolRing key = 0;
       if(id_ == 0)  {
+        uint8_t tmp;
         key = 0;
         keySh[0] = 0;
         for(int i = 1; i <= nP_; i++) {
-            rgen_.pi(i).random_data(&keySh[i], sizeof(BoolRing));
+            rgen_.pi(i).random_data(&tmp, sizeof(BoolRing));
+            keySh[i] = tmp % 2;
             key += keySh[i];
         }
         key_sh_ = key;
       }
       else {
-        rgen_.p0().random_data(&key, sizeof(BoolRing));
+        uint8_t tmp;
+        rgen_.p0().random_data(&tmp, sizeof(BoolRing));
+        key = tmp % 2;
         key_sh_ = key;
       }
       
@@ -1210,7 +1709,7 @@ void OfflineBoolEvaluator::setWireMasksParty(
           AuthAddShare<BoolRing> rand_mask;
           randomShare(nP_, id_, rgen_, *network_, 
                           rand_mask, tprand_mask, key, keySh, rand_sh, idx_rand_sh);
-          idx_rand_sh++;
+          
           TPShare<BoolRing> tpmask_ab;
           AuthAddShare<BoolRing> mask_ab; 
           randomShareSecret(nP_, id_, rgen_, *network_, 
@@ -1309,11 +1808,6 @@ void OfflineBoolEvaluator::setWireMasksParty(
           
           break;
         }
-
-        // case common::utils::GateType::kEqz: {
-          
-        //   break;
-        // }
         
         default: {
           break;

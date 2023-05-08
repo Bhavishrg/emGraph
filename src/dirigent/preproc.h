@@ -155,17 +155,14 @@ struct PreprocDotpGate : public PreprocGate<R> {
 
 template <class R>
 struct PreprocEqzGate : public PreprocGate<R> {
-  AuthAddShare<R> mask;
-  TPShare<R> tpmask;
+  AuthAddShare<R> mask_b;
+  TPShare<R> tpmask_b;
 
   AuthAddShare<R> mask_w;
   TPShare<R> tpmask_w;
 
   AuthAddShare<R> rval;
   TPShare<R> tprval;
-
-  std::vector<AuthAddShare<BoolRing>> rval_bits;
-  std::vector<TPShare<BoolRing>> tprval_bits;
 
   std::vector<preprocg_ptr_t<BoolRing>> multk_gates;
 
@@ -175,28 +172,42 @@ struct PreprocEqzGate : public PreprocGate<R> {
   PreprocEqzGate(AuthAddShare<R> mask_w, TPShare<R> tpmask_w, 
                   AuthAddShare<R> mask_b, TPShare<R> tpmask_b,
                   AuthAddShare<R> rval, TPShare<R> tprval,
-                  std::vector<AuthAddShare<BoolRing>> rval_bits,
-                  std::vector<TPShare<BoolRing>> tprval_bits,
                   std::vector<preprocg_ptr_t<BoolRing>> multk_gates,
                   R padded_val)
-    : PreprocGate<R>((mask_b - mask_w * 2), (tpmask_b - tpmask_w * 2)),
+    : PreprocGate<R>((mask_b * ( -1 ) + mask_w * ( -2 ) ), (tpmask_b * ( -1 ) + tpmask_w * ( -2 ))),
+      mask_w(mask_w), tpmask_w(tpmask_w),
+      mask_b(mask_b), tpmask_b(tpmask_b),
       rval(rval), tprval(tprval),
-      rval_bits(std::move(rval_bits)),
-      tprval_bits(std::move(tprval_bits)),
       multk_gates(std::move(multk_gates)),
       padded_val(padded_val) {}
+};
 
-    //   PreprocEqzGate(AuthAddShare<R> mask_w, TPShare<R> tpmask_w, 
-    //               AuthAddShare<R> mask_b, TPShare<R> tpmask_b,
-    //               AuthAddShare<R> rval, TPShare<R> tprval,
-    //               std::vector<AuthAddShare<BoolRing>> rval_bits,
-    //               std::vector<TPShare<BoolRing>> tprval_bits,
-    //               R padded_val)
-    // : PreprocGate<R>((mask_b - mask_w * 2), (tpmask_b - tpmask_w * 2)),
-    //   rval(rval), tprval(tprval),
-    //   rval_bits(std::move(rval_bits)),
-    //   tprval_bits(std::move(tprval_bits)),
-    //   padded_val(padded_val) {}
+template <class R>
+struct PreprocLtzGate : public PreprocGate<R> {
+  R padded_val;
+  
+  AuthAddShare<R> r_val;
+  TPShare<R> tpr_val;
+
+  AuthAddShare<R> mask_w;
+  TPShare<R> tpmask_w;
+
+  AuthAddShare<R> mask_b;
+  TPShare<R> tpmask_b;
+
+  std::vector<preprocg_ptr_t<BoolRing>> PrefixAND_gates;
+
+  PreprocLtzGate() = default;
+  PreprocLtzGate(AuthAddShare<R> mask_w, TPShare<R> tpmask_w,
+                 AuthAddShare<R> mask_b, TPShare<R> tpmask_b,
+                 AuthAddShare<R> r_val, TPShare<R> tpr_val,
+                 std::vector<preprocg_ptr_t<BoolRing>> PrefixAND_gates, R padded_val)
+    : PreprocGate<R>((mask_w * ( pow(2, 63) ) - r_val ), (tpmask_w * ( pow(2, 63) ) - tpr_val )),
+      mask_w(mask_w), tpmask_w(tpmask_w),
+      mask_b(mask_b), tpmask_b(tpmask_b),
+      r_val(r_val), tpr_val(tpr_val),
+      PrefixAND_gates(std::move(PrefixAND_gates)),
+      padded_val(padded_val) {}
 };
 /*template <class R>
 struct PreprocTrDotpGate : public PreprocGate<R> {
@@ -269,16 +280,10 @@ struct PreprocMsbGate : public PreprocGate<R> {
 template <class R>
 struct PreprocCircuit {
   std::vector<preprocg_ptr_t<R>> gates;
-  //std::vector<PreprocOutput> output;
-  //std::vector<Field> output;
 
   PreprocCircuit() = default;
   PreprocCircuit(size_t num_gates)
       : gates(num_gates) {}
         
-  //PreprocCircuit(size_t num_gates, size_t num_output)
-  //    : gates(num_gates), 
-  //      output(num_output)
-  //      {}
 };
 };  // namespace dirigent
