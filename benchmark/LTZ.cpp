@@ -15,10 +15,21 @@ using namespace dirigent;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-common::utils::Circuit<BoolRing> LTZCircuit(int repeat) {
-    common::utils::Circuit<BoolRing> circ = common::utils::Circuit<BoolRing>::generateParaPrefixAND(repeat);
+// common::utils::Circuit<BoolRing> LTZCircuit(int repeat) {
+//     common::utils::Circuit<BoolRing> circ = common::utils::Circuit<BoolRing>::generateParaPrefixAND(repeat);
+//     return circ;  
+// }
+common::utils::Circuit<Field> LTZCircuit(int repeat) {
+    common::utils::Circuit<Field> circ;
+    std::vector<wire_t> w_ltz(repeat);
+    for(size_t i = 0; i < repeat; i++) {
+        w_ltz[i] = circ.newInputWire();
+        circ.setAsOutput(w_ltz[i]);
+    }
+    
     return circ;  
 }
+
 
 
 void benchmark(const bpo::variables_map& opts) {
@@ -85,15 +96,15 @@ void benchmark(const bpo::variables_map& opts) {
     std::cout << circ << std::endl;
 
     std::unordered_map<common::utils::wire_t, int> input_pid_map;
-    std::unordered_map<common::utils::wire_t, BoolRing> input_map;
-    std::unordered_map<common::utils::wire_t, BoolRing> bit_mask_map;
-    std::vector<AuthAddShare<BoolRing>> output_mask;
-    std::vector<TPShare<BoolRing>>   output_tpmask;
+    std::unordered_map<common::utils::wire_t, Field> input_map;
+    // std::unordered_map<common::utils::wire_t, BoolRing> bit_mask_map;
+    // std::vector<AuthAddShare<BoolRing>> output_mask;
+    // std::vector<TPShare<BoolRing>>   output_tpmask;
     for (const auto& g : circ.gates_by_level[0]) {
         if (g->type == common::utils::GateType::kInp) {
         input_pid_map[g->out] = 1;
         input_map[g->out] = 1;
-        bit_mask_map[g->out] = 0;
+        // bit_mask_map[g->out] = 0;
         }
     }
 
@@ -101,16 +112,16 @@ void benchmark(const bpo::variables_map& opts) {
     
 
     for (size_t r = 0; r < repeat; ++r) {
-        OfflineBoolEvaluator off_eval(nP, pid, network, circ, seed);
+        OfflineEvaluator off_eval(nP, pid, network, circ, security_param, 1, seed);
         
-        network->sync();
         
         StatsPoint start(*network);
-        auto preproc = off_eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);
+        auto preproc = off_eval.run(input_pid_map);
+        // , bit_mask_map, output_mask, output_tpmask);
         // StatsPoint end_pre(*network);
         
-        BoolEvaluator eval(nP, pid, network, std::move(preproc), circ, seed);
-
+        // OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, seed);
+        OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, security_param, 1, seed);
         
         
         eval.setRandomInputs();

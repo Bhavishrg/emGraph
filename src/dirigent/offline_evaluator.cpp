@@ -768,17 +768,28 @@ void OfflineEvaluator::setWireMasksParty(
             r_value = padded_val + preproc_.gates[ltz_g->in]->tpmask.secret();
           }
 
-          AuthAddShare<Field> r_val;
-          TPShare<Field> tpr_val;
-          randomShareSecret(nP_, id_, rgen_, *network_, 
-                                r_val, tpr_val, r_value, key, keySh, rand_sh_sec, idx_rand_sh_sec);
           
 
           std::vector<BoolRing> r_bits(64);
           // TP bit decomposes r and shares it's bits
           if(id_ == 0) { 
             r_bits = bitDecompose(r_value);
+            std::cout << "r_value's msb = " << r_bits[63] << std::endl;
+            r_bits[63] = 0;
+
+            r_value = 0;
+            for(size_t j = 0; j < 64; j++) {
+              if(r_bits[j] == 1) {
+                r_value += pow(2, j);
+              }
+            }
           }
+
+          AuthAddShare<Field> r_val;
+          TPShare<Field> tpr_val;
+          randomShareSecret(nP_, id_, rgen_, *network_, 
+                                r_val, tpr_val, r_value, key, keySh, rand_sh_sec, idx_rand_sh_sec);
+          
 
           // preproc for prefixAND gate 
           auto prefixAND_circ =
@@ -796,10 +807,9 @@ void OfflineEvaluator::setWireMasksParty(
                   if(inp_ctr < 64 ) {
                     auto bit_mask = r_bits[63 - inp_ctr];
                     pregate->pid = pid;
-                    pregate->mask_value = r_bits[63 -inp_ctr];
+                    pregate->mask_value = r_bits[63 - inp_ctr];
                     OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, pregate->mask, 
                       pregate->tpmask, pregate->mask_value, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
-
                   }
                   else {
                     auto bit_mask = 0;
@@ -809,7 +819,7 @@ void OfflineEvaluator::setWireMasksParty(
                       pregate->tpmask, pregate->mask_value, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
                   }
                   
-                    prefixAND_gates[g->out] = std::move(pregate);
+                  prefixAND_gates[g->out] = std::move(pregate);
                   inp_ctr++;
                   break;
                 }
@@ -1093,6 +1103,7 @@ void OfflineEvaluator::setWireMasksParty(
             if(bitb == 1) {arith_b = 1; }
             else { arith_b = 0;}
           }
+          
           randomShareSecret(nP_, id_, rgen_, *network_, 
                             mask_b, tpmask_b, arith_b, key, keySh, rand_sh_sec, idx_rand_sh_sec);
           
@@ -1100,8 +1111,32 @@ void OfflineEvaluator::setWireMasksParty(
           TPShare<Field> tpmask_w;
           randomShare(nP_, id_, rgen_, *network_, mask_w, tpmask_w, key, keySh, rand_sh, idx_rand_sh);
 
+          AuthAddShare<Field> mask_v;
+          TPShare<Field> tpmask_v;
+          
+          mask_v = mask_w * ( -2 ) + mask_b * ( -1 );
+          tpmask_v = tpmask_w * ( -2 ) + tpmask_b * ( -1 );
+
+          
+          AuthAddShare<Field> mask_out;
+          TPShare<Field> tpmask_out;
+
+          mask_out = preproc_.gates[ltz_g->in]->mask - r_val - mask_v * pow(2,63);
+          mask_out = mask_out * pow(2, -63);
+          tpmask_out = preproc_.gates[ltz_g->in]->tpmask - tpr_val - tpmask_v * pow(2,63);
+          tpmask_out = tpmask_out * pow(2, -63);
+          if(id_ == 0) {
+            std::cout << "mask_out = " << tpmask_out.secret() << std::endl;
+            auto bits = bitDecompose(preproc_.gates[ltz_g->in]->tpmask.secret());
+            std::cout << "mask_in's msb = " << bits[63] << std::endl;
+          }
+          mask_out = preproc_.gates[ltz_g->in]->mask * pow(2, -63);
+          tpmask_out = preproc_.gates[ltz_g->in]->tpmask * pow(2, -63);
+
           preproc_.gates[ltz_g->out] = std::make_unique<PreprocLtzGate<Field>>
-                                           (mask_w, tpmask_w, 
+                                           (mask_out, tpmask_out,
+                                            mask_v, tpmask_v,
+                                            mask_w, tpmask_w, 
                                             mask_b, tpmask_b, 
                                             r_val, tpr_val,
                                             std::move(prefixAND_gates), padded_val);
@@ -1296,7 +1331,6 @@ void OfflineBoolEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::N
   BoolRing val = 0;
   BoolRing tag = 0;
   BoolRing tagn = 0;
-  // std::cout<< "  Inside randomShare  Before sampling :  tagn = " << tagn << std::endl;
     if(pid == 0) {
       share.pushValue(0);
       share.pushTag(0);

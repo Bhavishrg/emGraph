@@ -106,6 +106,21 @@ class AuthAddShare {
 
     return *this;
   }
+
+  AuthAddShare<R>& shift() {
+    auto bits = bitDecompose(value_);
+    if (bits[63] == 1)
+      value_ = 1;
+    else
+      value_ = 0;
+    bits = bitDecompose(tag_);
+    if (bits[63] == 1)
+      tag_ = 1;
+    else
+      tag_ = 0;
+
+    return *this;
+  }
   
 };
 
@@ -210,6 +225,23 @@ class TPShare {
 
   AuthAddShare<R> getAAS(size_t pid){
     return AuthAddShare<R>({key_sh_.at(pid), values_.at(pid), tags_.at(pid)});
+  }
+
+  TPShare<R>& shift() {
+    for(size_t i = 1; i < values_.size(); i++) {
+      auto bits = bitDecompose(values_[i]);
+      if(bits[63] == 1)
+        values_[i] = 1;
+      else 
+        values_[i] = 0;
+
+      bits = bitDecompose(tags_[i]);
+      if(bits[63] == 1)
+        tags_[i] = 1;
+      else 
+        tags_[i] = 0;
+    }
+    return *this;
   }
 
   //Add above

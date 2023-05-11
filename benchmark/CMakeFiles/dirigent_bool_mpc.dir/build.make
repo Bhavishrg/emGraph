@@ -53,10 +53,10 @@ RM = /usr/local/Cellar/cmake/3.25.2/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2
+CMAKE_SOURCE_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2
+CMAKE_BINARY_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent
 
 # Include any dependencies generated for this target.
 include benchmark/CMakeFiles/dirigent_bool_mpc.dir/depend.make
@@ -72,30 +72,30 @@ include benchmark/CMakeFiles/dirigent_bool_mpc.dir/flags.make
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.o: benchmark/CMakeFiles/dirigent_bool_mpc.dir/flags.make
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.o: benchmark/dirigent_bool_mpc.cpp
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.o: benchmark/CMakeFiles/dirigent_bool_mpc.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object benchmark/CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.o"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT benchmark/CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.o -MF CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.o.d -o CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/dirigent_bool_mpc.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object benchmark/CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.o"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT benchmark/CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.o -MF CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.o.d -o CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark/dirigent_bool_mpc.cpp
 
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.i"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/dirigent_bool_mpc.cpp > CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark/dirigent_bool_mpc.cpp > CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.i
 
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.s"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/dirigent_bool_mpc.cpp -o CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark/dirigent_bool_mpc.cpp -o CMakeFiles/dirigent_bool_mpc.dir/dirigent_bool_mpc.cpp.s
 
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o: benchmark/CMakeFiles/dirigent_bool_mpc.dir/flags.make
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o: benchmark/utils.cpp
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o: benchmark/CMakeFiles/dirigent_bool_mpc.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o -MF CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o.d -o CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/utils.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o -MF CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o.d -o CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark/utils.cpp
 
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.i"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/utils.cpp > CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark/utils.cpp > CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.i
 
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.s"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/utils.cpp -o CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark/utils.cpp -o CMakeFiles/dirigent_bool_mpc.dir/utils.cpp.s
 
 # Object files for target dirigent_bool_mpc
 dirigent_bool_mpc_OBJECTS = \
@@ -117,18 +117,18 @@ benchmarks/dirigent_bool_mpc: /usr/local/lib/libemp-tool.dylib
 benchmarks/dirigent_bool_mpc: /usr/local/opt/openssl/lib/libssl.dylib
 benchmarks/dirigent_bool_mpc: /usr/local/opt/openssl/lib/libcrypto.dylib
 benchmarks/dirigent_bool_mpc: benchmark/CMakeFiles/dirigent_bool_mpc.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable ../benchmarks/dirigent_bool_mpc"
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/dirigent_bool_mpc.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable ../benchmarks/dirigent_bool_mpc"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/dirigent_bool_mpc.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/build: benchmarks/dirigent_bool_mpc
 .PHONY : benchmark/CMakeFiles/dirigent_bool_mpc.dir/build
 
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/clean:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark && $(CMAKE_COMMAND) -P CMakeFiles/dirigent_bool_mpc.dir/cmake_clean.cmake
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark && $(CMAKE_COMMAND) -P CMakeFiles/dirigent_bool_mpc.dir/cmake_clean.cmake
 .PHONY : benchmark/CMakeFiles/dirigent_bool_mpc.dir/clean
 
 benchmark/CMakeFiles/dirigent_bool_mpc.dir/depend:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/benchmark/CMakeFiles/dirigent_bool_mpc.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/benchmark/CMakeFiles/dirigent_bool_mpc.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : benchmark/CMakeFiles/dirigent_bool_mpc.dir/depend
 

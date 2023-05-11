@@ -101,6 +101,7 @@ BOOST_AUTO_TEST_CASE(EQZ_zero) {
   
   circ.setAsOutput(w_eqz);
   auto level_circ = circ.orderGatesByLevel();
+  auto exp_output = circ.evaluate(inputs);
   std::vector<std::future<std::vector<Field>>> parties;
   parties.reserve(nP+1);
   for (int i = 0; i <= nP; ++i) {
@@ -124,7 +125,7 @@ BOOST_AUTO_TEST_CASE(EQZ_zero) {
   for (auto& p : parties) {
     auto output = p.get();
       if(i > 0) {
-        BOOST_TEST(output[0] == 1);
+        BOOST_TEST(output == exp_output);
       }
       i++;
   }
@@ -154,7 +155,7 @@ BOOST_AUTO_TEST_CASE(EQZ_non_zero) {
   
   circ.setAsOutput(w_eqz);
   auto level_circ = circ.orderGatesByLevel();
-  // auto exp_output = circ.evaluate(inputs);
+  auto exp_output = circ.evaluate(inputs);
   std::vector<std::future<std::vector<Field>>> parties;
   parties.reserve(nP+1);
   for (int i = 0; i <= nP; ++i) {
@@ -180,13 +181,77 @@ BOOST_AUTO_TEST_CASE(EQZ_non_zero) {
     auto output = p.get();
       if(i > 0) {
         // BOOST_TEST(output[0] == 1);
-        BOOST_TEST(output[0] == 0);
+        BOOST_TEST(output == exp_output);
       }
       i++;
   }
   // std::cout<< "EQZ_non_zero completed succcessfully " << std::endl;
 
 }
+
+
+BOOST_AUTO_TEST_CASE(LTZ) {
+  int nP = 4;
+  auto seed_block = emp::makeBlock(0, 200);
+  emp::PRG prg(&seed_block);
+  std::mt19937 gen(200);
+  std::uniform_int_distribution<Field> distrib(0, TEST_DATA_MAX_VAL);
+  common::utils::Circuit<Field> circ;
+  std::vector<common::utils::wire_t> input_wires;
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
+  std::unordered_map<common::utils::wire_t, Field> inputs;
+
+  for (size_t i = 0; i < 2; ++i) {
+    auto winp = circ.newInputWire();
+    input_wires.push_back(winp);
+    input_pid_map[winp] = 1;
+    
+    inputs[winp] = distrib(gen);
+    // std::cout<< inputs[winp];
+    // inputs[winp] = 4;
+    // inputs[winp] = -4;
+  }
+  inputs[0] = 4;
+  inputs[1] = -4;
+  auto w_ltz =
+     circ.addGate(common::utils::GateType::kLtz, input_wires[0]);
+  auto w_ltz_b =
+     circ.addGate(common::utils::GateType::kLtz, input_wires[1]);
+  circ.setAsOutput(w_ltz);
+  circ.setAsOutput(w_ltz_b);
+  auto level_circ = circ.orderGatesByLevel();
+  auto exp_output = circ.evaluate(inputs);
+  std::vector<std::future<std::vector<Field>>> parties;
+  parties.reserve(nP+1);
+  for (int i = 0; i <= nP; ++i) {
+      parties.push_back(std::async(std::launch::async, [&, i, input_pid_map, inputs]() {
+      
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      
+      OfflineEvaluator eval(nP, i, network, 
+                            level_circ, SECURITY_PARAM, 4);
+      auto preproc = eval.run(input_pid_map);
+     
+      OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
+                                  level_circ, SECURITY_PARAM, 1);
+      
+      auto res = online_eval.evaluateCircuit(inputs);
+      return res;
+      
+    }));
+  }
+  int i = 0;
+  for (auto& p : parties) {
+    auto output = p.get();
+      if(i > 0) {
+        BOOST_TEST(output == exp_output);
+        std::cout<< output[0] << std::endl;
+        std::cout<< output[1] << std::endl;
+      }
+      i++;
+  }
+}
+
 
 BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   int nP = 10;
@@ -552,14 +617,15 @@ BOOST_AUTO_TEST_CASE(Multk_bool) {
   std::unordered_map<common::utils::wire_t, BoolRing> bit_mask_map(64);
   std::vector<AuthAddShare<BoolRing>> output_mask;
   std::vector<TPShare<BoolRing>>   output_tpmask;
-  BoolRing exp_output = 1;
+  // BoolRing exp_output = 1;
    for (size_t i = 0; i < 64; ++i) {
     input_map[i] = 1;
     input_pid_map[i] = 1;
     bit_mask_map[i] = 0;
-    exp_output *= input_map[i];
+    // exp_output *= input_map[i];
   }
   auto level_circ = circ.orderGatesByLevel();
+  auto exp_output = circ.evaluate(input_map);
   std::vector<std::future<std::vector<BoolRing>>> parties;
   parties.reserve(nP+1);
   for (int i = 0; i <= nP; ++i) {
@@ -583,7 +649,7 @@ BOOST_AUTO_TEST_CASE(Multk_bool) {
   for (auto& p : parties) {
     auto output = p.get();
       if(i > 0) {
-        BOOST_TEST(exp_output == output[0]);
+        BOOST_TEST(exp_output == output);
       }
       i++;
   }
@@ -601,10 +667,22 @@ BOOST_AUTO_TEST_CASE(PrefixAND) {
   std::vector<TPShare<BoolRing>>   output_tpmask;
   for(size_t i = 0; i < 2 * 64; i++) {
     input_pid_map[i] = 1;
-    inputs[i] = 1;
     bit_mask_map[i] = 0; 
+    inputs[i] = 1;
+  }
+  inputs[60] = 0;
+  inputs[62] = 0; 
+  std::vector<BoolRing> prod(64);
+  for(size_t i = 0; i < 64; i++) {
+    inputs[i + 64] = rand() % 2;
+    prod[i] = inputs[0];
+    for(size_t j = 0; j <= i; j++) {
+      prod[i] *= inputs[j];
+    }
   }
   auto level_circ = circ.orderGatesByLevel();
+  auto exp_output = circ.evaluate(inputs);
+  auto exp_out = inputs[124];
   std::vector<std::future<std::vector<BoolRing>>> parties;
   parties.reserve(nP+1);
   for (int i = 0; i <= nP; ++i) {
@@ -617,11 +695,17 @@ BOOST_AUTO_TEST_CASE(PrefixAND) {
       BoolEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
                                   level_circ);
       
-          auto res =  online_eval.evaluateCircuit(inputs);
-            
-      // auto res = online_eval.evaluateCircuit(inputs);
+      auto res =  online_eval.evaluateCircuit(inputs);
       return res;
     }));
+  }
+  int i = 0;
+  for (auto& p : parties) {
+    auto output = p.get();
+      if(i > 0) {
+        BOOST_TEST(exp_output == output);
+      }
+      i++;
   }
 }
 

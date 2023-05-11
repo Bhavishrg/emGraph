@@ -143,7 +143,7 @@ void OnlineEvaluator::eqzEvaluate(
         
         Field r_sum = 0;
         masked_b.push_back(output_share_val[i]);
-        // authaddshare(q_w) = - m_b * authaddshare(del_b) + authaddshare(del_w) + r_i
+        // authaddshare(q_w) = m_b * authaddshare(del_b) + authaddshare(del_w) + r_i
         if(id_ != 0) {
             std::vector<Field> r_eqz(nP_);
             for( int j = 0; j < nP_; j++)   {
@@ -168,7 +168,8 @@ void OnlineEvaluator::eqzEvaluate(
 void OnlineEvaluator::ltzEvaluate(
         const std::vector<common::utils::FIn1Gate>& ltz_gates,
         std::vector<Field>& ltz_nonTP, std::vector<Field>& r_ltz_pad,
-        std::vector<AuthAddShare<Field>>& q_share, std::vector<Field>& masked_b) {
+        std::vector<AuthAddShare<Field>>& q_share, std::vector<Field>& masked_b,
+        std::vector<Field>& d_dash) {
             
     auto num_ltz_gates = ltz_gates.size();
     std::vector<preprocg_ptr_t<BoolRing>*> vpreproc(num_ltz_gates);
@@ -185,34 +186,42 @@ void OnlineEvaluator::ltzEvaluate(
     }
     BoolEval bool_eval(id_, nP_, vpreproc, prefixAND_circ_);
     // Set the inputs.
+    d_dash.resize(num_ltz_gates);
     for (size_t i = 0; i < num_ltz_gates; ++i) {
+        d_dash[i] = 0;
         auto val_bits = bitDecompose(val[i]);
+        if(id_ != 0) {std::cout << "d's msb = " << val_bits[63] << std::endl;}
+        val_bits[63] = 0;
+        for(size_t j = 0; j < 64; j++) {
+            if(val_bits[j] == 1) {
+                d_dash[i] += pow(2, j);
+            }
+        }
         for (size_t j = 0; j < prefixAND_circ_.gates_by_level[0].size(); ++j) {
             const auto& gate = prefixAND_circ_.gates_by_level[0][j];
-            int inp_ctr = 0;
            if (gate->type == common::utils::GateType::kInp) {
-                if(inp_ctr < 64) {
-                    bool_eval.vwires[i][gate->out] = 1 - val_bits[j];
+                if(j < 64) {
+                    bool_eval.vwires[i][gate->out] = 1 - val_bits[63 - j];
                 }
                 else {
-                    bool_eval.vwires[i][gate->out] = val_bits[j];
+                    bool_eval.vwires[i][gate->out] = val_bits[127 - j];
                 }
             } 
         }
     }
     bool_eval.evaluateAllLevels(*network_);
     auto output_shares = bool_eval.getOutputShares();
-
+    
     // m_b
     std::vector<Field> output_share_val(num_ltz_gates); 
     for (size_t i = 0; i < num_ltz_gates; ++i) {
         if (output_shares[i][0].val()) {
-            output_share_val[i] = 0;
-        } else {
             output_share_val[i] = 1;
+        } else {
+            output_share_val[i] = 0;
         }
     }
-
+    if(id_ == 1) { std::cout<< "output_share_val = " << output_share_val[0] << std::endl;}
     // bit2A
     q_share.resize(num_ltz_gates);
     for (size_t i = 0; i < num_ltz_gates; ++i) {
@@ -241,8 +250,6 @@ void OnlineEvaluator::ltzEvaluate(
             ltz_nonTP.push_back(q_share[i].valueAt());
         }
     }
-
-
 }
 
 void OnlineEvaluator::evaluateGatesAtDepthPartySend(size_t depth, 
@@ -429,9 +436,14 @@ void OnlineEvaluator::evaluateGatesAtDepthPartySend(size_t depth,
                 }
                 break;
             }
+            case::common::utils::GateType::kAdd:
+            case::common::utils::GateType::kSub:
+            case::common::utils::GateType::kConstAdd:
+            case::common::utils::GateType::kConstMul: {
+                break;
+            }
 
             case::common::utils::GateType::kEqz: {
-                // eqzEvaluate(eqz_gates, eqz_nonTP, r_eqz_pad, eqz_q_share);
                 break;
             }
             case::common::utils::GateType::kLtz: {
@@ -452,7 +464,8 @@ void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth,
                                     std::vector<Field> eqz_all, std::vector<Field> r_eqz_pad, 
                                     std::vector<AuthAddShare<Field>> eqz_q_share, std::vector<Field> eqz_masked_b,
                                     std::vector<Field> ltz_all, std::vector<Field> r_ltz_pad, 
-                                    std::vector<AuthAddShare<Field>> ltz_q_share, std::vector<Field> ltz_masked_b) {
+                                    std::vector<AuthAddShare<Field>> ltz_q_share, std::vector<Field> ltz_masked_b, 
+                                    std::vector<Field> d_dash) {
     size_t idx_mult = 0;
     size_t idx_mult3 = 0;
     size_t idx_mult4 = 0;
@@ -538,9 +551,23 @@ void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth,
             case common::utils::GateType::kLtz: {
                 auto* g = static_cast<common::utils::FIn1Gate*>(gate.get());
                 if(id_ != 0) {
+                    auto* pre_ltz = static_cast<PreprocLtzGate<Field>*>(
+                                        preproc_.gates[g->out].get());
                     q_val_[g->out] = ltz_all[idx_ltz];
-                    wires_[g->out] = q_val_[g->out] - r_ltz_pad[idx_ltz];
-                    wires_[g->out] = ltz_masked_b[idx_ltz] - (2 * wires_[g->out]);
+                    // m_w
+                    auto m_w = q_val_[g->out] - r_ltz_pad[idx_ltz];
+                    // m_v
+                    auto m_v = ltz_masked_b[idx_ltz] - (2 * m_w);
+                    // m_x'
+                    auto m_lsb_x = d_dash[idx_ltz] + pow(2, 63) * m_v;
+                    // m_b
+                    wires_[g->out] = wires_[g->in] - m_lsb_x; 
+                    wires_[g->out] = wires_[g->out] * pow(2, -63);
+                    if(id_ == 1) {
+                        auto bits = bitDecompose(wires_[g->in]);
+                        std::cout << "m_x's msb = " << bits[63] << std::endl;
+                    }
+                    // wires_[g->out] = wires_[g->in] * pow(2, -63);
                     q_sh_[g->out] = ltz_q_share[idx_ltz];
                 }
                 idx_ltz++;
@@ -577,6 +604,7 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
     std::vector<Field> r_ltz_pad;
     std::vector<Field> eqz_masked_b;
     std::vector<Field> ltz_masked_b;
+    std::vector<Field> d_dash; 
 
     std::vector<common::utils::FIn1Gate> eqz_gates;
     std::vector<common::utils::FIn1Gate> ltz_gates;
@@ -643,7 +671,7 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                 break;
             }
             case::common::utils::GateType::kLtz: {
-                ltzEvaluate(ltz_gates, ltz_nonTP, r_ltz_pad, ltz_q_share, ltz_masked_b);
+                ltzEvaluate(ltz_gates, ltz_nonTP, r_ltz_pad, ltz_q_share, ltz_masked_b, d_dash);
                 break;
             }
         }
@@ -749,7 +777,7 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                                         mult4_all, r_mult4_pad,
                                         dotprod_all, r_dotprod_pad,
                                         eqz_all, r_eqz_pad, eqz_q_share, eqz_masked_b,
-                                        ltz_all, r_ltz_pad, ltz_q_share, ltz_masked_b);
+                                        ltz_all, r_ltz_pad, ltz_q_share, ltz_masked_b, d_dash);
         
     }
 }

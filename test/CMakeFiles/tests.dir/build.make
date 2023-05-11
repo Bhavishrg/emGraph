@@ -53,10 +53,10 @@ RM = /usr/local/Cellar/cmake/3.25.2/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2
+CMAKE_SOURCE_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2
+CMAKE_BINARY_DIR = /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent
 
 # Utility rule file for tests.
 
@@ -74,10 +74,10 @@ test/CMakeFiles/tests.dir/build: tests
 .PHONY : test/CMakeFiles/tests.dir/build
 
 test/CMakeFiles/tests.dir/clean:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test && $(CMAKE_COMMAND) -P CMakeFiles/tests.dir/cmake_clean.cmake
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/test && $(CMAKE_COMMAND) -P CMakeFiles/tests.dir/cmake_clean.cmake
 .PHONY : test/CMakeFiles/tests.dir/clean
 
 test/CMakeFiles/tests.dir/depend:
-	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test /Users/protikpaul/Desktop/TP_Aided_MPC/dirigentv2/test/CMakeFiles/tests.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/test /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/test /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/test/CMakeFiles/tests.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : test/CMakeFiles/tests.dir/depend
 

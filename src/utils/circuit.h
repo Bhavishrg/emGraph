@@ -25,7 +25,6 @@ enum GateType {
   kMul,
   kMul3,
   kMul4,
-  kMulK,
   kSub,
   kConstAdd,
   kConstMul,
@@ -534,45 +533,54 @@ class Circuit {
     std::vector<wire_t> inp_d(k);
     for (int i = 0; i < k; i++) {
       input[i] = circ.newInputWire();
+    }
+    for (int i = 0; i < k; i++) {
       inp_d[i] = circ.newInputWire();
     }
-    R zero = 0;
     
+    
+    R zero = 0;
+    R one = 1;
     std::vector<wire_t> leveli(k);
     leveli = std::move(input);
     
     
     for(size_t level = 1; level <= log(k)/log(4); level++) {
-        std::vector<wire_t> level_next(k);
+      std::vector<wire_t> level_next(k);
         
-        for(size_t j = 1; j <= k/pow(4, level); j++) {
+      for(size_t j = 1; j <= k/pow(4, level); j++) {
             
-            size_t p = (j-1) * pow(4, level);
-            size_t q = (j-1) * pow(4, level) + pow(4,level - 1);
-            size_t r = (j-1) * pow(4, level) + 2 * pow(4,level - 1);
-            size_t s = (j-1) * pow(4, level) + 3 * pow(4,level - 1);
+        size_t p = (j-1) * pow(4, level);
+        size_t q = (j-1) * pow(4, level) + pow(4,level - 1);
+        size_t r = (j-1) * pow(4, level) + 2 * pow(4,level - 1);
+        size_t s = (j-1) * pow(4, level) + 3 * pow(4,level - 1);
         
-            for(size_t i = 0; i < pow(4, level - 1); i++) {
-              // level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
-              level_next[p + i] = leveli[p+i];
-              level_next[q + i] = circ.addGate(GateType::kMul, leveli[q], leveli[q+i]);
-              level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q], leveli[r], leveli[r+i]);
-              level_next[s + i] = circ.addGate(GateType::kMul4, leveli[q], leveli[r], leveli[s], leveli[s+i]);
-              }
-          }
-          leveli = std::move(level_next);
+        for(size_t i = 0; i < pow(4, level - 1); i++) {
+          // level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
+          level_next[p + i] = leveli[p+i];
+          level_next[q + i] = circ.addGate(GateType::kMul, leveli[q], leveli[q+i]);
+          level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q], leveli[r], leveli[r+i]);
+          level_next[s + i] = circ.addGate(GateType::kMul4, leveli[q], leveli[r], leveli[s], leveli[s+i]);
+        }
       }
-    std::vector<wire_t> wz(k);
-    wz[0] = circ.addConstOpGate(GateType::kConstAdd, leveli[0], zero);
-    wz[1] = circ.addConstOpGate(GateType::kConstAdd, leveli[1], zero);
-    circ.setAsOutput(wz[1]);
-    for(size_t i = 2; i < k; i++) {
-      wz[i] = circ.addGate(GateType::kAdd, leveli[i], leveli[i-1]);
-      circ.setAsOutput(wz[i]);
+      leveli = std::move(level_next);
     }
-    wire_t wv;
-    wv = circ.addGate(GateType::kDotprod, wz, inp_d);
-    circ.setAsOutput(wv);
+    
+    std::vector<wire_t> wv(k);
+    for(size_t i = 0; i < k; i++) {
+      wv[i] = circ.addConstOpGate(GateType::kConstAdd, leveli[i], one);
+    }
+    std::vector<wire_t> wz(k);
+    wz[0] = circ.addConstOpGate(GateType::kConstMul, wv[0], zero);
+    wz[1] = circ.addConstOpGate(GateType::kConstAdd, wv[1], zero);
+    for(size_t i = 2; i < k; i++) {
+      wz[i] = circ.addGate(GateType::kAdd, wv[i], wv[i-1]);
+    }
+    wire_t wu;
+    wu = circ.addGate(GateType::kDotprod, wz, inp_d);
+    wire_t wnu;
+    wnu = circ.addConstOpGate(GateType::kConstAdd, wu, one);
+    circ.setAsOutput(wnu);
     return circ;
   }
 

@@ -52,7 +52,8 @@ class OnlineEvaluator {
         
         void ltzEvaluate(const std::vector<common::utils::FIn1Gate>& ltz_gates,
                           std::vector<Field>& ltz_nonTP, std::vector<Field>& r_ltz_pad,
-                          std::vector<AuthAddShare<Field>>& q_share, std::vector<Field>& masked_b);
+                          std::vector<AuthAddShare<Field>>& q_share, std::vector<Field>& masked_b,
+                          std::vector<Field>& d_dash);
 
         void evaluateGatesAtDepthPartySend(size_t depth, 
                                 std::vector<Field>& mult_nonTP, std::vector<Field>& r_mult_pad,
@@ -68,7 +69,8 @@ class OnlineEvaluator {
                                     std::vector<Field> eqz_all, std::vector<Field> r_eqz_pad, 
                                     std::vector<AuthAddShare<Field>> eqz_q_share, std::vector<Field> eqz_masked_b,
                                     std::vector<Field> ltz_all, std::vector<Field> r_ltz_pad, 
-                                    std::vector<AuthAddShare<Field>> ltz_q_share, std::vector<Field> ltz_masked_b);
+                                    std::vector<AuthAddShare<Field>> ltz_q_share, std::vector<Field> ltz_masked_b,
+                                    std::vector<Field> d_dash);
 
         void evaluateGatesAtDepth(size_t depth);
 

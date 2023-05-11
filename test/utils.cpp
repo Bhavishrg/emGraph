@@ -436,20 +436,30 @@ BOOST_DATA_TEST_CASE(PrefixAND,
   for (size_t i = 0; i < 2 * k; ++i) {
     input_map[i] = input[i];
   }
-
+  input[60] = 0;
+  input_map[60] = 0;
   auto output = circ.evaluate(input_map);
-  std::vector<BoolRing> exp_out(64, 1);
-  for(int j = 0; j <= k; ++j) {
+  std::vector<BoolRing> exp_out(64, 0);
+  for(int j = 0; j < k; ++j) {
     for (int i = 0; i <= j; ++i) {
       if(input[i] == 0){
-        exp_out[j] = 0;
+        exp_out[j] = 1;
       }
     }
   }
-  // BOOST_TEST(output == exp_out);
-  // for(int i = 0; i <= k; i++) {
-  //   // std::cout<<"output[" << i <<"] = " << output[i] << " || exp_out[" << i <<"] = " << exp_out[i] << std::endl;
+  std::vector<BoolRing> z(64, 0);
+  BoolRing out = 0;
+  for(size_t i = 1; i < k; i++) {
+    z[i] = exp_out[i] + exp_out[i-1];
+    out += input[i + 64] * z[i];
+  }
+  out = 1 - out;
+  
+  // for(int i = 0; i < k; i++) {
+  //   BOOST_TEST(output[i] == z[i]);
+  //   std::cout<<"output[" << i <<"] = " << output[i] << " || exp_out[" << i <<"] = " << exp_out[i] << std::endl;
   // }
+  BOOST_TEST(output[0] == out);
 }
 
 BOOST_AUTO_TEST_CASE(eqz) {

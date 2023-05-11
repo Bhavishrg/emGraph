@@ -189,20 +189,29 @@ struct PreprocLtzGate : public PreprocGate<R> {
   AuthAddShare<R> r_val;
   TPShare<R> tpr_val;
 
+  AuthAddShare<R> mask_b;
+  TPShare<R> tpmask_b;
+
   AuthAddShare<R> mask_w;
   TPShare<R> tpmask_w;
 
-  AuthAddShare<R> mask_b;
-  TPShare<R> tpmask_b;
+  AuthAddShare<R> mask_v;
+  TPShare<R> tpmask_v;
+
+  AuthAddShare<R> mask_out;
+  TPShare<R> tpmask_out;
 
   std::vector<preprocg_ptr_t<BoolRing>> PrefixAND_gates;
 
   PreprocLtzGate() = default;
-  PreprocLtzGate(AuthAddShare<R> mask_w, TPShare<R> tpmask_w,
+  PreprocLtzGate(AuthAddShare<R> mask_out, TPShare<R> tpmask_out,
+                 AuthAddShare<R> mask_v, TPShare<R> tpmask_v,
+                 AuthAddShare<R> mask_w, TPShare<R> tpmask_w,
                  AuthAddShare<R> mask_b, TPShare<R> tpmask_b,
                  AuthAddShare<R> r_val, TPShare<R> tpr_val,
                  std::vector<preprocg_ptr_t<BoolRing>> PrefixAND_gates, R padded_val)
-    : PreprocGate<R>((mask_w * ( pow(2, 63) ) - r_val ), (tpmask_w * ( pow(2, 63) ) - tpr_val )),
+    : PreprocGate<R>((mask_out), (tpmask_out)),
+      mask_v(mask_v), tpmask_v(tpmask_v),
       mask_w(mask_w), tpmask_w(tpmask_w),
       mask_b(mask_b), tpmask_b(tpmask_b),
       r_val(r_val), tpr_val(tpr_val),
