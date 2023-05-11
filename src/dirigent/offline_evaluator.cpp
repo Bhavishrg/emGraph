@@ -762,11 +762,14 @@ void OfflineEvaluator::setWireMasksParty(
           Field padded_val;
           rgen_.all().random_data(&padded_val, sizeof(Field));
 
-          // TP obtains $r = padded_val + delta_x
+          // TP obtains $r = padded_val - delta_x
           Field r_value = 0;
           if(id_ == 0) {
             r_value = padded_val + preproc_.gates[ltz_g->in]->tpmask.secret();
           }
+
+         // c = r - del_x
+         // r = c + del_x
 
           
 
@@ -774,7 +777,6 @@ void OfflineEvaluator::setWireMasksParty(
           // TP bit decomposes r and shares it's bits
           if(id_ == 0) { 
             r_bits = bitDecompose(r_value);
-            std::cout << "r_value's msb = " << r_bits[63] << std::endl;
             r_bits[63] = 0;
 
             r_value = 0;
@@ -1110,6 +1112,9 @@ void OfflineEvaluator::setWireMasksParty(
           AuthAddShare<Field> mask_w;
           TPShare<Field> tpmask_w;
           randomShare(nP_, id_, rgen_, *network_, mask_w, tpmask_w, key, keySh, rand_sh, idx_rand_sh);
+          // b = m_b xor del_b = m_b + del_b - 2 m_b del_b
+          // del^A_b = - 2 del_w - del_b
+          // m^A_b = m_b - 2 m_w
 
           AuthAddShare<Field> mask_v;
           TPShare<Field> tpmask_v;
@@ -1121,17 +1126,17 @@ void OfflineEvaluator::setWireMasksParty(
           AuthAddShare<Field> mask_out;
           TPShare<Field> tpmask_out;
 
-          mask_out = preproc_.gates[ltz_g->in]->mask - r_val - mask_v * pow(2,63);
+          // del_x - del_x'
+          // del_x' = -r' + 2^63 * del_v
+          // del_b = (del_x + r' - 2^63 * del_v) * 2^(-63)
+
+          mask_out = preproc_.gates[ltz_g->in]->mask + r_val - mask_v * pow(2,63);
           mask_out = mask_out * pow(2, -63);
-          tpmask_out = preproc_.gates[ltz_g->in]->tpmask - tpr_val - tpmask_v * pow(2,63);
+          tpmask_out = preproc_.gates[ltz_g->in]->tpmask + tpr_val - tpmask_v * pow(2,63);
           tpmask_out = tpmask_out * pow(2, -63);
-          if(id_ == 0) {
-            std::cout << "mask_out = " << tpmask_out.secret() << std::endl;
-            auto bits = bitDecompose(preproc_.gates[ltz_g->in]->tpmask.secret());
-            std::cout << "mask_in's msb = " << bits[63] << std::endl;
-          }
           mask_out = preproc_.gates[ltz_g->in]->mask * pow(2, -63);
           tpmask_out = preproc_.gates[ltz_g->in]->tpmask * pow(2, -63);
+
 
           preproc_.gates[ltz_g->out] = std::make_unique<PreprocLtzGate<Field>>
                                            (mask_out, tpmask_out,

@@ -480,6 +480,52 @@ BOOST_AUTO_TEST_CASE(eqz) {
   }
 }
 
+BOOST_AUTO_TEST_CASE(ltz) {
+  Circuit<uint64_t> circ;
+  auto wa = circ.newInputWire();
+  auto wq = circ.addGate(GateType::kLtz, wa);
+  auto wb = circ.addConstOpGate(GateType::kConstMul, wa, -1);
+  auto wc = circ.addGate(GateType::kLtz, wb);
+  circ.setAsOutput(wq);
+  circ.setAsOutput(wb);
+  circ.setAsOutput(wc);
+  int input_a = 100;
+  for(int i = 0; i < 2; i++) {
+    auto output = circ.evaluate({{wa, input_a}});
+    BOOST_TEST(output[0] == 0);
+    BOOST_TEST(output[1] == -100);
+    BOOST_TEST(output[2] == 1);
+  }
+}
+
+
+BOOST_AUTO_TEST_CASE(auction) {
+  int N = 5;
+  int p = 1;
+  while(p < N) {
+    p *= 2;
+  }
+  N = p;
+  Circuit<uint64_t> circ = Circuit<uint64_t>::generateAuction(N);
+  std::vector<std::vector<uint64_t>> input(N+1, std::vector<uint64_t>(N));
+  input[0] = { 0, 1, 0, 0, 0, 0, 0, 0};
+  input[1] = { 1, 0, 0, 0, 0, 0, 0, 0};
+  input[2] = { 0, 0, 1, 0, 0, 0, 0, 0};
+  input[3] = { 0, 0, 0, 0, 1, 0, 0, 0};
+  input[4] = { 0, 0, 0, 1, 0, 0, 0, 0};
+  input[5] = { 0, 0, 0, 0, 0, 1, 0, 0};
+  input[6] = { 0, 0, 0, 0, 0, 0, 0, 1};
+  input[7] = { 0, 0, 0, 0, 0, 0, 1, 0};
+  input[8] = { 34, 65, 37, 39, 76, 44, 12, 67};
+  std::unordered_map<wire_t, uint64_t>input_map;
+  for(int i = 0; i <= N; i++) {
+    for(int j = 0; j < N; j++) {
+      input_map[N * i + j] = input[i][j];
+    }
+  }
+  auto output = circ.evaluate(input_map);
+  BOOST_TEST(output[0] == 76);
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

@@ -190,7 +190,6 @@ void OnlineEvaluator::ltzEvaluate(
     for (size_t i = 0; i < num_ltz_gates; ++i) {
         d_dash[i] = 0;
         auto val_bits = bitDecompose(val[i]);
-        if(id_ != 0) {std::cout << "d's msb = " << val_bits[63] << std::endl;}
         val_bits[63] = 0;
         for(size_t j = 0; j < 64; j++) {
             if(val_bits[j] == 1) {
@@ -221,7 +220,7 @@ void OnlineEvaluator::ltzEvaluate(
             output_share_val[i] = 0;
         }
     }
-    if(id_ == 1) { std::cout<< "output_share_val = " << output_share_val[0] << std::endl;}
+
     // bit2A
     q_share.resize(num_ltz_gates);
     for (size_t i = 0; i < num_ltz_gates; ++i) {
@@ -563,11 +562,7 @@ void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth,
                     // m_b
                     wires_[g->out] = wires_[g->in] - m_lsb_x; 
                     wires_[g->out] = wires_[g->out] * pow(2, -63);
-                    if(id_ == 1) {
-                        auto bits = bitDecompose(wires_[g->in]);
-                        std::cout << "m_x's msb = " << bits[63] << std::endl;
-                    }
-                    // wires_[g->out] = wires_[g->in] * pow(2, -63);
+                    
                     q_sh_[g->out] = ltz_q_share[idx_ltz];
                 }
                 idx_ltz++;

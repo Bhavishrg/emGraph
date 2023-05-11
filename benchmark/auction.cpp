@@ -15,39 +15,6 @@ using namespace dirigent;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-common::utils::Circuit<Field> ShuffleCircuit(int N) {
-    common::utils::Circuit<Field> circ;
-    std::vector<std::vector<common::utils::wire_t>> 
-            M_pi(N, std::vector<common::utils::wire_t>(N));
-    std::vector<common::utils::wire_t> x(N);
-    for(size_t i = 0; i < N; i++) {
-        for(size_t j = 0; j < N; j++) {
-            M_pi[i][j] = circ.newInputWire();
-        }
-        x[i] = circ.newInputWire();
-    }
-    std::vector<common::utils::wire_t> pi_x(N);
-    for(int i = 0; i < N; i++) {
-        pi_x[i] = circ.addGate(common::utils::GateType::kDotprod, M_pi[i], x);
-        circ.setAsOutput(pi_x[i]);
-    }
-    return circ;  
-}
-
-common::utils::Circuit<Field> BitACircuit(int N) {
-    common::utils::Circuit<Field> circ;
-    std::vector<common::utils::wire_t> inp(N);
-    std::vector<common::utils::wire_t> bita(N);
-    for(size_t i = 0; i < N; i++) {
-        inp[i] = circ.newInputWire();
-    }
-    for(size_t i = 0; i < N-1; i++) {
-        bita[i] = circ.addGate(common::utils::GateType::kMul, inp[i], inp[i+1]);
-    }
-    bita[N-1] = circ.addGate(common::utils::GateType::kMul, inp[N-1], inp[0]);
-    return circ;
-}
-
 
 void benchmark(const bpo::variables_map& opts) {
     bool save_output = false;
@@ -111,51 +78,28 @@ void benchmark(const bpo::variables_map& opts) {
     while (p < nP) {
         p *= 2;
     }
-    std::vector<common::utils::LevelOrderedCircuit> circ(log(p)/log(2));
-    std::vector<common::utils::LevelOrderedCircuit> bita_circ(log(p)/log(2));
-    int rep = p/2;
-    for(int i = 0; i < log(p)/log(2); i++) {
-        circ[i] = common::utils::Circuit<BoolRing>::generateParaPrefixAND(rep).orderGatesByLevel();
-        bita_circ[i] = BitACircuit(rep).orderGatesByLevel();
-        rep = rep/2;
-    }
-    auto shuff_circ = ShuffleCircuit(p).orderGatesByLevel();
-    std::unordered_map<common::utils::wire_t, int> shuff_input_pid_map;
-    std::unordered_map<common::utils::wire_t, Field> shuff_input_map;
-    for (const auto& g : shuff_circ.gates_by_level[0]) {
+    common::utils::LevelOrderedCircuit auc_circ = common::utils::Circuit<Field>::generateAuction(p).orderGatesByLevel();
+    std::unordered_map<common::utils::wire_t, int> input_pid_map;
+    std::unordered_map<common::utils::wire_t, Field> input_map;
+    for (const auto& g : auc_circ.gates_by_level[0]) {
+        int inp_ctr = 0;
         if (g->type == common::utils::GateType::kInp) {
-            shuff_input_pid_map[g->out] = 1;
-            shuff_input_map[g->out] = 5;
+            if(inp_ctr < p*p) {
+                input_pid_map[g->out] = 0;
+                input_map[g->out] = 5;
+            }
+            else {
+                input_pid_map[g->out] = 0;
+                input_map[g->out] = 5;
+            }
         }
     }
+    
 
     for(int i = 0; i < log(p)/log(2); i++) {
         std::cout << "--- Circuit ---\n";
-        std::cout << circ[i] << std::endl;
+        std::cout << auc_circ << std::endl;
     }
-        std::unordered_map<common::utils::wire_t, int> input_pid_map;
-        std::unordered_map<common::utils::wire_t, BoolRing> input_map;
-        std::unordered_map<common::utils::wire_t, BoolRing> bit_mask_map;
-        std::vector<AuthAddShare<BoolRing>> output_mask;
-        std::vector<TPShare<BoolRing>>   output_tpmask;
-
-        std::unordered_map<common::utils::wire_t, int> bita_input_pid_map;
-        std::unordered_map<common::utils::wire_t, Field> bita_input_map;
-        for(int i = 0; i < log(p)/log(2); i++) {
-            for (const auto& g : circ[i].gates_by_level[0]) {
-                if (g->type == common::utils::GateType::kInp) {
-                    input_pid_map[g->out] = 1;
-                    input_map[g->out] = 1;
-                    bit_mask_map[g->out] = 0;
-                }
-            }
-            for (const auto& g : bita_circ[i].gates_by_level[0]) {
-                if (g->type == common::utils::GateType::kInp) {
-                    bita_input_pid_map[g->out] = 1;
-                    bita_input_map[g->out] = 5;
-                }
-            }
-        }
 
     emp::PRG prg(&emp::zero_block, seed);
     
@@ -166,38 +110,12 @@ void benchmark(const bpo::variables_map& opts) {
         
         StatsPoint start(*network);
 
-        OfflineEvaluator shuff_off_eval(nP, pid, network, shuff_circ, security_param, threads, seed);
-        auto shuff_preproc = shuff_off_eval.run(shuff_input_pid_map);
-        OnlineEvaluator shuff_eval(nP, pid, network, std::move(shuff_preproc), shuff_circ, 
+        OfflineEvaluator off_eval(nP, pid, network, auc_circ, security_param, threads, seed);
+        auto auc_preproc = off_eval.run(input_pid_map);
+        OnlineEvaluator eval(nP, pid, network, std::move(auc_preproc), auc_circ, 
                     security_param, threads, seed);
-        auto res = shuff_eval.evaluateCircuit(shuff_input_map);
+        auto res = eval.evaluateCircuit(input_map);
 
-        for(int i = 0; i < log(p)/log(2); i++) {
-        OfflineBoolEvaluator off_eval(nP, pid, network, circ[i], seed);
-        
-        auto preproc = off_eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);
-        // StatsPoint end_pre(*network);
-        
-        BoolEvaluator eval(nP, pid, network, std::move(preproc), circ[i], seed);
-
-        
-        
-        eval.setRandomInputs();
-        
-        // network->sync();
-        
-        // StatsPoint start(*network);
-        for (size_t d = 0; d < circ[i].gates_by_level.size(); ++d) {
-            eval.evaluateGatesAtDepth(d);
-            
-        }
-        OfflineEvaluator bita_off_eval(nP, pid, network, bita_circ[i], security_param, threads, seed);
-        auto bita_preproc = bita_off_eval.run(bita_input_pid_map);
-        OnlineEvaluator bita_eval(nP, pid, network, std::move(bita_preproc), bita_circ[i], 
-                    security_param, threads, seed);
-        auto res = bita_eval.evaluateCircuit(bita_input_map);
-        // auto res = eval.evaluateCircuit(input_map);
-        }
         StatsPoint end(*network);
         auto rbench = end - start;
         output_data["benchmarks"].push_back(rbench);

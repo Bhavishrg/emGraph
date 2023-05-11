@@ -211,7 +211,7 @@ BOOST_AUTO_TEST_CASE(LTZ) {
     // inputs[winp] = 4;
     // inputs[winp] = -4;
   }
-  inputs[0] = 4;
+  inputs[0] = -40;
   inputs[1] = -4;
   auto w_ltz =
      circ.addGate(common::utils::GateType::kLtz, input_wires[0]);
@@ -245,8 +245,6 @@ BOOST_AUTO_TEST_CASE(LTZ) {
     auto output = p.get();
       if(i > 0) {
         BOOST_TEST(output == exp_output);
-        std::cout<< output[0] << std::endl;
-        std::cout<< output[1] << std::endl;
       }
       i++;
   }

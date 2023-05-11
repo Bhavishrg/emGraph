@@ -767,5 +767,49 @@ class Circuit {
     circ.setAsOutput(msb);
     return circ;
   }
+
+  static Circuit generateAuction(int N) {
+    Circuit circ;
+    // shuffle
+    std::vector<std::vector<wire_t>> M_pi(N, std::vector<wire_t>(N));
+    std::vector<wire_t> x(N);
+    for(size_t i = 0; i < N; i++) {
+        for(size_t j = 0; j < N; j++) {
+            M_pi[i][j] = circ.newInputWire();
+        }
+    }
+    for(size_t i = 0; i < N; i++) {
+      x[i] = circ.newInputWire();
+    }
+    std::vector<wire_t> pi_x(N);
+    for(int i = 0; i < N; i++) {
+        pi_x[i] = circ.addGate(GateType::kDotprod, M_pi[i], x);
+        
+    }
+    std::vector<wire_t> leveli(N);
+    leveli = std::move(pi_x);
+
+    R neg_one = -1;
+    R one = 1;
+
+    int bound = log(N)/log(2);
+    
+    // comparison
+    for(int level = 1; level <= bound; level++) {
+      std::vector<wire_t> level_next(N/pow(2,level));
+      for(int i = 0; i < N/pow(2, level); i++) {
+        auto temp1 = circ.addGate(GateType::kSub, leveli[2*i], leveli[2*i + 1]);
+        auto temp2 = circ.addGate(GateType::kLtz, temp1);
+        auto temp3 = circ.addConstOpGate(GateType::kConstMul, temp2, neg_one);
+        auto temp4 = circ.addConstOpGate(GateType::kConstAdd, temp3, one);
+        auto temp5 = circ.addGate(GateType::kMul, temp4, temp1);
+        level_next[i] = circ.addGate(GateType::kAdd, temp5, leveli[2*i + 1]);
+      }
+      leveli.resize(N/pow(2,level));
+      leveli = std::move(level_next);
+    }
+    circ.setAsOutput(leveli[0]);
+    return circ;
+  }
 };
 };  // namespace common::utils
