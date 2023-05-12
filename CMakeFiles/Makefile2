@@ -85,6 +85,7 @@ clean: test/clean
 
 # Recursive "all" directory target.
 benchmark/all: benchmark/CMakeFiles/Darkpool_VM.dir/all
+benchmark/all: benchmark/CMakeFiles/emulated_CDA.dir/all
 benchmark/all: benchmark/CMakeFiles/Darkpool_CDA.dir/all
 benchmark/all: benchmark/CMakeFiles/auction.dir/all
 benchmark/all: benchmark/CMakeFiles/LTZ.dir/all
@@ -105,6 +106,7 @@ benchmark/preinstall:
 
 # Recursive "clean" directory target.
 benchmark/clean: benchmark/CMakeFiles/Darkpool_VM.dir/clean
+benchmark/clean: benchmark/CMakeFiles/emulated_CDA.dir/clean
 benchmark/clean: benchmark/CMakeFiles/Darkpool_CDA.dir/clean
 benchmark/clean: benchmark/CMakeFiles/auction.dir/clean
 benchmark/clean: benchmark/CMakeFiles/LTZ.dir/clean
@@ -212,6 +214,32 @@ Darkpool_VM: benchmark/CMakeFiles/Darkpool_VM.dir/rule
 benchmark/CMakeFiles/Darkpool_VM.dir/clean:
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_VM.dir/build.make benchmark/CMakeFiles/Darkpool_VM.dir/clean
 .PHONY : benchmark/CMakeFiles/Darkpool_VM.dir/clean
+
+#=============================================================================
+# Target rules for target benchmark/CMakeFiles/emulated_CDA.dir
+
+# All Build rule for target.
+benchmark/CMakeFiles/emulated_CDA.dir/all: src/CMakeFiles/QuadSquad.dir/all
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/emulated_CDA.dir/build.make benchmark/CMakeFiles/emulated_CDA.dir/depend
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/emulated_CDA.dir/build.make benchmark/CMakeFiles/emulated_CDA.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=39,40,41 "Built target emulated_CDA"
+.PHONY : benchmark/CMakeFiles/emulated_CDA.dir/all
+
+# Build rule for subdir invocation for target.
+benchmark/CMakeFiles/emulated_CDA.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles 17
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/emulated_CDA.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles 0
+.PHONY : benchmark/CMakeFiles/emulated_CDA.dir/rule
+
+# Convenience name for target.
+emulated_CDA: benchmark/CMakeFiles/emulated_CDA.dir/rule
+.PHONY : emulated_CDA
+
+# clean rule for target.
+benchmark/CMakeFiles/emulated_CDA.dir/clean:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/emulated_CDA.dir/build.make benchmark/CMakeFiles/emulated_CDA.dir/clean
+.PHONY : benchmark/CMakeFiles/emulated_CDA.dir/clean
 
 #=============================================================================
 # Target rules for target benchmark/CMakeFiles/Darkpool_CDA.dir
@@ -402,7 +430,7 @@ benchmark/CMakeFiles/dirigent_offline.dir/clean:
 benchmark/CMakeFiles/online_mpc.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_mpc.dir/build.make benchmark/CMakeFiles/online_mpc.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_mpc.dir/build.make benchmark/CMakeFiles/online_mpc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=49,50,51 "Built target online_mpc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=52,53,54 "Built target online_mpc"
 .PHONY : benchmark/CMakeFiles/online_mpc.dir/all
 
 # Build rule for subdir invocation for target.
@@ -428,7 +456,7 @@ benchmark/CMakeFiles/online_mpc.dir/clean:
 benchmark/CMakeFiles/online_nn.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_nn.dir/build.make benchmark/CMakeFiles/online_nn.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_nn.dir/build.make benchmark/CMakeFiles/online_nn.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=52,53,54 "Built target online_nn"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=55,56,57 "Built target online_nn"
 .PHONY : benchmark/CMakeFiles/online_nn.dir/all
 
 # Build rule for subdir invocation for target.
@@ -454,7 +482,7 @@ benchmark/CMakeFiles/online_nn.dir/clean:
 benchmark/CMakeFiles/offline_mpc_tp.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_tp.dir/build.make benchmark/CMakeFiles/offline_mpc_tp.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_tp.dir/build.make benchmark/CMakeFiles/offline_mpc_tp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=44,45,46 "Built target offline_mpc_tp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=47,48,49 "Built target offline_mpc_tp"
 .PHONY : benchmark/CMakeFiles/offline_mpc_tp.dir/all
 
 # Build rule for subdir invocation for target.
@@ -480,7 +508,7 @@ benchmark/CMakeFiles/offline_mpc_tp.dir/clean:
 benchmark/CMakeFiles/offline_mpc_sub.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_sub.dir/build.make benchmark/CMakeFiles/offline_mpc_sub.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_sub.dir/build.make benchmark/CMakeFiles/offline_mpc_sub.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=41,42,43 "Built target offline_mpc_sub"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=44,45,46 "Built target offline_mpc_sub"
 .PHONY : benchmark/CMakeFiles/offline_mpc_sub.dir/all
 
 # Build rule for subdir invocation for target.
@@ -506,7 +534,7 @@ benchmark/CMakeFiles/offline_mpc_sub.dir/clean:
 benchmark/CMakeFiles/sodo_gridlock_iter.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/sodo_gridlock_iter.dir/build.make benchmark/CMakeFiles/sodo_gridlock_iter.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/sodo_gridlock_iter.dir/build.make benchmark/CMakeFiles/sodo_gridlock_iter.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=61,62,63 "Built target sodo_gridlock_iter"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=64,65,66 "Built target sodo_gridlock_iter"
 .PHONY : benchmark/CMakeFiles/sodo_gridlock_iter.dir/all
 
 # Build rule for subdir invocation for target.
@@ -530,6 +558,7 @@ benchmark/CMakeFiles/sodo_gridlock_iter.dir/clean:
 
 # All Build rule for target.
 benchmark/CMakeFiles/benchmarks.dir/all: benchmark/CMakeFiles/Darkpool_VM.dir/all
+benchmark/CMakeFiles/benchmarks.dir/all: benchmark/CMakeFiles/emulated_CDA.dir/all
 benchmark/CMakeFiles/benchmarks.dir/all: benchmark/CMakeFiles/Darkpool_CDA.dir/all
 benchmark/CMakeFiles/benchmarks.dir/all: benchmark/CMakeFiles/auction.dir/all
 benchmark/CMakeFiles/benchmarks.dir/all: benchmark/CMakeFiles/LTZ.dir/all
@@ -549,7 +578,7 @@ benchmark/CMakeFiles/benchmarks.dir/all: benchmark/CMakeFiles/sodo_gridlock_iter
 
 # Build rule for subdir invocation for target.
 benchmark/CMakeFiles/benchmarks.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles 53
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles 56
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/benchmarks.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles 0
 .PHONY : benchmark/CMakeFiles/benchmarks.dir/rule
@@ -570,7 +599,7 @@ benchmark/CMakeFiles/benchmarks.dir/clean:
 test/CMakeFiles/io_test.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/io_test.dir/build.make test/CMakeFiles/io_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/io_test.dir/build.make test/CMakeFiles/io_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=39,40 "Built target io_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=42,43 "Built target io_test"
 .PHONY : test/CMakeFiles/io_test.dir/all
 
 # Build rule for subdir invocation for target.
@@ -596,7 +625,7 @@ test/CMakeFiles/io_test.dir/clean:
 test/CMakeFiles/sharing_test.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/sharing_test.dir/build.make test/CMakeFiles/sharing_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/sharing_test.dir/build.make test/CMakeFiles/sharing_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=59,60 "Built target sharing_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=62,63 "Built target sharing_test"
 .PHONY : test/CMakeFiles/sharing_test.dir/all
 
 # Build rule for subdir invocation for target.
@@ -622,7 +651,7 @@ test/CMakeFiles/sharing_test.dir/clean:
 test/CMakeFiles/utils_test.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/utils_test.dir/build.make test/CMakeFiles/utils_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/utils_test.dir/build.make test/CMakeFiles/utils_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=64,65 "Built target utils_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=67,68 "Built target utils_test"
 .PHONY : test/CMakeFiles/utils_test.dir/all
 
 # Build rule for subdir invocation for target.
@@ -648,7 +677,7 @@ test/CMakeFiles/utils_test.dir/clean:
 test/CMakeFiles/rand_test.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/rand_test.dir/build.make test/CMakeFiles/rand_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/rand_test.dir/build.make test/CMakeFiles/rand_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=57,58 "Built target rand_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=60,61 "Built target rand_test"
 .PHONY : test/CMakeFiles/rand_test.dir/all
 
 # Build rule for subdir invocation for target.
@@ -674,7 +703,7 @@ test/CMakeFiles/rand_test.dir/clean:
 test/CMakeFiles/offline_test.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/offline_test.dir/build.make test/CMakeFiles/offline_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/offline_test.dir/build.make test/CMakeFiles/offline_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=47,48 "Built target offline_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=50,51 "Built target offline_test"
 .PHONY : test/CMakeFiles/offline_test.dir/all
 
 # Build rule for subdir invocation for target.
@@ -700,7 +729,7 @@ test/CMakeFiles/offline_test.dir/clean:
 test/CMakeFiles/online_test.dir/all: src/CMakeFiles/QuadSquad.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/online_test.dir/build.make test/CMakeFiles/online_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=55,56 "Built target online_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=58,59 "Built target online_test"
 .PHONY : test/CMakeFiles/online_test.dir/all
 
 # Build rule for subdir invocation for target.

@@ -141,6 +141,20 @@ Darkpool_VM/fast:
 .PHONY : Darkpool_VM/fast
 
 # Convenience name for target.
+benchmark/CMakeFiles/emulated_CDA.dir/rule:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/emulated_CDA.dir/rule
+.PHONY : benchmark/CMakeFiles/emulated_CDA.dir/rule
+
+# Convenience name for target.
+emulated_CDA: benchmark/CMakeFiles/emulated_CDA.dir/rule
+.PHONY : emulated_CDA
+
+# fast build rule for target.
+emulated_CDA/fast:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/emulated_CDA.dir/build.make benchmark/CMakeFiles/emulated_CDA.dir/build
+.PHONY : emulated_CDA/fast
+
+# Convenience name for target.
 benchmark/CMakeFiles/Darkpool_CDA.dir/rule:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/Darkpool_CDA.dir/rule
 .PHONY : benchmark/CMakeFiles/Darkpool_CDA.dir/rule
@@ -514,6 +528,30 @@ dirigent_online.cpp.s:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_online.dir/build.make benchmark/CMakeFiles/dirigent_online.dir/dirigent_online.cpp.s
 .PHONY : dirigent_online.cpp.s
 
+emulated_CDA.o: emulated_CDA.cpp.o
+.PHONY : emulated_CDA.o
+
+# target to build an object file
+emulated_CDA.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/emulated_CDA.dir/build.make benchmark/CMakeFiles/emulated_CDA.dir/emulated_CDA.cpp.o
+.PHONY : emulated_CDA.cpp.o
+
+emulated_CDA.i: emulated_CDA.cpp.i
+.PHONY : emulated_CDA.i
+
+# target to preprocess a source file
+emulated_CDA.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/emulated_CDA.dir/build.make benchmark/CMakeFiles/emulated_CDA.dir/emulated_CDA.cpp.i
+.PHONY : emulated_CDA.cpp.i
+
+emulated_CDA.s: emulated_CDA.cpp.s
+.PHONY : emulated_CDA.s
+
+# target to generate assembly for a file
+emulated_CDA.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/emulated_CDA.dir/build.make benchmark/CMakeFiles/emulated_CDA.dir/emulated_CDA.cpp.s
+.PHONY : emulated_CDA.cpp.s
+
 offline_mpc_sub.o: offline_mpc_sub.cpp.o
 .PHONY : offline_mpc_sub.o
 
@@ -640,6 +678,7 @@ utils.o: utils.cpp.o
 # target to build an object file
 utils.cpp.o:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_VM.dir/build.make benchmark/CMakeFiles/Darkpool_VM.dir/utils.cpp.o
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/emulated_CDA.dir/build.make benchmark/CMakeFiles/emulated_CDA.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_CDA.dir/build.make benchmark/CMakeFiles/Darkpool_CDA.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/utils.cpp.o
@@ -660,6 +699,7 @@ utils.i: utils.cpp.i
 # target to preprocess a source file
 utils.cpp.i:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_VM.dir/build.make benchmark/CMakeFiles/Darkpool_VM.dir/utils.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/emulated_CDA.dir/build.make benchmark/CMakeFiles/emulated_CDA.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_CDA.dir/build.make benchmark/CMakeFiles/Darkpool_CDA.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/utils.cpp.i
@@ -680,6 +720,7 @@ utils.s: utils.cpp.s
 # target to generate assembly for a file
 utils.cpp.s:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_VM.dir/build.make benchmark/CMakeFiles/Darkpool_VM.dir/utils.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/emulated_CDA.dir/build.make benchmark/CMakeFiles/emulated_CDA.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/Darkpool_CDA.dir/build.make benchmark/CMakeFiles/Darkpool_CDA.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/auction.dir/build.make benchmark/CMakeFiles/auction.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/utils.cpp.s
@@ -712,6 +753,7 @@ help:
 	@echo "... dirigent_mpc"
 	@echo "... dirigent_offline"
 	@echo "... dirigent_online"
+	@echo "... emulated_CDA"
 	@echo "... offline_mpc_sub"
 	@echo "... offline_mpc_tp"
 	@echo "... online_mpc"
@@ -741,6 +783,9 @@ help:
 	@echo "... dirigent_online.o"
 	@echo "... dirigent_online.i"
 	@echo "... dirigent_online.s"
+	@echo "... emulated_CDA.o"
+	@echo "... emulated_CDA.i"
+	@echo "... emulated_CDA.s"
 	@echo "... offline_mpc_sub.o"
 	@echo "... offline_mpc_sub.i"
 	@echo "... offline_mpc_sub.s"

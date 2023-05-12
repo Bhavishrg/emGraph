@@ -153,6 +153,19 @@ Darkpool_VM/fast:
 .PHONY : Darkpool_VM/fast
 
 #=============================================================================
+# Target rules for targets named emulated_CDA
+
+# Build rule for target.
+emulated_CDA: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emulated_CDA
+.PHONY : emulated_CDA
+
+# fast build rule for target.
+emulated_CDA/fast:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/emulated_CDA.dir/build.make benchmark/CMakeFiles/emulated_CDA.dir/build
+.PHONY : emulated_CDA/fast
+
+#=============================================================================
 # Target rules for targets named Darkpool_CDA
 
 # Build rule for target.
@@ -432,6 +445,7 @@ help:
 	@echo "... dirigent_mpc"
 	@echo "... dirigent_offline"
 	@echo "... dirigent_online"
+	@echo "... emulated_CDA"
 	@echo "... io_test"
 	@echo "... offline_mpc_sub"
 	@echo "... offline_mpc_tp"

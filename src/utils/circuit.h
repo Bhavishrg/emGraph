@@ -811,5 +811,10 @@ class Circuit {
     circ.setAsOutput(leveli[0]);
     return circ;
   }
+
+  static Circuit generateCDA(int M, int N) {
+    Circuit circ;
+    return circ;
+  }
 };
 };  // namespace common::utils
