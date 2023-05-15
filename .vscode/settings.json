@@ -81,6 +81,7 @@
         "*.ipp": "cpp",
         "filesystem": "cpp",
         "__verbose_abort": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "__memory": "cpp"
     }
 }

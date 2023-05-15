@@ -122,7 +122,7 @@ void OnlineEvaluator::eqzEvaluate(
             } 
         }
      }
-     bool_eval.evaluateAllLevels(*network_);
+     bool_eval.evaluateAllLevels(*network_, *tpool_);
      auto output_shares = bool_eval.getOutputShares();
      
      // m_b
@@ -175,7 +175,7 @@ void OnlineEvaluator::ltzEvaluate(
     std::vector<preprocg_ptr_t<BoolRing>*> vpreproc(num_ltz_gates);
     std::vector<Field> val(num_ltz_gates);
 
-    std::vector<common::utils::wire_t> win(num_ltz_gates);
+    // std::vector<common::utils::wire_t> win(num_ltz_gates);
     for (size_t i = 0; i < num_ltz_gates; ++i) {
         auto* pre_ltz = static_cast<PreprocLtzGate<Field>*>(
                     preproc_.gates[ltz_gates[i].out].get());
@@ -208,7 +208,7 @@ void OnlineEvaluator::ltzEvaluate(
             } 
         }
     }
-    bool_eval.evaluateAllLevels(*network_);
+    bool_eval.evaluateAllLevels(*network_, *tpool_);
     auto output_shares = bool_eval.getOutputShares();
     
     // m_b
@@ -651,20 +651,13 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
     size_t total_comm = mult_num + mult3_num + 
                         mult4_num + dotprod_num + 
                         eqz_num + ltz_num;
-
-    
-    for (auto& gate : circ_.gates_by_level[depth]) {
-        switch (gate->type) {
-            case::common::utils::GateType::kEqz: {
-                eqzEvaluate(eqz_gates, eqz_nonTP, r_eqz_pad, eqz_q_share, eqz_masked_b);
-                break;
-            }
-            case::common::utils::GateType::kLtz: {
-                ltzEvaluate(ltz_gates, ltz_nonTP, r_ltz_pad, ltz_q_share, ltz_masked_b, d_dash);
-                break;
-            }
-        }
+    if(eqz_num > 0) {
+        eqzEvaluate(eqz_gates, eqz_nonTP, r_eqz_pad, eqz_q_share, eqz_masked_b);
     }
+    if(ltz_num > 0) { 
+        ltzEvaluate(ltz_gates, ltz_nonTP, r_ltz_pad, ltz_q_share, ltz_masked_b, d_dash);
+    }
+    
 
     if(id_ != 0) {
         evaluateGatesAtDepthPartySend(depth, 
@@ -1323,32 +1316,39 @@ void BoolEvaluator::evaluateGatesAtDepth(size_t depth) {
             online_comm_to_TP[i + mult_num + mult3_num + mult4_num]
                                         = dotprod_nonTP[i];
         }
+        
+        auto net_data = BoolRing::pack(online_comm_to_TP.data(), total_comm);
 
-        network_->send(0, online_comm_to_TP.data(), sizeof(BoolRing) * total_comm);
+        network_->send(0, net_data.data(), sizeof(uint8_t) * net_data.size());
 
     }
     else if (id_ == 0) { 
-        std::vector<BoolRing> online_comm_to_TP(total_comm, 0);
+        size_t nbytes = (total_comm + 7) / 8;
+        std::vector<uint8_t> net_data(nbytes);
+        // std::vector<BoolRing> online_comm_to_TP(total_comm, 0);
         std::vector<BoolRing> agg_values(total_comm, 0);
         
         for(int pid = 1; pid <= nP_; pid++) {
-            network_->recv(pid, online_comm_to_TP.data(), sizeof(BoolRing) * total_comm);
-        
+            network_->recv(pid, net_data.data(), nbytes * sizeof(uint8_t));
+            // network_->recv(pid, online_comm_to_TP.data(), sizeof(BoolRing) * total_comm);
+            auto online_comm_to_TP = BoolRing::unpack(net_data.data(), total_comm);
             for(int i = 0; i < total_comm; i++) {
                 
                 agg_values[i] += online_comm_to_TP[i];   
             }
         }
 
-        
+        net_data = BoolRing::pack(agg_values.data(), total_comm);
         for(int pid = 1; pid <= nP_; pid++){
-            network_->send(pid, agg_values.data(), sizeof(BoolRing) * total_comm);
+            network_->send(pid, net_data.data(), nbytes);
         }
     }
 
     if(id_ != 0 ) {
-        std::vector<BoolRing> agg_values(total_comm);
-        network_->recv(0, agg_values.data(), sizeof(BoolRing) * total_comm);
+        size_t nbytes = (total_comm + 7) / 8;
+        std::vector<uint8_t> net_data(nbytes);
+        network_->recv(0, net_data.data(), nbytes);
+        auto agg_values = BoolRing::unpack(net_data.data(), total_comm);
 
         std::vector<BoolRing> mult_all(mult_num);
         std::vector<BoolRing> mult3_all(mult3_num);
@@ -1452,7 +1452,7 @@ void BoolEval::evaluateGatesAtDepthPartySend(size_t depth,
                     std::vector<BoolRing>& mult_nonTP, std::vector<BoolRing>& r_mult_pad,
                     std::vector<BoolRing>& mult3_nonTP, std::vector<BoolRing>& r_mult3_pad,
                     std::vector<BoolRing>& mult4_nonTP, std::vector<BoolRing>& r_mult4_pad,
-                    std::vector<BoolRing>& dotprod_nonTP, std::vector<BoolRing>& r_dotprod_pad) {
+                    std::vector<BoolRing>& dotprod_nonTP, std::vector<BoolRing>& r_dotprod_pad, ThreadPool& tpool) {
 
   for (size_t i = 0; i < vwires.size(); ++i) {
     const auto& preproc = vpreproc[i];
@@ -1659,7 +1659,7 @@ void BoolEval::evaluateGatesAtDepthPartyRecv(size_t depth,
                                 std::vector<BoolRing> mult_all, std::vector<BoolRing> r_mult_pad,
                                 std::vector<BoolRing> mult3_all, std::vector<BoolRing> r_mult3_pad,
                                 std::vector<BoolRing> mult4_all, std::vector<BoolRing> r_mult4_pad,
-                                std::vector<BoolRing> dotprod_all, std::vector<BoolRing> r_dotprod_pad) {
+                                std::vector<BoolRing> dotprod_all, std::vector<BoolRing> r_dotprod_pad, ThreadPool& tpool) {
     size_t idx_mult = 0;
     size_t idx_mult3 = 0;
     size_t idx_mult4 = 0;
@@ -1732,7 +1732,7 @@ void BoolEval::evaluateGatesAtDepthPartyRecv(size_t depth,
 }
 
 
-void BoolEval::evaluateGatesAtDepth(size_t depth, io::NetIOMP& network) {
+void BoolEval::evaluateGatesAtDepth(size_t depth, io::NetIOMP& network, ThreadPool& tpool) {
     size_t mult_num = 0; 
     size_t mult3_num = 0; 
     size_t mult4_num = 0; 
@@ -1784,7 +1784,7 @@ void BoolEval::evaluateGatesAtDepth(size_t depth, io::NetIOMP& network) {
         evaluateGatesAtDepthPartySend(depth, mult_nonTP, r_mult_pad,
                                              mult3_nonTP, r_mult3_pad,
                                              mult4_nonTP, r_mult4_pad,
-                                             dotprod_nonTP, r_dotprod_pad);
+                                             dotprod_nonTP, r_dotprod_pad, tpool);
         
 
         
@@ -1846,13 +1846,13 @@ void BoolEval::evaluateGatesAtDepth(size_t depth, io::NetIOMP& network) {
                                         mult_all, r_mult_pad,
                                         mult3_all, r_mult3_pad,
                                         mult4_all, r_mult4_pad,
-                                        dotprod_all, r_dotprod_pad);
+                                        dotprod_all, r_dotprod_pad, tpool);
     }
 }
 
-void BoolEval::evaluateAllLevels(io::NetIOMP& network) {
+void BoolEval::evaluateAllLevels(io::NetIOMP& network, ThreadPool& tpool) {
     for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
-        evaluateGatesAtDepth(i, network); 
+        evaluateGatesAtDepth(i, network, tpool); 
   }
 }
 

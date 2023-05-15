@@ -975,6 +975,29 @@ benchmark/CMakeFiles/dirigent_online.dir/dirigent_online.cpp.o: \
   /usr/local/include/emp-tool/gc/privacy_free_gen.h \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/io/../utils/types.h \
+  /usr/local/include/NTL/ZZ_p.h /usr/local/include/NTL/ZZ.h \
+  /usr/local/include/NTL/lip.h /usr/local/include/NTL/ctools.h \
+  /usr/local/include/NTL/config.h /usr/local/include/NTL/mach_desc.h \
+  /usr/local/include/NTL/ALL_FEATURES.h \
+  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
+  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
+  /usr/local/include/NTL/HAVE_LL_TYPE.h \
+  /usr/local/include/NTL/HAVE_SSSE3.h /usr/local/include/NTL/HAVE_AVX.h \
+  /usr/local/include/NTL/HAVE_PCLMUL.h \
+  /usr/local/include/NTL/HAVE_AVX2.h /usr/local/include/NTL/HAVE_FMA.h \
+  /usr/local/include/NTL/HAVE_AVX512F.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
+  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
+  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
+  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
+  /usr/local/include/NTL/HAVE_AES_NI.h /usr/local/include/NTL/HAVE_KMA.h \
+  /usr/local/include/NTL/PackageInfo.h /usr/local/include/NTL/gmp_aux.h \
+  /usr/local/include/NTL/tools.h /usr/local/include/NTL/new.h \
+  /usr/local/include/NTL/vector.h /usr/local/include/NTL/SmartPtr.h \
+  /usr/local/include/NTL/thread.h /usr/local/include/NTL/sp_arith.h \
+  /usr/local/include/NTL/ZZVec.h /usr/local/include/NTL/Lazy.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/offline_evaluator.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/../io/netmp.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/../utils/circuit.h \
@@ -1204,39 +1227,18 @@ benchmark/CMakeFiles/dirigent_online.dir/dirigent_online.cpp.o: \
   /usr/local/include/boost/format/parsing.hpp \
   /usr/local/include/boost/format/free_funcs.hpp \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/../utils/helpers.h \
-  /usr/local/include/NTL/ZZ_p.h /usr/local/include/NTL/ZZ.h \
-  /usr/local/include/NTL/lip.h /usr/local/include/NTL/ctools.h \
-  /usr/local/include/NTL/config.h /usr/local/include/NTL/mach_desc.h \
-  /usr/local/include/NTL/ALL_FEATURES.h \
-  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
-  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
-  /usr/local/include/NTL/HAVE_LL_TYPE.h \
-  /usr/local/include/NTL/HAVE_SSSE3.h /usr/local/include/NTL/HAVE_AVX.h \
-  /usr/local/include/NTL/HAVE_PCLMUL.h \
-  /usr/local/include/NTL/HAVE_AVX2.h /usr/local/include/NTL/HAVE_FMA.h \
-  /usr/local/include/NTL/HAVE_AVX512F.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
-  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
-  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
-  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
-  /usr/local/include/NTL/HAVE_AES_NI.h /usr/local/include/NTL/HAVE_KMA.h \
-  /usr/local/include/NTL/PackageInfo.h /usr/local/include/NTL/gmp_aux.h \
-  /usr/local/include/NTL/tools.h /usr/local/include/NTL/new.h \
-  /usr/local/include/NTL/vector.h /usr/local/include/NTL/SmartPtr.h \
-  /usr/local/include/NTL/thread.h /usr/local/include/NTL/sp_arith.h \
-  /usr/local/include/NTL/ZZVec.h /usr/local/include/NTL/Lazy.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/io/../utils/helpers.h \
   /usr/local/include/NTL/ZZ_pE.h /usr/local/include/NTL/matrix.h \
   /usr/local/include/NTL/vec_long.h /usr/local/include/NTL/ZZ_pX.h \
   /usr/local/include/NTL/vec_ZZ.h /usr/local/include/NTL/vec_ZZ_p.h \
   /usr/local/include/NTL/FFT.h /usr/local/include/NTL/LazyTable.h \
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/../utils/../io/netmp.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/../utils/types.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/io/../utils/../io/netmp.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/preproc.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/sharing.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/../utils/helpers.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/../utils/types.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/rand_gen_pool.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/online_evaluator.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/utils/circuit.h \

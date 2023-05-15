@@ -976,7 +976,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/jump_provider.cpp.o: \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
   /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/quadsquad/../io/netmp.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/quadsquad/../utils/helpers.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/quadsquad/../io/../utils/types.h \
   /usr/local/include/NTL/ZZ_p.h /usr/local/include/NTL/ZZ.h \
   /usr/local/include/NTL/lip.h /usr/local/include/NTL/ctools.h \
   /usr/local/include/NTL/config.h /usr/local/include/NTL/mach_desc.h \
@@ -999,14 +999,14 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/jump_provider.cpp.o: \
   /usr/local/include/NTL/vector.h /usr/local/include/NTL/SmartPtr.h \
   /usr/local/include/NTL/thread.h /usr/local/include/NTL/sp_arith.h \
   /usr/local/include/NTL/ZZVec.h /usr/local/include/NTL/Lazy.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/quadsquad/../utils/helpers.h \
   /usr/local/include/NTL/ZZ_pE.h /usr/local/include/NTL/matrix.h \
   /usr/local/include/NTL/vec_long.h /usr/local/include/NTL/ZZ_pX.h \
   /usr/local/include/NTL/vec_ZZ.h /usr/local/include/NTL/vec_ZZ_p.h \
   /usr/local/include/NTL/FFT.h /usr/local/include/NTL/LazyTable.h \
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/quadsquad/../utils/../io/netmp.h \
-  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/quadsquad/../utils/types.h \
+  /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/quadsquad/../io/../utils/../io/netmp.h \
   /usr/local/include/boost/format.hpp \
   /usr/local/include/boost/detail/workaround.hpp \
   /usr/local/include/boost/config/workaround.hpp \

@@ -158,16 +158,16 @@ struct BoolEval {
                     std::vector<BoolRing>& mult_nonTP, std::vector<BoolRing>& r_mult_pad,
                     std::vector<BoolRing>& mult3_nonTP, std::vector<BoolRing>& r_mult3_pad,
                     std::vector<BoolRing>& mult4_nonTP, std::vector<BoolRing>& r_mult4_pad,
-                    std::vector<BoolRing>& dotprod_nonTP, std::vector<BoolRing>& r_dotprod_pad);
+                    std::vector<BoolRing>& dotprod_nonTP, std::vector<BoolRing>& r_dotprod_pad, ThreadPool& tpool);
   
   void evaluateGatesAtDepthPartyRecv(size_t depth, 
                                 std::vector<BoolRing> mult_all, std::vector<BoolRing> r_mult_pad,
                                 std::vector<BoolRing> mult3_all, std::vector<BoolRing> r_mult3_pad,
                                 std::vector<BoolRing> mult4_all, std::vector<BoolRing> r_mult4_pad,
-                                std::vector<BoolRing> dotprod_all, std::vector<BoolRing> r_dotprod_pad);
+                                std::vector<BoolRing> dotprod_all, std::vector<BoolRing> r_dotprod_pad, ThreadPool& tpool);
 
-  void evaluateGatesAtDepth(size_t depth, io::NetIOMP& network);
-  void evaluateAllLevels(io::NetIOMP& network);
+  void evaluateGatesAtDepth(size_t depth, io::NetIOMP& network, ThreadPool& tpool);
+  void evaluateAllLevels(io::NetIOMP& network, ThreadPool& tpool);
 
   std::vector<std::vector<BoolRing>> getOutputShares();
 };
