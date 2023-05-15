@@ -17,7 +17,7 @@ OfflineEvaluator::OfflineEvaluator(int nP, int my_id,
     : nP_(nP),
       id_(my_id),
       security_param_(security_param),
-      rgen_(my_id, seed), //Banashri: doubt - no matching constructor
+      rgen_(my_id, seed), 
       network_(std::move(network)),
       circ_(std::move(circ)),
       preproc_(circ.num_gates)

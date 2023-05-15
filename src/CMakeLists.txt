@@ -11,7 +11,11 @@ add_library(QuadSquad
     dirigent/sharing.cpp
     dirigent/rand_gen_pool.cpp
     dirigent/offline_evaluator.cpp
-    dirigent/online_evaluator.cpp)
+    dirigent/online_evaluator.cpp
+    assistedMPC/sharing.cpp
+    assistedMPC/rand_gen_pool.cpp
+    assistedMPC/offline_evaluator.cpp
+    assistedMPC/online_evaluator.cpp)
 
 target_include_directories(QuadSquad PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(QuadSquad PUBLIC Boost::system EMPTool EMP_OT NTL GMP)
