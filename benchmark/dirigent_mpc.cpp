@@ -42,6 +42,38 @@ common::utils::Circuit<Field> generateCircuit(size_t gates_per_level, size_t dep
 
     return circ;
 }
+
+common::utils::Circuit<Field> generateCircuitwM3(size_t gates_per_level, size_t depth) {
+    common::utils::Circuit<Field> circ;
+
+    std::vector<common::utils::wire_t> level_inputs(gates_per_level);
+    std::generate(level_inputs.begin(), level_inputs.end(),
+                [&]() { return circ.newInputWire(); });
+
+    for (size_t d = 0; d < depth; ++d) {
+        std::vector<common::utils::wire_t> level_outputs(gates_per_level);
+
+        for (size_t i = 0; i < gates_per_level - 2; ++i) {
+            level_outputs[i] = circ.addGate(common::utils::GateType::kMul3, level_inputs[i],
+                                      level_inputs[i + 1], level_inputs[i + 2]);
+        }
+        level_outputs[gates_per_level - 2] =
+            circ.addGate(common::utils::GateType::kMul3, level_inputs[gates_per_level - 2],
+                     level_inputs[gates_per_level - 1], level_inputs[0]);
+        level_outputs[gates_per_level - 1] =
+            circ.addGate(common::utils::GateType::kMul3, level_inputs[gates_per_level - 1],
+                     level_inputs[0], level_inputs[1]);
+        
+        level_inputs = std::move(level_outputs);
+    }
+    for (auto i : level_inputs) {
+        circ.setAsOutput(i);
+    }
+
+    return circ;
+}
+
+
 common::utils::Circuit<Field> generateCircuitwM4(size_t gates_per_level, size_t depth) {
     common::utils::Circuit<Field> circ;
 
@@ -74,6 +106,8 @@ common::utils::Circuit<Field> generateCircuitwM4(size_t gates_per_level, size_t 
 
     return circ;
 }
+
+
 
 void benchmark(const bpo::variables_map& opts) {
     bool save_output = false;
@@ -137,6 +171,7 @@ void benchmark(const bpo::variables_map& opts) {
     auto circ = generateCircuit(gates_per_level, depth).orderGatesByLevel();
     std::cout << "--- Circuit ---\n";
     std::cout << circ << std::endl;
+    
 
     std::unordered_map<common::utils::wire_t, int> input_pid_map;
     std::unordered_map<common::utils::wire_t, Field> input_map;

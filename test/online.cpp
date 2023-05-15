@@ -21,6 +21,14 @@ namespace bdata = boost::unit_test::data;
 constexpr int TEST_DATA_MAX_VAL = 1000;
 constexpr int SECURITY_PARAM = 128;
 
+struct GlobalFixture {
+  GlobalFixture() {
+    NTL::ZZ_p::init(NTL::conv<NTL::ZZ>("18446744073709551616"));
+  }
+};
+
+BOOST_GLOBAL_FIXTURE(GlobalFixture);
+
 BOOST_AUTO_TEST_SUITE(online_evaluator)
 
 BOOST_AUTO_TEST_CASE(mult) {

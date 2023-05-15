@@ -28,11 +28,12 @@
 #pragma once
 
 #include <emp-tool/emp-tool.h>
-
+#include "../utils/types.h"
 #include <vector>
 
 namespace io {
 using namespace emp;
+using namespace common::utils;
 
 class NetIOMP {
  public:
@@ -114,6 +115,17 @@ class NetIOMP {
 #endif
   }
 
+  void send(int dst, const NTL::ZZ_p* data, size_t length) {
+  
+  // Assumes that every co-efficient of ZZ_pE is same range as Ring.
+  std::vector<uint8_t> serialized(length);
+  size_t num = (length + FIELDSIZE - 1) / FIELDSIZE;
+  for (size_t i = 0; i < num; ++i) {
+    NTL::BytesFromZZ(serialized.data() + i * FIELDSIZE, NTL::conv<NTL::ZZ>(data[i]), FIELDSIZE);
+  }
+  send(dst, serialized.data(), serialized.size());
+}
+
   void sendRelative(int offset, const void* data, size_t len) {
     int dst = (party + offset) % nP;
     if (dst < 0) {
@@ -149,6 +161,17 @@ class NetIOMP {
         ios[src]->recv_data(data, len);
       else
         ios2[src]->recv_data(data, len);
+    }
+  }
+
+  void recv(int dst, NTL::ZZ_p* data, size_t length) {
+    std::vector<uint8_t> serialized(length);
+    recv(dst, serialized.data(), serialized.size());
+    // Assumes that every co-efficient of ZZ_pE is same range as Ring.
+    
+    size_t num = (length + FIELDSIZE - 1) / FIELDSIZE;
+    for (size_t i = 0; i < num; ++i) {
+      data[i] = NTL::conv<NTL::ZZ_p>(NTL::ZZFromBytes(serialized.data() + i * FIELDSIZE, FIELDSIZE));
     }
   }
 

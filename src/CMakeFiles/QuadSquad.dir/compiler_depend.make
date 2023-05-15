@@ -978,6 +978,40 @@ src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o: src/dirigent/offl
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
   src/io/netmp.h \
+  src/utils/types.h \
+  /usr/local/include/NTL/ZZ_p.h \
+  /usr/local/include/NTL/ZZ.h \
+  /usr/local/include/NTL/lip.h \
+  /usr/local/include/NTL/ctools.h \
+  /usr/local/include/NTL/config.h \
+  /usr/local/include/NTL/mach_desc.h \
+  /usr/local/include/NTL/ALL_FEATURES.h \
+  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
+  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
+  /usr/local/include/NTL/HAVE_LL_TYPE.h \
+  /usr/local/include/NTL/HAVE_SSSE3.h \
+  /usr/local/include/NTL/HAVE_AVX.h \
+  /usr/local/include/NTL/HAVE_PCLMUL.h \
+  /usr/local/include/NTL/HAVE_AVX2.h \
+  /usr/local/include/NTL/HAVE_FMA.h \
+  /usr/local/include/NTL/HAVE_AVX512F.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
+  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
+  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
+  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
+  /usr/local/include/NTL/HAVE_AES_NI.h \
+  /usr/local/include/NTL/HAVE_KMA.h \
+  /usr/local/include/NTL/PackageInfo.h \
+  /usr/local/include/NTL/gmp_aux.h \
+  /usr/local/include/NTL/tools.h \
+  /usr/local/include/NTL/new.h \
+  /usr/local/include/NTL/vector.h \
+  /usr/local/include/NTL/SmartPtr.h \
+  /usr/local/include/NTL/thread.h \
+  /usr/local/include/NTL/sp_arith.h \
+  /usr/local/include/NTL/ZZVec.h \
+  /usr/local/include/NTL/Lazy.h \
   src/utils/circuit.h \
   /usr/local/include/boost/format.hpp \
   /usr/local/include/boost/detail/workaround.hpp \
@@ -1208,39 +1242,6 @@ src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o: src/dirigent/offl
   /usr/local/include/boost/format/free_funcs.hpp \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
   src/utils/helpers.h \
-  /usr/local/include/NTL/ZZ_p.h \
-  /usr/local/include/NTL/ZZ.h \
-  /usr/local/include/NTL/lip.h \
-  /usr/local/include/NTL/ctools.h \
-  /usr/local/include/NTL/config.h \
-  /usr/local/include/NTL/mach_desc.h \
-  /usr/local/include/NTL/ALL_FEATURES.h \
-  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
-  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
-  /usr/local/include/NTL/HAVE_LL_TYPE.h \
-  /usr/local/include/NTL/HAVE_SSSE3.h \
-  /usr/local/include/NTL/HAVE_AVX.h \
-  /usr/local/include/NTL/HAVE_PCLMUL.h \
-  /usr/local/include/NTL/HAVE_AVX2.h \
-  /usr/local/include/NTL/HAVE_FMA.h \
-  /usr/local/include/NTL/HAVE_AVX512F.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
-  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
-  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
-  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
-  /usr/local/include/NTL/HAVE_AES_NI.h \
-  /usr/local/include/NTL/HAVE_KMA.h \
-  /usr/local/include/NTL/PackageInfo.h \
-  /usr/local/include/NTL/gmp_aux.h \
-  /usr/local/include/NTL/tools.h \
-  /usr/local/include/NTL/new.h \
-  /usr/local/include/NTL/vector.h \
-  /usr/local/include/NTL/SmartPtr.h \
-  /usr/local/include/NTL/thread.h \
-  /usr/local/include/NTL/sp_arith.h \
-  /usr/local/include/NTL/ZZVec.h \
-  /usr/local/include/NTL/Lazy.h \
   /usr/local/include/NTL/ZZ_pE.h \
   /usr/local/include/NTL/matrix.h \
   /usr/local/include/NTL/vec_long.h \
@@ -1252,9 +1253,10 @@ src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o: src/dirigent/offl
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
   src/io/netmp.h \
-  src/utils/types.h \
   src/dirigent/preproc.h \
   src/dirigent/sharing.h \
+  src/utils/helpers.h \
+  src/utils/types.h \
   src/dirigent/rand_gen_pool.h \
   /usr/local/include/NTL/BasicThreadPool.h
 
@@ -2235,6 +2237,40 @@ src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o: src/dirigent/onlin
   /usr/local/include/emp-tool/gc/privacy_free_gen.h \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
+  src/utils/types.h \
+  /usr/local/include/NTL/ZZ_p.h \
+  /usr/local/include/NTL/ZZ.h \
+  /usr/local/include/NTL/lip.h \
+  /usr/local/include/NTL/ctools.h \
+  /usr/local/include/NTL/config.h \
+  /usr/local/include/NTL/mach_desc.h \
+  /usr/local/include/NTL/ALL_FEATURES.h \
+  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
+  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
+  /usr/local/include/NTL/HAVE_LL_TYPE.h \
+  /usr/local/include/NTL/HAVE_SSSE3.h \
+  /usr/local/include/NTL/HAVE_AVX.h \
+  /usr/local/include/NTL/HAVE_PCLMUL.h \
+  /usr/local/include/NTL/HAVE_AVX2.h \
+  /usr/local/include/NTL/HAVE_FMA.h \
+  /usr/local/include/NTL/HAVE_AVX512F.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
+  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
+  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
+  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
+  /usr/local/include/NTL/HAVE_AES_NI.h \
+  /usr/local/include/NTL/HAVE_KMA.h \
+  /usr/local/include/NTL/PackageInfo.h \
+  /usr/local/include/NTL/gmp_aux.h \
+  /usr/local/include/NTL/tools.h \
+  /usr/local/include/NTL/new.h \
+  /usr/local/include/NTL/vector.h \
+  /usr/local/include/NTL/SmartPtr.h \
+  /usr/local/include/NTL/thread.h \
+  /usr/local/include/NTL/sp_arith.h \
+  /usr/local/include/NTL/ZZVec.h \
+  /usr/local/include/NTL/Lazy.h \
   src/utils/circuit.h \
   /usr/local/include/boost/format.hpp \
   /usr/local/include/boost/detail/workaround.hpp \
@@ -2465,39 +2501,6 @@ src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o: src/dirigent/onlin
   /usr/local/include/boost/format/free_funcs.hpp \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
   src/utils/helpers.h \
-  /usr/local/include/NTL/ZZ_p.h \
-  /usr/local/include/NTL/ZZ.h \
-  /usr/local/include/NTL/lip.h \
-  /usr/local/include/NTL/ctools.h \
-  /usr/local/include/NTL/config.h \
-  /usr/local/include/NTL/mach_desc.h \
-  /usr/local/include/NTL/ALL_FEATURES.h \
-  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
-  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
-  /usr/local/include/NTL/HAVE_LL_TYPE.h \
-  /usr/local/include/NTL/HAVE_SSSE3.h \
-  /usr/local/include/NTL/HAVE_AVX.h \
-  /usr/local/include/NTL/HAVE_PCLMUL.h \
-  /usr/local/include/NTL/HAVE_AVX2.h \
-  /usr/local/include/NTL/HAVE_FMA.h \
-  /usr/local/include/NTL/HAVE_AVX512F.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
-  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
-  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
-  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
-  /usr/local/include/NTL/HAVE_AES_NI.h \
-  /usr/local/include/NTL/HAVE_KMA.h \
-  /usr/local/include/NTL/PackageInfo.h \
-  /usr/local/include/NTL/gmp_aux.h \
-  /usr/local/include/NTL/tools.h \
-  /usr/local/include/NTL/new.h \
-  /usr/local/include/NTL/vector.h \
-  /usr/local/include/NTL/SmartPtr.h \
-  /usr/local/include/NTL/thread.h \
-  /usr/local/include/NTL/sp_arith.h \
-  /usr/local/include/NTL/ZZVec.h \
-  /usr/local/include/NTL/Lazy.h \
   /usr/local/include/NTL/ZZ_pE.h \
   /usr/local/include/NTL/matrix.h \
   /usr/local/include/NTL/vec_long.h \
@@ -2509,9 +2512,10 @@ src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o: src/dirigent/onlin
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
   src/io/netmp.h \
-  src/utils/types.h \
   src/dirigent/preproc.h \
   src/dirigent/sharing.h \
+  src/utils/helpers.h \
+  src/utils/types.h \
   src/dirigent/rand_gen_pool.h
 
 src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o: src/dirigent/rand_gen_pool.cpp \
@@ -3535,6 +3539,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o: src/dirigent/rand_gen
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
   src/io/netmp.h \
+  src/utils/types.h \
   src/utils/types.h
 
 src/CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.o: src/dirigent/sharing.cpp \
@@ -4558,6 +4563,7 @@ src/CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.o: src/dirigent/sharing.cpp \
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
   src/io/netmp.h \
+  src/utils/types.h \
   src/utils/types.h
 
 src/CMakeFiles/QuadSquad.dir/quadsquad/jump_provider.cpp.o: src/quadsquad/jump_provider.cpp \
@@ -5537,7 +5543,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/jump_provider.cpp.o: src/quadsquad/jump_p
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
   src/io/netmp.h \
-  src/utils/helpers.h \
+  src/utils/types.h \
   /usr/local/include/NTL/ZZ_p.h \
   /usr/local/include/NTL/ZZ.h \
   /usr/local/include/NTL/lip.h \
@@ -5571,6 +5577,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/jump_provider.cpp.o: src/quadsquad/jump_p
   /usr/local/include/NTL/sp_arith.h \
   /usr/local/include/NTL/ZZVec.h \
   /usr/local/include/NTL/Lazy.h \
+  src/utils/helpers.h \
   /usr/local/include/NTL/ZZ_pE.h \
   /usr/local/include/NTL/matrix.h \
   /usr/local/include/NTL/vec_long.h \
@@ -5582,7 +5589,6 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/jump_provider.cpp.o: src/quadsquad/jump_p
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
   src/io/netmp.h \
-  src/utils/types.h \
   /usr/local/include/boost/format.hpp \
   /usr/local/include/boost/detail/workaround.hpp \
   /usr/local/include/boost/config/workaround.hpp \
@@ -6832,6 +6838,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o: src/quadsquad/of
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
   src/io/netmp.h \
+  src/utils/types.h \
   src/utils/circuit.h \
   /usr/local/include/boost/format.hpp \
   /usr/local/include/boost/detail/workaround.hpp \
@@ -7063,8 +7070,8 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o: src/quadsquad/of
   /usr/local/include/boost/format/detail/unset_macros.hpp \
   src/utils/helpers.h \
   src/io/netmp.h \
-  src/utils/types.h \
   src/quadsquad/jump_provider.h \
+  src/utils/helpers.h \
   src/quadsquad/ot_provider.h \
   /usr/local/include/emp-ot/emp-ot.h \
   /usr/local/include/emp-ot/ot.h \
@@ -7085,6 +7092,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/offline_evaluator.cpp.o: src/quadsquad/of
   /usr/local/include/emp-ot/ferret/lpn_f2.h \
   /usr/local/include/emp-ot/ferret/constants.h \
   /usr/local/include/emp-ot/ferret/ferret_cot.hpp \
+  src/utils/types.h \
   src/quadsquad/preproc.h \
   src/quadsquad/sharing.h \
   src/quadsquad/rand_gen_pool.h \
@@ -8069,6 +8077,40 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/online_evaluator.cpp.o: src/quadsquad/onl
   /usr/local/include/emp-tool/gc/privacy_free_gen.h \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
+  src/utils/types.h \
+  /usr/local/include/NTL/ZZ_p.h \
+  /usr/local/include/NTL/ZZ.h \
+  /usr/local/include/NTL/lip.h \
+  /usr/local/include/NTL/ctools.h \
+  /usr/local/include/NTL/config.h \
+  /usr/local/include/NTL/mach_desc.h \
+  /usr/local/include/NTL/ALL_FEATURES.h \
+  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
+  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
+  /usr/local/include/NTL/HAVE_LL_TYPE.h \
+  /usr/local/include/NTL/HAVE_SSSE3.h \
+  /usr/local/include/NTL/HAVE_AVX.h \
+  /usr/local/include/NTL/HAVE_PCLMUL.h \
+  /usr/local/include/NTL/HAVE_AVX2.h \
+  /usr/local/include/NTL/HAVE_FMA.h \
+  /usr/local/include/NTL/HAVE_AVX512F.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
+  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
+  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
+  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
+  /usr/local/include/NTL/HAVE_AES_NI.h \
+  /usr/local/include/NTL/HAVE_KMA.h \
+  /usr/local/include/NTL/PackageInfo.h \
+  /usr/local/include/NTL/gmp_aux.h \
+  /usr/local/include/NTL/tools.h \
+  /usr/local/include/NTL/new.h \
+  /usr/local/include/NTL/vector.h \
+  /usr/local/include/NTL/SmartPtr.h \
+  /usr/local/include/NTL/thread.h \
+  /usr/local/include/NTL/sp_arith.h \
+  /usr/local/include/NTL/ZZVec.h \
+  /usr/local/include/NTL/Lazy.h \
   src/utils/circuit.h \
   /usr/local/include/boost/format.hpp \
   /usr/local/include/boost/detail/workaround.hpp \
@@ -8299,39 +8341,6 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/online_evaluator.cpp.o: src/quadsquad/onl
   /usr/local/include/boost/format/free_funcs.hpp \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
   src/utils/helpers.h \
-  /usr/local/include/NTL/ZZ_p.h \
-  /usr/local/include/NTL/ZZ.h \
-  /usr/local/include/NTL/lip.h \
-  /usr/local/include/NTL/ctools.h \
-  /usr/local/include/NTL/config.h \
-  /usr/local/include/NTL/mach_desc.h \
-  /usr/local/include/NTL/ALL_FEATURES.h \
-  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
-  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
-  /usr/local/include/NTL/HAVE_LL_TYPE.h \
-  /usr/local/include/NTL/HAVE_SSSE3.h \
-  /usr/local/include/NTL/HAVE_AVX.h \
-  /usr/local/include/NTL/HAVE_PCLMUL.h \
-  /usr/local/include/NTL/HAVE_AVX2.h \
-  /usr/local/include/NTL/HAVE_FMA.h \
-  /usr/local/include/NTL/HAVE_AVX512F.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
-  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
-  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
-  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
-  /usr/local/include/NTL/HAVE_AES_NI.h \
-  /usr/local/include/NTL/HAVE_KMA.h \
-  /usr/local/include/NTL/PackageInfo.h \
-  /usr/local/include/NTL/gmp_aux.h \
-  /usr/local/include/NTL/tools.h \
-  /usr/local/include/NTL/new.h \
-  /usr/local/include/NTL/vector.h \
-  /usr/local/include/NTL/SmartPtr.h \
-  /usr/local/include/NTL/thread.h \
-  /usr/local/include/NTL/sp_arith.h \
-  /usr/local/include/NTL/ZZVec.h \
-  /usr/local/include/NTL/Lazy.h \
   /usr/local/include/NTL/ZZ_pE.h \
   /usr/local/include/NTL/matrix.h \
   /usr/local/include/NTL/vec_long.h \
@@ -8343,10 +8352,11 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/online_evaluator.cpp.o: src/quadsquad/onl
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
   src/io/netmp.h \
-  src/utils/types.h \
   src/quadsquad/jump_provider.h \
+  src/utils/helpers.h \
   src/quadsquad/preproc.h \
   src/quadsquad/sharing.h \
+  src/utils/types.h \
   src/quadsquad/rand_gen_pool.h
 
 src/CMakeFiles/QuadSquad.dir/quadsquad/ot_provider.cpp.o: src/quadsquad/ot_provider.cpp \
@@ -10628,6 +10638,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/rand_gen_pool.cpp.o: src/quadsquad/rand_g
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
   src/io/netmp.h \
+  src/utils/types.h \
   src/utils/types.h
 
 src/CMakeFiles/QuadSquad.dir/quadsquad/sharing.cpp.o: src/quadsquad/sharing.cpp \
@@ -11651,6 +11662,7 @@ src/CMakeFiles/QuadSquad.dir/quadsquad/sharing.cpp.o: src/quadsquad/sharing.cpp 
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
   src/io/netmp.h \
+  src/utils/types.h \
   src/utils/types.h
 
 src/CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o: src/utils/circuit.cpp \
@@ -12902,6 +12914,7 @@ src/CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o: src/utils/circuit.cpp \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
   src/io/netmp.h \
+  src/utils/types.h \
   src/utils/types.h
 
 src/CMakeFiles/QuadSquad.dir/utils/helpers.cpp.o: src/utils/helpers.cpp \
@@ -13924,6 +13937,7 @@ src/CMakeFiles/QuadSquad.dir/utils/helpers.cpp.o: src/utils/helpers.cpp \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
   src/io/netmp.h \
+  src/utils/types.h \
   src/utils/types.h
 
 src/CMakeFiles/QuadSquad.dir/utils/types.cpp.o: src/utils/types.cpp \
@@ -14743,34 +14757,6 @@ src/dirigent/sharing.h:
 
 /usr/local/include/NTL/vec_long.h:
 
-/usr/local/include/NTL/Lazy.h:
-
-/usr/local/include/NTL/sp_arith.h:
-
-/usr/local/include/NTL/SmartPtr.h:
-
-/usr/local/include/NTL/new.h:
-
-/usr/local/include/NTL/PackageInfo.h:
-
-/usr/local/include/NTL/HAVE_POSIX_TIME.h:
-
-/usr/local/include/NTL/HAVE_COPY_TRAITS2.h:
-
-/usr/local/include/NTL/HAVE_COPY_TRAITS1.h:
-
-/usr/local/include/NTL/HAVE_AVX512F.h:
-
-/usr/local/include/NTL/HAVE_FMA.h:
-
-/usr/local/include/NTL/HAVE_AVX2.h:
-
-/usr/local/include/NTL/HAVE_PCLMUL.h:
-
-/usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h:
-
-/usr/local/include/NTL/ALL_FEATURES.h:
-
 /usr/local/include/boost/format/free_funcs.hpp:
 
 /usr/local/include/boost/format/detail/msvc_disambiguater.hpp:
@@ -14806,10 +14792,6 @@ src/dirigent/sharing.h:
 /usr/local/include/boost/smart_ptr/detail/sp_has_gcc_intrinsics.hpp:
 
 /usr/local/include/boost/smart_ptr/detail/shared_count.hpp:
-
-/usr/local/include/NTL/tools.h:
-
-/usr/local/include/boost/preprocessor/logical/and.hpp:
 
 /usr/local/include/boost/preprocessor/logical/not.hpp:
 
@@ -14907,19 +14889,11 @@ src/dirigent/sharing.h:
 
 /usr/local/include/boost/type_traits/has_nothrow_assign.hpp:
 
-/usr/local/include/NTL/HAVE_BUILTIN_CLZL.h:
-
-/usr/local/include/boost/type_traits/is_volatile.hpp:
-
 /usr/local/include/boost/type_traits/has_trivial_move_assign.hpp:
 
 /usr/local/include/boost/type_traits/is_nothrow_move_assignable.hpp:
 
 /usr/local/include/boost/type_traits/is_destructible.hpp:
-
-/usr/local/include/NTL/vector.h:
-
-/usr/local/include/boost/type_traits/is_constructible.hpp:
 
 /usr/local/include/boost/type_traits/is_const.hpp:
 
@@ -15025,13 +14999,53 @@ src/dirigent/sharing.h:
 
 /usr/local/include/boost/config/compiler/clang.hpp:
 
-/usr/local/include/NTL/thread.h:
-
-/usr/local/include/boost/config.hpp:
-
 /usr/local/include/boost/detail/workaround.hpp:
 
 src/utils/circuit.h:
+
+/usr/local/include/NTL/Lazy.h:
+
+/usr/local/include/NTL/sp_arith.h:
+
+/usr/local/include/boost/config.hpp:
+
+/usr/local/include/NTL/thread.h:
+
+/usr/local/include/NTL/SmartPtr.h:
+
+/usr/local/include/boost/type_traits/is_constructible.hpp:
+
+/usr/local/include/NTL/vector.h:
+
+/usr/local/include/NTL/new.h:
+
+/usr/local/include/boost/preprocessor/logical/and.hpp:
+
+/usr/local/include/NTL/tools.h:
+
+/usr/local/include/NTL/PackageInfo.h:
+
+/usr/local/include/NTL/HAVE_POSIX_TIME.h:
+
+/usr/local/include/NTL/HAVE_COPY_TRAITS2.h:
+
+/usr/local/include/NTL/HAVE_COPY_TRAITS1.h:
+
+/usr/local/include/NTL/HAVE_AVX512F.h:
+
+/usr/local/include/NTL/HAVE_FMA.h:
+
+/usr/local/include/NTL/HAVE_AVX2.h:
+
+/usr/local/include/NTL/HAVE_PCLMUL.h:
+
+/usr/local/include/boost/type_traits/is_volatile.hpp:
+
+/usr/local/include/NTL/HAVE_BUILTIN_CLZL.h:
+
+/usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h:
+
+/usr/local/include/NTL/ALL_FEATURES.h:
 
 /usr/local/include/emp-tool/execution/plain_circ.h:
 
@@ -15213,9 +15227,9 @@ src/utils/circuit.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__random/poisson_distribution.h:
 
-src/utils/types.h:
-
 /usr/local/include/boost/preprocessor/config/limits.hpp:
+
+src/utils/types.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__random/negative_binomial_distribution.h:
 
@@ -15731,9 +15745,9 @@ src/quadsquad/rand_gen_pool.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__algorithm/partial_sort.h:
 
-/usr/local/include/NTL/ZZ.h:
-
 /usr/local/include/boost/type_traits/decay.hpp:
+
+/usr/local/include/NTL/ZZ.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__type_traits/promote.h:
 

@@ -27,17 +27,12 @@ constexpr int SECURITY_PARAM = 128;
 struct GlobalFixture {
   GlobalFixture() {
     NTL::ZZ_p::init(NTL::conv<NTL::ZZ>("18446744073709551616"));
-
-    //NTL::ZZ_pX P(NTL::INIT_MONO, 47);
-    //NTL::SetCoeff(P, 5);
-    //NTL::SetCoeff(P, 0);
-    //NTL::ZZ_pE::init(P);
   }
 };
-/*
+
 BOOST_GLOBAL_FIXTURE(GlobalFixture);
 
-BOOST_AUTO_TEST_SUITE(dummy_offline)
+/*BOOST_AUTO_TEST_SUITE(dummy_offline)
 
 BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   utils::Circuit<Ring> circ;
