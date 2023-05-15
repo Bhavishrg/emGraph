@@ -2,6 +2,7 @@
 #include <dirigent/offline_evaluator.h>
 #include <dirigent/online_evaluator.h>
 #include <utils/circuit.h>
+#include <utils/darkpool.h>
 
 #include <algorithm>
 #include <boost/program_options.hpp>
@@ -14,56 +15,6 @@
 using namespace dirigent;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
-
-common::utils::Circuit<Field> Post_LTZ_Circuit(int N, int M) {
-    common::utils::Circuit<Field> circ;
-    std::vector<common::utils::wire_t> inp(3);
-    for(int i = 0; i < 3; i++) {
-        inp[i] = circ.newInputWire();
-    }
-    // Mult for BitA
-    common::utils::wire_t bita = circ.addGate(common::utils::GateType::kMul, inp[0], inp[1]);
-    // Mult for ObSel
-    common::utils::wire_t sel = circ.addGate(common::utils::GateType::kMul, bita, inp[2]);
-    std::vector<common::utils::wire_t> add_gates(N + M + N*N + M*M);
-    add_gates[0] = circ.addGate(common::utils::GateType::kAdd, inp[0], inp[1]);
-    add_gates[1] = circ.addGate(common::utils::GateType::kAdd, inp[0], inp[2]);
-    for(int i = 2 ; i < N + M + N*N + M*M - 1; i++) {
-        add_gates[i] = circ.addGate(common::utils::GateType::kAdd, add_gates[i-2], add_gates[i-1]);
-    }
-    return circ;
-}
-
-common::utils::Circuit<Field> Post_Para_LTZ_Circuit(int N, int M) {
-    common::utils::Circuit<Field> circ;
-    int T = N + M;
-    std::vector<common::utils::wire_t> inp(2 * T);
-    for(int i = 0; i < 2 * T; i++) {
-        inp[i] = circ.newInputWire();
-    }
-    // Mult for BitA
-    std::vector<common::utils::wire_t> bita(2 * T);
-    for(int i = 0; i < (2 * T) - 1; i++) {
-        bita[i] = circ.addGate(common::utils::GateType::kMul, inp[i], inp[i + 1]);
-    }
-    bita[(2 * T) - 1] = circ.addGate(common::utils::GateType::kMul, inp[(2 * T) - 1], inp[0]);
-    Field cons = 5;
-    std::vector<common::utils::wire_t> add1(T);
-    std::vector<common::utils::wire_t> mul1(T);
-    std::vector<common::utils::wire_t> add2(T);
-    std::vector<common::utils::wire_t> cons_add1(T);
-    std::vector<common::utils::wire_t> mul2(T);
-    for(int i = 0; i < T; i++) {
-        add1[i] = circ.addGate(common::utils::GateType::kAdd, bita[2*i], inp[2 * i + 1]);
-        mul1[i] = circ.addGate(common::utils::GateType::kMul, bita[i], add1[i]);
-        add2[i] = circ.addGate(common::utils::GateType::kAdd, mul1[i], add1[i]); 
-        cons_add1[i] = circ.addConstOpGate(common::utils::GateType::kConstAdd, add2[i], cons);
-        mul2[i] = circ.addGate(common::utils::GateType::kMul, cons_add1[i], mul1[i]);
-    }
-    return circ;
-
-}
-
 
 void benchmark(const bpo::variables_map& opts) {
     bool save_output = false;
@@ -127,56 +78,20 @@ void benchmark(const bpo::variables_map& opts) {
     size_t N = sell_list_size;
     size_t M = buy_list_size;
 
-    auto LTZ_circ = common::utils::Circuit<BoolRing>::generatePrefixAND().orderGatesByLevel();
-    auto post_LTZ_circ = Post_LTZ_Circuit(N,M).orderGatesByLevel();
-    auto para_LTZ_circ = common::utils::Circuit<BoolRing>::generateParaPrefixAND(2 * (N + M)).orderGatesByLevel();
-    auto post_para_LTZ_circ = Post_Para_LTZ_Circuit(N,M).orderGatesByLevel();
+    common::utils::DarkPool<Field> darkpool_ob(N,M);
+    darkpool_ob.resizeList();
+    auto VM_circ = darkpool_ob.getVMCircuit().orderGatesByLevel();
 
-    std::unordered_map<common::utils::wire_t, int> LTZ_input_pid_map;
-    std::unordered_map<common::utils::wire_t, BoolRing> LTZ_input_map;
-    std::unordered_map<common::utils::wire_t, BoolRing> LTZ_bit_mask_map;
-    std::vector<AuthAddShare<BoolRing>> LTZ_output_mask;
-    std::vector<TPShare<BoolRing>> LTZ_output_tpmask;
+    std::cout << "--- Circuit ---\n";
+    std::cout << VM_circ << std::endl;
 
-    for (const auto& g : LTZ_circ.gates_by_level[0]) {
+    std::unordered_map<common::utils::wire_t, int> input_pid_map;
+    std::unordered_map<common::utils::wire_t, Field> input_map;
+
+    for (const auto& g : VM_circ.gates_by_level[0]) {
         if (g->type == common::utils::GateType::kInp) {
-            LTZ_input_pid_map[g->out] = 1;
-            LTZ_input_map[g->out] = 1;
-            LTZ_bit_mask_map[g->out] = 0;
-        }
-    }
-
-    std::unordered_map<common::utils::wire_t, int> post_LTZ_input_pid_map;
-    std::unordered_map<common::utils::wire_t, Field> post_LTZ_input_map;
-
-    for (const auto& g : post_LTZ_circ.gates_by_level[0]) {
-        if (g->type == common::utils::GateType::kInp) {
-            post_LTZ_input_pid_map[g->out] = 1;
-            post_LTZ_input_map[g->out] = 1;
-        }
-    }
-
-    std::unordered_map<common::utils::wire_t, int> para_LTZ_input_pid_map;
-    std::unordered_map<common::utils::wire_t, BoolRing> para_LTZ_input_map;
-    std::unordered_map<common::utils::wire_t, BoolRing> para_LTZ_bit_mask_map;
-    std::vector<AuthAddShare<BoolRing>> para_LTZ_output_mask;
-    std::vector<TPShare<BoolRing>> para_LTZ_output_tpmask;
-
-    for (const auto& g : para_LTZ_circ.gates_by_level[0]) {
-        if (g->type == common::utils::GateType::kInp) {
-            para_LTZ_input_pid_map[g->out] = 1;
-            para_LTZ_input_map[g->out] = 1;
-            para_LTZ_bit_mask_map[g->out] = 0;
-        }
-    }
-
-    std::unordered_map<common::utils::wire_t, int> post_para_LTZ_input_pid_map;
-    std::unordered_map<common::utils::wire_t, Field> post_para_LTZ_input_map;
-
-    for (const auto& g : post_para_LTZ_circ.gates_by_level[0]) {
-        if (g->type == common::utils::GateType::kInp) {
-            post_para_LTZ_input_pid_map[g->out] = 1;
-            post_para_LTZ_input_map[g->out] = 1;
+            input_pid_map[g->out] = 1;
+            input_map[g->out] = 1;
         }
     }
 
@@ -186,26 +101,14 @@ void benchmark(const bpo::variables_map& opts) {
         StatsPoint start(*network);
         
         // Offline
-        OfflineBoolEvaluator LTZ_off_eval(nP, pid, network, LTZ_circ, seed);
-        OfflineEvaluator post_LTZ_off_eval(nP, pid, network, post_LTZ_circ, security_param, threads, seed);
-        OfflineBoolEvaluator para_LTZ_off_eval(nP, pid, network, para_LTZ_circ, seed);
-        OfflineEvaluator post_para_LTZ_off_eval(nP, pid, network, post_para_LTZ_circ, security_param, threads, seed);
+        OfflineEvaluator VM_off_eval(nP, pid, network, VM_circ, security_param, threads, seed);
+
+        auto VM_preproc = VM_off_eval.run(input_pid_map);
         
-        auto LTZ_preproc = LTZ_off_eval.run(LTZ_input_pid_map, LTZ_bit_mask_map, LTZ_output_mask, LTZ_output_tpmask);
-        auto post_LTZ_preproc = post_LTZ_off_eval.run(post_LTZ_input_pid_map);
-        auto para_LTZ_preproc = para_LTZ_off_eval.run(para_LTZ_input_pid_map, para_LTZ_bit_mask_map, para_LTZ_output_mask, para_LTZ_output_tpmask);
-        auto post_para_LTZ_preproc = post_para_LTZ_off_eval.run(post_para_LTZ_input_pid_map);
-
         //Online
-        BoolEvaluator LTZ_eval(nP, pid, network, std::move(LTZ_preproc), LTZ_circ, seed);
-        OnlineEvaluator post_LTZ_eval(nP, pid, network, std::move(post_LTZ_preproc), post_LTZ_circ, security_param, threads, seed);
-        BoolEvaluator para_LTZ_eval(nP, pid, network, std::move(para_LTZ_preproc), para_LTZ_circ, seed);
-        OnlineEvaluator post_para_LTZ_eval(nP, pid, network, std::move(post_para_LTZ_preproc), post_para_LTZ_circ, security_param, threads, seed);
+        OnlineEvaluator VM_eval(nP, pid, network, std::move(VM_preproc), VM_circ, security_param, threads, seed);
 
-        auto LTZ_res = LTZ_eval.evaluateCircuit(LTZ_input_map);
-        auto post_LTZ_res = post_LTZ_eval.evaluateCircuit(post_LTZ_input_map);
-        auto para_LTZ_res = para_LTZ_eval.evaluateCircuit(para_LTZ_input_map);
-        auto post_para_LTZ_res = post_para_LTZ_eval.evaluateCircuit(post_para_LTZ_input_map);
+        auto VM_res = VM_eval.evaluateCircuit(input_map);
 
 
         StatsPoint end(*network);

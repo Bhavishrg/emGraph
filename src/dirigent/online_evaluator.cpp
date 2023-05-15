@@ -238,11 +238,7 @@ void OnlineEvaluator::ltzEvaluate(
             }
             r_ltz_pad.push_back(r_sum);
         
-            
-            auto del_w = pre_ltz->mask_w;
-            auto del_b = pre_ltz->mask_b;
-
-            q_share[i] = del_b * (output_share_val[i]) + del_w;
+            q_share[i] = pre_ltz->mask_b * (output_share_val[i]) + pre_ltz->mask_w;
             for (int pid = 1; pid <= nP_; pid++)  {
                 q_share[i].addWithAdder(r_ltz[id_-1], id_, pid);
             }
@@ -550,8 +546,6 @@ void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth,
             case common::utils::GateType::kLtz: {
                 auto* g = static_cast<common::utils::FIn1Gate*>(gate.get());
                 if(id_ != 0) {
-                    auto* pre_ltz = static_cast<PreprocLtzGate<Field>*>(
-                                        preproc_.gates[g->out].get());
                     q_val_[g->out] = ltz_all[idx_ltz];
                     // m_w
                     auto m_w = q_val_[g->out] - r_ltz_pad[idx_ltz];

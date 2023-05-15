@@ -94,6 +94,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "src/CMakeFiles/QuadSquad.dir/DependInfo.cmake"
+  "benchmark/CMakeFiles/emulated_VM.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/Darkpool_VM.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/emulated_CDA.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/Darkpool_CDA.dir/DependInfo.cmake"
