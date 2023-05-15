@@ -69,7 +69,8 @@ std::ostream& operator<<(std::ostream& os, GateType type) {
       break;
 
     case kLtz: 
-      os<< "Less than zero";
+      os << "Less than zero";
+      break;
 
     case kDotprod:
       os << "Dotproduct";

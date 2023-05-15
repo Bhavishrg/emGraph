@@ -20,10 +20,13 @@ namespace bpo = boost::program_options;
 //     return circ;  
 // }
 common::utils::Circuit<Field> LTZCircuit(int repeat) {
+    std::cout<< "repeat = " << repeat << std::endl;
     common::utils::Circuit<Field> circ;
     std::vector<wire_t> w_ltz(repeat);
+    std::vector<wire_t> w_ltz_o(repeat);
     for(size_t i = 0; i < repeat; i++) {
         w_ltz[i] = circ.newInputWire();
+        w_ltz_o[i] = circ.addGate(GateType::kLtz, w_ltz[i]);
         circ.setAsOutput(w_ltz[i]);
     }
     
@@ -91,7 +94,7 @@ void benchmark(const bpo::variables_map& opts) {
     }
     std::cout << std::endl;
 
-    auto circ = LTZCircuit(nP).orderGatesByLevel();
+    auto circ = LTZCircuit(2 * gates_per_level + depth ).orderGatesByLevel();
     std::cout << "--- Circuit ---\n";
     std::cout << circ << std::endl;
 

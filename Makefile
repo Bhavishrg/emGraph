@@ -140,6 +140,19 @@ QuadSquad/fast:
 .PHONY : QuadSquad/fast
 
 #=============================================================================
+# Target rules for targets named emulated_VM
+
+# Build rule for target.
+emulated_VM: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emulated_VM
+.PHONY : emulated_VM
+
+# fast build rule for target.
+emulated_VM/fast:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/emulated_VM.dir/build.make benchmark/CMakeFiles/emulated_VM.dir/build
+.PHONY : emulated_VM/fast
+
+#=============================================================================
 # Target rules for targets named Darkpool_VM
 
 # Build rule for target.
@@ -446,6 +459,7 @@ help:
 	@echo "... dirigent_offline"
 	@echo "... dirigent_online"
 	@echo "... emulated_CDA"
+	@echo "... emulated_VM"
 	@echo "... io_test"
 	@echo "... offline_mpc_sub"
 	@echo "... offline_mpc_tp"
