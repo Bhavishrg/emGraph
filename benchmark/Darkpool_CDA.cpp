@@ -109,7 +109,7 @@ void benchmark(const bpo::variables_map& opts) {
 
     for (size_t r = 0; r < repeat; ++r) {
         
-
+        StatsPoint start(*network);
         // Offline 
         OfflineEvaluator CDA_off_eval(nP, pid, network, CDA_circ, security_param, threads, seed);
 
@@ -118,7 +118,7 @@ void benchmark(const bpo::variables_map& opts) {
         OnlineEvaluator CDA_eval(nP, pid, network, std::move(CDA_preproc), CDA_circ, 
                                                                   security_param, threads, seed);
         CDA_eval.setRandomInputs();
-        StatsPoint start(*network);
+        
         // auto CDA_res = CDA_eval.evaluateCircuit(input_map);
         for (size_t i = 0; i < CDA_circ.gates_by_level.size(); ++i) {
             CDA_eval.evaluateGatesAtDepth(i);

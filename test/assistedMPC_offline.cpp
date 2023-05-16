@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE(random_share) {
 
   BOOST_AUTO_TEST_CASE(random_share_party) {
   int nP = 5;
-  
+  int dealer = 1;
   std::vector<std::future<AuthAddShare<Field>>> parties;
   TPShare<Field> tpshares;
   for (int i = 0; i <= nP; i++) {
