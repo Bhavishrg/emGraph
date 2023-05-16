@@ -211,6 +211,20 @@ online_test/fast:
 .PHONY : online_test/fast
 
 # Convenience name for target.
+test/CMakeFiles/assistedMPC_offline_test.dir/rule:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/assistedMPC_offline_test.dir/rule
+.PHONY : test/CMakeFiles/assistedMPC_offline_test.dir/rule
+
+# Convenience name for target.
+assistedMPC_offline_test: test/CMakeFiles/assistedMPC_offline_test.dir/rule
+.PHONY : assistedMPC_offline_test
+
+# fast build rule for target.
+assistedMPC_offline_test/fast:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/assistedMPC_offline_test.dir/build.make test/CMakeFiles/assistedMPC_offline_test.dir/build
+.PHONY : assistedMPC_offline_test/fast
+
+# Convenience name for target.
 test/CMakeFiles/tests.dir/rule:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/tests.dir/rule
 .PHONY : test/CMakeFiles/tests.dir/rule
@@ -223,6 +237,30 @@ tests: test/CMakeFiles/tests.dir/rule
 tests/fast:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/tests.dir/build.make test/CMakeFiles/tests.dir/build
 .PHONY : tests/fast
+
+assistedMPC_offline.o: assistedMPC_offline.cpp.o
+.PHONY : assistedMPC_offline.o
+
+# target to build an object file
+assistedMPC_offline.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/assistedMPC_offline_test.dir/build.make test/CMakeFiles/assistedMPC_offline_test.dir/assistedMPC_offline.cpp.o
+.PHONY : assistedMPC_offline.cpp.o
+
+assistedMPC_offline.i: assistedMPC_offline.cpp.i
+.PHONY : assistedMPC_offline.i
+
+# target to preprocess a source file
+assistedMPC_offline.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/assistedMPC_offline_test.dir/build.make test/CMakeFiles/assistedMPC_offline_test.dir/assistedMPC_offline.cpp.i
+.PHONY : assistedMPC_offline.cpp.i
+
+assistedMPC_offline.s: assistedMPC_offline.cpp.s
+.PHONY : assistedMPC_offline.s
+
+# target to generate assembly for a file
+assistedMPC_offline.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/assistedMPC_offline_test.dir/build.make test/CMakeFiles/assistedMPC_offline_test.dir/assistedMPC_offline.cpp.s
+.PHONY : assistedMPC_offline.cpp.s
 
 io.o: io.cpp.o
 .PHONY : io.o
@@ -378,12 +416,16 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... tests"
+	@echo "... assistedMPC_offline_test"
 	@echo "... io_test"
 	@echo "... offline_test"
 	@echo "... online_test"
 	@echo "... rand_test"
 	@echo "... sharing_test"
 	@echo "... utils_test"
+	@echo "... assistedMPC_offline.o"
+	@echo "... assistedMPC_offline.i"
+	@echo "... assistedMPC_offline.s"
 	@echo "... io.o"
 	@echo "... io.i"
 	@echo "... io.s"

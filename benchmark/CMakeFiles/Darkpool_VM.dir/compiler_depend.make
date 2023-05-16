@@ -977,6 +977,40 @@ benchmark/CMakeFiles/Darkpool_VM.dir/Darkpool_VM.cpp.o: benchmark/Darkpool_VM.cp
   /usr/local/include/emp-tool/gc/privacy_free_gen.h \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
+  src/utils/types.h \
+  /usr/local/include/NTL/ZZ_p.h \
+  /usr/local/include/NTL/ZZ.h \
+  /usr/local/include/NTL/lip.h \
+  /usr/local/include/NTL/ctools.h \
+  /usr/local/include/NTL/config.h \
+  /usr/local/include/NTL/mach_desc.h \
+  /usr/local/include/NTL/ALL_FEATURES.h \
+  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
+  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
+  /usr/local/include/NTL/HAVE_LL_TYPE.h \
+  /usr/local/include/NTL/HAVE_SSSE3.h \
+  /usr/local/include/NTL/HAVE_AVX.h \
+  /usr/local/include/NTL/HAVE_PCLMUL.h \
+  /usr/local/include/NTL/HAVE_AVX2.h \
+  /usr/local/include/NTL/HAVE_FMA.h \
+  /usr/local/include/NTL/HAVE_AVX512F.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
+  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
+  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
+  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
+  /usr/local/include/NTL/HAVE_AES_NI.h \
+  /usr/local/include/NTL/HAVE_KMA.h \
+  /usr/local/include/NTL/PackageInfo.h \
+  /usr/local/include/NTL/gmp_aux.h \
+  /usr/local/include/NTL/tools.h \
+  /usr/local/include/NTL/new.h \
+  /usr/local/include/NTL/vector.h \
+  /usr/local/include/NTL/SmartPtr.h \
+  /usr/local/include/NTL/thread.h \
+  /usr/local/include/NTL/sp_arith.h \
+  /usr/local/include/NTL/ZZVec.h \
+  /usr/local/include/NTL/Lazy.h \
   src/dirigent/offline_evaluator.h \
   src/io/netmp.h \
   src/utils/circuit.h \
@@ -1209,39 +1243,6 @@ benchmark/CMakeFiles/Darkpool_VM.dir/Darkpool_VM.cpp.o: benchmark/Darkpool_VM.cp
   /usr/local/include/boost/format/free_funcs.hpp \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
   src/utils/helpers.h \
-  /usr/local/include/NTL/ZZ_p.h \
-  /usr/local/include/NTL/ZZ.h \
-  /usr/local/include/NTL/lip.h \
-  /usr/local/include/NTL/ctools.h \
-  /usr/local/include/NTL/config.h \
-  /usr/local/include/NTL/mach_desc.h \
-  /usr/local/include/NTL/ALL_FEATURES.h \
-  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
-  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
-  /usr/local/include/NTL/HAVE_LL_TYPE.h \
-  /usr/local/include/NTL/HAVE_SSSE3.h \
-  /usr/local/include/NTL/HAVE_AVX.h \
-  /usr/local/include/NTL/HAVE_PCLMUL.h \
-  /usr/local/include/NTL/HAVE_AVX2.h \
-  /usr/local/include/NTL/HAVE_FMA.h \
-  /usr/local/include/NTL/HAVE_AVX512F.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
-  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
-  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
-  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
-  /usr/local/include/NTL/HAVE_AES_NI.h \
-  /usr/local/include/NTL/HAVE_KMA.h \
-  /usr/local/include/NTL/PackageInfo.h \
-  /usr/local/include/NTL/gmp_aux.h \
-  /usr/local/include/NTL/tools.h \
-  /usr/local/include/NTL/new.h \
-  /usr/local/include/NTL/vector.h \
-  /usr/local/include/NTL/SmartPtr.h \
-  /usr/local/include/NTL/thread.h \
-  /usr/local/include/NTL/sp_arith.h \
-  /usr/local/include/NTL/ZZVec.h \
-  /usr/local/include/NTL/Lazy.h \
   /usr/local/include/NTL/ZZ_pE.h \
   /usr/local/include/NTL/matrix.h \
   /usr/local/include/NTL/vec_long.h \
@@ -1253,9 +1254,10 @@ benchmark/CMakeFiles/Darkpool_VM.dir/Darkpool_VM.cpp.o: benchmark/Darkpool_VM.cp
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
   src/io/netmp.h \
-  src/utils/types.h \
   src/dirigent/preproc.h \
   src/dirigent/sharing.h \
+  src/utils/helpers.h \
+  src/utils/types.h \
   src/dirigent/rand_gen_pool.h \
   src/dirigent/online_evaluator.h \
   src/utils/circuit.h \
@@ -1529,6 +1531,7 @@ benchmark/CMakeFiles/Darkpool_VM.dir/Darkpool_VM.cpp.o: benchmark/Darkpool_VM.cp
   /usr/local/include/boost/type_traits/remove_volatile.hpp \
   /usr/local/include/boost/type_traits/integral_promotion.hpp \
   /usr/local/include/boost/type_traits/promote.hpp \
+  src/utils/circuit.h \
   /usr/local/include/boost/program_options.hpp \
   /usr/local/include/boost/program_options/options_description.hpp \
   /usr/local/include/boost/program_options/config.hpp \
@@ -2754,6 +2757,40 @@ benchmark/CMakeFiles/Darkpool_VM.dir/utils.cpp.o: benchmark/utils.cpp \
   /usr/local/include/emp-tool/gc/privacy_free_gen.h \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
+  src/utils/types.h \
+  /usr/local/include/NTL/ZZ_p.h \
+  /usr/local/include/NTL/ZZ.h \
+  /usr/local/include/NTL/lip.h \
+  /usr/local/include/NTL/ctools.h \
+  /usr/local/include/NTL/config.h \
+  /usr/local/include/NTL/mach_desc.h \
+  /usr/local/include/NTL/ALL_FEATURES.h \
+  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
+  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
+  /usr/local/include/NTL/HAVE_LL_TYPE.h \
+  /usr/local/include/NTL/HAVE_SSSE3.h \
+  /usr/local/include/NTL/HAVE_AVX.h \
+  /usr/local/include/NTL/HAVE_PCLMUL.h \
+  /usr/local/include/NTL/HAVE_AVX2.h \
+  /usr/local/include/NTL/HAVE_FMA.h \
+  /usr/local/include/NTL/HAVE_AVX512F.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
+  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
+  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
+  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
+  /usr/local/include/NTL/HAVE_AES_NI.h \
+  /usr/local/include/NTL/HAVE_KMA.h \
+  /usr/local/include/NTL/PackageInfo.h \
+  /usr/local/include/NTL/gmp_aux.h \
+  /usr/local/include/NTL/tools.h \
+  /usr/local/include/NTL/new.h \
+  /usr/local/include/NTL/vector.h \
+  /usr/local/include/NTL/SmartPtr.h \
+  /usr/local/include/NTL/thread.h \
+  /usr/local/include/NTL/sp_arith.h \
+  /usr/local/include/NTL/ZZVec.h \
+  /usr/local/include/NTL/Lazy.h \
   /usr/local/include/nlohmann/json.hpp \
   /usr/local/include/nlohmann/adl_serializer.hpp \
   /usr/local/include/nlohmann/detail/conversions/from_json.hpp \
@@ -2797,39 +2834,6 @@ benchmark/CMakeFiles/Darkpool_VM.dir/utils.cpp.o: benchmark/utils.cpp \
   /usr/local/include/nlohmann/detail/macro_unscope.hpp \
   /usr/local/include/nlohmann/thirdparty/hedley/hedley_undef.hpp \
   /usr/local/include/NTL/BasicThreadPool.h \
-  /usr/local/include/NTL/tools.h \
-  /usr/local/include/NTL/ctools.h \
-  /usr/local/include/NTL/config.h \
-  /usr/local/include/NTL/mach_desc.h \
-  /usr/local/include/NTL/ALL_FEATURES.h \
-  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
-  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
-  /usr/local/include/NTL/HAVE_LL_TYPE.h \
-  /usr/local/include/NTL/HAVE_SSSE3.h \
-  /usr/local/include/NTL/HAVE_AVX.h \
-  /usr/local/include/NTL/HAVE_PCLMUL.h \
-  /usr/local/include/NTL/HAVE_AVX2.h \
-  /usr/local/include/NTL/HAVE_FMA.h \
-  /usr/local/include/NTL/HAVE_AVX512F.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
-  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
-  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
-  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
-  /usr/local/include/NTL/HAVE_AES_NI.h \
-  /usr/local/include/NTL/HAVE_KMA.h \
-  /usr/local/include/NTL/PackageInfo.h \
-  /usr/local/include/NTL/new.h \
-  /usr/local/include/NTL/vector.h \
-  /usr/local/include/NTL/SmartPtr.h \
-  /usr/local/include/NTL/thread.h \
-  /usr/local/include/NTL/ZZ_p.h \
-  /usr/local/include/NTL/ZZ.h \
-  /usr/local/include/NTL/lip.h \
-  /usr/local/include/NTL/gmp_aux.h \
-  /usr/local/include/NTL/sp_arith.h \
-  /usr/local/include/NTL/ZZVec.h \
-  /usr/local/include/NTL/Lazy.h \
   /usr/local/include/NTL/ZZ_pE.h \
   /usr/local/include/NTL/matrix.h \
   /usr/local/include/NTL/vec_long.h \
@@ -3444,9 +3448,9 @@ benchmark/utils.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/mach/machine/vm_param.h:
 
-/usr/local/include/boost/container_hash/is_unordered_range.hpp:
-
 /usr/local/include/NTL/tools.h:
+
+/usr/local/include/boost/container_hash/is_unordered_range.hpp:
 
 /usr/local/include/boost/type_traits/has_multiplies_assign.hpp:
 
@@ -3764,50 +3768,6 @@ src/dirigent/sharing.h:
 
 /usr/local/include/NTL/vec_long.h:
 
-/usr/local/include/NTL/Lazy.h:
-
-/usr/local/include/boost/preprocessor/arithmetic/inc.hpp:
-
-/usr/local/include/NTL/sp_arith.h:
-
-/usr/local/include/boost/mpl/aux_/arithmetic_op.hpp:
-
-/usr/local/include/NTL/SmartPtr.h:
-
-/usr/local/include/NTL/new.h:
-
-/usr/local/include/boost/type_traits/has_trivial_destructor.hpp:
-
-/usr/local/include/NTL/PackageInfo.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__algorithm/reverse_copy.h:
-
-/usr/local/include/NTL/HAVE_POSIX_TIME.h:
-
-/usr/local/include/NTL/HAVE_COPY_TRAITS2.h:
-
-/usr/local/include/boost/type_traits/has_bit_or_assign.hpp:
-
-/usr/local/include/NTL/HAVE_COPY_TRAITS1.h:
-
-/usr/local/include/nlohmann/detail/meta/cpp_future.hpp:
-
-/usr/local/include/NTL/HAVE_AVX512F.h:
-
-/usr/local/include/NTL/HAVE_FMA.h:
-
-/usr/local/include/boost/multi_array/storage_order.hpp:
-
-/usr/local/include/NTL/HAVE_AVX2.h:
-
-/usr/local/include/boost/optional/detail/optional_factory_support.hpp:
-
-/usr/local/include/NTL/HAVE_PCLMUL.h:
-
-/usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h:
-
-/usr/local/include/NTL/ALL_FEATURES.h:
-
 /usr/local/include/emp-tool/utils/hash.h:
 
 /usr/local/include/boost/mpl/aux_/preprocessor/enum.hpp:
@@ -3861,10 +3821,6 @@ src/dirigent/sharing.h:
 /usr/local/include/boost/smart_ptr/detail/sp_has_gcc_intrinsics.hpp:
 
 /usr/local/include/boost/smart_ptr/detail/shared_count.hpp:
-
-/usr/local/include/boost/mpl/size_t_fwd.hpp:
-
-/usr/local/include/boost/preprocessor/logical/and.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/gethostuuid.h:
 
@@ -3980,6 +3936,10 @@ src/dirigent/sharing.h:
 
 /usr/local/include/boost/mpl/aux_/config/bind.hpp:
 
+/usr/local/include/NTL/sp_arith.h:
+
+/usr/local/include/boost/preprocessor/arithmetic/inc.hpp:
+
 /usr/local/include/boost/core/allocator_access.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_suseconds_t.h:
@@ -4044,8 +4004,6 @@ src/dirigent/sharing.h:
 
 /usr/local/include/boost/type_traits/has_nothrow_assign.hpp:
 
-/usr/local/include/NTL/HAVE_BUILTIN_CLZL.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_fd_setsize.h:
 
 /usr/local/include/boost/type_traits/make_signed.hpp:
@@ -4053,10 +4011,6 @@ src/dirigent/sharing.h:
 /usr/local/include/boost/type_traits/has_trivial_move_assign.hpp:
 
 /usr/local/include/boost/type_traits/is_destructible.hpp:
-
-/usr/local/include/NTL/vector.h:
-
-/usr/local/include/boost/type_traits/is_constructible.hpp:
 
 /usr/local/include/boost/type_traits/is_const.hpp:
 
@@ -4214,8 +4168,6 @@ src/dirigent/sharing.h:
 
 /usr/local/include/boost/config/compiler/clang.hpp:
 
-/usr/local/include/boost/config.hpp:
-
 /usr/local/include/boost/detail/workaround.hpp:
 
 src/utils/circuit.h:
@@ -4223,6 +4175,58 @@ src/utils/circuit.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__iterator/prev.h:
 
 src/dirigent/offline_evaluator.h:
+
+/usr/local/include/NTL/Lazy.h:
+
+/usr/local/include/boost/config.hpp:
+
+/usr/local/include/boost/mpl/aux_/arithmetic_op.hpp:
+
+/usr/local/include/NTL/SmartPtr.h:
+
+/usr/local/include/boost/type_traits/is_constructible.hpp:
+
+/usr/local/include/NTL/vector.h:
+
+/usr/local/include/NTL/new.h:
+
+/usr/local/include/boost/mpl/size_t_fwd.hpp:
+
+/usr/local/include/boost/preprocessor/logical/and.hpp:
+
+/usr/local/include/boost/type_traits/has_trivial_destructor.hpp:
+
+/usr/local/include/NTL/PackageInfo.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__algorithm/reverse_copy.h:
+
+/usr/local/include/NTL/HAVE_POSIX_TIME.h:
+
+/usr/local/include/NTL/HAVE_COPY_TRAITS2.h:
+
+/usr/local/include/boost/type_traits/has_bit_or_assign.hpp:
+
+/usr/local/include/NTL/HAVE_COPY_TRAITS1.h:
+
+/usr/local/include/nlohmann/detail/meta/cpp_future.hpp:
+
+/usr/local/include/NTL/HAVE_AVX512F.h:
+
+/usr/local/include/NTL/HAVE_FMA.h:
+
+/usr/local/include/boost/multi_array/storage_order.hpp:
+
+/usr/local/include/NTL/HAVE_AVX2.h:
+
+/usr/local/include/boost/optional/detail/optional_factory_support.hpp:
+
+/usr/local/include/NTL/HAVE_PCLMUL.h:
+
+/usr/local/include/NTL/HAVE_BUILTIN_CLZL.h:
+
+/usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h:
+
+/usr/local/include/NTL/ALL_FEATURES.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__filesystem/copy_options.h:
 
@@ -4500,9 +4504,9 @@ src/dirigent/offline_evaluator.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__random/poisson_distribution.h:
 
-src/utils/types.h:
-
 /usr/local/include/boost/preprocessor/config/limits.hpp:
+
+src/utils/types.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__random/negative_binomial_distribution.h:
 
@@ -5228,11 +5232,11 @@ benchmark/utils.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__algorithm/partial_sort.h:
 
+/usr/local/include/boost/type_traits/decay.hpp:
+
 /usr/local/include/nlohmann/detail/output/binary_writer.hpp:
 
 /usr/local/include/NTL/ZZ.h:
-
-/usr/local/include/boost/type_traits/decay.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__random/cauchy_distribution.h:
 

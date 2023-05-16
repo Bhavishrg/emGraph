@@ -116,5 +116,6 @@ set(CMAKE_DEPEND_INFO_FILES
   "test/CMakeFiles/rand_test.dir/DependInfo.cmake"
   "test/CMakeFiles/offline_test.dir/DependInfo.cmake"
   "test/CMakeFiles/online_test.dir/DependInfo.cmake"
+  "test/CMakeFiles/assistedMPC_offline_test.dir/DependInfo.cmake"
   "test/CMakeFiles/tests.dir/DependInfo.cmake"
   )

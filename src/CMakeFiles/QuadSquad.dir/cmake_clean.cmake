@@ -1,4 +1,12 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.o"
+  "CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.o.d"
+  "CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.o"
+  "CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.o.d"
+  "CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.o"
+  "CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.o.d"
+  "CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.o"
+  "CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.o.d"
   "CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o"
   "CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o.d"
   "CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o"

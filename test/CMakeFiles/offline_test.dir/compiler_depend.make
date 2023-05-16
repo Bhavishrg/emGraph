@@ -977,7 +977,7 @@ test/CMakeFiles/offline_test.dir/offline.cpp.o: test/offline.cpp \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
   src/io/netmp.h \
-  src/utils/helpers.h \
+  src/utils/types.h \
   /usr/local/include/NTL/ZZ_p.h \
   /usr/local/include/NTL/ZZ.h \
   /usr/local/include/NTL/lip.h \
@@ -1011,6 +1011,7 @@ test/CMakeFiles/offline_test.dir/offline.cpp.o: test/offline.cpp \
   /usr/local/include/NTL/sp_arith.h \
   /usr/local/include/NTL/ZZVec.h \
   /usr/local/include/NTL/Lazy.h \
+  src/utils/helpers.h \
   /usr/local/include/NTL/ZZ_pE.h \
   /usr/local/include/NTL/matrix.h \
   /usr/local/include/NTL/vec_long.h \
@@ -1022,7 +1023,6 @@ test/CMakeFiles/offline_test.dir/offline.cpp.o: test/offline.cpp \
   /usr/local/include/NTL/mat_ZZ_p.h \
   /usr/local/include/NTL/vec_vec_ZZ_p.h \
   src/io/netmp.h \
-  src/utils/types.h \
   src/dirigent/offline_evaluator.h \
   src/io/netmp.h \
   src/utils/circuit.h \
@@ -1254,6 +1254,7 @@ test/CMakeFiles/offline_test.dir/offline.cpp.o: test/offline.cpp \
   /usr/local/include/boost/format/parsing.hpp \
   /usr/local/include/boost/format/free_funcs.hpp \
   /usr/local/include/boost/format/detail/unset_macros.hpp \
+  src/utils/helpers.h \
   src/dirigent/preproc.h \
   src/dirigent/sharing.h \
   src/utils/helpers.h \

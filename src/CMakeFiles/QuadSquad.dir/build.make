@@ -251,6 +251,62 @@ src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.s"
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/dirigent/online_evaluator.cpp -o CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.s
 
+src/CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.o: src/CMakeFiles/QuadSquad.dir/flags.make
+src/CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.o: src/assistedMPC/sharing.cpp
+src/CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.o: src/CMakeFiles/QuadSquad.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object src/CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.o"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.o -MF CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.o.d -o CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/assistedMPC/sharing.cpp
+
+src/CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.i"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/assistedMPC/sharing.cpp > CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.i
+
+src/CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.s"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/assistedMPC/sharing.cpp -o CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.s
+
+src/CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.o: src/CMakeFiles/QuadSquad.dir/flags.make
+src/CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.o: src/assistedMPC/rand_gen_pool.cpp
+src/CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.o: src/CMakeFiles/QuadSquad.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object src/CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.o"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.o -MF CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.o.d -o CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/assistedMPC/rand_gen_pool.cpp
+
+src/CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.i"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/assistedMPC/rand_gen_pool.cpp > CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.i
+
+src/CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.s"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/assistedMPC/rand_gen_pool.cpp -o CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.s
+
+src/CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.o: src/CMakeFiles/QuadSquad.dir/flags.make
+src/CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.o: src/assistedMPC/offline_evaluator.cpp
+src/CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.o: src/CMakeFiles/QuadSquad.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object src/CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.o"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.o -MF CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.o.d -o CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/assistedMPC/offline_evaluator.cpp
+
+src/CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.i"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/assistedMPC/offline_evaluator.cpp > CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.i
+
+src/CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.s"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/assistedMPC/offline_evaluator.cpp -o CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.s
+
+src/CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.o: src/CMakeFiles/QuadSquad.dir/flags.make
+src/CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.o: src/assistedMPC/online_evaluator.cpp
+src/CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.o: src/CMakeFiles/QuadSquad.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object src/CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.o"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.o -MF CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.o.d -o CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.o -c /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/assistedMPC/online_evaluator.cpp
+
+src/CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.i"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/assistedMPC/online_evaluator.cpp > CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.i
+
+src/CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.s"
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src/assistedMPC/online_evaluator.cpp -o CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.s
+
 # Object files for target QuadSquad
 QuadSquad_OBJECTS = \
 "CMakeFiles/QuadSquad.dir/utils/circuit.cpp.o" \
@@ -265,7 +321,11 @@ QuadSquad_OBJECTS = \
 "CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.o" \
 "CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o" \
 "CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o" \
-"CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o"
+"CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o" \
+"CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.o" \
+"CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.o" \
+"CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.o" \
+"CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.o"
 
 # External object files for target QuadSquad
 QuadSquad_EXTERNAL_OBJECTS =
@@ -283,9 +343,13 @@ src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/dirigent/sharing.cpp.o
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/dirigent/rand_gen_pool.cpp.o
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/dirigent/offline_evaluator.cpp.o
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/dirigent/online_evaluator.cpp.o
+src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.o
+src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.o
+src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.o
+src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.o
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/build.make
 src/libQuadSquad.a: src/CMakeFiles/QuadSquad.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX static library libQuadSquad.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Linking CXX static library libQuadSquad.a"
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && $(CMAKE_COMMAND) -P CMakeFiles/QuadSquad.dir/cmake_clean_target.cmake
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/QuadSquad.dir/link.txt --verbose=$(VERBOSE)
 

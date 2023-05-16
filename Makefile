@@ -426,6 +426,19 @@ online_test/fast:
 .PHONY : online_test/fast
 
 #=============================================================================
+# Target rules for targets named assistedMPC_offline_test
+
+# Build rule for target.
+assistedMPC_offline_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 assistedMPC_offline_test
+.PHONY : assistedMPC_offline_test
+
+# fast build rule for target.
+assistedMPC_offline_test/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/assistedMPC_offline_test.dir/build.make test/CMakeFiles/assistedMPC_offline_test.dir/build
+.PHONY : assistedMPC_offline_test/fast
+
+#=============================================================================
 # Target rules for targets named tests
 
 # Build rule for target.
@@ -453,6 +466,7 @@ help:
 	@echo "... Darkpool_VM"
 	@echo "... LTZ"
 	@echo "... QuadSquad"
+	@echo "... assistedMPC_offline_test"
 	@echo "... auction"
 	@echo "... dirigent_bool_mpc"
 	@echo "... dirigent_mpc"

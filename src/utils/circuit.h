@@ -781,13 +781,14 @@ class Circuit {
     for(size_t i = 0; i < N; i++) {
       x[i] = circ.newInputWire();
     }
-    std::vector<wire_t> pi_x(N);
-    for(int i = 0; i < N; i++) {
-        pi_x[i] = circ.addGate(GateType::kDotprod, M_pi[i], x);
+    // std::vector<wire_t> pi_x(N);
+    // for(int i = 0; i < N; i++) {
+    //     pi_x[i] = circ.addGate(GateType::kDotprod, M_pi[i], x);
         
-    }
+    // }
     std::vector<wire_t> leveli(N);
-    leveli = std::move(pi_x);
+    // leveli = std::move(pi_x);
+    leveli = std::move(x);
 
     R neg_one = -1;
     R one = 1;

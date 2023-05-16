@@ -658,18 +658,11 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
                         mult4_num + dotprod_num + 
                         eqz_num + ltz_num;
 
-    
-    for (auto& gate : circ_.gates_by_level[depth]) {
-        switch (gate->type) {
-            case::common::utils::GateType::kEqz: {
-                eqzEvaluate(eqz_gates, eqz_nonTP, r_eqz_pad, eqz_q_share, eqz_masked_b);
-                break;
-            }
-            case::common::utils::GateType::kLtz: {
-                ltzEvaluate(ltz_gates, ltz_nonTP, r_ltz_pad, ltz_q_share, ltz_masked_b, d_dash);
-                break;
-            }
-        }
+    if(eqz_num > 0) {
+        eqzEvaluate(eqz_gates, eqz_nonTP, r_eqz_pad, eqz_q_share, eqz_masked_b);
+    }
+    if(ltz_num > 0) {
+        ltzEvaluate(ltz_gates, ltz_nonTP, r_ltz_pad, ltz_q_share, ltz_masked_b, d_dash);
     }
 
     if(id_ != 0) {

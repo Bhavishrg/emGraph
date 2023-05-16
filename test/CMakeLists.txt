@@ -18,9 +18,12 @@ target_link_libraries(offline_test Boost::unit_test_framework Threads::Threads Q
 add_executable(online_test online.cpp)
 target_link_libraries(online_test Boost::unit_test_framework Threads::Threads QuadSquad)
 
+add_executable(assistedMPC_offline_test assistedMPC_offline.cpp)
+target_link_libraries(assistedMPC_offline_test Boost::unit_test_framework Threads::Threads QuadSquad NTL GMP)
+
 add_custom_target(tests)
 add_dependencies(tests
-    io_test sharing_test utils_test rand_test offline_test online_test)
+    io_test sharing_test utils_test rand_test offline_test online_test assistedMPC_offline_test)
 
 add_test(NAME io_test COMMAND io_test)
 add_test(NAME sharing_test COMMAND sharing_test)
@@ -28,3 +31,4 @@ add_test(NAME utils_test COMMAND utils_test)
 add_test(NAME rand_test COMMAND rand_test)
 add_test(NAME offline_test COMMAND offline_test)
 add_test(NAME online_test COMMAND online_test)
+add_test(NAME assistedMPC_offline_test COMMAND assistedMPC_offline_test)

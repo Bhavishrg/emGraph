@@ -977,7 +977,7 @@ benchmark/CMakeFiles/offline_mpc_sub.dir/offline_mpc_sub.cpp.o: benchmark/offlin
   /usr/local/include/emp-tool/gc/privacy_free_gen.h \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
-  src/quadsquad/offline_evaluator.h \
+  src/utils/types.h \
   /usr/local/include/NTL/ZZ_p.h \
   /usr/local/include/NTL/ZZ.h \
   /usr/local/include/NTL/lip.h \
@@ -1011,6 +1011,7 @@ benchmark/CMakeFiles/offline_mpc_sub.dir/offline_mpc_sub.cpp.o: benchmark/offlin
   /usr/local/include/NTL/sp_arith.h \
   /usr/local/include/NTL/ZZVec.h \
   /usr/local/include/NTL/Lazy.h \
+  src/quadsquad/offline_evaluator.h \
   /usr/local/include/NTL/ZZ_pE.h \
   /usr/local/include/NTL/matrix.h \
   /usr/local/include/NTL/vec_long.h \
@@ -1253,8 +1254,8 @@ benchmark/CMakeFiles/offline_mpc_sub.dir/offline_mpc_sub.cpp.o: benchmark/offlin
   /usr/local/include/boost/format/detail/unset_macros.hpp \
   src/utils/helpers.h \
   src/io/netmp.h \
-  src/utils/types.h \
   src/quadsquad/jump_provider.h \
+  src/utils/helpers.h \
   src/quadsquad/ot_provider.h \
   /usr/local/include/emp-ot/emp-ot.h \
   /usr/local/include/emp-ot/ot.h \
@@ -1275,6 +1276,7 @@ benchmark/CMakeFiles/offline_mpc_sub.dir/offline_mpc_sub.cpp.o: benchmark/offlin
   /usr/local/include/emp-ot/ferret/lpn_f2.h \
   /usr/local/include/emp-ot/ferret/constants.h \
   /usr/local/include/emp-ot/ferret/ferret_cot.hpp \
+  src/utils/types.h \
   src/quadsquad/preproc.h \
   src/quadsquad/sharing.h \
   src/quadsquad/rand_gen_pool.h \
@@ -2671,6 +2673,40 @@ benchmark/CMakeFiles/offline_mpc_sub.dir/utils.cpp.o: benchmark/utils.cpp \
   /usr/local/include/emp-tool/gc/privacy_free_gen.h \
   /usr/local/include/emp-tool/execution/plain_circ.h \
   /usr/local/include/emp-tool/execution/plain_prot.h \
+  src/utils/types.h \
+  /usr/local/include/NTL/ZZ_p.h \
+  /usr/local/include/NTL/ZZ.h \
+  /usr/local/include/NTL/lip.h \
+  /usr/local/include/NTL/ctools.h \
+  /usr/local/include/NTL/config.h \
+  /usr/local/include/NTL/mach_desc.h \
+  /usr/local/include/NTL/ALL_FEATURES.h \
+  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
+  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
+  /usr/local/include/NTL/HAVE_LL_TYPE.h \
+  /usr/local/include/NTL/HAVE_SSSE3.h \
+  /usr/local/include/NTL/HAVE_AVX.h \
+  /usr/local/include/NTL/HAVE_PCLMUL.h \
+  /usr/local/include/NTL/HAVE_AVX2.h \
+  /usr/local/include/NTL/HAVE_FMA.h \
+  /usr/local/include/NTL/HAVE_AVX512F.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
+  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
+  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
+  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
+  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
+  /usr/local/include/NTL/HAVE_AES_NI.h \
+  /usr/local/include/NTL/HAVE_KMA.h \
+  /usr/local/include/NTL/PackageInfo.h \
+  /usr/local/include/NTL/gmp_aux.h \
+  /usr/local/include/NTL/tools.h \
+  /usr/local/include/NTL/new.h \
+  /usr/local/include/NTL/vector.h \
+  /usr/local/include/NTL/SmartPtr.h \
+  /usr/local/include/NTL/thread.h \
+  /usr/local/include/NTL/sp_arith.h \
+  /usr/local/include/NTL/ZZVec.h \
+  /usr/local/include/NTL/Lazy.h \
   /usr/local/include/nlohmann/json.hpp \
   /usr/local/include/nlohmann/adl_serializer.hpp \
   /usr/local/include/nlohmann/detail/conversions/from_json.hpp \
@@ -2714,39 +2750,6 @@ benchmark/CMakeFiles/offline_mpc_sub.dir/utils.cpp.o: benchmark/utils.cpp \
   /usr/local/include/nlohmann/detail/macro_unscope.hpp \
   /usr/local/include/nlohmann/thirdparty/hedley/hedley_undef.hpp \
   /usr/local/include/NTL/BasicThreadPool.h \
-  /usr/local/include/NTL/tools.h \
-  /usr/local/include/NTL/ctools.h \
-  /usr/local/include/NTL/config.h \
-  /usr/local/include/NTL/mach_desc.h \
-  /usr/local/include/NTL/ALL_FEATURES.h \
-  /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h \
-  /usr/local/include/NTL/HAVE_BUILTIN_CLZL.h \
-  /usr/local/include/NTL/HAVE_LL_TYPE.h \
-  /usr/local/include/NTL/HAVE_SSSE3.h \
-  /usr/local/include/NTL/HAVE_AVX.h \
-  /usr/local/include/NTL/HAVE_PCLMUL.h \
-  /usr/local/include/NTL/HAVE_AVX2.h \
-  /usr/local/include/NTL/HAVE_FMA.h \
-  /usr/local/include/NTL/HAVE_AVX512F.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS1.h \
-  /usr/local/include/NTL/HAVE_COPY_TRAITS2.h \
-  /usr/local/include/NTL/HAVE_CHRONO_TIME.h \
-  /usr/local/include/NTL/HAVE_MACOS_TIME.h \
-  /usr/local/include/NTL/HAVE_POSIX_TIME.h \
-  /usr/local/include/NTL/HAVE_AES_NI.h \
-  /usr/local/include/NTL/HAVE_KMA.h \
-  /usr/local/include/NTL/PackageInfo.h \
-  /usr/local/include/NTL/new.h \
-  /usr/local/include/NTL/vector.h \
-  /usr/local/include/NTL/SmartPtr.h \
-  /usr/local/include/NTL/thread.h \
-  /usr/local/include/NTL/ZZ_p.h \
-  /usr/local/include/NTL/ZZ.h \
-  /usr/local/include/NTL/lip.h \
-  /usr/local/include/NTL/gmp_aux.h \
-  /usr/local/include/NTL/sp_arith.h \
-  /usr/local/include/NTL/ZZVec.h \
-  /usr/local/include/NTL/Lazy.h \
   /usr/local/include/NTL/ZZ_pE.h \
   /usr/local/include/NTL/matrix.h \
   /usr/local/include/NTL/vec_long.h \
@@ -3971,6 +3974,10 @@ src/utils/circuit.h:
 
 /usr/local/include/boost/preprocessor/variadic/has_opt.hpp:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/mach/thread_special_ports.h:
+
+src/quadsquad/offline_evaluator.h:
+
 /usr/local/include/NTL/Lazy.h:
 
 /usr/local/include/boost/config.hpp:
@@ -4012,10 +4019,6 @@ src/utils/circuit.h:
 /usr/local/include/NTL/HAVE_ALIGNED_ARRAY.h:
 
 /usr/local/include/NTL/ALL_FEATURES.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/mach/thread_special_ports.h:
-
-src/quadsquad/offline_evaluator.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__filesystem/copy_options.h:
 
@@ -4269,9 +4272,9 @@ src/quadsquad/offline_evaluator.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__random/poisson_distribution.h:
 
-src/utils/types.h:
-
 /usr/local/include/boost/preprocessor/config/limits.hpp:
+
+src/utils/types.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__random/negative_binomial_distribution.h:
 

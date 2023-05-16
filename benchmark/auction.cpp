@@ -24,8 +24,9 @@ void benchmark(const bpo::variables_map& opts) {
         save_file = opts["output"].as<std::string>();
     }
 
-    auto gates_per_level = opts["gates-per-level"].as<size_t>();
-    auto depth = opts["depth"].as<size_t>();
+    // auto gates_per_level = opts["gates-per-level"].as<size_t>();
+    // auto depth = opts["depth"].as<size_t>();
+    auto bids = opts["bids"].as<size_t>();
     auto nP = opts["num-parties"].as<size_t>();
     auto pid = opts["pid"].as<size_t>();
     auto security_param = opts["security-param"].as<size_t>();
@@ -59,9 +60,7 @@ void benchmark(const bpo::variables_map& opts) {
     }
 
     json output_data;
-    output_data["details"] = {{"gates_per_level", gates_per_level},
-                                {"depth", depth},
-                                {"num-parties", nP},
+     output_data["details"] = {{"num-parties", nP},
                                 {"pid", pid},
                                 {"security_param", security_param},
                                 {"threads", threads},
@@ -75,9 +74,11 @@ void benchmark(const bpo::variables_map& opts) {
     }
     std::cout << std::endl;
     int p = 1;
-    while (p < nP) {
+    while (p < bids) {
         p *= 2;
     }
+    // p = bids; 
+
     common::utils::LevelOrderedCircuit auc_circ = common::utils::Circuit<Field>::generateAuction(p).orderGatesByLevel();
     std::unordered_map<common::utils::wire_t, int> input_pid_map;
     std::unordered_map<common::utils::wire_t, Field> input_map;
@@ -152,8 +153,9 @@ void benchmark(const bpo::variables_map& opts) {
 bpo::options_description programOptions() {
     bpo::options_description desc("Following options are supported by config file too.");
     desc.add_options()
-        ("gates-per-level,g", bpo::value<size_t>()->required(), "Number of gates at each level.")
-        ("depth,d", bpo::value<size_t>()->required(), "Multiplicative depth of circuit.")
+        // ("gates-per-level,g", bpo::value<size_t>()->required(), "Number of gates at each level.")
+        // ("depth,d", bpo::value<size_t>()->required(), "Multiplicative depth of circuit.")
+        ("bids,b", bpo::value<size_t>()->required(), "Number of gates at each level.")
         ("num-parties,n", bpo::value<size_t>()->required(), "Number of parties.")
         ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
         ("security-param", bpo::value<size_t>()->default_value(128), "Security parameter in bits.")

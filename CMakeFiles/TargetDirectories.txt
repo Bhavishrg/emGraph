@@ -30,6 +30,7 @@
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/test/CMakeFiles/rand_test.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/test/CMakeFiles/offline_test.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/test/CMakeFiles/online_test.dir
+/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/test/CMakeFiles/assistedMPC_offline_test.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/test/CMakeFiles/tests.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/test/CMakeFiles/test.dir
 /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/test/CMakeFiles/edit_cache.dir

@@ -140,6 +140,102 @@ QuadSquad/fast:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/build
 .PHONY : QuadSquad/fast
 
+assistedMPC/offline_evaluator.o: assistedMPC/offline_evaluator.cpp.o
+.PHONY : assistedMPC/offline_evaluator.o
+
+# target to build an object file
+assistedMPC/offline_evaluator.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.o
+.PHONY : assistedMPC/offline_evaluator.cpp.o
+
+assistedMPC/offline_evaluator.i: assistedMPC/offline_evaluator.cpp.i
+.PHONY : assistedMPC/offline_evaluator.i
+
+# target to preprocess a source file
+assistedMPC/offline_evaluator.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.i
+.PHONY : assistedMPC/offline_evaluator.cpp.i
+
+assistedMPC/offline_evaluator.s: assistedMPC/offline_evaluator.cpp.s
+.PHONY : assistedMPC/offline_evaluator.s
+
+# target to generate assembly for a file
+assistedMPC/offline_evaluator.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/assistedMPC/offline_evaluator.cpp.s
+.PHONY : assistedMPC/offline_evaluator.cpp.s
+
+assistedMPC/online_evaluator.o: assistedMPC/online_evaluator.cpp.o
+.PHONY : assistedMPC/online_evaluator.o
+
+# target to build an object file
+assistedMPC/online_evaluator.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.o
+.PHONY : assistedMPC/online_evaluator.cpp.o
+
+assistedMPC/online_evaluator.i: assistedMPC/online_evaluator.cpp.i
+.PHONY : assistedMPC/online_evaluator.i
+
+# target to preprocess a source file
+assistedMPC/online_evaluator.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.i
+.PHONY : assistedMPC/online_evaluator.cpp.i
+
+assistedMPC/online_evaluator.s: assistedMPC/online_evaluator.cpp.s
+.PHONY : assistedMPC/online_evaluator.s
+
+# target to generate assembly for a file
+assistedMPC/online_evaluator.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/assistedMPC/online_evaluator.cpp.s
+.PHONY : assistedMPC/online_evaluator.cpp.s
+
+assistedMPC/rand_gen_pool.o: assistedMPC/rand_gen_pool.cpp.o
+.PHONY : assistedMPC/rand_gen_pool.o
+
+# target to build an object file
+assistedMPC/rand_gen_pool.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.o
+.PHONY : assistedMPC/rand_gen_pool.cpp.o
+
+assistedMPC/rand_gen_pool.i: assistedMPC/rand_gen_pool.cpp.i
+.PHONY : assistedMPC/rand_gen_pool.i
+
+# target to preprocess a source file
+assistedMPC/rand_gen_pool.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.i
+.PHONY : assistedMPC/rand_gen_pool.cpp.i
+
+assistedMPC/rand_gen_pool.s: assistedMPC/rand_gen_pool.cpp.s
+.PHONY : assistedMPC/rand_gen_pool.s
+
+# target to generate assembly for a file
+assistedMPC/rand_gen_pool.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/assistedMPC/rand_gen_pool.cpp.s
+.PHONY : assistedMPC/rand_gen_pool.cpp.s
+
+assistedMPC/sharing.o: assistedMPC/sharing.cpp.o
+.PHONY : assistedMPC/sharing.o
+
+# target to build an object file
+assistedMPC/sharing.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.o
+.PHONY : assistedMPC/sharing.cpp.o
+
+assistedMPC/sharing.i: assistedMPC/sharing.cpp.i
+.PHONY : assistedMPC/sharing.i
+
+# target to preprocess a source file
+assistedMPC/sharing.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.i
+.PHONY : assistedMPC/sharing.cpp.i
+
+assistedMPC/sharing.s: assistedMPC/sharing.cpp.s
+.PHONY : assistedMPC/sharing.s
+
+# target to generate assembly for a file
+assistedMPC/sharing.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/QuadSquad.dir/build.make src/CMakeFiles/QuadSquad.dir/assistedMPC/sharing.cpp.s
+.PHONY : assistedMPC/sharing.cpp.s
+
 dirigent/offline_evaluator.o: dirigent/offline_evaluator.cpp.o
 .PHONY : dirigent/offline_evaluator.o
 
@@ -462,6 +558,18 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... QuadSquad"
+	@echo "... assistedMPC/offline_evaluator.o"
+	@echo "... assistedMPC/offline_evaluator.i"
+	@echo "... assistedMPC/offline_evaluator.s"
+	@echo "... assistedMPC/online_evaluator.o"
+	@echo "... assistedMPC/online_evaluator.i"
+	@echo "... assistedMPC/online_evaluator.s"
+	@echo "... assistedMPC/rand_gen_pool.o"
+	@echo "... assistedMPC/rand_gen_pool.i"
+	@echo "... assistedMPC/rand_gen_pool.s"
+	@echo "... assistedMPC/sharing.o"
+	@echo "... assistedMPC/sharing.i"
+	@echo "... assistedMPC/sharing.s"
 	@echo "... dirigent/offline_evaluator.o"
 	@echo "... dirigent/offline_evaluator.i"
 	@echo "... dirigent/offline_evaluator.s"
