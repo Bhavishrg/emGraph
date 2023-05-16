@@ -272,7 +272,7 @@ void OfflineEvaluator::setWireMasksParty(
         bkeySh[0] = 0;
         for(int i = 1; i <= nP_; i++) {
           uint8_t tmp;
-          rgen_.pi(i).random_data(&bkeySh[i], sizeof(BoolRing));
+          rgen_.pi(i).random_data(&tmp, sizeof(BoolRing));
           bkeySh[i] = tmp % 2;
           bkey += bkeySh[i];
         }
