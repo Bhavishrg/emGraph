@@ -7,7 +7,7 @@
 namespace assistedMPC {
 
   RandGenPool::RandGenPool(int my_id, int num_parties,  uint64_t seed) 
-    : id_{my_id}, k_pi(num_parties) { 
+    : id_{my_id}, k_pi(num_parties + 1) { 
   auto seed_block = emp::makeBlock(seed, 0); 
   k_self.reseed(&seed_block, 0);
   k_all.reseed(&seed_block, 0);
