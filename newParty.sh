@@ -6,7 +6,7 @@ highestPlayer=$3
 startPlayer=4
 increment=4
 
-if test $highestPlayer -le $startPlayer
+if test $highestPlayer -lt $startPlayer
 then
     echo "Highest player number should not be less than $startPlayer"
 else
