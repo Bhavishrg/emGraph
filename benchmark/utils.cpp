@@ -38,13 +38,15 @@ nlohmann::json StatsPoint::operator-(const StatsPoint& rhs) {
 
 bool saveJson(const nlohmann::json& data, const std::string& fpath) {
   std::ofstream fout;
-  fout.open(fpath, std::fstream::out);
+  //fout.open(fpath, std::fstream::out);
+  fout.open(fpath, std::fstream::app);
   if (!fout.is_open()) {
     std::cerr << "Could not open save file at " << fpath << "\n";
     return false;
   }
 
   fout << data;
+  fout << std::endl;
   fout.close();
 
   std::cout << "Saved data in " << fpath << std::endl;
