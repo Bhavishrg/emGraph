@@ -1318,7 +1318,6 @@ void BoolEvaluator::evaluateGatesAtDepth(size_t depth) {
         }
         
         auto net_data = BoolRing::pack(online_comm_to_TP.data(), total_comm);
-
         network_->send(0, net_data.data(), sizeof(uint8_t) * net_data.size());
 
     }
@@ -1803,25 +1802,33 @@ void BoolEval::evaluateGatesAtDepth(size_t depth, io::NetIOMP& network, ThreadPo
             online_comm_to_TP[i + mult_num + mult3_num + mult4_num]
                                         = dotprod_nonTP[i];
         }
-        network.send(0, online_comm_to_TP.data(), sizeof(BoolRing) * total_comm);
+        auto net_data = BoolRing::pack(online_comm_to_TP.data(), total_comm);
+        network.send(0, net_data.data(), sizeof(uint8_t) * net_data.size());
     }
     else if (id == 0) { 
-        std::vector<BoolRing> online_comm_to_TP(total_comm, 0);
+        size_t nbytes = (total_comm + 7) / 8;
+        std::vector<uint8_t> net_data(nbytes);
+        // std::vector<BoolRing> online_comm_to_TP(total_comm, 0);
         std::vector<BoolRing> agg_values(total_comm, 0);
         for(int pid = 1; pid <= nP; pid++) {
-            network.recv(pid, online_comm_to_TP.data(), sizeof(BoolRing) * total_comm);   
+            network.recv(pid, net_data.data(), nbytes * sizeof(uint8_t));
+            auto online_comm_to_TP = BoolRing::unpack(net_data.data(), total_comm);
+            // network.recv(pid, online_comm_to_TP.data(), sizeof(BoolRing) * total_comm);   
             for(int i = 0; i < total_comm; i++) {   
                 agg_values[i] += online_comm_to_TP[i];   
             }
         }
+        net_data = BoolRing::pack(agg_values.data(), total_comm);
         for(int pid = 1; pid <= nP; pid++){
-            network.send(pid, agg_values.data(), sizeof(BoolRing) * total_comm);
+            network.send(pid, net_data.data(), nbytes);
         }
     }
 
     if(id != 0 ) {
-        std::vector<BoolRing> agg_values(total_comm);
-        network.recv(0, agg_values.data(), sizeof(BoolRing) * total_comm);
+        size_t nbytes = (total_comm + 7) / 8;
+        std::vector<uint8_t> net_data(nbytes);
+        network.recv(0, net_data.data(), nbytes);
+        auto agg_values  = BoolRing::unpack(net_data.data(), total_comm);
 
         std::vector<BoolRing> mult_all(mult_num);
         std::vector<BoolRing> mult3_all(mult3_num);

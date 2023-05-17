@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE(random_share) {
   for (int i = 0; i <= nP; i++) {
     parties.push_back(std::async(std::launch::async, [&, i]() { 
       AuthAddShare<Field> shares;
-      size_t idx = 0;
+      
       RandGenPool vrgen(i, nP);
       std::vector<Field> keySh(nP + 1);
       Field key = 0;
@@ -173,22 +173,25 @@ BOOST_AUTO_TEST_CASE(random_share) {
       }
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       if(i == 0) { 
-        Field secret;
-        vrgen.self().random_data(&secret, sizeof(Field));
-        std::vector<std::vector<Field>> rand_sh_sec(nP + 1);
-        OfflineEvaluator::randomShareSecret_Helper(nP, vrgen, shares, tpshares, secret, key, keySh, rand_sh_sec);
-        size_t rand_sh_sec_num = rand_sh_sec[1].size();
+        std::vector<std::vector<Field>> rand_sh_party(nP + 1);
+        OfflineEvaluator::randomShareWithParty_Helper(nP, dealer, vrgen, shares, tpshares, key, keySh, rand_sh_party);
         for(size_t j = 1; j <= nP; j++) {
-            network->send(j, &rand_sh_sec_num, sizeof(size_t));
-            network->send(j, rand_sh_sec[j-1].data(), sizeof(Field) * rand_sh_sec_num);
+          size_t rand_sh_party_num = rand_sh_party[j - 1].size();
+            network->send(j, &rand_sh_party_num, sizeof(size_t));
+            network->send(j, rand_sh_party[j-1].data(), sizeof(Field) * rand_sh_party_num);
         }
       }
       else {
-        size_t rand_sh_sec_num;
-        network->recv(0, &rand_sh_sec_num, sizeof(size_t));
-        std::vector<Field> rand_sh_sec(rand_sh_sec_num);
-        network->recv(0, rand_sh_sec.data(), sizeof(Field) * rand_sh_sec_num);
-        OfflineEvaluator::randomShare_Party(shares, key, rand_sh_sec, idx);
+        size_t idx = 0;
+        size_t rand_sh_party_num;
+        network->recv(0, &rand_sh_party_num, sizeof(size_t));
+        std::vector<Field> rand_sh_party(rand_sh_party_num);
+        network->recv(0, rand_sh_party.data(), sizeof(Field) * rand_sh_party_num);
+        if(i == dealer) {
+          Field secret;
+          OfflineEvaluator::randomShareWithParty_Dealer(secret, shares, key, rand_sh_party, idx);
+        }
+        OfflineEvaluator::randomShareWithParty_Party(shares, key, rand_sh_party, idx);
       }
 
       return shares;
@@ -198,12 +201,206 @@ BOOST_AUTO_TEST_CASE(random_share) {
   int i = 0;
   for (auto& p : parties) { 
     auto res = p.get();
-      
-        BOOST_TEST(res.valueAt() == tpshares.commonValueWithParty(i));
-        BOOST_TEST(res.tagAt() == tpshares.commonTagWithParty(i));
-     
+        if(i != dealer) {
+          BOOST_TEST(res.valueAt() == tpshares.commonValueWithParty(i));
+          BOOST_TEST(res.tagAt() == tpshares.commonTagWithParty(i));
+        }
       i++;
     }
   }
 
+  BOOST_AUTO_TEST_CASE(EQZ) {
+    int nP = 5;
+    common::utils::Circuit<Field> circ;
+    std::vector<common::utils::wire_t> input_wires;
+    std::unordered_map<common::utils::wire_t, int> input_pid_map;
+    
+    for (size_t i = 0; i < 4; ++i) {
+      auto winp = circ.newInputWire();
+      input_wires.push_back(winp);
+      input_pid_map[winp] = 1;
+    }
+
+
+    auto w_eq = circ.addGate(common::utils::GateType::kEqz, input_wires[0]);
+    auto w_aab =
+        circ.addGate(common::utils::GateType::kAdd, input_wires[0], input_wires[1]);
+    auto w_cmd =
+        circ.addGate(common::utils::GateType::kMul, input_wires[2], input_wires[3]);
+        auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aab, 2);
+        auto w_cons_m = circ.addConstOpGate(common::utils::GateType::kConstMul, w_cmd, 2);
+        auto w_mout = circ.addGate(common::utils::GateType::kMul, w_aab, w_cons);
+        auto w_aout = circ.addGate(common::utils::GateType::kAdd, w_aab, w_cmd);
+        // auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aout, 2);
+    circ.setAsOutput(w_mout);
+    circ.setAsOutput(w_aout);
+    circ.setAsOutput(w_eq);
+    auto level_circ = circ.orderGatesByLevel();
+
+    std::vector<std::future<PreprocCircuit<Field>>> parties;
+    parties.reserve(nP+1);
+    std::vector<Field> keySh(nP + 1);
+    Field key;
+    for (int i = 0; i <= nP; ++i) {
+      parties.push_back(std::async(std::launch::async, [&, i, input_pid_map]() {
+        
+        auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+        
+        RandGenPool vrgen(i, nP);
+        OfflineEvaluator eval(nP, i, std::move(network), 
+                              level_circ, SECURITY_PARAM, 1);
+        return eval.run(input_pid_map);
+        
+      }));
+    }
+
+    std::vector<PreprocCircuit<Field>> v_preproc;
+    v_preproc.reserve(parties.size());
+    for (auto& f : parties) {
+      v_preproc.push_back(f.get());
+    }
+
+    BOOST_TEST(v_preproc[0].gates.size() == level_circ.num_gates);
+    const auto& preproc_0 = v_preproc[0];
+    
+    for (int i = 1; i <= nP; ++i) {
+      BOOST_TEST(v_preproc[i].gates.size() == level_circ.num_gates);
+      const auto& preproc_i = v_preproc[i];
+      for(int j = 0; j < 4; j++) {
+        auto tpmask = preproc_0.gates[j]->tpmask;
+        auto mask_i = preproc_i.gates[j]->mask;
+        BOOST_TEST(mask_i.valueAt() == tpmask.commonValueWithParty(i));
+        BOOST_TEST(mask_i.tagAt() == tpmask.commonTagWithParty(i));
+      }
+    }
+  }
+
+  BOOST_AUTO_TEST_CASE(LTZ) {
+  int nP = 5;
+  common::utils::Circuit<Field> circ;
+  std::vector<common::utils::wire_t> input_wires;
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
+  
+  for (size_t i = 0; i < 4; ++i) {
+    auto winp = circ.newInputWire();
+    input_wires.push_back(winp);
+    input_pid_map[winp] = 1;
+  }
+
+
+  auto w_lt = circ.addGate(common::utils::GateType::kLtz, input_wires[0]);
+  auto w_aab =
+      circ.addGate(common::utils::GateType::kAdd, input_wires[0], input_wires[1]);
+  auto w_cmd =
+      circ.addGate(common::utils::GateType::kMul, input_wires[2], input_wires[3]);
+      auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aab, 2);
+      auto w_cons_m = circ.addConstOpGate(common::utils::GateType::kConstMul, w_cmd, 2);
+      auto w_mout = circ.addGate(common::utils::GateType::kMul, w_aab, w_cons);
+      auto w_aout = circ.addGate(common::utils::GateType::kAdd, w_aab, w_cmd);
+      // auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aout, 2);
+  circ.setAsOutput(w_mout);
+  circ.setAsOutput(w_aout);
+  circ.setAsOutput(w_lt);
+  auto level_circ = circ.orderGatesByLevel();
+
+  std::vector<std::future<PreprocCircuit<Field>>> parties;
+  parties.reserve(nP+1);
+  std::vector<Field> keySh(nP + 1);
+  Field key;
+  for (int i = 0; i <= nP; ++i) {
+    parties.push_back(std::async(std::launch::async, [&, i, input_pid_map]() {
+      
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      
+      RandGenPool vrgen(i, nP);
+      OfflineEvaluator eval(nP, i, std::move(network), 
+                            level_circ, SECURITY_PARAM, 1);
+      return eval.run(input_pid_map);
+      
+    }));
+  }
+
+  std::vector<PreprocCircuit<Field>> v_preproc;
+  v_preproc.reserve(parties.size());
+  for (auto& f : parties) {
+    v_preproc.push_back(f.get());
+  }
+
+  BOOST_TEST(v_preproc[0].gates.size() == level_circ.num_gates);
+  const auto& preproc_0 = v_preproc[0];
+  
+  for (int i = 1; i <= nP; ++i) {
+    BOOST_TEST(v_preproc[i].gates.size() == level_circ.num_gates);
+    const auto& preproc_i = v_preproc[i];
+    for(int j = 0; j < 4; j++) {
+      auto tpmask = preproc_0.gates[j]->tpmask;
+      auto mask_i = preproc_i.gates[j]->mask;
+      BOOST_TEST(mask_i.valueAt() == tpmask.commonValueWithParty(i));
+      BOOST_TEST(mask_i.tagAt() == tpmask.commonTagWithParty(i));
+    }
+  }
+}
+
+BOOST_AUTO_TEST_CASE(depth_2_circuit) {
+  int nP = 5;
+  common::utils::Circuit<Field> circ;
+  std::vector<common::utils::wire_t> input_wires;
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
+  
+  for (size_t i = 0; i < 4; ++i) {
+    auto winp = circ.newInputWire();
+    input_wires.push_back(winp);
+    input_pid_map[winp] = 1;
+  }
+
+
+
+  auto w_aab =
+      circ.addGate(common::utils::GateType::kAdd, input_wires[0], input_wires[1]);
+  auto w_cmd =
+      circ.addGate(common::utils::GateType::kMul, input_wires[2], input_wires[3]);
+      auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aab, 2);
+      auto w_cons_m = circ.addConstOpGate(common::utils::GateType::kConstMul, w_cmd, 2);
+      auto w_mout = circ.addGate(common::utils::GateType::kMul, w_aab, w_cons);
+      auto w_aout = circ.addGate(common::utils::GateType::kAdd, w_aab, w_cmd);
+      // auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aout, 2);
+  circ.setAsOutput(w_mout);
+  circ.setAsOutput(w_aout);
+  auto level_circ = circ.orderGatesByLevel();
+
+  std::vector<std::future<PreprocCircuit<Field>>> parties;
+  parties.reserve(nP+1);
+  std::vector<Field> keySh(nP + 1);
+  Field key;
+  for (int i = 0; i <= nP; ++i) {
+    parties.push_back(std::async(std::launch::async, [&, i, input_pid_map]() {
+      
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      RandGenPool vrgen(i, nP);
+      OfflineEvaluator eval(nP, i, std::move(network), 
+                            level_circ, SECURITY_PARAM, 1);
+      return eval.run(input_pid_map);
+    }));
+  }
+
+  std::vector<PreprocCircuit<Field>> v_preproc;
+  v_preproc.reserve(parties.size());
+  for (auto& f : parties) {
+    v_preproc.push_back(f.get());
+  }
+
+  BOOST_TEST(v_preproc[0].gates.size() == level_circ.num_gates);
+  const auto& preproc_0 = v_preproc[0];
+  
+  for (int i = 1; i <= nP; ++i) {
+    BOOST_TEST(v_preproc[i].gates.size() == level_circ.num_gates);
+    const auto& preproc_i = v_preproc[i];
+    for(int j = 0; j < 4; j++) {
+      auto tpmask = preproc_0.gates[j]->tpmask;
+      auto mask_i = preproc_i.gates[j]->mask;
+      BOOST_TEST(mask_i.valueAt() == tpmask.commonValueWithParty(i));
+      BOOST_TEST(mask_i.tagAt() == tpmask.commonTagWithParty(i));
+    }
+  }
+}
   BOOST_AUTO_TEST_SUITE_END()

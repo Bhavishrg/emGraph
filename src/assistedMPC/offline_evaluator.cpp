@@ -255,6 +255,56 @@ namespace assistedMPC {
                         break;
                     }
 
+                    case common::utils::GateType::kMul3: {
+                        preproc_.gates[gate->out] = std::make_unique<PreprocMult3Gate<Field>>();
+                        const auto* g = static_cast<common::utils::FIn3Gate*>(gate.get());
+                        
+                        const auto& mask_in1 = preproc_.gates[g->in1]->mask;
+                        const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
+
+                        const auto& mask_in2 = preproc_.gates[g->in2]->mask;
+                        const auto& tpmask_in2 = preproc_.gates[g->in2]->tpmask;
+
+                        const auto& mask_in3 = preproc_.gates[g->in3]->mask;
+                        const auto& tpmask_in3 = preproc_.gates[g->in3]->tpmask;
+
+                        Field tp_ab, tp_ac, tp_bc, tp_abc;
+                        tp_ab = tpmask_in1.secret() * tpmask_in2.secret();
+                        tp_ac = tpmask_in1.secret() * tpmask_in3.secret();
+                        tp_bc = tpmask_in2.secret() * tpmask_in3.secret();
+                        tp_abc = tpmask_in1.secret() * tpmask_in2.secret() * tpmask_in3.secret();
+                        
+
+                        TPShare<Field> tprand_mask;
+                        AuthAddShare<Field> rand_mask;
+                        randomShare_Helper(nP_, rgen_, rand_mask, tprand_mask, key, keySh, rand_sh);
+                        
+
+                        TPShare<Field> tpmask_ab;
+                        AuthAddShare<Field> mask_ab; 
+                        randomShareSecret_Helper(nP_, rgen_, mask_ab, tpmask_ab, tp_ab, key, keySh, rand_sh_sec);
+
+                        TPShare<Field> tpmask_ac;
+                        AuthAddShare<Field> mask_ac; 
+                        randomShareSecret_Helper(nP_, rgen_, mask_ac, tpmask_ac, tp_ab, key, keySh, rand_sh_sec);
+                        
+                        TPShare<Field> tpmask_bc;
+                        AuthAddShare<Field> mask_bc; 
+                        randomShareSecret_Helper(nP_, rgen_, mask_bc, tpmask_bc, tp_ab, key, keySh, rand_sh_sec);
+                                                
+                        TPShare<Field> tpmask_abc;
+                        AuthAddShare<Field> mask_abc; 
+                        randomShareSecret_Helper(nP_, rgen_, mask_abc, tpmask_abc, tp_ab, key, keySh, rand_sh_sec);
+                                                
+                        preproc_.gates[gate->out] = std::move(std::make_unique<PreprocMult3Gate<Field>>
+                                            (rand_mask, tprand_mask, 
+                                            mask_ab, tpmask_ab, 
+                                            mask_ac, tpmask_ac,
+                                            mask_bc, tpmask_bc, 
+                                            mask_abc, tpmask_abc));
+                        break;
+                    }
+
                     default: {
                         break;
                     }
@@ -398,6 +448,50 @@ namespace assistedMPC {
                         preproc_.gates[gate->out] = std::move(std::make_unique<PreprocMultGate<Field>>
                                 (rand_mask, tprand_mask, mask_product, tpmask_product));
 
+                        break;
+                    }
+
+                    case common::utils::GateType::kMul3: {
+                        preproc_.gates[gate->out] = std::make_unique<PreprocMult3Gate<Field>>();
+                        const auto* g = static_cast<common::utils::FIn3Gate*>(gate.get());
+                        
+                        const auto& mask_in1 = preproc_.gates[g->in1]->mask;
+                        const auto& tpmask_in1 = preproc_.gates[g->in1]->tpmask;
+
+                        const auto& mask_in2 = preproc_.gates[g->in2]->mask;
+                        const auto& tpmask_in2 = preproc_.gates[g->in2]->tpmask;
+
+                        const auto& mask_in3 = preproc_.gates[g->in3]->mask;
+                        const auto& tpmask_in3 = preproc_.gates[g->in3]->tpmask;
+
+                        Field tp_ab, tp_ac, tp_bc, tp_abc;
+
+                        TPShare<Field> tprand_mask;
+                        AuthAddShare<Field> rand_mask;
+                        randomShare_Party(rand_mask, key, rand_sh, idx_rand_sh);
+
+                        TPShare<Field> tpmask_ab;
+                        AuthAddShare<Field> mask_ab; 
+                        randomShareSecret_Party(mask_ab, key, rand_sh_sec, idx_rand_sh_sec);
+
+                        TPShare<Field> tpmask_ac;
+                        AuthAddShare<Field> mask_ac; 
+                        randomShareSecret_Party(mask_ac, key, rand_sh_sec, idx_rand_sh_sec);
+                        
+                        TPShare<Field> tpmask_bc;
+                        AuthAddShare<Field> mask_bc; 
+                        randomShareSecret_Party(mask_bc, key, rand_sh_sec, idx_rand_sh_sec);
+                                    
+                        TPShare<Field> tpmask_abc;
+                        AuthAddShare<Field> mask_abc; 
+                        randomShareSecret_Party(mask_abc, key, rand_sh_sec, idx_rand_sh_sec);
+
+                        preproc_.gates[gate->out] = std::move(std::make_unique<PreprocMult3Gate<Field>>
+                                            (rand_mask, tprand_mask, 
+                                            mask_ab, tpmask_ab, 
+                                            mask_ac, tpmask_ac,
+                                            mask_bc, tpmask_bc, 
+                                            mask_abc, tpmask_abc));
                         break;
                     }
 

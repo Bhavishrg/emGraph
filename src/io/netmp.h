@@ -110,9 +110,9 @@ class NetIOMP {
         ios2[dst]->send_data(data, len);
       sent[dst] = true;
     }
-#ifdef __clang__
-    flush(dst);
-#endif
+    #ifdef __clang__
+        flush(dst);
+    #endif
   }
 
 //   void send(int dst, const NTL::ZZ_p* data, size_t length) {

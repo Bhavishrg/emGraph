@@ -1217,8 +1217,10 @@ void OfflineEvaluator::setWireMasks(
       for(size_t i = 0; i < b_rand_sh_party_num; i++) {
         offline_bool_comm[b_rand_sh_sec_num + b_rand_sh_num + i] = b_rand_sh_party[i];
       }
+      auto net_data = BoolRing::pack(offline_bool_comm.data(), bool_comm);
       network_->send(nP_, offline_arith_comm.data(), sizeof(Field) * arith_comm);
-      network_->send(nP_, offline_bool_comm.data(), sizeof(BoolRing) * bool_comm);
+      network_->send(nP_, net_data.data(), sizeof(uint8_t) * net_data.size());
+      // network_->send(nP_, offline_bool_comm.data(), sizeof(BoolRing) * bool_comm);
     }
   }
   else if(id_ == nP_ ) {
@@ -1234,14 +1236,16 @@ void OfflineEvaluator::setWireMasks(
     size_t b_rand_sh_num = lengths[5];
     size_t b_rand_sh_sec_num = lengths[6];
     size_t b_rand_sh_party_num = lengths[7];
-    
+
 
     std::vector<Field> offline_arith_comm(arith_comm);
-    std::vector<BoolRing> offline_bool_comm(bool_comm);
-    
     network_->recv(0, offline_arith_comm.data(), sizeof(Field) * arith_comm);
-    network_->recv(0, offline_bool_comm.data(), sizeof(BoolRing) * bool_comm);
+    size_t nbytes = (bool_comm + 7) / 8;
+    std::vector<uint8_t> net_data(nbytes);
+    network_->recv(0, net_data.data(), nbytes * sizeof(uint8_t));
+    auto offline_bool_comm = BoolRing::unpack(net_data.data(), bool_comm);
     
+
     rand_sh.resize(rand_sh_num);
     for(int i = 0; i < rand_sh_num; i++) {
       rand_sh[i] = offline_arith_comm[i];

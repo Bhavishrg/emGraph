@@ -267,6 +267,20 @@ dirigent_offline/fast:
 .PHONY : dirigent_offline/fast
 
 # Convenience name for target.
+benchmark/CMakeFiles/assistedmpc_offline.dir/rule:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/assistedmpc_offline.dir/rule
+.PHONY : benchmark/CMakeFiles/assistedmpc_offline.dir/rule
+
+# Convenience name for target.
+assistedmpc_offline: benchmark/CMakeFiles/assistedmpc_offline.dir/rule
+.PHONY : assistedmpc_offline
+
+# fast build rule for target.
+assistedmpc_offline/fast:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/assistedmpc_offline.dir/build.make benchmark/CMakeFiles/assistedmpc_offline.dir/build
+.PHONY : assistedmpc_offline/fast
+
+# Convenience name for target.
 benchmark/CMakeFiles/online_mpc.dir/rule:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/online_mpc.dir/rule
 .PHONY : benchmark/CMakeFiles/online_mpc.dir/rule
@@ -421,6 +435,30 @@ LTZ.s: LTZ.cpp.s
 LTZ.cpp.s:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/LTZ.dir/build.make benchmark/CMakeFiles/LTZ.dir/LTZ.cpp.s
 .PHONY : LTZ.cpp.s
+
+assistedmpc_offline.o: assistedmpc_offline.cpp.o
+.PHONY : assistedmpc_offline.o
+
+# target to build an object file
+assistedmpc_offline.cpp.o:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/assistedmpc_offline.dir/build.make benchmark/CMakeFiles/assistedmpc_offline.dir/assistedmpc_offline.cpp.o
+.PHONY : assistedmpc_offline.cpp.o
+
+assistedmpc_offline.i: assistedmpc_offline.cpp.i
+.PHONY : assistedmpc_offline.i
+
+# target to preprocess a source file
+assistedmpc_offline.cpp.i:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/assistedmpc_offline.dir/build.make benchmark/CMakeFiles/assistedmpc_offline.dir/assistedmpc_offline.cpp.i
+.PHONY : assistedmpc_offline.cpp.i
+
+assistedmpc_offline.s: assistedmpc_offline.cpp.s
+.PHONY : assistedmpc_offline.s
+
+# target to generate assembly for a file
+assistedmpc_offline.cpp.s:
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/assistedmpc_offline.dir/build.make benchmark/CMakeFiles/assistedmpc_offline.dir/assistedmpc_offline.cpp.s
+.PHONY : assistedmpc_offline.cpp.s
 
 auction.o: auction.cpp.o
 .PHONY : auction.o
@@ -725,6 +763,7 @@ utils.cpp.o:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_mpc.dir/build.make benchmark/CMakeFiles/dirigent_mpc.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_online.dir/build.make benchmark/CMakeFiles/dirigent_online.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_offline.dir/build.make benchmark/CMakeFiles/dirigent_offline.dir/utils.cpp.o
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/assistedmpc_offline.dir/build.make benchmark/CMakeFiles/assistedmpc_offline.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_mpc.dir/build.make benchmark/CMakeFiles/online_mpc.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_nn.dir/build.make benchmark/CMakeFiles/online_nn.dir/utils.cpp.o
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_tp.dir/build.make benchmark/CMakeFiles/offline_mpc_tp.dir/utils.cpp.o
@@ -747,6 +786,7 @@ utils.cpp.i:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_mpc.dir/build.make benchmark/CMakeFiles/dirigent_mpc.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_online.dir/build.make benchmark/CMakeFiles/dirigent_online.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_offline.dir/build.make benchmark/CMakeFiles/dirigent_offline.dir/utils.cpp.i
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/assistedmpc_offline.dir/build.make benchmark/CMakeFiles/assistedmpc_offline.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_mpc.dir/build.make benchmark/CMakeFiles/online_mpc.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_nn.dir/build.make benchmark/CMakeFiles/online_nn.dir/utils.cpp.i
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_tp.dir/build.make benchmark/CMakeFiles/offline_mpc_tp.dir/utils.cpp.i
@@ -769,6 +809,7 @@ utils.cpp.s:
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_mpc.dir/build.make benchmark/CMakeFiles/dirigent_mpc.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_online.dir/build.make benchmark/CMakeFiles/dirigent_online.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/dirigent_offline.dir/build.make benchmark/CMakeFiles/dirigent_offline.dir/utils.cpp.s
+	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/assistedmpc_offline.dir/build.make benchmark/CMakeFiles/assistedmpc_offline.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_mpc.dir/build.make benchmark/CMakeFiles/online_mpc.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/online_nn.dir/build.make benchmark/CMakeFiles/online_nn.dir/utils.cpp.s
 	cd /Users/protikpaul/Desktop/TP_Aided_MPC/dirigent && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/offline_mpc_tp.dir/build.make benchmark/CMakeFiles/offline_mpc_tp.dir/utils.cpp.s
@@ -789,6 +830,7 @@ help:
 	@echo "... Darkpool_CDA"
 	@echo "... Darkpool_VM"
 	@echo "... LTZ"
+	@echo "... assistedmpc_offline"
 	@echo "... auction"
 	@echo "... dirigent_bool_mpc"
 	@echo "... dirigent_mpc"
@@ -810,6 +852,9 @@ help:
 	@echo "... LTZ.o"
 	@echo "... LTZ.i"
 	@echo "... LTZ.s"
+	@echo "... assistedmpc_offline.o"
+	@echo "... assistedmpc_offline.i"
+	@echo "... assistedmpc_offline.s"
 	@echo "... auction.o"
 	@echo "... auction.i"
 	@echo "... auction.s"

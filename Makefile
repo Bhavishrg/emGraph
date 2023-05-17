@@ -270,6 +270,19 @@ dirigent_offline/fast:
 .PHONY : dirigent_offline/fast
 
 #=============================================================================
+# Target rules for targets named assistedmpc_offline
+
+# Build rule for target.
+assistedmpc_offline: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 assistedmpc_offline
+.PHONY : assistedmpc_offline
+
+# fast build rule for target.
+assistedmpc_offline/fast:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/assistedmpc_offline.dir/build.make benchmark/CMakeFiles/assistedmpc_offline.dir/build
+.PHONY : assistedmpc_offline/fast
+
+#=============================================================================
 # Target rules for targets named online_mpc
 
 # Build rule for target.
@@ -467,6 +480,7 @@ help:
 	@echo "... LTZ"
 	@echo "... QuadSquad"
 	@echo "... assistedMPC_offline_test"
+	@echo "... assistedmpc_offline"
 	@echo "... auction"
 	@echo "... dirigent_bool_mpc"
 	@echo "... dirigent_mpc"

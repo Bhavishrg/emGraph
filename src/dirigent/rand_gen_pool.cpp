@@ -13,7 +13,7 @@ namespace dirigent {
   k_all.reseed(&seed_block, 0);
   k_all_minus_0.reseed(&seed_block, 0);
   k_p0.reseed(&seed_block, 0);
-  for(int i = 0; i <= num_parties; i++) {k_pi[i].reseed(&seed_block, 0);}
+  for(int i = 1; i <= num_parties; i++) {k_pi[i].reseed(&seed_block, 0);}
   }
   //all keys will be the same.  for different keys look at emp toolkit
 
