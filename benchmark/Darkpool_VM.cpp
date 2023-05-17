@@ -188,14 +188,14 @@ int main(int argc, char* argv[]) {
         bpo::notify(opts);
 
         // Check if output file already exists.
-        if (opts.count("output") != 0) {
+        /*if (opts.count("output") != 0) {
             std::ifstream ftemp(opts["output"].as<std::string>());
             if (ftemp.good()) {
                 ftemp.close();
                 throw std::runtime_error("Output file aready exists.");
             }
             ftemp.close();
-        }
+        }*/
 
         if (!opts["localhost"].as<bool>() && (opts.count("net-config") == 0)) {
             throw std::runtime_error("Expected one of 'localhost' or 'net-config'");
