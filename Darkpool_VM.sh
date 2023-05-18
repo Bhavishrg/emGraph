@@ -15,11 +15,11 @@ then
 else
     for players in $(seq $startPlayer $increment $highestPlayer)
     do
-        for party in $(seq 0 $players)
+        for party in $(seq 1 $players)
         do
             log=$dir/b_$1_s_$2_$party.log
             json=$dir/b_$1_s_$2_$party.json
-            if test $party = 0 || test $party = 1
+            if test $party = 1
             then
                 ./benchmarks/Darkpool_VM -p $party --localhost -b $1 -s $2 -n $players -o $json 2>&1 | cat >> $log &
             else
@@ -27,7 +27,10 @@ else
             fi
             codes[$i]=$!
         done
-        for party in $(seq 0 $players)
+
+        ./benchmarks/Darkpool_VM -p 0 --localhost -b $1 -s $2 -n $players -o $json 2>&1 | cat >> $log
+
+        for party in $(seq 1 $players)
         do
             wait ${codes[$i]} || return 1
         done
