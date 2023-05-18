@@ -28,7 +28,7 @@ else
             codes[$i]=$!
         done
 
-        ./benchmarks/auction -p 0 --localhost -b $1 -n $players -o $json 2>&1 | cat >> $log 
+        ./benchmarks/auction -p 0 --localhost -b $1 -n $players -o $dir/b_$1_0.json 2>&1 | tee -a $dir/b_$1_0.log 
 
         for party in $(seq 1 $players)
         do

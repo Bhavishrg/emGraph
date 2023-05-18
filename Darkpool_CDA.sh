@@ -28,7 +28,7 @@ else
             codes[$i]=$!
         done
 
-        ./benchmarks/Darkpool_CDA -p 0 --localhost -b $1 -s $2 -n $players -o $json 2>&1 | cat >> $log
+        ./benchmarks/Darkpool_CDA -p 0 --localhost -b $1 -s $2 -n $players -o $dir/b_$1_s_$2_0.json 2>&1 | tee -a $dir/b_$1_s_$2_0.log
 
         for party in $(seq 1 $players)
         do

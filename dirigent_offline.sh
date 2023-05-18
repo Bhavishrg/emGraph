@@ -28,7 +28,7 @@ else
             codes[$i]=$!
         done
 
-        ./benchmarks/dirigent_offline -p 0 --localhost -g $1 -d $2 -n $players -o $dir/g_$1_d_$2_0.json 2>&1 | tee $dir/g_$1_d_$2_0.log
+        ./benchmarks/dirigent_offline -p 0 --localhost -g $1 -d $2 -n $players -o $dir/g_$1_d_$2_0.json 2>&1 | tee -a $dir/g_$1_d_$2_0.log
 
         for party in $(seq 1 $players)
         do
