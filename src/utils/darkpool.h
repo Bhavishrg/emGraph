@@ -96,9 +96,9 @@ class DarkPool {
 
         std::vector<wire_t> z(N + 1);
         std::vector<wire_t> z_dash(N + 1);
-	    std::vector<wire_t> temp1(N);
-	    std::vector<wire_t> temp2(N);
-	    std::vector<wire_t> temp3(N);
+	    std::vector<wire_t> temp1(N + 1);
+	    std::vector<wire_t> temp2(N + 1);
+	    std::vector<wire_t> temp3(N + 1);
         z[0] = circ_.addConstOpGate(GateType::kConstMul, w[0], zero);
         z_dash[0] = circ_.addConstOpGate(GateType::kConstMul, w[0], zero);
         for(size_t i = 1; i <= N; i++) {
@@ -147,7 +147,7 @@ class DarkPool {
 
         // f computation
         std::vector<wire_t> g(M+2);
-	    std::vector<wire_t> temp_2(M+1);
+	    std::vector<wire_t> temp_2(M+2);
         auto tmp4 = circ_.addGate(GateType::kSub, new_order_.price, b_list_.order[0].price);
         g[0] = circ_.addGate(GateType::kLtz, tmp4);
         for(size_t i = 1; i <= M+1; i++) {
