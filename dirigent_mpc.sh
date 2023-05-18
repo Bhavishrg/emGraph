@@ -21,7 +21,7 @@ else
             json=$dir/g_$1_d_$2_$party.json
             if test $party = 1
             then
-                ./benchmarks/dirigent_mpc -p $party --localhost -g $1 -d $2 -n $players -o $json 2>&1 > $log &
+                ./benchmarks/dirigent_mpc -p $party --localhost -g $1 -d $2 -n $players -o $json 2>&1 >> $log &
             else
                 ./benchmarks/dirigent_mpc -p $party --localhost -g $1 -d $2 -n $players 2>&1 > /dev/null &
             fi
@@ -30,7 +30,7 @@ else
 
         ./benchmarks/dirigent_mpc -p 0 --localhost -g $1 -d $2 -n $players -o $dir/g_$1_d_$2_0.json 2>&1 | tee -a $dir/g_$1_d_$2_0.log
 
-        for party in $(seq 1 $players)
+        for party in $(seq 0 $players)
         do
             wait ${codes[$i]} || return 1
         done

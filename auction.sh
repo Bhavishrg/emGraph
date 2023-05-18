@@ -30,7 +30,7 @@ else
 
         ./benchmarks/auction -p 0 --localhost -b $1 -n $players -o $dir/b_$1_0.json 2>&1 | tee -a $dir/b_$1_0.log 
 
-        for party in $(seq 1 $players)
+        for party in $(seq 0 $players)
         do
             wait ${codes[$i]} || return 1
         done
