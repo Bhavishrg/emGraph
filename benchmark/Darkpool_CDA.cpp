@@ -114,7 +114,8 @@ void benchmark(const bpo::variables_map& opts) {
         OfflineEvaluator CDA_off_eval(nP, pid, network, CDA_circ, security_param, threads, seed);
 
         auto CDA_preproc = CDA_off_eval.run(input_pid_map);
-
+        
+        // Online
         OnlineEvaluator CDA_eval(nP, pid, network, std::move(CDA_preproc), CDA_circ, 
                                                                   security_param, threads, seed);
         CDA_eval.setRandomInputs();

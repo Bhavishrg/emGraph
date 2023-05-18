@@ -106,7 +106,8 @@ BOOST_AUTO_TEST_CASE(EQZ_zero) {
   }
   auto w_eqz =
      circ.addGate(common::utils::GateType::kEqz, input_wires[0]);
-  
+  auto w_mul = circ.addGate(common::utils::GateType::kMul, w_eqz, input_wires[1]);
+  auto w_out = circ.addGate(common::utils::GateType::kEqz, w_mul);
   circ.setAsOutput(w_eqz);
   auto level_circ = circ.orderGatesByLevel();
   auto exp_output = circ.evaluate(inputs);

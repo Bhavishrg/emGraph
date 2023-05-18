@@ -1,7 +1,7 @@
 #!/bin/bash
 # set -x
 
-dir=dirigent_mpc_outputs
+dir=~/benchmark_data/dirigent_mpc
 highestPlayer=$3
 startPlayer=4
 increment=4
@@ -15,22 +15,24 @@ then
 else
     for players in $(seq $startPlayer $increment $highestPlayer)
     do
-        for party in $(seq 0 $players)
+        for party in $(seq 1 $players)
         do
             log=$dir/g_$1_d_$2_$party.log
             json=$dir/g_$1_d_$2_$party.json
-            if test $party = 0 || test $party = 1
+            if test $party = 1
             then
-                ./benchmarks/dirigent_mpc -p $party --localhost -g $1 -d $2 -n $players -o $json 2>&1 | cat >> $log &
+                ./benchmarks/dirigent_mpc -p $party --localhost -g $1 -d $2 -n $players -o $json 2>&1 > $log &
             else
-                ./benchmarks/dirigent_mpc -p $party --localhost -g $1 -d $2 -n $players 2>&1 | cat > /dev/null &
+                ./benchmarks/dirigent_mpc -p $party --localhost -g $1 -d $2 -n $players 2>&1 > /dev/null &
             fi
             codes[$i]=$!
         done
-        for party in $(seq 0 $players)
+
+        ./benchmarks/dirigent_mpc -p 0 --localhost -g $1 -d $2 -n $players -o $dir/g_$1_d_$2_0.json 2>&1 | tee $dir/g_$1_d_$2_0.log
+
+        for party in $(seq 1 $players)
         do
             wait ${codes[$i]} || return 1
         done
     done
 fi
-

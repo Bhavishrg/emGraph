@@ -6,5 +6,5 @@ CXX_DEFINES = -DBOOST_PROGRAM_OPTIONS_DYN_LINK -DBOOST_PROGRAM_OPTIONS_NO_LIB -D
 
 CXX_INCLUDES = -I/Users/protikpaul/Desktop/TP_Aided_MPC/dirigent/src -I/usr/local/opt/openssl/include -isystem /usr/local/include -isystem /usr/local/include/NTL/..
 
-CXX_FLAGS = -march=native -maes -mrdseed -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk -std=gnu++17
+CXX_FLAGS = -march=native -maes -mrdseed -O3 -DNDEBUG -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk -std=gnu++17
 

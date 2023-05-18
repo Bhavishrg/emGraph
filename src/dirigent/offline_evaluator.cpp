@@ -53,7 +53,7 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
   // for all pid = 1 to nP-1 sample common random tag
   // pid = 0 stores tags in TPShare.tags
   // pid = 0 sends tag[1] to pid = nP
-  
+  // std::cout << "randomShare starts" << std::endl;
   Field val = 0;
   Field tag = 0;
   Field tagn = 0;
@@ -100,8 +100,10 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
 
         share.pushTag(rand_sh[idx_rand_sh]);
         idx_rand_sh++;
+        // std::cout << "inx = " << idx_rand_sh << std::endl;
       }
     }
+    // std::cout << "randomShare ends" << std::endl;
 
 }
 
@@ -109,6 +111,7 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io:
                                   AuthAddShare<Field>& share, TPShare<Field>& tpShare,
                                   Field secret, Field key, std::vector<Field> keySh, 
                                   std::vector<Field>& rand_sh_sec, size_t& idx_rand_sh_sec) {
+  // std::cout << "randomShareSecret starts" << std::endl;
   Field val = 0;
   Field tag = 0;
   Field tagn = 0;
@@ -154,8 +157,10 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io:
         idx_rand_sh_sec++;
         share.pushValue(valn);
         share.pushTag(tagn);
+        // std::cout << "inx = " << idx_rand_sh_sec << std::endl;
       }
     }
+    // std::cout << "randomShareSecret ends" << std::endl;
 }
 
 void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGenPool& rgen,
@@ -285,7 +290,8 @@ void OfflineEvaluator::setWireMasksParty(
         bkey_sh_ = bkey;
       }
 
-
+    // int ctr = 0;
+    // int sec_ctr = 0;
     for (const auto& level : circ_.gates_by_level) {
     for (const auto& gate : level) {
       switch (gate->type) {
@@ -358,12 +364,13 @@ void OfflineEvaluator::setWireMasksParty(
           TPShare<Field> tprand_mask;
           AuthAddShare<Field> rand_mask;
           randomShare(nP_, id_, rgen_, *network_, rand_mask, tprand_mask, key, keySh, rand_sh, idx_rand_sh);
-                    
+          // std::cout << "randomShare counter = " << ctr++ << std::endl;
+
           TPShare<Field> tpmask_product;
           AuthAddShare<Field> mask_product; 
           randomShareSecret(nP_, id_, rgen_, *network_, 
                                 mask_product, tpmask_product, tp_prod, key, keySh, rand_sh_sec, idx_rand_sh_sec);
-
+          // std::cout << "randomShareSecret counter = " << sec_ctr++ << std::endl;
           preproc_.gates[gate->out] = std::move(std::make_unique<PreprocMultGate<Field>>
                               (rand_mask, tprand_mask, mask_product, tpmask_product));
           
@@ -1244,6 +1251,8 @@ void OfflineEvaluator::setWireMasks(
     std::vector<uint8_t> net_data(nbytes);
     network_->recv(0, net_data.data(), nbytes * sizeof(uint8_t));
     auto offline_bool_comm = BoolRing::unpack(net_data.data(), bool_comm);
+    // std::vector<BoolRing> offline_bool_comm(bool_comm);
+    // network_->recv(0, offline_bool_comm.data(), sizeof(BoolRing) * bool_comm);
     
 
     rand_sh.resize(rand_sh_num);
