@@ -1,7 +1,7 @@
 #!/bin/bash
 # set -x
 
-dir=assistedmpc_offline_outputs
+dir=~/benchmark_data/assistedmpc_offline
 highestPlayer=$3
 startPlayer=4
 increment=4

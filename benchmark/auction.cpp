@@ -150,9 +150,7 @@ void benchmark(const bpo::variables_map& opts) {
 bpo::options_description programOptions() {
     bpo::options_description desc("Following options are supported by config file too.");
     desc.add_options()
-        // ("gates-per-level,g", bpo::value<size_t>()->required(), "Number of gates at each level.")
-        // ("depth,d", bpo::value<size_t>()->required(), "Multiplicative depth of circuit.")
-        ("bids,b", bpo::value<size_t>()->required(), "Number of gates at each level.")
+        ("bids,b", bpo::value<size_t>()->required(), "Number of bids.")
         ("num-parties,n", bpo::value<size_t>()->required(), "Number of parties.")
         ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
         ("security-param", bpo::value<size_t>()->default_value(128), "Security parameter in bits.")

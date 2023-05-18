@@ -16,17 +16,6 @@ using namespace dirigent;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-common::utils::Circuit<Field> CDA_Circuit(int N, int M) {
-    common::utils::DarkPool<Field> darkpool_ob(N,M);
-    darkpool_ob.resizeList();
-
-    common::utils::Circuit<Field> circ = darkpool_ob.getCDACircuit();
-    return circ;
-}
-
-
-
-
 void benchmark(const bpo::variables_map& opts) {
     bool save_output = false;
     std::string save_file;
@@ -89,7 +78,9 @@ void benchmark(const bpo::variables_map& opts) {
     size_t N = sell_list_size;
     size_t M = buy_list_size;
     
-    auto CDA_circ = CDA_Circuit(N, M).orderGatesByLevel();
+    common::utils::DarkPool<Field> darkpool_ob(N,M);
+    darkpool_ob.resizeList();
+    auto CDA_circ = darkpool_ob.getCDACircuit().orderGatesByLevel();
     
     std::cout << "--- Circuit ---\n";
     std::cout << CDA_circ << std::endl;

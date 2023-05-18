@@ -81,7 +81,7 @@ class DarkPool {
         b_list_.order[0].unit = circ_.addConstOpGate(GateType::kConstAdd, new_order_.unit, one);
         b_list_.order[0].price = circ_.addConstOpGate(GateType::kConstAdd, new_order_.price, one);
 
-        for(size_t i = 0; i < M; i++) {
+        for(size_t i = 1; i < M; i++) {
             b_list_.order[i].name = circ_.addConstOpGate(GateType::kConstAdd, b_list_.order[i-1].name, one);
             b_list_.order[i].unit = circ_.addConstOpGate(GateType::kConstAdd, b_list_.order[i-1].unit, one);
             b_list_.order[i].price = circ_.addConstOpGate(GateType::kConstAdd, b_list_.order[i-1].price, one);
@@ -105,10 +105,6 @@ class DarkPool {
             temp1[i] = circ_.addGate(GateType::kSub, w[i-1], new_order_.unit);
             temp2[i] = circ_.addConstOpGate(GateType::kConstAdd, new_order_.price, one);
             temp3[i] = circ_.addGate(GateType::kSub, s_list_.order[i-1].price, temp2[i]);
-            // z[i] = circ_.addGate(GateType::kLtz, temp1);
-            // z_dash[i] = circ_.addGate(GateType::kLtz, temp3);
-        }
-	    for(size_t i = 1; i <= N; i++) {
 	        z[i] = circ_.addGate(GateType::kLtz, temp1[i]);
 	        z_dash[i] = circ_.addGate(GateType::kLtz, temp3[i]);
 	    }
@@ -116,7 +112,7 @@ class DarkPool {
         f[0] = circ_.addConstOpGate(GateType::kConstMul, z[0], zero);
         for(size_t i = 1; i <= N; i++) {
             f[i] = circ_.addGate(GateType::kMul, z[i], z_dash[i]);
-            // circ_.setAsOutput(f[i]);
+            circ_.setAsOutput(f[i]);
         }
         size_t k = N/2;
         for(size_t i = 0; i < k; i++) {
@@ -141,6 +137,7 @@ class DarkPool {
 
         // start Insert
         buy_list_size_ += 1;
+        b_list_.order.resize(buy_list_size_);
         b_list_.order[M].name = circ_.addConstOpGate(GateType::kConstMul, b_list_.order[0].name, zero);
         b_list_.order[M].unit = circ_.addConstOpGate(GateType::kConstMul, b_list_.order[0].unit, zero);
         b_list_.order[M].price = circ_.addConstOpGate(GateType::kConstMul, b_list_.order[0].price, zero);
@@ -150,11 +147,9 @@ class DarkPool {
 	    std::vector<wire_t> temp_2(M+2);
         auto tmp4 = circ_.addGate(GateType::kSub, new_order_.price, b_list_.order[0].price);
         g[0] = circ_.addGate(GateType::kLtz, tmp4);
-        for(size_t i = 1; i <= M+1; i++) {
+        for(size_t i = 1; i < M+1; i++) {
             auto temp_1 = circ_.addConstOpGate(GateType::kConstAdd, b_list_.order[i].price, one);
             temp_2[i] = circ_.addGate(GateType::kSub, new_order_.price, temp_1);
-        }
-	    for(size_t i = 1; i <= M+1; i++) {
 	        g[i] = circ_.addGate(GateType::kLtz, temp_2[i]);
 	    }
 
@@ -164,7 +159,7 @@ class DarkPool {
         auto tmp5 = circ_.addConstOpGate(GateType::kConstMul, g[0], neg_one);
         tmp6[0] = circ_.addConstOpGate(GateType::kConstAdd, tmp5, one);
         h[0] = circ_.addGate(GateType::kMul, tmp6[0], g[0]);
-        for(size_t i = 1; i <= M+1; i++) {
+        for(size_t i = 1; i < M+1; i++) {
             tmp5 = circ_.addConstOpGate(GateType::kConstMul, g[i], neg_one);
             tmp6[i] = circ_.addConstOpGate(GateType::kConstAdd, tmp5, one);
             h[i] = circ_.addGate(GateType::kMul, tmp6[i], g[i-1]);
@@ -176,7 +171,7 @@ class DarkPool {
         auto tmp7 = circ_.addConstOpGate(GateType::kConstMul, h[0], neg_one);
         tmp8[0] = circ_.addConstOpGate(GateType::kConstAdd, tmp7, one);
         u[0] = circ_.addGate(GateType::kMul, tmp8[0], tmp6[0]);
-        for(size_t i = 1; i <= M+1; i++) {
+        for(size_t i = 1; i < M+1; i++) {
             tmp7 = circ_.addConstOpGate(GateType::kConstMul, h[i], neg_one);
             tmp8[i] = circ_.addConstOpGate(GateType::kConstAdd, tmp7, one);
             u[i] = circ_.addGate(GateType::kMul, tmp8[i], tmp6[i]);
@@ -187,7 +182,7 @@ class DarkPool {
         updated_buy_list[0].unit = circ_.addConstOpGate(GateType::kConstMul, b_list_.order[0].unit, zero);
         updated_buy_list[0].price = circ_.addConstOpGate(GateType::kConstMul, b_list_.order[0].price, zero);
 
-        for(size_t i = 1; i <= M + 1; i++) {
+        for(size_t i = 1; i < M + 1; i++) {
             auto new_tmp1 = circ_.addGate(GateType::kMul, g[i - 1],  b_list_.order[i].name);
             auto new_tmp2 = circ_.addGate(GateType::kMul, h[i - 1],  b_list_.order[0].name);
             auto new_tmp3 = circ_.addGate(GateType::kMul, u[i - 1],  new_order_.name);

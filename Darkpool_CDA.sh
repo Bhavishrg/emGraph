@@ -1,7 +1,7 @@
 #!/bin/bash
 # set -x
 
-dir=Darkpool_CDA_outputs
+dir=~/benchmark_data/Darkpool_CDA
 highestPlayer=$3
 startPlayer=4
 increment=4

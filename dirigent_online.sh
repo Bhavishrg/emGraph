@@ -1,7 +1,7 @@
 #!/bin/bash
 # set -x
 
-dir=dirigent_online_outputs
+dir=~/benchmark_data/dirigent_online
 highestPlayer=$3
 startPlayer=4
 increment=4

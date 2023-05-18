@@ -1,7 +1,7 @@
 #!/bin/bash
 # set -x
 
-dir=auction_outputs
+dir=~/benchmark_data/auction
 highestPlayer=$2
 startPlayer=4
 increment=4
