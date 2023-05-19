@@ -13,7 +13,10 @@ if test $highestPlayer -lt $startPlayer
 then
     echo "Highest player number should not be less than $startPlayer"
 else
-    for players in $(seq $startPlayer $increment $highestPlayer)
+    for players in {5,10,25,50,100}
+    # players=$startPlayer
+    # while [[ $players -le $highestPlayer ]]
+    # for players in $(seq $startPlayer $increment $highestPlayer)
     do
         for party in $(seq 1 $players)
         do
@@ -34,6 +37,7 @@ else
         do
             wait ${codes[$i]} || return 1
         done
+        # (( players *= $increment ))
     done
 fi
 
