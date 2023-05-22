@@ -52,7 +52,7 @@ class NetIOMP {
           if (localhost) {
             ios[j] = std::make_unique<NetIO>("127.0.0.1", port + 2 * (i * nP + j), true);
           } else {
-            ios[j] = std::make_unique<NetIO>(IP[j], port + 2 * (i), true);
+            ios[j] = std::make_unique<NetIO>(IP[j], port + 2 * (i * nP +j), true);
           }
           ios[j]->set_nodelay();
 
@@ -60,7 +60,7 @@ class NetIOMP {
           if (localhost) {
             ios2[j] = std::make_unique<NetIO>(nullptr, port + 2 * (i * nP + j) + 1, true);
           } else {
-            ios2[j] = std::make_unique<NetIO>(nullptr, port + 2 * (j) + 1, true);
+            ios2[j] = std::make_unique<NetIO>(nullptr, port + 2 * (i * nP +j) + 1, true);
           }
           ios2[j]->set_nodelay();
         } else if (j == party) {
@@ -68,7 +68,7 @@ class NetIOMP {
           if (localhost) {
             ios[i] = std::make_unique<NetIO>(nullptr, port + 2 * (i * nP + j), true);
           } else {
-            ios[i] = std::make_unique<NetIO>(nullptr, port + 2 * (i), true);
+            ios[i] = std::make_unique<NetIO>(nullptr, port + 2 * (i * nP +j), true);
           }
           ios[i]->set_nodelay();
 
@@ -76,8 +76,9 @@ class NetIOMP {
           if (localhost) {
             ios2[i] = std::make_unique<NetIO>("127.0.0.1", port + 2 * (i * nP + j) + 1, true);
           } else {
-            ios2[i] = std::make_unique<NetIO>(IP[i], port + 2 * (j) + 1, true);
+            ios2[i] = std::make_unique<NetIO>(IP[i], port + 2 * (i * nP +j) + 1, true);
           }
+          ios2[i]->set_nodelay();
         }
       }
     }
