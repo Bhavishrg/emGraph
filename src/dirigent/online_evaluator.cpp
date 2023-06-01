@@ -696,19 +696,15 @@ void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
 
     }
     else if (id_ == 0) { 
-        std::vector<std::vector<Field>> online_comm_to_TP(nP_, std::vector<Field>(total_comm, 0));
         std::vector<Field> agg_values(total_comm, 0);
         for(int pid = 1; pid <= nP_; pid++) {
-            
-            network_->recv(pid, online_comm_to_TP[pid-1].data(), sizeof(Field) * total_comm);
+            std::vector<Field> online_comm_to_TP(total_comm, 0);
+            network_->recv(pid, online_comm_to_TP.data(), sizeof(Field) * total_comm);
+	    for(int i = 0; i < total_comm; i++) {
+		agg_values[i] += online_comm_to_TP[i];
+	    }
         }
-        for(int pid = 1; pid <= nP_; pid++ ) {
-            
-            for(int i = 0; i < total_comm; i++) {
-                agg_values[i] += online_comm_to_TP[pid-1][i];   
-            }
-        }
-        
+
         for(int pid = 1; pid <= nP_; pid++){
             network_->send(pid, agg_values.data(), sizeof(Field) * total_comm);
         }

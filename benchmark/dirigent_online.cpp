@@ -156,12 +156,13 @@ void benchmark(const bpo::variables_map& opts) {
         
         auto preproc = off_eval.run(input_pid_map);
         // StatsPoint end_pre(*network);
+
+        network->sync();
         
         OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, 
                     security_param, threads, seed);
 
         
-        network->sync();
         
         StatsPoint start(*network);
         eval.setRandomInputs();
