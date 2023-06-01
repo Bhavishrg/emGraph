@@ -28,14 +28,15 @@ else
             else
                 ./benchmarks/Darkpool_CDA -p $party --localhost -b $1 -s $2 -n $players 2>&1 | cat > /dev/null &
             fi
-            codes[$i]=$!
+            codes[$party]=$!
         done
 
-        ./benchmarks/Darkpool_CDA -p 0 --localhost -b $1 -s $2 -n $players -o $dir/b_$1_s_$2_0.json 2>&1 | tee -a $dir/b_$1_s_$2_0.log
+        ./benchmarks/Darkpool_CDA -p 0 --localhost -b $1 -s $2 -n $players -o $dir/b_$1_s_$2_0.json 2>&1 | tee -a $dir/b_$1_s_$2_0.log &
+        codes[0]=$!
 
         for party in $(seq 0 $players)
         do
-            wait ${codes[$i]} || return 1
+            wait ${codes[$party]} || return 1
         done
         # (( players *= $increment ))
     done

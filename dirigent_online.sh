@@ -28,14 +28,15 @@ else
             else
                 ./benchmarks/dirigent_online -p $party --localhost -g $1 -d $2 -n $players 2>&1 | cat > /dev/null &
             fi
-            codes[$i]=$!
+            codes[$party]=$!
         done
 
-        ./benchmarks/dirigent_online -p 0 --localhost -g $1 -d $2 -n $players -o $dir/g_$1_d_$2_0.json 2>&1 | tee -a $dir/g_$1_d_$2_0.log
+        ./benchmarks/dirigent_online -p 0 --localhost -g $1 -d $2 -n $players -o $dir/g_$1_d_$2_0.json 2>&1 | tee -a $dir/g_$1_d_$2_0.log &
+        codes[0]=$!
 
         for party in $(seq 0 $players)
         do
-            wait ${codes[$i]} || return 1
+            wait ${codes[$party]} || return 1
         done
         # (( players *= $increment ))
     done
