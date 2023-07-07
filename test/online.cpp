@@ -220,7 +220,7 @@ BOOST_AUTO_TEST_CASE(LTZ) {
     // inputs[winp] = 4;
     // inputs[winp] = -4;
   }
-  inputs[0] = -40;
+  inputs[0] = 40;
   inputs[1] = -4;
   auto w_ltz =
      circ.addGate(common::utils::GateType::kLtz, input_wires[0]);

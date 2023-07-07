@@ -193,7 +193,7 @@ void OnlineEvaluator::ltzEvaluate(
         val_bits[63] = 0;
         for(size_t j = 0; j < 64; j++) {
             if(val_bits[j] == 1) {
-                d_dash[i] += pow(2, j);
+                d_dash[i] += (long)pow(2, j);
             }
         }
         for (size_t j = 0; j < prefixAND_circ_.gates_by_level[0].size(); ++j) {
@@ -552,7 +552,7 @@ void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth,
                     // m_v
                     auto m_v = ltz_masked_b[idx_ltz] - (2 * m_w);
                     // m_x'
-                    auto m_lsb_x = d_dash[idx_ltz] + pow(2, 63) * m_v;
+                    auto m_lsb_x = d_dash[idx_ltz] + (long)pow(2, 63) * m_v;
                     // m_b
                     wires_[g->out] = wires_[g->in] - m_lsb_x; 
                     wires_[g->out] = wires_[g->out] * pow(2, -63);

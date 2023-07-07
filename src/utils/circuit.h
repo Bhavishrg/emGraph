@@ -545,6 +545,7 @@ class Circuit {
     leveli = std::move(input);
     
     
+    // For PrefixAND
     for(size_t level = 1; level <= log(k)/log(4); level++) {
       std::vector<wire_t> level_next(k);
         
@@ -566,6 +567,7 @@ class Circuit {
       leveli = std::move(level_next);
     }
     
+    // For PrefixOR
     std::vector<wire_t> wv(k);
     for(size_t i = 0; i < k; i++) {
       wv[i] = circ.addConstOpGate(GateType::kConstAdd, leveli[i], one);

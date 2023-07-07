@@ -769,7 +769,7 @@ void OfflineEvaluator::setWireMasksParty(
           Field padded_val;
           rgen_.all().random_data(&padded_val, sizeof(Field));
 
-          // TP obtains $r = padded_val - delta_x
+          // TP obtains $r = padded_val + delta_x
           Field r_value = 0;
           if(id_ == 0) {
             r_value = padded_val + preproc_.gates[ltz_g->in]->tpmask.secret();
@@ -789,7 +789,7 @@ void OfflineEvaluator::setWireMasksParty(
             r_value = 0;
             for(size_t j = 0; j < 64; j++) {
               if(r_bits[j] == 1) {
-                r_value += pow(2, j);
+                r_value += (long)pow(2, j);
               }
             }
           }
@@ -1133,16 +1133,14 @@ void OfflineEvaluator::setWireMasksParty(
           AuthAddShare<Field> mask_out;
           TPShare<Field> tpmask_out;
 
-          // del_x - del_x'
+          // del_b = (del_x - del_x') * 2^(-63)
           // del_x' = -r' + 2^63 * del_v
           // del_b = (del_x + r' - 2^63 * del_v) * 2^(-63)
 
-          mask_out = preproc_.gates[ltz_g->in]->mask + r_val - mask_v * pow(2,63);
+          mask_out = preproc_.gates[ltz_g->in]->mask + r_val - mask_v * (long)pow(2,63);
           mask_out = mask_out * pow(2, -63);
-          tpmask_out = preproc_.gates[ltz_g->in]->tpmask + tpr_val - tpmask_v * pow(2,63);
+          tpmask_out = preproc_.gates[ltz_g->in]->tpmask + tpr_val - tpmask_v * (long)pow(2,63);
           tpmask_out = tpmask_out * pow(2, -63);
-          mask_out = preproc_.gates[ltz_g->in]->mask * pow(2, -63);
-          tpmask_out = preproc_.gates[ltz_g->in]->tpmask * pow(2, -63);
 
 
           preproc_.gates[ltz_g->out] = std::make_unique<PreprocLtzGate<Field>>
@@ -1428,6 +1426,7 @@ void OfflineBoolEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen,
         tagn += tag;
         tpShare.setKeySh(keySh[i]);
       }
+      tpShare.setKeySh(keySh[nP]);
       valn = secret - valn;
       tagn = key * secret - tagn;
       tpShare.pushValues(valn);
