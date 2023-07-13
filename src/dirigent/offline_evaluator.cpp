@@ -1134,10 +1134,10 @@ void OfflineEvaluator::setWireMasksParty(
           TPShare<Field> tpmask_out;
 
           // del_b = (del_x - del_x') * 2^(-63)
-          // del_x' = -r' + 2^63 * del_v
-          // del_b = (del_x + r' - 2^63 * del_v) * 2^(-63)
+          // del_x' = r' + 2^63 * del_v
+          // del_b = (del_x - r' - 2^63 * del_v) * 2^(-63)
 
-          mask_out = preproc_.gates[ltz_g->in]->mask + r_val - mask_v * (long)pow(2,63);
+          mask_out = preproc_.gates[ltz_g->in]->mask - r_val - mask_v * (long)pow(2,63);
           mask_out = mask_out * pow(2, -63);
           tpmask_out = preproc_.gates[ltz_g->in]->tpmask + tpr_val - tpmask_v * (long)pow(2,63);
           tpmask_out = tpmask_out * pow(2, -63);
