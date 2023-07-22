@@ -1139,7 +1139,7 @@ void OfflineEvaluator::setWireMasksParty(
 
           mask_out = preproc_.gates[ltz_g->in]->mask - r_val - mask_v * (long)pow(2,63);
           mask_out = mask_out * pow(2, -63);
-          tpmask_out = preproc_.gates[ltz_g->in]->tpmask + tpr_val - tpmask_v * (long)pow(2,63);
+          tpmask_out = preproc_.gates[ltz_g->in]->tpmask - tpr_val - tpmask_v * (long)pow(2,63);
           tpmask_out = tpmask_out * pow(2, -63);
 
 
