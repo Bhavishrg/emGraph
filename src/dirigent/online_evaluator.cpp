@@ -156,7 +156,7 @@ void OnlineEvaluator::eqzEvaluate(
             auto del_w = pre_eqz->mask_w;
             auto del_b = pre_eqz->mask_b;
 
-            q_share[i] = del_b * (output_share_val[i]) + del_w;
+            q_share[i] = del_w - del_b * (output_share_val[i]);
             for (int pid = 1; pid <= nP_; pid++)  {
                 q_share[i].addWithAdder(r_eqz[id_-1], id_, pid);
             }
@@ -238,7 +238,7 @@ void OnlineEvaluator::ltzEvaluate(
             }
             r_ltz_pad.push_back(r_sum);
         
-            q_share[i] = pre_ltz->mask_b * (output_share_val[i]) + pre_ltz->mask_w;
+            q_share[i] =  pre_ltz->mask_w - pre_ltz->mask_b * (output_share_val[i]);
             for (int pid = 1; pid <= nP_; pid++)  {
                 q_share[i].addWithAdder(r_ltz[id_-1], id_, pid);
             }
