@@ -11,7 +11,8 @@ add_library(QuadSquad
     dirigent/sharing.cpp
     dirigent/rand_gen_pool.cpp
     dirigent/offline_evaluator.cpp
-    dirigent/online_evaluator.cpp
+    # dirigent/online_evaluator.cpp
+    dirigent/online_evaluator_load_balanced.cpp
     assistedMPC/sharing.cpp
     assistedMPC/rand_gen_pool.cpp
     assistedMPC/offline_evaluator.cpp)
