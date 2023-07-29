@@ -2,11 +2,11 @@
 # set -x
 
 dir=~/benchmark_data/dirigent_online
-highestPlayer=$3
+highestPlayer=100
 startPlayer=4
 increment=4
 
-rm -rf $dir/*.log $dir/g*.json
+# rm -rf $dir/*.log $dir/g*.json
 mkdir -p $dir
 
 if test $highestPlayer -lt $startPlayer
@@ -22,16 +22,16 @@ else
         do
             log=$dir/g_$1_d_$2_$party.log
             json=$dir/g_$1_d_$2_$party.json
-            if test $party = 1
+            if [ $party == 1 ] || [ $party -eq $players ]
             then
-                ./benchmarks/dirigent_online -p $party --localhost -g $1 -d $2 -n $players -o $json 2>&1 | cat >> $log &
+                ./benchmarks/dirigent_online -p $party --localhost -g $1 -d $2 -n $players -o $json 2>&1 | cat >> /dev/null &
             else
                 ./benchmarks/dirigent_online -p $party --localhost -g $1 -d $2 -n $players 2>&1 | cat > /dev/null &
             fi
             codes[$party]=$!
         done
 
-        ./benchmarks/dirigent_online -p 0 --localhost -g $1 -d $2 -n $players -o $dir/g_$1_d_$2_0.json 2>&1 | tee -a $dir/g_$1_d_$2_0.log &
+        ./benchmarks/dirigent_online -p 0 --localhost -g $1 -d $2 -n $players -o $dir/g_$1_d_$2_0.json 2>&1 | tee -a /dev/null &
         codes[0]=$!
 
         for party in $(seq 0 $players)

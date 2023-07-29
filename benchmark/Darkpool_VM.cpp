@@ -110,7 +110,12 @@ void benchmark(const bpo::variables_map& opts) {
         //Online
         OnlineEvaluator VM_eval(nP, pid, network, std::move(VM_preproc), VM_circ, security_param, threads, seed);
 
-        auto VM_res = VM_eval.evaluateCircuit(input_map);
+        VM_eval.setRandomInputs();        
+
+        //auto VM_res = VM_eval.evaluateCircuit(input_map);
+        for (size_t i = 0; i < VM_circ.gates_by_level.size(); ++i) {
+            VM_eval.evaluateGatesAtDepth(i);
+        }
 
 
         StatsPoint end(*network);
