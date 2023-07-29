@@ -23,7 +23,7 @@ constexpr int SECURITY_PARAM = 128;
 
 struct GlobalFixture {
   GlobalFixture() {
-    NTL::ZZ_p::init(NTL::conv<NTL::ZZ>("18446744073709551616"));
+    NTL::ZZ_p::init(NTL::conv<NTL::ZZ>("17816577890427308801"));
   }
 };
 
@@ -65,6 +65,8 @@ BOOST_AUTO_TEST_CASE(mult) {
       OfflineEvaluator eval(nP, i, network, 
                             level_circ, SECURITY_PARAM, 4);
       auto preproc = eval.run(input_pid_map);
+      
+      network->sync();
      
       OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
                                   level_circ, SECURITY_PARAM, 1);
@@ -121,6 +123,8 @@ BOOST_AUTO_TEST_CASE(EQZ_zero) {
       OfflineEvaluator eval(nP, i, network, 
                             level_circ, SECURITY_PARAM, 4);
       auto preproc = eval.run(input_pid_map);
+      
+      network->sync();
      
       OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
                                   level_circ, SECURITY_PARAM, 1);
@@ -175,6 +179,8 @@ BOOST_AUTO_TEST_CASE(EQZ_non_zero) {
       OfflineEvaluator eval(nP, i, network, 
                             level_circ, SECURITY_PARAM, 4);
       auto preproc = eval.run(input_pid_map);
+      
+      network->sync();
      
       OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
                                   level_circ, SECURITY_PARAM, 1);
@@ -240,6 +246,8 @@ BOOST_AUTO_TEST_CASE(LTZ) {
       OfflineEvaluator eval(nP, i, network, 
                             level_circ, SECURITY_PARAM, 4);
       auto preproc = eval.run(input_pid_map);
+      
+      network->sync();
      
       OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
                                   level_circ, SECURITY_PARAM, 1);
@@ -299,6 +307,8 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
       OfflineEvaluator eval(nP, i, network, 
                             level_circ, SECURITY_PARAM, 4);
       auto preproc = eval.run(input_pid_map);
+      
+      network->sync();
      
       OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
                                   level_circ, SECURITY_PARAM, 1);
@@ -361,7 +371,9 @@ BOOST_AUTO_TEST_CASE(dotp_gate) {
                             level_circ, SECURITY_PARAM, 4);
 
       auto preproc = eval.run(input_pid_map);
-      //return preproc;
+      
+      network->sync();
+
       OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
                                    level_circ, SECURITY_PARAM, 1);
 
@@ -423,6 +435,8 @@ BOOST_AUTO_TEST_CASE(mult3) {
       OfflineEvaluator eval(nP, i, network, 
                             level_circ, SECURITY_PARAM, 4);
       auto preproc = eval.run(input_pid_map);
+      
+      network->sync();
      
       OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
                                   level_circ, SECURITY_PARAM, 1);
@@ -557,6 +571,8 @@ BOOST_AUTO_TEST_CASE(mult4_2) {
       OfflineEvaluator eval(nP, i, network, 
                             level_circ, SECURITY_PARAM, 4);
       auto preproc = eval.run(input_pid_map);
+      
+      network->sync();
      
       OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
                                   level_circ, SECURITY_PARAM, 1);
@@ -644,6 +660,8 @@ BOOST_AUTO_TEST_CASE(Multk_bool) {
       
       auto preproc = eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);
       
+      network->sync();
+      
       BoolEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
                                   level_circ);
       
@@ -699,6 +717,8 @@ BOOST_AUTO_TEST_CASE(PrefixAND) {
       
       OfflineBoolEvaluator eval(nP, i, network, level_circ);
       auto preproc = eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);
+      
+      network->sync();
       BoolEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
                                   level_circ);
       
@@ -743,6 +763,8 @@ BOOST_AUTO_TEST_CASE(ParaPrefixAND) {
       
       OfflineBoolEvaluator eval(nP, i, network, level_circ);
       auto preproc = eval.run(input_pid_map, bit_mask_map, output_mask, output_tpmask);
+      
+      network->sync();
       BoolEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
                                   level_circ);
       
