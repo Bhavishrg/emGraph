@@ -104,6 +104,8 @@ void benchmark(const bpo::variables_map& opts) {
         OfflineEvaluator VM_off_eval(nP, pid, network, VM_circ, security_param, threads, seed);
 
         auto VM_preproc = VM_off_eval.run(input_pid_map);
+
+        network->sync();
         
         //Online
         OnlineEvaluator VM_eval(nP, pid, network, std::move(VM_preproc), VM_circ, security_param, threads, seed);
