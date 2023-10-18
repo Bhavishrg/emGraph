@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE sharing
 
-#include <dirigent/sharing.h>
+#include <asterisk/sharing.h>
 #include <utils/types.h>
 
 #include <boost/test/data/monomorphic.hpp>
@@ -9,21 +9,30 @@
 #include <random>
 #include <vector>
 
-using namespace dirigent;
+using namespace asterisk;
 namespace bdata = boost::unit_test::data;
+
+struct GlobalFixture {
+  GlobalFixture() {
+    NTL::ZZ_p::init(NTL::conv<NTL::ZZ>("17816577890427308801"));
+  }
+};
+
+BOOST_GLOBAL_FIXTURE(GlobalFixture);
 
 constexpr int TEST_DATA_MAX_VAL = 1000;
 constexpr int NUM_SAMPLES = 1;
 std::random_device rd;
 std::mt19937 engine(rd());
-std::uniform_int_distribution<common::utils::Field> distrib;
+std::uniform_int_distribution<uint64_t> distrib;
 // common::utils::Field MAC_key = distrib(engine);
-common::utils::Field MAC_key = 5;
+
 // Utility function to generate replicated secret sharing of 3 parties.
 std::vector<AuthAddShare<common::utils::Field>> generateAuthAddShares(common::utils::Field secret, size_t nP) {
+  common::utils::Field MAC_key = common::utils::Field(5);
   std::random_device rd;
   std::mt19937 engine(rd());
-  std::uniform_int_distribution<common::utils::Field> distrib;
+  std::uniform_int_distribution<uint64_t> distrib;
   
   
   common::utils::Field tag = secret * MAC_key;
@@ -32,11 +41,11 @@ std::vector<AuthAddShare<common::utils::Field>> generateAuthAddShares(common::ut
   std::vector<common::utils::Field> values(nP);
   std::vector<common::utils::Field> tags(nP);
 
-  common::utils::Field sum1 = 0, sum2 = 0, sum3 = 0;
+  common::utils::Field sum1 = common::utils::Field(0), sum2 = common::utils::Field(0), sum3 = common::utils::Field(0);
   for (int i = 0; i < nP-1; ++i) {
-    key_shares[i] = distrib(engine);
-    values[i] = distrib(engine);
-    tags[i] = distrib(engine);
+    key_shares[i] = Field(distrib(engine));
+    values[i] = Field(distrib(engine));
+    tags[i] = Field(distrib(engine));
 
     sum1 += key_shares[i];
     sum2 += values[i];
@@ -61,9 +70,9 @@ std::vector<AuthAddShare<common::utils::Field>> generateAuthAddShares(common::ut
 
 common::utils::Field reconstructAuthAddShares(
     const std::vector<AuthAddShare<common::utils::Field>>& v_aas, size_t nP) {
-  common::utils::Field secret = 0;
-  common::utils::Field tag = 0;
-  common::utils::Field key = 0;
+  common::utils::Field secret = common::utils::Field(0);
+  common::utils::Field tag = common::utils::Field(0);
+  common::utils::Field key = common::utils::Field(0);
       for(size_t i = 1; i <= nP; i++) {
         secret += v_aas[i-1].valueAt();
         tag += v_aas[i-1].tagAt();
@@ -72,7 +81,7 @@ common::utils::Field reconstructAuthAddShares(
       if(secret * key == tag) { return secret; }
       else {
         std::cout<< "Incorrect sharing !!!" << std::endl;
-        return 0;
+        return common::utils::Field(0);
       }
   }
 
@@ -83,7 +92,7 @@ BOOST_DATA_TEST_CASE(reconstruction,
                          bdata::xrange(NUM_SAMPLES),
                      secret_val, idx) {
   size_t nP = 4;
-  common::utils::Field secret = secret_val;
+  common::utils::Field secret = Field(secret_val);
 
   auto v_aas = generateAuthAddShares(secret, nP);
   
@@ -98,8 +107,8 @@ BOOST_DATA_TEST_CASE(share_arithmetic,
                          bdata::xrange(NUM_SAMPLES),
                      vala, valb, idx) {
   size_t nP = 4;
-  common::utils::Field a = vala;
-  common::utils::Field b = valb;
+  common::utils::Field a = Field(vala);
+  common::utils::Field b = Field(valb);
   auto v_aas_a = generateAuthAddShares(a, nP);
   auto v_aas_b = generateAuthAddShares(b, nP);
 
@@ -134,8 +143,8 @@ BOOST_DATA_TEST_CASE(share_const_arithmetic,
   size_t nP = 6;
   // common::utils::Field secret = secret_val;
   // common::utils::Field constant = const_val;
-  common::utils::Field secret = 100;
-  common::utils::Field constant = 200;
+  common::utils::Field secret = Field(100);
+  common::utils::Field constant = Field(200);
   auto v_aas = generateAuthAddShares(secret, nP);
 
   std::vector<AuthAddShare<common::utils::Field>> v_aas_res(nP);
@@ -159,8 +168,8 @@ BOOST_DATA_TEST_CASE(const_addition,
   size_t nP = 6;
   // common::utils::Field secret = secret_val;
   // common::utils::Field constant = const_val;
-  common::utils::Field secret = 100;
-  common::utils::Field constant = 200;
+  common::utils::Field secret = Field(100);
+  common::utils::Field constant = Field(200);
   auto v_aas = generateAuthAddShares(secret, nP);
 
   std::vector<AuthAddShare<common::utils::Field>> v_aas_res(nP);

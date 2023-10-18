@@ -1,4 +1,5 @@
 #pragma once
+#include <emp-tool/emp-tool.h>
 
 #include <NTL/ZZ_p.h>
 
@@ -6,15 +7,19 @@
 #include <iostream>
 #include <vector>
 
+using namespace NTL;
+
 namespace common::utils {
 using Ring = uint64_t;
 // constexpr uint64_t FRACTION = 16;
 
 // using Field = NTL::ZZ_p;
 constexpr uint64_t FIELDSIZE = 8; // bytes
-using Field = uint64_t;
+// using Field = uint64_t;
 constexpr uint64_t FRACTION = 16;
 // using Field = int;
+
+using Field = ZZ_p; 
 
 class BoolRing {
   bool val_;

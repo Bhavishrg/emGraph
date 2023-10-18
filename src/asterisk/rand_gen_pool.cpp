@@ -4,7 +4,7 @@
 
 #include "../utils/helpers.h"
 
-namespace dirigent {
+namespace asterisk {
 
   RandGenPool::RandGenPool(int my_id, int num_parties,  uint64_t seed) 
     : id_{my_id}, k_pi(num_parties + 1) { 
@@ -29,4 +29,4 @@ emp::PRG& RandGenPool::p0() {
 emp::PRG& RandGenPool::pi( int i) {
   return k_pi[i];
 }
-}  // namespace dirigents
+}  // namespace asterisk

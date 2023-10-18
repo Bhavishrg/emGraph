@@ -12,13 +12,13 @@
 
 
 #include "preproc.h"
-#include "dirigent/rand_gen_pool.h"
+#include "asterisk/rand_gen_pool.h"
 #include "sharing.h"
 #include "../utils/types.h"
 
 using namespace common::utils;
 
-namespace dirigent {
+namespace asterisk {
 class OfflineEvaluator {
   int nP_;  
   int id_;
@@ -142,4 +142,4 @@ class OfflineBoolEvaluator {
       std::vector<TPShare<BoolRing>>& output_tpmask);
 
 };
-};  // namespace dirigent
+};  // namespace asterisk

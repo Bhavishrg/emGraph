@@ -6,7 +6,7 @@
 
 using namespace common::utils;
 
-namespace dirigent {
+namespace asterisk {
 // Preprocessed data for a gate.
 template <class R>
 struct PreprocGate {
@@ -174,7 +174,7 @@ struct PreprocEqzGate : public PreprocGate<R> {
                   AuthAddShare<R> rval, TPShare<R> tprval,
                   std::vector<preprocg_ptr_t<BoolRing>> multk_gates,
                   R padded_val)
-    : PreprocGate<R>((mask_b * ( -1 ) + mask_w * ( -2 ) ), (tpmask_b * ( -1 ) + tpmask_w * ( -2 ))),
+    : PreprocGate<R>((mask_b * R( -1 ) + mask_w * R( -2 ) ), (tpmask_b * R( -1 ) + tpmask_w * R( -2 ))),
       mask_w(mask_w), tpmask_w(tpmask_w),
       mask_b(mask_b), tpmask_b(tpmask_b),
       rval(rval), tprval(tprval),
@@ -295,4 +295,4 @@ struct PreprocCircuit {
       : gates(num_gates) {}
         
 };
-};  // namespace dirigent
+};  // namespace asterisk

@@ -1,6 +1,6 @@
 #include <io/netmp.h>
-#include <dirigent/offline_evaluator.h>
-#include <dirigent/online_evaluator.h>
+#include <asterisk/offline_evaluator.h>
+#include <asterisk/online_evaluator.h>
 #include <utils/circuit.h>
 #include <utils/darkpool.h>
 
@@ -12,7 +12,7 @@
 
 #include "utils.h"
 
-using namespace dirigent;
+using namespace asterisk;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
@@ -161,6 +161,7 @@ bpo::options_description programOptions() {
 // clang-format on
 
 int main(int argc, char* argv[]) {
+    ZZ_p::init(conv<ZZ>("17816577890427308801"));
     auto prog_opts(programOptions());
 
     bpo::options_description cmdline(

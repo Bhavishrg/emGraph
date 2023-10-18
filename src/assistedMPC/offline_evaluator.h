@@ -15,6 +15,7 @@
 #include "assistedMPC/rand_gen_pool.h"
 #include "sharing.h"
 #include "../utils/types.h"
+#include "../utils/helpers.h"
 
 using namespace common::utils;
 

@@ -26,36 +26,46 @@ constexpr int SECURITY_PARAM = 128;
 
 struct GlobalFixture {
   GlobalFixture() {
-    NTL::ZZ_p::init(NTL::conv<NTL::ZZ>("18446744073709551616"));
+    NTL::ZZ_p::init(NTL::conv<NTL::ZZ>("17816577890427308801"));
   }
 };
+
+void randomizeZZpTwo(emp::PRG& prg, NTL::ZZ_p& val, int nbytes) {
+    uint64_t var;
+    prg.random_data(&var, nbytes);
+    std::cout << "Value is: " << var << " " << val << std::endl;
+    val = var;
+}
 
 BOOST_GLOBAL_FIXTURE(GlobalFixture);
 
 BOOST_AUTO_TEST_SUITE(offline_evaluator)
 
 BOOST_AUTO_TEST_CASE(random_share) {
+  NTL::ZZ_pContext ZZ_p_ctx;
+  ZZ_p_ctx.save();
   int nP = 5;
   
   std::vector<std::future<AuthAddShare<Field>>> parties;
   TPShare<Field> tpshares;
   for (int i = 0; i <= nP; i++) {
     parties.push_back(std::async(std::launch::async, [&, i]() { 
+      ZZ_p_ctx.restore();
       AuthAddShare<Field> shares;
       size_t idx = 0;
       RandGenPool vrgen(i, nP);
       std::vector<Field> keySh(nP + 1);
-      Field key = 0;
+      Field key = Field(0);
       if(i == 0)  {
         key = 0;
         keySh[0] = 0;
         for(int j = 1; j <= nP; j++) {
-            vrgen.pi(j).random_data(&keySh[j], sizeof(Field));
+            randomizeZZp(vrgen.pi(j), keySh[j], sizeof(Field));
             key += keySh[j];
         }
       }
       else {
-        vrgen.p0().random_data(&key, sizeof(Field));
+        randomizeZZp(vrgen.p0(), key, sizeof(Field));
       }
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       if(i == 0) { 
@@ -90,33 +100,36 @@ BOOST_AUTO_TEST_CASE(random_share) {
     }
   }
 
-  BOOST_AUTO_TEST_CASE(random_share_secret) {
+BOOST_AUTO_TEST_CASE(random_share_secret) {
+  NTL::ZZ_pContext ZZ_p_ctx;
+  ZZ_p_ctx.save();
   int nP = 5;
   
   std::vector<std::future<AuthAddShare<Field>>> parties;
   TPShare<Field> tpshares;
   for (int i = 0; i <= nP; i++) {
     parties.push_back(std::async(std::launch::async, [&, i]() { 
+      ZZ_p_ctx.restore();
       AuthAddShare<Field> shares;
       size_t idx = 0;
       RandGenPool vrgen(i, nP);
       std::vector<Field> keySh(nP + 1);
-      Field key = 0;
+      Field key = Field(0);
       if(i == 0)  {
         key = 0;
         keySh[0] = 0;
         for(int j = 1; j <= nP; j++) {
-            vrgen.pi(j).random_data(&keySh[j], sizeof(Field));
+            randomizeZZp(vrgen.pi(j), keySh[j], sizeof(Field));
             key += keySh[j];
         }
       }
       else {
-        vrgen.p0().random_data(&key, sizeof(Field));
+        randomizeZZp(vrgen.p0(), key, sizeof(Field));
       }
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       if(i == 0) { 
         Field secret;
-        vrgen.self().random_data(&secret, sizeof(Field));
+        randomizeZZp(vrgen.self(), secret, sizeof(Field));
         std::vector<std::vector<Field>> rand_sh_sec(nP + 1);
         OfflineEvaluator::randomShareSecret_Helper(nP, vrgen, shares, tpshares, secret, key, keySh, rand_sh_sec);
         size_t rand_sh_sec_num = rand_sh_sec[1].size();
@@ -148,28 +161,31 @@ BOOST_AUTO_TEST_CASE(random_share) {
     }
   }
 
-  BOOST_AUTO_TEST_CASE(random_share_party) {
+BOOST_AUTO_TEST_CASE(random_share_party) {
+  NTL::ZZ_pContext ZZ_p_ctx;
+  ZZ_p_ctx.save();
   int nP = 5;
   int dealer = 1;
   std::vector<std::future<AuthAddShare<Field>>> parties;
   TPShare<Field> tpshares;
   for (int i = 0; i <= nP; i++) {
     parties.push_back(std::async(std::launch::async, [&, i]() { 
+      ZZ_p_ctx.restore();
       AuthAddShare<Field> shares;
       
       RandGenPool vrgen(i, nP);
       std::vector<Field> keySh(nP + 1);
-      Field key = 0;
+      Field key = Field(0);
       if(i == 0)  {
         key = 0;
         keySh[0] = 0;
         for(int j = 1; j <= nP; j++) {
-            vrgen.pi(j).random_data(&keySh[j], sizeof(Field));
+            randomizeZZp(vrgen.pi(j), keySh[j], sizeof(Field));
             key += keySh[j];
         }
       }
       else {
-        vrgen.p0().random_data(&key, sizeof(Field));
+        randomizeZZp(vrgen.p0(), key, sizeof(Field));
       }
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       if(i == 0) { 
@@ -191,7 +207,9 @@ BOOST_AUTO_TEST_CASE(random_share) {
           Field secret;
           OfflineEvaluator::randomShareWithParty_Dealer(secret, shares, key, rand_sh_party, idx);
         }
-        OfflineEvaluator::randomShareWithParty_Party(shares, key, rand_sh_party, idx);
+        else {
+          OfflineEvaluator::randomShareWithParty_Party(shares, key, rand_sh_party, idx);
+        }        
       }
 
       return shares;
@@ -210,6 +228,8 @@ BOOST_AUTO_TEST_CASE(random_share) {
   }
 
   BOOST_AUTO_TEST_CASE(EQZ) {
+    NTL::ZZ_pContext ZZ_p_ctx;
+    ZZ_p_ctx.save();
     int nP = 5;
     common::utils::Circuit<Field> circ;
     std::vector<common::utils::wire_t> input_wires;
@@ -227,8 +247,8 @@ BOOST_AUTO_TEST_CASE(random_share) {
         circ.addGate(common::utils::GateType::kAdd, input_wires[0], input_wires[1]);
     auto w_cmd =
         circ.addGate(common::utils::GateType::kMul, input_wires[2], input_wires[3]);
-        auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aab, 2);
-        auto w_cons_m = circ.addConstOpGate(common::utils::GateType::kConstMul, w_cmd, 2);
+        auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aab, Field(2));
+        auto w_cons_m = circ.addConstOpGate(common::utils::GateType::kConstMul, w_cmd, Field(2));
         auto w_mout = circ.addGate(common::utils::GateType::kMul, w_aab, w_cons);
         auto w_aout = circ.addGate(common::utils::GateType::kAdd, w_aab, w_cmd);
         // auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aout, 2);
@@ -243,7 +263,7 @@ BOOST_AUTO_TEST_CASE(random_share) {
     Field key;
     for (int i = 0; i <= nP; ++i) {
       parties.push_back(std::async(std::launch::async, [&, i, input_pid_map]() {
-        
+        ZZ_p_ctx.restore();
         auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
         
         RandGenPool vrgen(i, nP);
@@ -276,6 +296,8 @@ BOOST_AUTO_TEST_CASE(random_share) {
   }
 
   BOOST_AUTO_TEST_CASE(LTZ) {
+  NTL::ZZ_pContext ZZ_p_ctx;
+  ZZ_p_ctx.save();
   int nP = 5;
   common::utils::Circuit<Field> circ;
   std::vector<common::utils::wire_t> input_wires;
@@ -293,8 +315,8 @@ BOOST_AUTO_TEST_CASE(random_share) {
       circ.addGate(common::utils::GateType::kAdd, input_wires[0], input_wires[1]);
   auto w_cmd =
       circ.addGate(common::utils::GateType::kMul, input_wires[2], input_wires[3]);
-      auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aab, 2);
-      auto w_cons_m = circ.addConstOpGate(common::utils::GateType::kConstMul, w_cmd, 2);
+      auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aab, Field(2));
+      auto w_cons_m = circ.addConstOpGate(common::utils::GateType::kConstMul, w_cmd, Field(2));
       auto w_mout = circ.addGate(common::utils::GateType::kMul, w_aab, w_cons);
       auto w_aout = circ.addGate(common::utils::GateType::kAdd, w_aab, w_cmd);
       // auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aout, 2);
@@ -309,7 +331,7 @@ BOOST_AUTO_TEST_CASE(random_share) {
   Field key;
   for (int i = 0; i <= nP; ++i) {
     parties.push_back(std::async(std::launch::async, [&, i, input_pid_map]() {
-      
+      ZZ_p_ctx.restore();
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       
       RandGenPool vrgen(i, nP);
@@ -341,7 +363,9 @@ BOOST_AUTO_TEST_CASE(random_share) {
   }
 }
 
-BOOST_AUTO_TEST_CASE(depth_2_circuit) {
+BOOST_AUTO_TEST_CASE(depth_2_circuit) {  
+  NTL::ZZ_pContext ZZ_p_ctx;
+  ZZ_p_ctx.save();
   int nP = 5;
   common::utils::Circuit<Field> circ;
   std::vector<common::utils::wire_t> input_wires;
@@ -359,8 +383,8 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
       circ.addGate(common::utils::GateType::kAdd, input_wires[0], input_wires[1]);
   auto w_cmd =
       circ.addGate(common::utils::GateType::kMul, input_wires[2], input_wires[3]);
-      auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aab, 2);
-      auto w_cons_m = circ.addConstOpGate(common::utils::GateType::kConstMul, w_cmd, 2);
+      auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aab, Field(2));
+      auto w_cons_m = circ.addConstOpGate(common::utils::GateType::kConstMul, w_cmd, Field(2));
       auto w_mout = circ.addGate(common::utils::GateType::kMul, w_aab, w_cons);
       auto w_aout = circ.addGate(common::utils::GateType::kAdd, w_aab, w_cmd);
       // auto w_cons = circ.addConstOpGate(common::utils::GateType::kConstAdd, w_aout, 2);
@@ -374,7 +398,7 @@ BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   Field key;
   for (int i = 0; i <= nP; ++i) {
     parties.push_back(std::async(std::launch::async, [&, i, input_pid_map]() {
-      
+      ZZ_p_ctx.restore();
       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
       RandGenPool vrgen(i, nP);
       OfflineEvaluator eval(nP, i, std::move(network), 

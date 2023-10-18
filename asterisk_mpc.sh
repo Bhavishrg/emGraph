@@ -1,7 +1,7 @@
 #!/bin/bash
 # set -x
 
-dir=~/benchmark_data/assistedmpc_offline
+dir=~/benchmark_data/asterisk_mpc
 
 # rm -rf $dir/*.log $dir/g*.json
 mkdir -p $dir
@@ -14,14 +14,14 @@ do
         json=$dir/g_$1_d_$2_$party.json
         if test $party = 1
         then
-            ./benchmarks/assistedmpc_offline -p $party --localhost -g $1 -d $2 -n $players -o $json 2>&1 | cat >> /dev/null &
+            ./benchmarks/asterisk_mpc -p $party --localhost -g $1 -d $2 -n $players -o $json 2>&1 >> $log &
         else
-            ./benchmarks/assistedmpc_offline -p $party --localhost -g $1 -d $2 -n $players 2>&1 | cat > /dev/null &
+            ./benchmarks/asterisk_mpc -p $party --localhost -g $1 -d $2 -n $players 2>&1 > /dev/null &
         fi
         codes[$party]=$!
     done
 
-    ./benchmarks/assistedmpc_offline -p 0 --localhost -g $1 -d $2 -n $players -o $dir/g_$1_d_$2_0.json 2>&1 | tee -a /dev/null &
+    ./benchmarks/asterisk_mpc -p 0 --localhost -g $1 -d $2 -n $players -o $dir/g_$1_d_$2_0.json 2>&1 | tee -a $dir/g_$1_d_$2_0.log &
     codes[0]=$!
 
     for party in $(seq 0 $players)

@@ -9,7 +9,7 @@
 
 // #include "../utils/helpers.h"
 
-namespace dirigent {
+namespace asterisk {
 OfflineEvaluator::OfflineEvaluator(int nP, int my_id,
                                    std::shared_ptr<io::NetIOMP> network,
                                    common::utils::LevelOrderedCircuit circ,
@@ -31,12 +31,12 @@ void OfflineEvaluator::keyGen(int nP, int pid, RandGenPool& rgen,
     key = 0;
     keySh[0] = 0;
     for(int i = 1; i <= nP; i++) {
-        rgen.pi(i).random_data(&keySh[i], sizeof(Field));
+        randomizeZZp(rgen.pi(i), keySh[i], sizeof(Field));
         key += keySh[i];
     }
   }
   else {
-    rgen.p0().random_data(&key, sizeof(Field));
+    randomizeZZp(rgen.p0(), key, sizeof(Field));
   }
 }
 
@@ -54,25 +54,25 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
   // pid = 0 stores tags in TPShare.tags
   // pid = 0 sends tag[1] to pid = nP
   // std::cout << "randomShare starts" << std::endl;
-  Field val = 0;
-  Field tag = 0;
-  Field tagn = 0;
+  Field val = Field(0);
+  Field tag = Field(0);
+  Field tagn = Field(0);
   
     if(pid == 0) {
-      share.pushValue(0);
-      share.pushTag(0);
+      share.pushValue(Field(0));
+      share.pushTag(Field(0));
       share.setKey(keySh[0]);
-      tpShare.pushValues(0);
-      tpShare.pushTags(0);
+      tpShare.pushValues(Field(0));
+      tpShare.pushTags(Field(0));
       tpShare.setKeySh(keySh[0]);
       tpShare.setKey(key);
       
       for(int i = 1; i <= nP; i++) {
 
-        rgen.pi(i).random_data(&val, sizeof(Field));
+        randomizeZZp(rgen.pi(i), val, sizeof(Field));
         tpShare.pushValues(val);
         tpShare.setKeySh(keySh[i]);
-        rgen.pi(i).random_data(&tag, sizeof(Field));
+        randomizeZZp(rgen.pi(i), tag, sizeof(Field));
         if( i != nP) {
           tpShare.pushTags(tag);
           tagn += tag;
@@ -88,10 +88,10 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
     }
     else if(pid > 0) {
       share.setKey(key);
-      rgen.p0().random_data(&val, sizeof(Field));
+      randomizeZZp(rgen.p0(), val, sizeof(Field));
       share.pushValue(val);
       
-      rgen.p0().random_data(&tag, sizeof(Field));
+      randomizeZZp(rgen.p0(), tag, sizeof(Field));
       
       if( pid != nP) {
         share.pushTag(tag);
@@ -112,24 +112,24 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io:
                                   Field secret, Field key, std::vector<Field> keySh, 
                                   std::vector<Field>& rand_sh_sec, size_t& idx_rand_sh_sec) {
   // std::cout << "randomShareSecret starts" << std::endl;
-  Field val = 0;
-  Field tag = 0;
-  Field tagn = 0;
-  Field valn = 0;
+  Field val = Field(0);
+  Field tag = Field(0);
+  Field tagn = Field(0);
+  Field valn = Field(0);
   
     if(pid == 0) {
-      share.pushValue(0);
-      share.pushTag(0);
+      share.pushValue(Field(0));
+      share.pushTag(Field(0));
       share.setKey(keySh[0]);
-      tpShare.pushValues(0);
-      tpShare.pushTags(0);
+      tpShare.pushValues(Field(0));
+      tpShare.pushTags(Field(0));
       tpShare.setKeySh(keySh[0]);
       tpShare.setKey(key);
       for(int i = 1; i < nP; i++) {
-        rgen.pi(i).random_data(&val, sizeof(Field));
+        randomizeZZp(rgen.pi(i), val, sizeof(Field));
         tpShare.pushValues(val);
         valn += val;
-        rgen.pi(i).random_data(&tag, sizeof(Field));
+        randomizeZZp(rgen.pi(i), tag, sizeof(Field));
         tpShare.pushTags(tag);
         tagn += tag;
         tpShare.setKeySh(keySh[i]);
@@ -145,9 +145,9 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io:
     else if(pid > 0) {
       share.setKey(key);
       if( pid != nP) {
-        rgen.p0().random_data(&val, sizeof(Field));
+        randomizeZZp(rgen.p0(), val, sizeof(Field));
         share.pushValue(val);
-        rgen.p0().random_data(&tag, sizeof(Field));
+        randomizeZZp(rgen.p0(), tag, sizeof(Field));
         share.pushTag(tag);
       }
       else if(pid == nP) {
@@ -170,34 +170,34 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
                                             size_t& idx_rand_sh_party) {
                                              
                                             
-  Field tagF = 0;
-  Field val = 0;
-  Field tag = 0;
-  Field valn = 0;
-  Field tagn = 0;
+  Field tagF = Field(0);
+  Field val = Field(0);
+  Field tag = Field(0);
+  Field valn = Field(0);
+  Field tagn = Field(0);
   if( pid == 0) {
     if(dealer != 0) {
-      rgen.pi(dealer).random_data(&secret, sizeof(Field));
+      randomizeZZp(rgen.pi(dealer), secret, sizeof(Field));
     }
     else {
-      rgen.self().random_data(&secret, sizeof(Field));
+      randomizeZZp(rgen.self(), secret, sizeof(Field));
     }
     
-    share.pushValue(0);
-    share.pushTag(0);
+    share.pushValue(Field(0));
+    share.pushTag(Field(0));
     share.setKey(keySh[0]);
-    tpShare.pushValues(0);
-    tpShare.pushTags(0);
+    tpShare.pushValues(Field(0));
+    tpShare.pushTags(Field(0));
     tpShare.setKeySh(keySh[0]);
     tpShare.setKey(key);
     
     tagF = key * secret;
     for(int i = 1; i < nP; i++) {
       tpShare.setKeySh(keySh[i]);
-      rgen.pi(i).random_data(&val, sizeof(Field));
+      randomizeZZp(rgen.pi(i), val, sizeof(Field));
       
       tpShare.pushValues(val);
-      rgen.pi(i).random_data(&tag, sizeof(Field));
+      randomizeZZp(rgen.pi(i), tag, sizeof(Field));
       
       tpShare.pushTags(tag);
       valn += val;
@@ -215,12 +215,12 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
   else if ( pid > 0) {
     share.setKey(key);
     if(pid == dealer) {
-      rgen.p0().random_data(&secret, sizeof(Field));
+      randomizeZZp(rgen.p0(), secret, sizeof(Field));
     }
     if(pid != nP) {
-      rgen.p0().random_data(&val, sizeof(Field));
+      randomizeZZp(rgen.p0(), val, sizeof(Field));
       share.pushValue(val);
-      rgen.p0().random_data(&tag, sizeof(Field)); 
+      randomizeZZp(rgen.p0(), tag, sizeof(Field)); 
       share.pushTag(tag);
     }
     else if (pid == nP) {
@@ -254,18 +254,18 @@ void OfflineEvaluator::setWireMasksParty(
 
     // key setup
       std::vector<Field> keySh(nP_ + 1);
-      Field key = 0;
+      Field key = Field(0);
       if(id_ == 0)  {
         key = 0;
         keySh[0] = 0;
         for(int i = 1; i <= nP_; i++) {
-            rgen_.pi(i).random_data(&keySh[i], sizeof(Field));
+            randomizeZZp(rgen_.pi(i), keySh[i], sizeof(Field));
             key += keySh[i];
         }
         key_sh_ = key;
       }
       else {
-        rgen_.p0().random_data(&key, sizeof(Field));
+        randomizeZZp(rgen_.p0(), key, sizeof(Field));
         key_sh_ = key;
       }
 
@@ -548,7 +548,7 @@ void OfflineEvaluator::setWireMasksParty(
         case common::utils::GateType::kDotprod: {
           preproc_.gates[gate->out] = std::make_unique<PreprocDotpGate<Field>>();
           const auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
-          Field mask_prod = 0;
+          Field mask_prod = Field(0);
           if(id_ ==0) {
             for(size_t i = 0; i < g->in1.size(); i++) {
               mask_prod += preproc_.gates[g->in1[i]]->tpmask.secret() 
@@ -581,10 +581,10 @@ void OfflineEvaluator::setWireMasksParty(
           
           // padded_val = r - delta_x, sampled by all the parties together
           Field padded_val;
-          rgen_.all().random_data(&padded_val, sizeof(Field));
+          randomizeZZp(rgen_.all(), padded_val, sizeof(Field));
 
           // TP obtains $r = padded_val + delta_x
-          Field r_value = 0;
+          Field r_value = Field(0);
           if(id_ == 0) {
             r_value = padded_val + preproc_.gates[eqz_g->in]->tpmask.secret();
           }
@@ -596,7 +596,7 @@ void OfflineEvaluator::setWireMasksParty(
           std::vector<BoolRing> r_bits(64);
           // TP bit decomposes r and shares it's bits
           if(id_ == 0) { 
-            r_bits = bitDecompose(r_value);
+            r_bits = bitDecomposeTwo(r_value);
           }
           
           // preproc for multk gate 
@@ -767,10 +767,10 @@ void OfflineEvaluator::setWireMasksParty(
           const auto* ltz_g = static_cast<common::utils::FIn1Gate*>(gate.get());
           // padded_val
           Field padded_val;
-          rgen_.all().random_data(&padded_val, sizeof(Field));
+          randomizeZZp(rgen_.all(), padded_val, sizeof(Field));
 
           // TP obtains $r = padded_val + delta_x
-          Field r_value = 0;
+          Field r_value = Field(0);
           if(id_ == 0) {
             r_value = padded_val + preproc_.gates[ltz_g->in]->tpmask.secret();
           }
@@ -783,13 +783,13 @@ void OfflineEvaluator::setWireMasksParty(
           std::vector<BoolRing> r_bits(64);
           // TP bit decomposes r and shares it's bits
           if(id_ == 0) { 
-            r_bits = bitDecompose(r_value);
+            r_bits = bitDecomposeTwo(r_value);
             r_bits[63] = 0;
 
             r_value = 0;
             for(size_t j = 0; j < 64; j++) {
               if(r_bits[j] == 1) {
-                r_value += (long)pow(2, j);
+                r_value += (uint64_t)pow(2, j);
               }
             }
           }
@@ -1126,8 +1126,8 @@ void OfflineEvaluator::setWireMasksParty(
           AuthAddShare<Field> mask_v;
           TPShare<Field> tpmask_v;
           
-          mask_v = mask_w * ( -2 ) + mask_b * ( -1 );
-          tpmask_v = tpmask_w * ( -2 ) + tpmask_b * ( -1 );
+          mask_v = mask_w * Field( -2 ) + mask_b * Field( -1 );
+          tpmask_v = tpmask_w * Field( -2 ) + tpmask_b * Field( -1 );
 
           
           AuthAddShare<Field> mask_out;
@@ -1137,10 +1137,10 @@ void OfflineEvaluator::setWireMasksParty(
           // del_x' = r' + 2^63 * del_v
           // del_b = (del_x - r' - 2^63 * del_v) * 2^(-63)
 
-          mask_out = preproc_.gates[ltz_g->in]->mask - r_val - mask_v * (long)pow(2,63);
-          mask_out = mask_out * pow(2, -63);
-          tpmask_out = preproc_.gates[ltz_g->in]->tpmask - tpr_val - tpmask_v * (long)pow(2,63);
-          tpmask_out = tpmask_out * pow(2, -63);
+          mask_out = preproc_.gates[ltz_g->in]->mask - r_val - (mask_v << 63);
+          mask_out = mask_out >> 63;
+          tpmask_out = preproc_.gates[ltz_g->in]->tpmask - tpr_val - (tpmask_v << 63);
+          tpmask_out = tpmask_out >> 63;
 
 
           preproc_.gates[ltz_g->out] = std::make_unique<PreprocLtzGate<Field>>
@@ -1304,7 +1304,7 @@ void OfflineEvaluator::getOutputMasks(int pid, std::vector<Field>& output_mask) 
   }
   else {
     for(size_t i = 0; i < circ_.outputs.size(); i++) {
-    output_mask.push_back(0);
+    output_mask.push_back(Field(0));
     }
   }
   
@@ -1979,4 +1979,4 @@ PreprocCircuit<BoolRing> OfflineBoolEvaluator::run(
   return std::move(preproc_);
   
 }
-};  // namespace dirigent
+};  // namespace asterisk

@@ -59,9 +59,9 @@ class DarkPool {
         size_t N = s_list_.order.size();
         size_t M = b_list_.order.size();
         
-        R zero = 0;
-        R one = 1;
-        R neg_one = -1;
+        R zero = R(0);
+        R one = R(1);
+        R neg_one = R(-1);
 
         new_order_.name = circ_.newInputWire();
         new_order_.unit = circ_.newInputWire();
@@ -212,9 +212,9 @@ class DarkPool {
         size_t N = s_list_.order.size();
         size_t M = b_list_.order.size();
         
-        R zero = 0;
-        R one = 1;
-        R neg_one = -1;
+        R zero = R(0);
+        R one = R(1);
+        R neg_one = R(-1);
 
         new_order_.name = circ_.newInputWire();
         new_order_.unit = circ_.newInputWire();

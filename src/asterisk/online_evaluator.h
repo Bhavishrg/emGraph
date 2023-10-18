@@ -13,7 +13,7 @@
 
 using namespace common::utils;
 
-namespace dirigent
+namespace asterisk
 {
   class OnlineEvaluator
   {
@@ -170,4 +170,4 @@ namespace dirigent
 
     std::vector<std::vector<BoolRing>> getOutputShares();
   };
-}; // namespace dirigent
+}; // namespace asterisk

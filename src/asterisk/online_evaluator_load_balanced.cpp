@@ -4,7 +4,7 @@
 
 #include "../utils/helpers.h"
 
-namespace dirigent
+namespace asterisk
 {
     OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                                      PreprocCircuit<Field> preproc,
@@ -89,7 +89,7 @@ namespace dirigent
         {
             if (g->type == common::utils::GateType::kInp)
             {
-                rgen_.all().random_data(&wires_[g->out], sizeof(Field));
+                randomizeZZp(rgen_.all(), wires_[g->out], sizeof(Field));
             }
         }
     }
@@ -119,7 +119,7 @@ namespace dirigent
         // Set the inputs.
         for (size_t i = 0; i < num_eqz_gates; ++i)
         {
-            auto val_bits = bitDecompose(val[i]);
+            auto val_bits = bitDecomposeTwo(val[i]);
             for (size_t j = 0; j < multk_circ_.gates_by_level[0].size(); ++j)
             {
                 const auto &gate = multk_circ_.gates_by_level[0][j];
@@ -154,7 +154,7 @@ namespace dirigent
             auto *pre_eqz = static_cast<PreprocEqzGate<Field> *>(
                 preproc_.gates[eqz_gates[i].out].get());
 
-            Field r_sum = 0;
+            Field r_sum = Field(0);
             masked_b.push_back(output_share_val[i]);
             // authaddshare(q_w) = m_b * authaddshare(del_b) + authaddshare(del_w) + r_i
             if (id_ != 0)
@@ -196,13 +196,13 @@ namespace dirigent
         for (size_t i = 0; i < num_ltz_gates; ++i)
         {
             d_dash[i] = 0;
-            auto val_bits = bitDecompose(val[i]);
+            auto val_bits = bitDecomposeTwo(val[i]);
             val_bits[63] = 0;
             for (size_t j = 0; j < 64; j++)
             {
                 if (val_bits[j] == 1)
                 {
-                    d_dash[i] += (long)pow(2, j);
+                    d_dash[i] += (uint64_t)pow(2, j);
                 }
             }
             for (size_t j = 0; j < prefixAND_circ_.gates_by_level[0].size(); ++j)
@@ -245,7 +245,7 @@ namespace dirigent
             auto *pre_ltz = static_cast<PreprocLtzGate<Field> *>(
                 preproc_.gates[ltz_gates[i].out].get());
 
-            Field r_sum = 0;
+            Field r_sum = Field(0);
             masked_b.push_back(output_share_val[i]);
             // authaddshare(q_w) = - m_b * authaddshare(del_b) + authaddshare(del_w) + r_i
             if (id_ != 0)
@@ -272,7 +272,7 @@ namespace dirigent
             {
                 // All parties excluding TP sample a common random value r_in
                 auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
-                Field r_sum = 0;
+                Field r_sum = Field(0);
                 q_val_[g->out] = 0;
 
                 if (id_ != 0)
@@ -297,7 +297,7 @@ namespace dirigent
             {
                 // All parties excluding TP sample a common random value r_in
                 auto *g = static_cast<common::utils::FIn3Gate *>(gate.get());
-                Field r_sum = 0;
+                Field r_sum = Field(0);
                 q_val_[g->out] = 0;
 
                 if (id_ != 0)
@@ -334,7 +334,7 @@ namespace dirigent
             {
                 // All parties excluding TP sample a common random value r_in
                 auto *g = static_cast<common::utils::FIn4Gate *>(gate.get());
-                Field r_sum = 0;
+                Field r_sum = Field(0);
                 q_val_[g->out] = 0;
 
                 if (id_ != 0)
@@ -375,7 +375,7 @@ namespace dirigent
             {
                 // All parties excluding TP sample a common random value r_in
 
-                Field r_sum = 0;
+                Field r_sum = Field(0);
 
                 auto *g = static_cast<common::utils::SIMDGate *>(gate.get());
                 auto *pre_out =
@@ -544,10 +544,10 @@ namespace dirigent
                     // m_v
                     auto m_v = ltz_masked_b[idx_ltz] - (2 * m_w);
                     // m_x'
-                    auto m_lsb_x = d_dash[idx_ltz] + (long)pow(2, 63) * m_v;
+                    auto m_lsb_x = d_dash[idx_ltz] + (conv<uint64_t>(m_v) << 63);
                     // m_b
                     wires_[g->out] = wires_[g->in] - m_lsb_x;
-                    wires_[g->out] = wires_[g->out] * pow(2, -63);
+                    wires_[g->out] = conv<uint64_t>(wires_[g->out]) >> 63;
 
                     q_sh_[g->out] = ltz_q_share[idx_ltz];
                 }
@@ -714,8 +714,8 @@ namespace dirigent
                 }
             }
 
-            std::vector<Field> agg_values_send(per_party_comm, 0);
-            std::vector<Field> agg_values_send_last(last_party_comm, 0);
+            std::vector<Field> agg_values_send(per_party_comm, Field(0));
+            std::vector<Field> agg_values_send_last(last_party_comm, Field(0));
             for (size_t pid = 1; pid <= nP_; pid++)
             {
                 if (id_ == pid)
@@ -772,7 +772,7 @@ namespace dirigent
                 }
             }
 
-            std::vector<Field> agg_values(total_comm, 0);
+            std::vector<Field> agg_values(total_comm, Field(0));
             for (size_t pid = 1; pid <= nP_; pid++)
             {
                 if (id_ == pid)
@@ -880,12 +880,12 @@ namespace dirigent
         }
         emp::PRG prg;
         prg.reseed(cc_key);
-        Field res = 0;
+        Field res = Field(0);
         if (id_ != 0)
         {
             Field key = preproc_.gates[0]->mask.keySh();
             int m = circ_.num_gates;
-            Field omega = 0;
+            Field omega = Field(0);
             std::unordered_map<common::utils::wire_t, Field> rho;
 
             for (size_t i = 0; i < circ_.gates_by_level.size(); ++i)
@@ -897,25 +897,25 @@ namespace dirigent
                     case common::utils::GateType::kMul:
                     {
                         auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
-                        prg.random_data(&rho[g->out], sizeof(Field));
+                        randomizeZZp(prg, rho[g->out], sizeof(Field));
                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
                     }
                     case common::utils::GateType::kDotprod:
                     {
                         auto *g = static_cast<common::utils::SIMDGate *>(gate.get());
-                        prg.random_data(&rho[g->out], sizeof(Field));
+                        randomizeZZp(prg, rho[g->out], sizeof(Field));
                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
                     }
                     case common::utils::GateType::kMul3:
                     {
                         auto *g = static_cast<common::utils::FIn3Gate *>(gate.get());
-                        prg.random_data(&rho[g->out], sizeof(Field));
+                        randomizeZZp(prg, rho[g->out], sizeof(Field));
                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
                     }
                     case common::utils::GateType::kMul4:
                     {
                         auto *g = static_cast<common::utils::FIn4Gate *>(gate.get());
-                        prg.random_data(&rho[g->out], sizeof(Field));
+                        randomizeZZp(prg, rho[g->out], sizeof(Field));
                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
                     }
                     case common::utils::GateType::kConstAdd:
@@ -999,7 +999,7 @@ namespace dirigent
 
     Field OnlineEvaluator::reconstruct(AuthAddShare<Field> &shares)
     {
-        Field reconstructed_value = 0;
+        Field reconstructed_value = Field(0);
         if (id_ != 0)
         {
             network_->send(0, &shares.valueAt(), sizeof(Field));
@@ -1033,7 +1033,7 @@ namespace dirigent
         else
         {
             std::cout << "Malicious Activity Detected!!!" << std::endl;
-            std::vector<Field> abort(circ_.outputs.size(), 0);
+            std::vector<Field> abort(circ_.outputs.size(), Field(0));
             return abort;
         }
     }
@@ -2193,4 +2193,4 @@ namespace dirigent
 
         return outputs;
     }
-}; // namespace dirigent
+}; // namespace asterisk

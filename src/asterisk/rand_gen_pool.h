@@ -9,7 +9,7 @@
 
 using namespace common::utils;
 
-namespace dirigent {
+namespace asterisk {
 
 // Collection of PRGs.
 class RandGenPool {
@@ -32,4 +32,4 @@ class RandGenPool {
   emp::PRG& pi( int i);
 };
 
-};  // namespace dirigent
+};  // namespace asterisk

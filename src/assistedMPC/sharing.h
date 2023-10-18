@@ -26,9 +26,9 @@ class AuthAddShare {
       : key_sh_{key_sh}, value_{value}, tag_{tag} {}
 
   void randomize(emp::PRG& prg) {
-    prg.random_data(key_sh_.data(), sizeof(R));
-    prg.random_data(value_.data(), sizeof(R));
-    prg.random_data(tag_.data(), sizeof(R));
+    randomizeZZp(prg, key_sh_.data(), sizeof(R));
+    randomizeZZp(prg, value_.data(), sizeof(R));
+    randomizeZZp(prg, tag_.data(), sizeof(R));
   }
 
   R& valueAt() { return value_; }
@@ -64,7 +64,7 @@ class AuthAddShare {
   }
 
   AuthAddShare<R>& operator-=(const AuthAddShare<R>& rhs) {
-    (*this) += (rhs * -1);
+    (*this) += (rhs * R(-1));
     return *this;
   }
 
@@ -108,12 +108,12 @@ class AuthAddShare {
   }
 
   AuthAddShare<R>& shift() {
-    auto bits = bitDecompose(value_);
+    auto bits = bitDecomposeTwo(value_);
     if (bits[63] == 1)
       value_ = 1;
     else
       value_ = 0;
-    bits = bitDecompose(tag_);
+    bits = bitDecomposeTwo(tag_);
     if (bits[63] == 1)
       tag_ = 1;
     else
@@ -200,7 +200,7 @@ class TPShare {
   }
 
   TPShare<R>& operator-=(const TPShare<R>& rhs) {
-    (*this) += (rhs * -1);
+    (*this) += (rhs * R(-1));
     return *this;
   }
 
@@ -229,13 +229,13 @@ class TPShare {
 
   TPShare<R>& shift() {
     for(size_t i = 1; i < values_.size(); i++) {
-      auto bits = bitDecompose(values_[i]);
+      auto bits = bitDecomposeTwo(values_[i]);
       if(bits[63] == 1)
         values_[i] = 1;
       else 
         values_[i] = 0;
 
-      bits = bitDecompose(tags_[i]);
+      bits = bitDecomposeTwo(tags_[i]);
       if(bits[63] == 1)
         tags_[i] = 1;
       else 

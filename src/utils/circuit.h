@@ -452,7 +452,7 @@ class Circuit {
             if constexpr (std::is_same_v<R, BoolRing>) {
               wires[g->out] = wires[g->in];
             } else {
-              std::vector<BoolRing> bin = bitDecompose(wires[g->in]);
+              std::vector<BoolRing> bin = bitDecomposeTwo(wires[g->in]);
               wires[g->out] = bin[63].val();
             }
             break;
@@ -464,7 +464,7 @@ class Circuit {
               throw std::runtime_error("ReLU gates are invalid for BoolRing.");
             } else {
               auto* g = static_cast<FIn1Gate*>(gate.get());
-              std::vector<BoolRing> bin = bitDecompose(wires[g->in]);
+              std::vector<BoolRing> bin = bitDecomposeTwo(wires[g->in]);
 
               if (bin[63].val())
                 wires[g->out] = 0;
@@ -480,7 +480,7 @@ class Circuit {
             if constexpr (std::is_same_v<R, BoolRing>) {
               wires[g->out] = wires[g->in];
             } else {
-              std::vector<BoolRing> bin = bitDecompose(wires[g->in]);
+              std::vector<BoolRing> bin = bitDecomposeTwo(wires[g->in]);
               wires[g->out] = bin[63].val();
             }
             break;
@@ -505,8 +505,9 @@ class Circuit {
                 auto temp = wires[g->in1.at(i)] * wires[g->in2.at(i)];
                 wires[g->out] += temp;
               }
-
-              wires[g->out] = wires[g->out] >> FRACTION;
+              uint64_t temp = conv<uint64_t>(wires[g->out]);
+              temp = temp >> FRACTION;
+              wires[g->out] = R(temp);
             }
             break;
           }
@@ -792,8 +793,8 @@ class Circuit {
     // leveli = std::move(pi_x);
     leveli = std::move(x);
 
-    R neg_one = -1;
-    R one = 1;
+    R neg_one = R(-1);
+    R one = R(1);
 
     int bound = log(N)/log(2);
     

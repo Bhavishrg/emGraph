@@ -28,8 +28,16 @@ std::vector<BoolRing> bitDecompose(R val) {
   return res;
 }
 
+template <class R>
+std::vector<BoolRing> bitDecomposeTwo(R value) {
+  uint64_t val = conv<uint64_t>(value);
+  return bitDecompose(val);
+}
+
+
 std::vector<uint64_t> packBool(const bool* data, size_t len);
 void unpackBool(const std::vector<uint64_t>& packed, bool* data, size_t len);
+void randomizeZZp(emp::PRG& prg, NTL::ZZ_p& val, int nbytes);
 void randomizeZZpE(emp::PRG& prg, NTL::ZZ_pE& val);
 void randomizeZZpE(emp::PRG& prg, NTL::ZZ_pE& val, Ring rval);
 

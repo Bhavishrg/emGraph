@@ -1,6 +1,6 @@
 #include <io/netmp.h>
-#include <dirigent/offline_evaluator.h>
-#include <dirigent/online_evaluator.h>
+#include <asterisk/offline_evaluator.h>
+#include <asterisk/online_evaluator.h>
 #include <utils/circuit.h>
 
 #include <algorithm>
@@ -11,10 +11,69 @@
 
 #include "utils.h"
 
-using namespace dirigent;
+using namespace asterisk;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
+
+common::utils::Circuit<Field> generateCircuit(size_t gates_per_level, size_t depth) {
+    common::utils::Circuit<Field> circ;
+
+    std::vector<common::utils::wire_t> level_inputs(gates_per_level);
+    std::generate(level_inputs.begin(), level_inputs.end(),
+                [&]() { return circ.newInputWire(); });
+
+    for (size_t d = 0; d < depth; ++d) {
+        std::vector<common::utils::wire_t> level_outputs(gates_per_level);
+
+        for (size_t i = 0; i < gates_per_level - 1; ++i) {
+            level_outputs[i] = circ.addGate(common::utils::GateType::kMul, level_inputs[i],
+                                      level_inputs[i + 1]);
+        }
+        level_outputs[gates_per_level - 1] =
+            circ.addGate(common::utils::GateType::kMul, level_inputs[gates_per_level - 1],
+                     level_inputs[0]);
+        
+        level_inputs = std::move(level_outputs);
+    }
+    for (auto i : level_inputs) {
+        circ.setAsOutput(i);
+    }
+
+    return circ;
+}
+common::utils::Circuit<Field> generateCircuitwM4(size_t gates_per_level, size_t depth) {
+    common::utils::Circuit<Field> circ;
+
+    std::vector<common::utils::wire_t> level_inputs(gates_per_level);
+    std::generate(level_inputs.begin(), level_inputs.end(),
+                [&]() { return circ.newInputWire(); });
+
+    for (size_t d = 0; d < depth; ++d) {
+        std::vector<common::utils::wire_t> level_outputs(gates_per_level);
+
+        for (size_t i = 0; i < gates_per_level - 3; ++i) {
+            level_outputs[i] = circ.addGate(common::utils::GateType::kMul4, level_inputs[i],
+                                      level_inputs[i + 1], level_inputs[i + 2], level_inputs[i + 3]);
+        }
+        level_outputs[gates_per_level - 3] =
+            circ.addGate(common::utils::GateType::kMul4, level_inputs[gates_per_level - 3],
+                     level_inputs[gates_per_level - 2], level_inputs[gates_per_level - 1], level_inputs[0]);
+        level_outputs[gates_per_level - 2] =
+            circ.addGate(common::utils::GateType::kMul4, level_inputs[gates_per_level - 2],
+                     level_inputs[gates_per_level - 1], level_inputs[0], level_inputs[1]);
+        level_outputs[gates_per_level - 1] =
+            circ.addGate(common::utils::GateType::kMul4, level_inputs[gates_per_level - 1],
+                     level_inputs[0], level_inputs[1], level_inputs[2]);
+        
+        level_inputs = std::move(level_outputs);
+    }
+    for (auto i : level_inputs) {
+        circ.setAsOutput(i);
+    }
+
+    return circ;
+}
 
 void benchmark(const bpo::variables_map& opts) {
     bool save_output = false;
@@ -24,9 +83,8 @@ void benchmark(const bpo::variables_map& opts) {
         save_file = opts["output"].as<std::string>();
     }
 
-    // auto gates_per_level = opts["gates-per-level"].as<size_t>();
-    // auto depth = opts["depth"].as<size_t>();
-    auto bids = opts["bids"].as<size_t>();
+    auto gates_per_level = opts["gates-per-level"].as<size_t>();
+    auto depth = opts["depth"].as<size_t>();
     auto nP = opts["num-parties"].as<size_t>();
     auto pid = opts["pid"].as<size_t>();
     auto security_param = opts["security-param"].as<size_t>();
@@ -60,7 +118,9 @@ void benchmark(const bpo::variables_map& opts) {
     }
 
     json output_data;
-     output_data["details"] = {{"num-parties", nP},
+    output_data["details"] = {{"gates_per_level", gates_per_level},
+                                {"depth", depth},
+                                {"num-parties", nP},
                                 {"pid", pid},
                                 {"security_param", security_param},
                                 {"threads", threads},
@@ -73,51 +133,50 @@ void benchmark(const bpo::variables_map& opts) {
         std::cout << key << ": " << value << "\n";
     }
     std::cout << std::endl;
-    int p = 1;
-    while (p < bids) {
-        p *= 2;
-    }
-    // p = bids; 
 
-    common::utils::LevelOrderedCircuit auc_circ = common::utils::Circuit<Field>::generateAuction(p).orderGatesByLevel();
+    auto circ = generateCircuit(gates_per_level, depth).orderGatesByLevel();
+    std::cout << "--- Circuit ---\n";
+    std::cout << circ << std::endl;
+
     std::unordered_map<common::utils::wire_t, int> input_pid_map;
     std::unordered_map<common::utils::wire_t, Field> input_map;
-    for (const auto& g : auc_circ.gates_by_level[0]) {
-        int inp_ctr = 0;
+    for (const auto& g : circ.gates_by_level[0]) {
         if (g->type == common::utils::GateType::kInp) {
-            if(inp_ctr < p*p) {
-                input_pid_map[g->out] = 0;
-                input_map[g->out] = 5;
-            }
-            else {
-                input_pid_map[g->out] = 0;
-                input_map[g->out] = 5;
-            }
+        input_pid_map[g->out] = 1;
+        input_map[g->out] = 5;
         }
-    }
-    
-
-    for(int i = 0; i < log(p)/log(2); i++) {
-        std::cout << "--- Circuit ---\n";
-        std::cout << auc_circ << std::endl;
     }
 
     emp::PRG prg(&emp::zero_block, seed);
     
 
     for (size_t r = 0; r < repeat; ++r) {
+         
+        OfflineEvaluator off_eval(nP, pid, network, circ, security_param, threads, seed);
         
         network->sync();
-        
         StatsPoint start(*network);
-
-        OfflineEvaluator off_eval(nP, pid, network, auc_circ, security_param, threads, seed);
-        auto auc_preproc = off_eval.run(input_pid_map);
-        OnlineEvaluator eval(nP, pid, network, std::move(auc_preproc), auc_circ, 
-                    security_param, threads, seed);
-        auto res = eval.evaluateCircuit(input_map);
-
+        auto preproc = off_eval.run(input_pid_map);
+        // StatsPoint end_pre(*network);
         StatsPoint end(*network);
+        //OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, 
+        //            security_param, threads, seed);
+
+        
+        
+        
+        //eval.setRandomInputs();
+        
+        // network->sync();
+        
+        // StatsPoint start(*network);
+        //for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
+        //    eval.evaluateGatesAtDepth(i);
+        //    
+        //}
+        // auto res = eval.evaluateCircuit(input_map);
+        
+        
         auto rbench = end - start;
         output_data["benchmarks"].push_back(rbench);
 
@@ -150,7 +209,8 @@ void benchmark(const bpo::variables_map& opts) {
 bpo::options_description programOptions() {
     bpo::options_description desc("Following options are supported by config file too.");
     desc.add_options()
-        ("bids,b", bpo::value<size_t>()->required(), "Number of bids.")
+        ("gates-per-level,g", bpo::value<size_t>()->required(), "Number of gates at each level.")
+        ("depth,d", bpo::value<size_t>()->required(), "Multiplicative depth of circuit.")
         ("num-parties,n", bpo::value<size_t>()->required(), "Number of parties.")
         ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
         ("security-param", bpo::value<size_t>()->default_value(128), "Security parameter in bits.")
@@ -167,6 +227,7 @@ bpo::options_description programOptions() {
 // clang-format on
 
 int main(int argc, char* argv[]) {
+    ZZ_p::init(conv<ZZ>("17816577890427308801"));
     auto prog_opts(programOptions());
 
     bpo::options_description cmdline(

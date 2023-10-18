@@ -1,5 +1,6 @@
 #include "helpers.h"
 
+#include <NTL/ZZ_p.h>
 #include <NTL/ZZ_pX.h>
 
 #include <cmath>
@@ -53,6 +54,12 @@ void unpackBool(const std::vector<uint64_t>& packed, bool* data, size_t len) {
       temp >>= 1;
     }
   }
+}
+
+void randomizeZZp(emp::PRG& prg, NTL::ZZ_p& val, int nbytes) {
+    uint64_t var;
+    prg.random_data(&var, nbytes);
+    val = NTL::ZZ_p(var);
 }
 
 void randomizeZZpE(emp::PRG& prg, NTL::ZZ_pE& val) {

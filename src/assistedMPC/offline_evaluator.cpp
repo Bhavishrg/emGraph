@@ -7,7 +7,6 @@
 #include <cmath>
 #include <thread>
 
-// #include "../utils/helpers.h"
 
 namespace assistedMPC {
     OfflineEvaluator::OfflineEvaluator(int nP, int my_id,
@@ -31,12 +30,12 @@ namespace assistedMPC {
             key = 0;
             keySh[0] = 0;
             for(int i = 1; i <= nP; i++) {
-                rgen.pi(i).random_data(&keySh[i], sizeof(Field));
+                randomizeZZp(rgen.pi(i), keySh[i], sizeof(Field));
                 key += keySh[i];
             }
         }
         else {
-            rgen.p0().random_data(&key, sizeof(Field));
+            randomizeZZp(rgen.p0(), key, sizeof(Field));
         }
     }
 
@@ -46,8 +45,8 @@ namespace assistedMPC {
             AuthAddShare<Field>& share, TPShare<Field>& tpShare,
             Field key, std::vector<Field> keySh, std::vector<std::vector<Field>>& rand_sh) {
 
-        Field secret = 0;
-        rgen.self().random_data(&secret, sizeof(Field));
+        Field secret = Field(0);
+        randomizeZZp(rgen.self(), secret, sizeof(Field));
         randomShareSecret_Helper(nP, rgen, share, tpShare, secret, key, keySh, rand_sh);
     }
 
@@ -67,24 +66,24 @@ namespace assistedMPC {
             Field secret, Field key, std::vector<Field> keySh, 
             std::vector<std::vector<Field>>& rand_sh_sec) {
 
-        Field val = 0;
-        Field tag = 0;
-        Field tagn = 0;
-        Field valn = 0;
+        Field val = Field(0);
+        Field tag = Field(0);
+        Field tagn = Field(0);
+        Field valn = Field(0);
 
-        share.pushValue(0);
-        share.pushTag(0);
+        share.pushValue(Field(0));
+        share.pushTag(Field(0));
         share.setKey(keySh[0]);
-        tpShare.pushValues(0);
-        tpShare.pushTags(0);
+        tpShare.pushValues(Field(0));
+        tpShare.pushTags(Field(0));
         tpShare.setKeySh(keySh[0]);
         tpShare.setKey(key);
         for(int i = 1; i < nP; i++) {
-            rgen.self().random_data(&val, sizeof(Field));
+            randomizeZZp(rgen.self(), val, sizeof(Field));
             tpShare.pushValues(val);
             rand_sh_sec[i-1].push_back(val);
             valn += val;
-            rgen.self().random_data(&tag, sizeof(Field));
+            randomizeZZp(rgen.self(), tag, sizeof(Field));
             tpShare.pushTags(tag);
             rand_sh_sec[i-1].push_back(tag);
             tagn += tag;
@@ -110,8 +109,8 @@ namespace assistedMPC {
             AuthAddShare<Field>& share, TPShare<Field>& tpShare, Field key,
             std::vector<Field> keySh, std::vector<std::vector<Field>>& rand_sh_party) {
 
-        Field secret = 0;
-        rgen.self().random_data(&secret, sizeof(Field));
+        Field secret = Field(0);
+        randomizeZZp(rgen.self(), secret, sizeof(Field));
         randomShareSecret_Helper(nP, rgen, share, tpShare, secret, key, keySh, rand_sh_party);
         rand_sh_party[dealer-1].push_back(secret);
 
@@ -140,18 +139,18 @@ namespace assistedMPC {
 
         // key setup
         std::vector<Field> keySh(nP_ + 1);
-        Field key = 0;
+        Field key = Field(0);
         if(id_ == 0)  {
             key = 0;
             keySh[0] = 0;
             for(int i = 1; i <= nP_; i++) {
-                rgen_.pi(i).random_data(&keySh[i], sizeof(Field));
+                randomizeZZp(rgen_.pi(i), keySh[i], sizeof(Field));
                 key += keySh[i];
             }
             key_sh_ = key;
         }
         else {
-            rgen_.p0().random_data(&key, sizeof(Field));
+            randomizeZZp(rgen_.p0(), key, sizeof(Field));
             key_sh_ = key;
         }
 
@@ -163,7 +162,7 @@ namespace assistedMPC {
             bkeySh[0] = 0;
             for(int i = 1; i <= nP_; i++) {
                 uint8_t tmp;
-                rgen_.pi(i).random_data(&tmp, sizeof(BoolRing)); //Banashri: doubt in dirigent same place
+                rgen_.pi(i).random_data(&tmp, sizeof(BoolRing));
                 bkeySh[i] = tmp % 2;
                 bkey += bkeySh[i];
             }
@@ -333,18 +332,18 @@ namespace assistedMPC {
 
         // key setup
         std::vector<Field> keySh(nP_ + 1);
-        Field key = 0;
+        Field key = Field(0);
         if(id_ == 0)  {
             key = 0;
             keySh[0] = 0;
             for(int i = 1; i <= nP_; i++) {
-                rgen_.pi(i).random_data(&keySh[i], sizeof(Field));
+                randomizeZZp(rgen_.pi(i), keySh[i], sizeof(Field));
                 key += keySh[i];
             }
             key_sh_ = key;
         }
         else {
-            rgen_.p0().random_data(&key, sizeof(Field));
+            randomizeZZp(rgen_.p0(), key, sizeof(Field));
             key_sh_ = key;
         }
 
@@ -356,7 +355,7 @@ namespace assistedMPC {
             bkeySh[0] = 0;
             for(int i = 1; i <= nP_; i++) {
                 uint8_t tmp;
-                rgen_.pi(i).random_data(&tmp, sizeof(BoolRing)); //Banashri: doubt in dirigent same place
+                rgen_.pi(i).random_data(&tmp, sizeof(BoolRing));
                 bkeySh[i] = tmp % 2;
                 bkey += bkeySh[i];
             }
@@ -643,7 +642,7 @@ namespace assistedMPC {
         }
         else {
             for(size_t i = 0; i < circ_.outputs.size(); i++) {
-                output_mask.push_back(0);
+                output_mask.push_back(Field(0));
             }
         }
 

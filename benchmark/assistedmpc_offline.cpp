@@ -1,6 +1,6 @@
 #include <io/netmp.h>
 #include <assistedMPC/offline_evaluator.h>
-#include <dirigent/online_evaluator.h>
+#include <asterisk/online_evaluator.h>
 #include <utils/circuit.h>
 
 #include <algorithm>
@@ -227,6 +227,7 @@ bpo::options_description programOptions() {
 // clang-format on
 
 int main(int argc, char* argv[]) {
+    ZZ_p::init(conv<ZZ>("17816577890427308801"));
     auto prog_opts(programOptions());
 
     bpo::options_description cmdline(

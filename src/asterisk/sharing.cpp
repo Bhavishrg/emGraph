@@ -1,6 +1,6 @@
 #include "sharing.h"
 
-namespace dirigent {
+namespace asterisk {
 //check the correctness of the following functions: 
 template <>
 void AuthAddShare<BoolRing>::randomize(emp::PRG& prg) {
@@ -36,4 +36,4 @@ void TPShare<BoolRing>::randomize(emp::PRG& prg) {
     share_elements[i] = values[i];
   }
 }*/
-};  // namespace dirigent
+};  // namespace asterisk
