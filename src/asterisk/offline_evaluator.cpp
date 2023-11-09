@@ -770,120 +770,94 @@ void OfflineEvaluator::setWireMasksParty(
           randomizeZZp(rgen_.all(), padded_val, sizeof(Field));
 
           // TP obtains $r = padded_val + delta_x
+          // TP bit decomposes r and shares it's bits
           Field r_value = Field(0);
+          std::vector<BoolRing> r_bits(64);
+
           if(id_ == 0) {
             r_value = padded_val + preproc_.gates[ltz_g->in]->tpmask.secret();
-          }
-
-         // c = r - del_x
-         // r = c + del_x
-
-          
-
-          std::vector<BoolRing> r_bits(64);
-          // TP bit decomposes r and shares it's bits
-          if(id_ == 0) { 
             r_bits = bitDecomposeTwo(r_value);
-            r_bits[63] = 0;
-
-            r_value = 0;
-            for(size_t j = 0; j < 64; j++) {
-              if(r_bits[j] == 1) {
-                r_value += (uint64_t)pow(2, j);
-              }
-            }
+          }
+          
+          // preproc for prefixOR gate 
+          auto prefixOR_circ =
+            common::utils::Circuit<BoolRing>::generateParaPrefixOR(2).orderGatesByLevel();
+          
+          std::vector<preprocg_ptr_t<BoolRing>> prefixOR_gates(prefixOR_circ.num_gates);
+          size_t inp_ctr = 0;
+          // added to save communication cost
+          std::vector<PreprocInput<BoolRing>> pregates;
+          for (size_t i=0; i<64; i++) {
+            auto pregate = PreprocInput<BoolRing>();
+            auto pid = 0;
+            pregate.pid = pid;
+            pregate.mask_value = r_bits[63 - i];
+            OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, pregate.mask, 
+                      pregate.tpmask, pregate.mask_value, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec); 
+            pregates.push_back(pregate);
           }
 
-          AuthAddShare<Field> r_val;
-          TPShare<Field> tpr_val;
-          randomShareSecret(nP_, id_, rgen_, *network_, 
-                                r_val, tpr_val, r_value, key, keySh, rand_sh_sec, idx_rand_sh_sec);
-          
-
-          // preproc for prefixAND gate 
-          auto prefixAND_circ =
-            common::utils::Circuit<BoolRing>::generatePrefixAND().orderGatesByLevel();
-          
-          std::vector<preprocg_ptr_t<BoolRing>> prefixAND_gates(prefixAND_circ.num_gates);
-          size_t inp_ctr = 0;
-          for (const auto& prefixAND_level : prefixAND_circ.gates_by_level) {
-            for (auto& prefixAND_gate : prefixAND_level) {
-              switch (prefixAND_gate->type) {
+          for (const auto& prefixOR_level : prefixOR_circ.gates_by_level) {
+            for (auto& prefixOR_gate : prefixOR_level) {
+              switch (prefixOR_gate->type) {
                 case common::utils::GateType::kInp: {
-                  auto* g = static_cast<common::utils::Gate*>(prefixAND_gate.get());
-                  auto pregate = std::make_unique<PreprocInput<BoolRing>>();
-                  auto pid = 0;
-                  if(inp_ctr < 64 ) {
-                    auto bit_mask = r_bits[63 - inp_ctr];
-                    pregate->pid = pid;
-                    pregate->mask_value = r_bits[63 - inp_ctr];
-                    OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, pregate->mask, 
-                      pregate->tpmask, pregate->mask_value, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
-                  }
-                  else {
-                    auto bit_mask = 0;
-                    pregate->pid = pid;
-                    pregate->mask_value = 0;
-                    OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, pregate->mask, 
-                      pregate->tpmask, pregate->mask_value, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
-                  }
-                  
-                  prefixAND_gates[g->out] = std::move(pregate);
+                  auto* g = static_cast<common::utils::Gate*>(prefixOR_gate.get());
+                  prefixOR_gates[g->out] = std::make_unique<PreprocInput<BoolRing>>(pregates[inp_ctr%64]);                  
                   inp_ctr++;
                   break;
                 }
                 case common::utils::GateType::kAdd: {
-                  const auto* g = static_cast<common::utils::FIn2Gate*>(prefixAND_gate.get());
+                  const auto* g = static_cast<common::utils::FIn2Gate*>(prefixOR_gate.get());
                   
-                  const auto& mask_in1 = prefixAND_gates[g->in1]->mask;
-                  const auto& tpmask_in1 = prefixAND_gates[g->in1]->tpmask;
+                  const auto& mask_in1 = prefixOR_gates[g->in1]->mask;
+                  const auto& tpmask_in1 = prefixOR_gates[g->in1]->tpmask;
 
-                  const auto& mask_in2 = prefixAND_gates[g->in2]->mask;
-                  const auto& tpmask_in2 = prefixAND_gates[g->in2]->tpmask;
+                  const auto& mask_in2 = prefixOR_gates[g->in2]->mask;
+                  const auto& tpmask_in2 = prefixOR_gates[g->in2]->tpmask;
                   
-                  prefixAND_gates[g->out] =
+                  prefixOR_gates[g->out] =
                     std::make_unique<PreprocGate<BoolRing>>((mask_in1 + mask_in2), (tpmask_in1 + tpmask_in2));
                   break;
                 }
                 case common::utils::GateType::kSub: {
-                  const auto* g = static_cast<common::utils::FIn2Gate*>(prefixAND_gate.get());
+                  const auto* g = static_cast<common::utils::FIn2Gate*>(prefixOR_gate.get());
                   
-                  const auto& mask_in1 = prefixAND_gates[g->in1]->mask;
-                  const auto& tpmask_in1 = prefixAND_gates[g->in1]->tpmask;
+                  const auto& mask_in1 = prefixOR_gates[g->in1]->mask;
+                  const auto& tpmask_in1 = prefixOR_gates[g->in1]->tpmask;
 
-                  const auto& mask_in2 = prefixAND_gates[g->in2]->mask;
-                  const auto& tpmask_in2 = prefixAND_gates[g->in2]->tpmask;
+                  const auto& mask_in2 = prefixOR_gates[g->in2]->mask;
+                  const auto& tpmask_in2 = prefixOR_gates[g->in2]->tpmask;
                   
-                  prefixAND_gates[g->out] =
+                  prefixOR_gates[g->out] =
                     std::make_unique<PreprocGate<BoolRing>>((mask_in1 - mask_in2), (tpmask_in1 - tpmask_in2));
                   break;
                 }
                 case common::utils::GateType::kConstAdd: {
-                  const auto* g = static_cast<common::utils::ConstOpGate<BoolRing>*>(prefixAND_gate.get());
-                  const auto& mask = prefixAND_gates[g->in]->mask;
-                  const auto& tpmask = prefixAND_gates[g->in]->tpmask;
+                  const auto* g = static_cast<common::utils::ConstOpGate<BoolRing>*>(prefixOR_gate.get());
+                  const auto& mask = prefixOR_gates[g->in]->mask;
+                  const auto& tpmask = prefixOR_gates[g->in]->tpmask;
                   
-                  prefixAND_gates[g->out] =
+                  prefixOR_gates[g->out] =
                     std::make_unique<PreprocGate<BoolRing>>((mask), (tpmask));
                   break;
                 }
                 case common::utils::GateType::kConstMul: {
-                  const auto* g = static_cast<common::utils::ConstOpGate<BoolRing>*>(prefixAND_gate.get());
-                  const auto& mask = prefixAND_gates[g->in]->mask * g->cval;
-                  const auto& tpmask = prefixAND_gates[g->in]->tpmask * g->cval;
+                  const auto* g = static_cast<common::utils::ConstOpGate<BoolRing>*>(prefixOR_gate.get());
+                  const auto& mask = prefixOR_gates[g->in]->mask * g->cval;
+                  const auto& tpmask = prefixOR_gates[g->in]->tpmask * g->cval;
                   
-                  prefixAND_gates[g->out] =
+                  prefixOR_gates[g->out] =
                     std::make_unique<PreprocGate<BoolRing>>((mask), (tpmask));
                   break;
                 }
                 case common::utils::GateType::kMul: {
-                  const auto* g = static_cast<common::utils::FIn2Gate*>(prefixAND_gate.get());
+                  const auto* g = static_cast<common::utils::FIn2Gate*>(prefixOR_gate.get());
                   
-                  const auto& mask_in1 = prefixAND_gates[g->in1]->mask;
-                  const auto& tpmask_in1 = prefixAND_gates[g->in1]->tpmask;
+                  const auto& mask_in1 = prefixOR_gates[g->in1]->mask;
+                  const auto& tpmask_in1 = prefixOR_gates[g->in1]->tpmask;
 
-                  const auto& mask_in2 = prefixAND_gates[g->in2]->mask;
-                  const auto& tpmask_in2 = prefixAND_gates[g->in2]->tpmask;
+                  const auto& mask_in2 = prefixOR_gates[g->in2]->mask;
+                  const auto& tpmask_in2 = prefixOR_gates[g->in2]->tpmask;
 
                   BoolRing tp_prod;
                   if(id_ == 0) {
@@ -901,7 +875,7 @@ void OfflineEvaluator::setWireMasksParty(
                                   mask_prod, tpmask_prod, tp_prod, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
 
 
-                  prefixAND_gates[g->out] = std::make_unique<PreprocMultGate<BoolRing>>(
+                  prefixOR_gates[g->out] = std::make_unique<PreprocMultGate<BoolRing>>(
                                       rand_mask, tprand_mask,
                                       mask_prod, tpmask_prod);
 
@@ -909,16 +883,16 @@ void OfflineEvaluator::setWireMasksParty(
                   break;
                 }
                 case common::utils::GateType::kMul3: {
-                  const auto* g = static_cast<common::utils::FIn3Gate*>(prefixAND_gate.get());
+                  const auto* g = static_cast<common::utils::FIn3Gate*>(prefixOR_gate.get());
                   
-                  const auto& mask_in1 = prefixAND_gates[g->in1]->mask;
-                  const auto& tpmask_in1 = prefixAND_gates[g->in1]->tpmask;
+                  const auto& mask_in1 = prefixOR_gates[g->in1]->mask;
+                  const auto& tpmask_in1 = prefixOR_gates[g->in1]->tpmask;
 
-                  const auto& mask_in2 = prefixAND_gates[g->in2]->mask;
-                  const auto& tpmask_in2 = prefixAND_gates[g->in2]->tpmask;
+                  const auto& mask_in2 = prefixOR_gates[g->in2]->mask;
+                  const auto& tpmask_in2 = prefixOR_gates[g->in2]->tpmask;
 
-                  const auto& mask_in3 = prefixAND_gates[g->in3]->mask;
-                  const auto& tpmask_in3 = prefixAND_gates[g->in3]->tpmask;
+                  const auto& mask_in3 = prefixOR_gates[g->in3]->mask;
+                  const auto& tpmask_in3 = prefixOR_gates[g->in3]->tpmask;
 
                   BoolRing tp_ab, tp_ac, tp_bc, tp_abc;
                   if(id_ == 0) {
@@ -954,7 +928,7 @@ void OfflineEvaluator::setWireMasksParty(
                   OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, *network_, 
                                     mask_abc, tpmask_abc, tp_abc, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
 
-                  prefixAND_gates[g->out] = std::make_unique<PreprocMult3Gate<BoolRing>>(
+                  prefixOR_gates[g->out] = std::make_unique<PreprocMult3Gate<BoolRing>>(
                                       rand_mask, tprand_mask,
                                       mask_ab, tpmask_ab,
                                       mask_ac, tpmask_ac,
@@ -964,19 +938,19 @@ void OfflineEvaluator::setWireMasksParty(
                   break;
                 }
                 case common::utils::GateType::kMul4:{
-                  const auto* g = static_cast<common::utils::FIn4Gate*>(prefixAND_gate.get());
+                  const auto* g = static_cast<common::utils::FIn4Gate*>(prefixOR_gate.get());
                   
-                  const auto& mask_in1 = prefixAND_gates[g->in1]->mask;
-                  const auto& tpmask_in1 = prefixAND_gates[g->in1]->tpmask;
+                  const auto& mask_in1 = prefixOR_gates[g->in1]->mask;
+                  const auto& tpmask_in1 = prefixOR_gates[g->in1]->tpmask;
 
-                  const auto& mask_in2 = prefixAND_gates[g->in2]->mask;
-                  const auto& tpmask_in2 = prefixAND_gates[g->in2]->tpmask;
+                  const auto& mask_in2 = prefixOR_gates[g->in2]->mask;
+                  const auto& tpmask_in2 = prefixOR_gates[g->in2]->tpmask;
 
-                  const auto& mask_in3 = prefixAND_gates[g->in3]->mask;
-                  const auto& tpmask_in3 = prefixAND_gates[g->in3]->tpmask;
+                  const auto& mask_in3 = prefixOR_gates[g->in3]->mask;
+                  const auto& tpmask_in3 = prefixOR_gates[g->in3]->tpmask;
 
-                  const auto& mask_in4 = prefixAND_gates[g->in4]->mask;
-                  const auto& tpmask_in4 = prefixAND_gates[g->in4]->tpmask;
+                  const auto& mask_in4 = prefixOR_gates[g->in4]->mask;
+                  const auto& tpmask_in4 = prefixOR_gates[g->in4]->tpmask;
 
                   BoolRing tp_ab, tp_ac, tp_ad, tp_bc, tp_bd, tp_cd, tp_abc, tp_abd, tp_acd, tp_bcd, tp_abcd;
                   if(id_ == 0) {
@@ -1058,7 +1032,7 @@ void OfflineEvaluator::setWireMasksParty(
                                     mask_abcd, tpmask_abcd, tp_abcd, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
                   
                   
-                  prefixAND_gates[g->out] = std::make_unique<PreprocMult4Gate<BoolRing>>(
+                  prefixOR_gates[g->out] = std::make_unique<PreprocMult4Gate<BoolRing>>(
                                       rand_mask, tprand_mask,
                                       mask_ab, tpmask_ab,
                                       mask_ac, tpmask_ac,
@@ -1075,12 +1049,12 @@ void OfflineEvaluator::setWireMasksParty(
                   break;
                 }
                 case common::utils::GateType::kDotprod: {
-                  const auto* g = static_cast<common::utils::SIMDGate*>(prefixAND_gate.get());
+                  const auto* g = static_cast<common::utils::SIMDGate*>(prefixOR_gate.get());
                   BoolRing mask_prod = 0;
                   if(id_ == 0) {
                     for(size_t i = 0; i < g->in1.size(); i++) {
-                      mask_prod += prefixAND_gates[g->in1[i]]->tpmask.secret() 
-                                        * prefixAND_gates[g->in2[i]]->tpmask.secret();
+                      mask_prod += prefixOR_gates[g->in1[i]]->tpmask.secret() 
+                                        * prefixOR_gates[g->in2[i]]->tpmask.secret();
                     }
                   }
                   TPShare<BoolRing> tprand_mask;
@@ -1094,7 +1068,7 @@ void OfflineEvaluator::setWireMasksParty(
                                   mask_product, tpmask_product, mask_prod, bkey, bkeySh, b_rand_sh_sec, b_idx_rand_sh_sec);
 
 
-                  prefixAND_gates[g->out] = std::make_unique<PreprocDotpGate<BoolRing>>
+                  prefixOR_gates[g->out] = std::make_unique<PreprocDotpGate<BoolRing>>
                               (rand_mask, tprand_mask, mask_product, tpmask_product);
                   break;
                 }
@@ -1106,9 +1080,9 @@ void OfflineEvaluator::setWireMasksParty(
           AuthAddShare<Field> mask_b;
           TPShare<Field> tpmask_b;
           if(id_ == 0) { 
-            auto wout = prefixAND_circ.outputs[0];
+            auto wout = prefixOR_circ.outputs[0];
             BoolRing bitb;
-            bitb = prefixAND_gates[wout]->tpmask.secret();
+            bitb = prefixOR_gates[wout]->tpmask.secret();
             if(bitb == 1) {arith_b = 1; }
             else { arith_b = 0;}
           }
@@ -1123,33 +1097,17 @@ void OfflineEvaluator::setWireMasksParty(
           // del^A_b = - 2 del_w - del_b
           // m^A_b = m_b - 2 m_w
 
-          AuthAddShare<Field> mask_v;
-          TPShare<Field> tpmask_v;
-          
-          mask_v = mask_w * Field( -2 ) + mask_b * Field( -1 );
-          tpmask_v = tpmask_w * Field( -2 ) + tpmask_b * Field( -1 );
-
-          
           AuthAddShare<Field> mask_out;
           TPShare<Field> tpmask_out;
 
-          // del_b = (del_x - del_x') * 2^(-63)
-          // del_x' = r' + 2^63 * del_v
-          // del_b = (del_x - r' - 2^63 * del_v) * 2^(-63)
-
-          mask_out = preproc_.gates[ltz_g->in]->mask - r_val - (mask_v << 63);
-          mask_out = mask_out >> 63;
-          tpmask_out = preproc_.gates[ltz_g->in]->tpmask - tpr_val - (tpmask_v << 63);
-          tpmask_out = tpmask_out >> 63;
-
-
+          mask_out = mask_w * Field( -2 ) + mask_b * Field( -1 );
+          tpmask_out = tpmask_w * Field( -2 ) + tpmask_b * Field( -1 );
+          
           preproc_.gates[ltz_g->out] = std::make_unique<PreprocLtzGate<Field>>
                                            (mask_out, tpmask_out,
-                                            mask_v, tpmask_v,
                                             mask_w, tpmask_w, 
                                             mask_b, tpmask_b, 
-                                            r_val, tpr_val,
-                                            std::move(prefixAND_gates), padded_val);
+                                            std::move(prefixOR_gates), padded_val);
 
           break;
         }

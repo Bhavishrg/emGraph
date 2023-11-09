@@ -574,9 +574,8 @@ class Circuit {
       wv[i] = circ.addConstOpGate(GateType::kConstAdd, leveli[i], one);
     }
     std::vector<wire_t> wz(k);
-    wz[0] = circ.addConstOpGate(GateType::kConstMul, wv[0], zero);
-    wz[1] = circ.addConstOpGate(GateType::kConstAdd, wv[1], zero);
-    for(size_t i = 2; i < k; i++) {
+    wz[0] = circ.addConstOpGate(GateType::kConstAdd, wv[0], zero);
+    for(size_t i = 1; i < k; i++) {
       wz[i] = circ.addGate(GateType::kAdd, wv[i], wv[i-1]);
     }
     wire_t wu;
@@ -611,9 +610,9 @@ class Circuit {
         
             for(size_t i = 0; i < pow(4, level -1); i++) {
               level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
-              level_next[q + i] = circ.addGate(GateType::kMul, leveli[q], leveli[q+i]);
-              level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q], leveli[r], leveli[r+i]);
-              level_next[s + i] = circ.addGate(GateType::kMul4, leveli[q], leveli[r], leveli[s], leveli[s+i]);
+              level_next[q + i] = circ.addGate(GateType::kMul, leveli[q-1], leveli[q+i]);
+              level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q-1], leveli[r-1], leveli[r+i]);
+              level_next[s + i] = circ.addGate(GateType::kMul4, leveli[q-1], leveli[r-1], leveli[s-1], leveli[s+i]);
             }
           }
           leveli = std::move(level_next);
@@ -633,6 +632,74 @@ class Circuit {
   }
 
 
+  static Circuit generateParaPrefixOR(int repeat) {
+    Circuit circ;
+    size_t k = 64;
+    std::vector<wire_t> input(repeat * k);
+    for(int rep = 0; rep < repeat; rep++) {
+      for (int i = 0; i < k; i++) {
+        input[rep*k + i] = circ.newInputWire();
+      }
+    }
+    std::vector<std::vector<wire_t>> inp_d(repeat, std::vector<wire_t>(k));
+    for (int i=0; i<repeat; i++) {
+      for (int j=0; j<k; j++) {
+        inp_d[i][j] = circ.newInputWire();
+      }
+    }
+    R zero = 0;
+    R one = 1;
+    
+    std::vector<wire_t> leveli(repeat * k);
+    leveli = std::move(input);
+    
+    for(size_t level = 1; level <= log(k)/log(4); level++) {
+        std::vector<wire_t> level_next(repeat * k);
+          for(size_t j = 1; j <= repeat * k/pow(4, level); j++) {
+            size_t p = (j-1) * pow(4, level);
+            size_t q = (j-1) * pow(4, level) + pow(4,level - 1);
+            size_t r = (j-1) * pow(4, level) + 2 * pow(4,level - 1);
+            size_t s = (j-1) * pow(4, level) + 3 * pow(4,level - 1);
+        
+            for(size_t i = 0; i < pow(4, level -1); i++) {
+              level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
+              level_next[q + i] = circ.addGate(GateType::kMul, leveli[q-1], leveli[q+i]);
+              level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q-1], leveli[r-1], leveli[r+i]);
+              level_next[s + i] = circ.addGate(GateType::kMul4, leveli[q-1], leveli[r-1], leveli[s-1], leveli[s+i]);
+            }
+          }
+          leveli = std::move(level_next);
+    }          
+
+    // For PrefixOR
+    std::vector<std::vector<wire_t>> wv(repeat, std::vector<wire_t>(k));
+    for(size_t i = 0; i < repeat; i++) {
+      for(size_t j=0; j<k; j++ ) {
+        wv[i][j] = circ.addConstOpGate(GateType::kConstAdd, leveli[i*k+j], one);
+      }      
+    }
+
+    std::vector<std::vector<wire_t>> wz(repeat, std::vector<wire_t>(k));  
+    for(size_t i=0; i< repeat; i++) {
+      wz[i][0] = circ.addConstOpGate(GateType::kConstAdd, wv[i][0], zero);
+      for(size_t j = 1; j < k; j++) {
+        wz[i][j] = circ.addGate(GateType::kAdd, wv[i][j], wv[i][j-1]);
+      }
+    }
+    
+    std::vector<wire_t> inp1(k*repeat), inp2(k*repeat);
+    for(size_t i=0; i< repeat; i++) {
+      inp1.insert(inp1.end(),wz[i].begin(),wz[i].end());
+      inp2.insert(inp2.end(),inp_d[i].begin(),inp_d[i].end());
+    }
+    wire_t res = circ.addGate(GateType::kDotprod, inp1, inp2);
+
+    circ.setAsOutput(res);
+    circ.setAsOutput(leveli[k]);
+    circ.setAsOutput(leveli[k+1]);
+    return circ;
+    
+  }
 
    static Circuit generateMultK() {
     Circuit circ;

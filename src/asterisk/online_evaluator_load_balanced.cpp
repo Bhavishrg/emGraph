@@ -22,8 +22,8 @@ namespace asterisk
           q_val_(circ.num_gates),
           multk_circ_(
               common::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel()),
-          prefixAND_circ_(
-              common::utils::Circuit<BoolRing>::generatePrefixAND().orderGatesByLevel())
+          prefixOR_circ_(
+              common::utils::Circuit<BoolRing>::generateParaPrefixOR(2).orderGatesByLevel())
     {
         tpool_ = std::make_shared<ThreadPool>(threads);
     }
@@ -171,52 +171,53 @@ namespace asterisk
     void OnlineEvaluator::ltzEvaluate(
         const std::vector<common::utils::FIn1Gate> &ltz_gates,
         std::vector<Field> &ltz_nonTP,
-        std::vector<AuthAddShare<Field>> &q_share, std::vector<Field> &masked_b,
-        std::vector<Field> &d_dash)
+        std::vector<AuthAddShare<Field>> &q_share, std::vector<Field> &masked_b)
     {
 
         auto num_ltz_gates = ltz_gates.size();
         std::vector<preprocg_ptr_t<BoolRing> *> vpreproc(num_ltz_gates);
-        std::vector<Field> val(num_ltz_gates);
+        std::vector<Field> val(num_ltz_gates), val2(num_ltz_gates);
 
         // std::vector<common::utils::wire_t> win(num_ltz_gates);
         for (size_t i = 0; i < num_ltz_gates; ++i)
         {
             auto *pre_ltz = static_cast<PreprocLtzGate<Field> *>(
                 preproc_.gates[ltz_gates[i].out].get());
-            vpreproc[i] = pre_ltz->PrefixAND_gates.data();
+            vpreproc[i] = pre_ltz->PrefixOR_gates.data();
             if (id_ != 0)
             {
                 val[i] = wires_[ltz_gates[i].in] + pre_ltz->padded_val;
+                const NTL::ZZ divisor= conv<NTL::ZZ>(2);
+                ZZ M = (ZZ_p::modulus()+conv<NTL::ZZ>(1))/divisor;
+                val2[i] = val[i] + conv<Field>(M);
             }
         }
-        BoolEval bool_eval(id_, nP_, vpreproc, prefixAND_circ_);
+        BoolEval bool_eval(id_, nP_, vpreproc, prefixOR_circ_);
         // Set the inputs.
-        d_dash.resize(num_ltz_gates);
         for (size_t i = 0; i < num_ltz_gates; ++i)
         {
-            d_dash[i] = 0;
-            auto val_bits = bitDecomposeTwo(val[i]);
-            val_bits[63] = 0;
-            for (size_t j = 0; j < 64; j++)
-            {
-                if (val_bits[j] == 1)
-                {
-                    d_dash[i] += (uint64_t)pow(2, j);
-                }
-            }
-            for (size_t j = 0; j < prefixAND_circ_.gates_by_level[0].size(); ++j)
-            {
-                const auto &gate = prefixAND_circ_.gates_by_level[0][j];
+            auto val_bits = bitDecomposeTwo(val[i]);            
+            auto val_bits2 = bitDecomposeTwo(val2[i]);
+            for (size_t j = 0; j < prefixOR_circ_.gates_by_level[0].size(); ++j)
+            {                
+                const auto &gate = prefixOR_circ_.gates_by_level[0][j];
                 if (gate->type == common::utils::GateType::kInp)
                 {
                     if (j < 64)
                     {
                         bool_eval.vwires[i][gate->out] = 1 - val_bits[63 - j];
                     }
-                    else
+                    else if (j < 128)
                     {
-                        bool_eval.vwires[i][gate->out] = val_bits[127 - j];
+                        bool_eval.vwires[i][gate->out] = 1 - val_bits2[127 - j];
+                    }
+                    else if (j < 192 )
+                    {
+                        bool_eval.vwires[i][gate->out] = 0;
+                    }
+                    else 
+                    {
+                        bool_eval.vwires[i][gate->out] = 0;
                     }
                 }
             }
@@ -228,7 +229,10 @@ namespace asterisk
         std::vector<Field> output_share_val(num_ltz_gates);
         for (size_t i = 0; i < num_ltz_gates; ++i)
         {
-            if (output_shares[i][0].val())
+            const NTL::ZZ divisor= conv<NTL::ZZ>(2);
+            ZZ M = (ZZ_p::modulus()+conv<NTL::ZZ>(1))/divisor;
+            bool val = (bool)(conv<NTL::ZZ>(val2[i]) < M);
+            if (output_shares[i][0].val()^val)
             {
                 output_share_val[i] = 1;
             }
@@ -247,11 +251,11 @@ namespace asterisk
 
             Field r_sum = Field(0);
             masked_b.push_back(output_share_val[i]);
-            // authaddshare(q_w) = - m_b * authaddshare(del_b) + authaddshare(del_w) + r_i
+            // authaddshare(q_w) = m_b * authaddshare(del_b) + authaddshare(del_w) + r_i
             if (id_ != 0)
             {
 
-                q_share[i] = pre_ltz->mask_w - pre_ltz->mask_b * (output_share_val[i]);
+                q_share[i] = pre_ltz->mask_w + pre_ltz->mask_b * (output_share_val[i]);
                 ltz_nonTP.push_back(q_share[i].valueAt());
             }
         }
@@ -429,8 +433,7 @@ namespace asterisk
                                                         std::vector<Field> eqz_all,
                                                         std::vector<AuthAddShare<Field>> eqz_q_share, std::vector<Field> eqz_masked_b,
                                                         std::vector<Field> ltz_all,
-                                                        std::vector<AuthAddShare<Field>> ltz_q_share, std::vector<Field> ltz_masked_b,
-                                                        std::vector<Field> d_dash)
+                                                        std::vector<AuthAddShare<Field>> ltz_q_share, std::vector<Field> ltz_masked_b)
     {
         size_t idx_mult = 0;
         size_t idx_mult3 = 0;
@@ -543,11 +546,8 @@ namespace asterisk
                     auto m_w = q_val_[g->out];
                     // m_v
                     auto m_v = ltz_masked_b[idx_ltz] - (2 * m_w);
-                    // m_x'
-                    auto m_lsb_x = d_dash[idx_ltz] + (conv<uint64_t>(m_v) << 63);
-                    // m_b
-                    wires_[g->out] = wires_[g->in] - m_lsb_x;
-                    wires_[g->out] = conv<uint64_t>(wires_[g->out]) >> 63;
+
+                    wires_[g->out] = m_v;
 
                     q_sh_[g->out] = ltz_q_share[idx_ltz];
                 }
@@ -578,7 +578,6 @@ namespace asterisk
 
         std::vector<Field> eqz_masked_b;
         std::vector<Field> ltz_masked_b;
-        std::vector<Field> d_dash;
 
         std::vector<common::utils::FIn1Gate> eqz_gates;
         std::vector<common::utils::FIn1Gate> ltz_gates;
@@ -631,8 +630,6 @@ namespace asterisk
             case ::common::utils::GateType::kLtz:
             {
                 auto *g = static_cast<common::utils::FIn1Gate *>(gate.get());
-                auto *pre_out =
-                    static_cast<PreprocLtzGate<Field> *>(preproc_.gates[g->out].get());
                 ltz_gates.push_back(*g);
                 ltz_num++;
                 break;
@@ -649,7 +646,7 @@ namespace asterisk
         }
         if (ltz_num > 0)
         {
-            ltzEvaluate(ltz_gates, ltz_nonTP, ltz_q_share, ltz_masked_b, d_dash);
+            ltzEvaluate(ltz_gates, ltz_nonTP, ltz_q_share, ltz_masked_b);
         }
 
         if (id_ != 0)
@@ -859,7 +856,7 @@ namespace asterisk
                                           mult4_all,
                                           dotprod_all,
                                           eqz_all, eqz_q_share, eqz_masked_b,
-                                          ltz_all, ltz_q_share, ltz_masked_b, d_dash);
+                                          ltz_all, ltz_q_share, ltz_masked_b);
         }
     }
 
@@ -1961,6 +1958,7 @@ namespace asterisk
             }
         }
 
+        mult_num *= vwires.size(); mult3_num *= vwires.size(); mult4_num *= vwires.size(); dotprod_num *= vwires.size();
         size_t total_comm = mult_num + mult3_num + mult4_num + dotprod_num;
         std::vector<BoolRing> mult_nonTP;
         std::vector<BoolRing> mult3_nonTP;

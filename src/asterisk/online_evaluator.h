@@ -28,7 +28,7 @@ namespace asterisk
     std::vector<Field> q_val_;
     std::vector<AuthAddShare<Field>> q_sh_;
     common::utils::LevelOrderedCircuit multk_circ_;
-    common::utils::LevelOrderedCircuit prefixAND_circ_;
+    common::utils::LevelOrderedCircuit prefixOR_circ_;
     std::shared_ptr<ThreadPool> tpool_;
 
     // write reconstruction function
@@ -52,8 +52,7 @@ namespace asterisk
                      std::vector<Field> &eqz_nonTP, std::vector<AuthAddShare<Field> > &q_share, std::vector<Field> &masked_b);
 
     void ltzEvaluate(const std::vector<common::utils::FIn1Gate> &ltz_gates,
-                     std::vector<Field> &ltz_nonTP, std::vector<AuthAddShare<Field> > &q_share, std::vector<Field> &masked_b,
-                     std::vector<Field> &d_dash);
+                     std::vector<Field> &ltz_nonTP, std::vector<AuthAddShare<Field> > &q_share, std::vector<Field> &masked_b);
 
     void evaluateGatesAtDepthPartySend(size_t depth,
                                        std::vector<Field> &mult_nonTP,
@@ -69,8 +68,7 @@ namespace asterisk
                                        std::vector<Field> eqz_all,
                                        std::vector<AuthAddShare<Field> > eqz_q_share, std::vector<Field> eqz_masked_b,
                                        std::vector<Field> ltz_all,
-                                       std::vector<AuthAddShare<Field> > ltz_q_share, std::vector<Field> ltz_masked_b,
-                                       std::vector<Field> d_dash);
+                                       std::vector<AuthAddShare<Field> > ltz_q_share, std::vector<Field> ltz_masked_b);
 
     void evaluateGatesAtDepth(size_t depth);
 

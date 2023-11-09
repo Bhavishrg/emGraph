@@ -210,6 +210,62 @@ BOOST_AUTO_TEST_CASE(EQZ_non_zero) {
 
 }
 
+BOOST_AUTO_TEST_CASE(LTZ) {
+  NTL::ZZ_pContext ZZ_p_ctx;
+  ZZ_p_ctx.save();
+  int nP = 4;
+  auto seed_block = emp::makeBlock(0, 200);
+  emp::PRG prg(&seed_block);
+  std::mt19937 gen(200);
+  std::uniform_int_distribution<uint> distrib(0, TEST_DATA_MAX_VAL);
+  common::utils::Circuit<Field> circ;
+  std::vector<common::utils::wire_t> input_wires;
+  std::unordered_map<common::utils::wire_t, int> input_pid_map;
+  std::unordered_map<common::utils::wire_t, Field> inputs;
+  int numLTZ = 2;
+
+  for (size_t i = 0; i < numLTZ; ++i) {
+    auto winp = circ.newInputWire();
+    input_wires.push_back(winp);
+    input_pid_map[winp] = 1;    
+    inputs[winp] = Field(distrib(gen));
+    auto w_ltz = circ.addGate(common::utils::GateType::kLtz, input_wires[i]);
+    circ.setAsOutput(w_ltz);
+  }
+  inputs[input_wires[0]] = -4; inputs[input_wires[1]] = 40;
+  auto level_circ = circ.orderGatesByLevel();
+  auto exp_output = circ.evaluate(inputs);
+  std::vector<std::future<std::vector<Field>>> parties;
+  parties.reserve(nP+1);
+  for (int i = 0; i <= nP; ++i) {
+      parties.push_back(std::async(std::launch::async, [&, i, input_pid_map, inputs]() {
+      ZZ_p_ctx.restore();
+      auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+      
+      OfflineEvaluator eval(nP, i, network, 
+                            level_circ, SECURITY_PARAM, nP);
+      auto preproc = eval.run(input_pid_map);
+      
+      network->sync();
+     
+      OnlineEvaluator online_eval(nP, i, std::move(network), std::move(preproc),
+                                  level_circ, SECURITY_PARAM, 1);
+      
+      auto res = online_eval.evaluateCircuit(inputs);
+      return res;
+      
+    }));
+  }
+  int i = 0;
+  for (auto& p : parties) {
+    auto output = p.get();
+      if(i > 0) {
+        BOOST_TEST(output == exp_output);
+      }
+      i++;
+  }
+}
+
 BOOST_AUTO_TEST_CASE(depth_2_circuit) {
   NTL::ZZ_pContext ZZ_p_ctx;
   ZZ_p_ctx.save();

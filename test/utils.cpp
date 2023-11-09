@@ -460,6 +460,52 @@ BOOST_DATA_TEST_CASE(PrefixAND,
   BOOST_TEST(output[0] == out);
 }
 
+BOOST_AUTO_TEST_CASE(ParaPrefixOR)                     
+{
+  
+  Circuit circ = Circuit<BoolRing>::generateParaPrefixOR(2);
+  int k = 64;
+  std::vector<BoolRing> input(4 * k, 1);
+  std::unordered_map<wire_t, BoolRing> input_map;
+  for (size_t i = 0; i < 4 * k; ++i) {
+    input_map[i] = input[i];
+  }
+  input[60] = 0; input[124] = 0;
+  input_map[60] = 0; input_map[124] = 0;
+  auto output = circ.evaluate(input_map);
+  std::vector<BoolRing> exp_out(2*k, 0);
+  for(int j = 0; j < k; ++j) {
+    for (int i = 0; i <= j; ++i) {
+      if(input[i] == 0){
+        exp_out[j] = 1;
+        break;
+      }
+    }
+  }
+  for(int j = k; j < 2*k; ++j) {
+    for (int i = k; i <= j; ++i) {
+      if(input[i] == 0){
+        exp_out[j] = 1;
+        break;
+      }
+    }
+  }
+  std::vector<BoolRing> z(2*k, 0);
+  z[0] = exp_out[0]; z[k] = exp_out[k];  
+  BoolRing out1 = z[0]*input[128], out2 = z[k]*input[k+128];
+  for(size_t i = 1; i < k; i++) {
+    z[i] = exp_out[i] + exp_out[i-1];
+    out1 += input[i + 128] * z[i];
+  }
+  for(size_t i = k+1; i < 2*k; i++) {
+    z[i] = exp_out[i] + exp_out[i-1];
+    out2 += input[i + 128] * z[i];
+  }  
+  BoolRing out = out1 + out2;
+  
+  BOOST_TEST(output[0] == out);
+}
+
 BOOST_AUTO_TEST_CASE(eqz) {
   Circuit<int> circ;
   auto wa = circ.newInputWire();
