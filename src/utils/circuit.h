@@ -695,8 +695,6 @@ class Circuit {
     wire_t res = circ.addGate(GateType::kDotprod, inp1, inp2);
 
     circ.setAsOutput(res);
-    circ.setAsOutput(leveli[k]);
-    circ.setAsOutput(leveli[k+1]);
     return circ;
     
   }
