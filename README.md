@@ -62,17 +62,18 @@ Execute the following commands from the `build` directory created during compila
 ```sh
 # Benchmark Asterisk MPC.
 #
-# The command below should be run on four different terminals with $PID set to
-# 0, 1, 2, and 3 i.e., one instance corresponding to each party.
+# The command below should be run on n different terminals with $PID set to
+# 0, 1, 2, upto n i.e., one instance corresponding to each party.
 #
 # The number of threads can be set using the '-t' option. '-g' denotes the 
-# number of gates at each level and '-d' denotes the depth of the circuit.
+# number of gates at each level, '-d' denotes the depth of the circuit and '-n'
+# the number of parties participating in the protocol.
 #
 # The program can be run on different machines by replacing the `--localhost`
 # option with '--net-config <net_config.json>' where 'net_config.json' is a
 # JSON file containing the IPs of the parties. A template is given in the
 # repository root.
-./benchmarks/asterisk_mpc -p $PID --localhost -g 100 -d 10
+./benchmarks/asterisk_mpc -p $PID --localhost -g 100 -d 10 -n 5
 
 # The `asterisk_mpc` script in the repository root can be used to run the programs 
 # for all parties from the same terminal.
