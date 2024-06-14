@@ -62,7 +62,7 @@ Execute the following commands from the `build` directory created during compila
 ```sh
 # Benchmark Asterisk MPC.
 #
-# The command below should be run on n different terminals with $PID set to
+# The command below should be run on n+1 different terminals with $PID set to
 # 0, 1, 2, upto n i.e., one instance corresponding to each party.
 #
 # The number of threads can be set using the '-t' option. '-g' denotes the 
