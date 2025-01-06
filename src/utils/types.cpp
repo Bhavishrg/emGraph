@@ -29,7 +29,7 @@ BoolRing& BoolRing::operator*=(const BoolRing& rhs) {
 }
 
 BoolRing& BoolRing::operator=(const BoolRing& rhs) noexcept{
-  if(rhs.val_ == 0) {
+  if (rhs.val_ == 0) {
     val_ = rhs.val_;
   }
   else {

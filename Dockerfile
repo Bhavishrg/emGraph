@@ -18,7 +18,7 @@ RUN git clone https://github.com/nlohmann/json.git \
   && make install
 
 WORKDIR /home
-RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.bz2
+RUN wget https://archives.boost.io/release/1.82.0/source/boost_1_82_0.tar.bz2
 RUN tar --bzip2 -xf boost_1_82_0.tar.bz2 && rm boost_1_82_0.tar.bz2
 RUN cd /home/boost_1_82_0 && ./bootstrap.sh --with-python=/usr/bin/python3
 RUN cd /home/boost_1_82_0 && ./b2 install

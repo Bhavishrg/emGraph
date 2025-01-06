@@ -8,12 +8,7 @@ macro(add_benchmark source_name)
     list(APPEND benchbin ${source_name})
 endmacro()
 
-add_benchmark(Darkpool_VM)
-add_benchmark(Darkpool_CDA)
-add_benchmark(asterisk_mpc)
-add_benchmark(asterisk_online)
-add_benchmark(asterisk_offline)
-add_benchmark(assistedmpc_offline)
+add_benchmark(chase_shuffle)
 
 add_custom_target(benchmarks)
 add_dependencies(benchmarks ${benchbin})

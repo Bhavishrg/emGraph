@@ -6,6 +6,8 @@ namespace common::utils {
 
 Gate::Gate(GateType type, wire_t out) : type(type), out(out) {}
 
+Gate::Gate(GateType type, wire_t out, std::vector<wire_t> outs) : type(type), out(out), outs(outs) {}
+
 FIn2Gate::FIn2Gate(GateType type, wire_t in1, wire_t in2, wire_t out)
     : Gate(type, out), in1{in1}, in2{in2} {}
 
@@ -18,9 +20,11 @@ FIn4Gate::FIn4Gate(GateType type, wire_t in1, wire_t in2, wire_t in3, wire_t in4
 FIn1Gate::FIn1Gate(GateType type, wire_t in, wire_t out)
     : Gate(type, out), in{in} {}
 
-SIMDGate::SIMDGate(GateType type, std::vector<wire_t> in1,
-                   std::vector<wire_t> in2, wire_t out)
+SIMDGate::SIMDGate(GateType type, std::vector<wire_t> in1, std::vector<wire_t> in2, wire_t out)
     : Gate(type, out), in1(std::move(in1)), in2(std::move(in2)) {}
+
+SIMDOGate::SIMDOGate(GateType type, std::vector<wire_t> in, std::vector<wire_t> outs)
+    : Gate(type, outs[0], outs), in(std::move(in)) {}
 
 std::ostream& operator<<(std::ostream& os, GateType type) {
   switch (type) {
@@ -78,6 +82,10 @@ std::ostream& operator<<(std::ostream& os, GateType type) {
 
     case kTrdotp:
       os << "Dotproduct with truncation";
+      break;
+
+    case kShuffle:
+      os << "Shufle a vector";
       break;
 
     default:

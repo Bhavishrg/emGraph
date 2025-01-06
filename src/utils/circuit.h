@@ -34,6 +34,7 @@ enum GateType {
   kLtz,
   kDotprod,
   kTrdotp,
+  kShuffle,
   kInvalid,
   NumGates
 };
@@ -45,9 +46,11 @@ std::ostream& operator<<(std::ostream& os, GateType type);
 struct Gate {
   GateType type{GateType::kInvalid};
   wire_t out;
+  std::vector<wire_t> outs;
 
   Gate() = default;
   Gate(GateType type, wire_t out);
+  Gate(GateType type, wire_t out, std::vector<wire_t> outs);
 
   virtual ~Gate() = default;
 };
@@ -101,6 +104,16 @@ struct SIMDGate : public Gate {
            wire_t out);
 };
 
+// Represents a gate used to denote SIMD operations.
+// These type is used to represent operations that take vectors of inputs and give vector of output but
+// might not necessarily be SIMD e.g., shuffle.
+struct SIMDOGate : public Gate {
+  std::vector<wire_t> in{0};
+
+  SIMDOGate() = default;
+  SIMDOGate(GateType type, std::vector<wire_t> in, std::vector<wire_t> out);
+};
+
 // Represents gates where one input is a constant.
 template <class R>
 struct ConstOpGate : public Gate {
@@ -121,6 +134,7 @@ using gate_ptr_t = std::shared_ptr<Gate>;
 // then i < j.
 struct LevelOrderedCircuit {
   size_t num_gates;
+  size_t num_wires;
   std::array<uint64_t, GateType::NumGates> count;
   std::vector<wire_t> outputs;
   std::vector<std::vector<gate_ptr_t>> gates_by_level;
@@ -134,8 +148,9 @@ template <class R>
 class Circuit {
   std::vector<wire_t> outputs_;
   std::vector<gate_ptr_t> gates_;
+  size_t num_wires;
 
-  bool isWireValid(wire_t wid) { return wid < gates_.size(); }
+  bool isWireValid(wire_t wid) { return wid < num_wires; }
 
  public:
   Circuit() = default;
@@ -144,6 +159,7 @@ class Circuit {
   wire_t newInputWire() {
     wire_t wid = gates_.size();
     gates_.push_back(std::make_shared<Gate>(GateType::kInp, wid));
+    num_wires += 1;
     return wid;
   }
 
@@ -168,6 +184,7 @@ class Circuit {
 
     wire_t output = gates_.size();
     gates_.push_back(std::make_shared<FIn2Gate>(type, input1, input2, output));
+    num_wires += 1;
 
     return output;
   }
@@ -184,6 +201,7 @@ class Circuit {
 
     wire_t output = gates_.size();
     gates_.push_back(std::make_shared<FIn3Gate>(type, input1, input2, input3, output));
+    num_wires += 1;
 
     return output;
   }
@@ -203,6 +221,7 @@ class Circuit {
     wire_t output = gates_.size();
     gates_.push_back(std::make_shared<FIn4Gate>(type, input1, input2, 
                                           input3, input4, output));
+    num_wires += 1;
 
     return output;
   }
@@ -220,6 +239,7 @@ class Circuit {
 
     wire_t output = gates_.size();
     gates_.push_back(std::make_shared<ConstOpGate<R>>(type, wid, cval, output));
+    num_wires += 1;
 
     return output;
   }
@@ -237,6 +257,7 @@ class Circuit {
 
     wire_t output = gates_.size();
     gates_.push_back(std::make_shared<FIn1Gate>(type, input, output));
+    num_wires += 1;
 
     return output;
   }
@@ -260,6 +281,28 @@ class Circuit {
 
     wire_t output = gates_.size();
     gates_.push_back(std::make_shared<SIMDGate>(type, input1, input2, output));
+    num_wires += 1;
+    return output;
+  }
+
+  // Function to add a multiple in + out gate.
+  std::vector<wire_t> addMGate(GateType type, const std::vector<wire_t>& input) {
+    if (type != GateType::kShuffle) {
+      throw std::invalid_argument("Invalid gate type.");
+    }
+
+    for (size_t i = 0; i < input.size(); i++) {
+      if (!isWireValid(input[i])) {
+        throw std::invalid_argument("Invalid wire ID. for shuf");
+      }
+    }
+
+    std::vector<wire_t> output(input.size());
+    for (int i = 0; i < input.size(); i++){
+      output[i] = i + gates_.size();
+    }
+    gates_.push_back(std::make_shared<SIMDOGate>(type, input, output));
+    num_wires += input.size();
     return output;
   }
 
@@ -268,10 +311,11 @@ class Circuit {
     LevelOrderedCircuit res;
     res.outputs = outputs_;
     res.num_gates = gates_.size();
+    res.num_wires = num_wires;
 
     // Map from output wire id to multiplicative depth/level.
     // Input gates have a depth of 0.
-    std::vector<size_t> gate_level(res.num_gates, 0);
+    std::vector<size_t> gate_level(num_wires, 0);
     size_t depth = 0;
 
     // This assumes that if gates_[i]'s output is input to gates_[j] then
@@ -282,13 +326,14 @@ class Circuit {
         case GateType::kSub: {
           const auto* g = static_cast<FIn2Gate*>(gate.get());
           gate_level[g->out] = std::max(gate_level[g->in1], gate_level[g->in2]);
+          depth = std::max(depth, gate_level[gate->out]);
           break;
         }
 
         case GateType::kMul: {
           const auto* g = static_cast<FIn2Gate*>(gate.get());
-          gate_level[g->out] =
-              std::max(gate_level[g->in1], gate_level[g->in2]) + 1;
+          gate_level[g->out] = std::max(gate_level[g->in1], gate_level[g->in2]) + 1;
+          depth = std::max(depth, gate_level[gate->out]);
           break;
         }
         case GateType::kMul3: {
@@ -296,6 +341,7 @@ class Circuit {
           size_t gate_depth = std::max(gate_level[g->in1], gate_level[g->in2]);
           gate_depth = std::max(gate_depth, gate_level[g->in3]);
           gate_level[g->out] = gate_depth + 1;
+          depth = std::max(depth, gate_level[gate->out]);
           break;
         }
 
@@ -305,6 +351,7 @@ class Circuit {
           gate_depth = std::max(gate_depth, gate_level[g->in3]);
           gate_depth = std::max(gate_depth, gate_level[g->in4]);
           gate_level[g->out] = gate_depth + 1;
+          depth = std::max(depth, gate_level[gate->out]);
           break;
         }
 
@@ -312,30 +359,35 @@ class Circuit {
         case GateType::kConstMul: {
           const auto* g = static_cast<ConstOpGate<R>*>(gate.get());
           gate_level[g->out] = gate_level[g->in];
+          depth = std::max(depth, gate_level[gate->out]);
           break;
         }
 
         case GateType::kEqz: {
           const auto* g = static_cast<FIn1Gate*>(gate.get());
           gate_level[g->out] = gate_level[g->in] + 1;
+          depth = std::max(depth, gate_level[gate->out]);
           break;
         }
 
         case GateType::kLtz: {
           const auto* g = static_cast<FIn1Gate*>(gate.get());
           gate_level[g->out] = gate_level[g->in] + 1;
+          depth = std::max(depth, gate_level[gate->out]);
           break;
         }
 
         case GateType::kRelu: {
           const auto* g = static_cast<FIn1Gate*>(gate.get());
           gate_level[g->out] = gate_level[g->in] + 1;
+          depth = std::max(depth, gate_level[gate->out]);
           break;
         }
 
         case GateType::kMsb: {
           const auto* g = static_cast<FIn1Gate*>(gate.get());
           gate_level[g->out] = gate_level[g->in] + 1;
+          depth = std::max(depth, gate_level[gate->out]);
           break;
         }
 
@@ -348,14 +400,26 @@ class Circuit {
                 {gate_level[g->in1[i]], gate_level[g->in2[i]], gate_depth});
           }
           gate_level[g->out] = gate_depth + 1;
+          depth = std::max(depth, gate_level[gate->out]);
+          break;
+        }
+
+        case GateType::kShuffle: {
+          const auto* g = static_cast<SIMDOGate*>(gate.get());
+          size_t gate_depth = 0;
+          for (size_t i = 0; i < g->in.size(); i++) {
+            gate_depth = std::max({gate_level[g->in[i]], gate_depth});
+          }
+          for (int i = 0; i < g->outs.size(); i++){
+            gate_level[g->outs[i]] = gate_depth + 1;
+          }
+          depth = std::max(depth, gate_level[gate->outs[0]]);
           break;
         }
 
         default:
           break;
       }
-
-      depth = std::max(depth, gate_level[gate->out]);
     }
 
     std::fill(res.count.begin(), res.count.end(), 0);
@@ -363,7 +427,11 @@ class Circuit {
     std::vector<std::vector<gate_ptr_t>> gates_by_level(depth + 1);
     for (const auto& gate : gates_) {
       res.count[gate->type]++;
-      gates_by_level[gate_level[gate->out]].push_back(gate);
+      if (gate->type == GateType::kShuffle) {
+        gates_by_level[gate_level[gate->outs[0]]].push_back(gate);
+      } else{
+        gates_by_level[gate_level[gate->out]].push_back(gate);
+      } 
     }
 
     res.gates_by_level = std::move(gates_by_level);
@@ -437,7 +505,7 @@ class Circuit {
 
           case GateType::kEqz: {
             auto* g = static_cast<FIn1Gate*>(gate.get());
-            if(wires[g->in] == 0) {
+            if (wires[g->in] == 0) {
               wires[g->out] = 1;
             }
             else {
@@ -547,17 +615,17 @@ class Circuit {
     
     
     // For PrefixAND
-    for(size_t level = 1; level <= log(k)/log(4); level++) {
+    for (size_t level = 1; level <= log(k)/log(4); level++) {
       std::vector<wire_t> level_next(k);
         
-      for(size_t j = 1; j <= k/pow(4, level); j++) {
+      for (size_t j = 1; j <= k/pow(4, level); j++) {
             
         size_t p = (j-1) * pow(4, level);
         size_t q = (j-1) * pow(4, level) + pow(4,level - 1);
         size_t r = (j-1) * pow(4, level) + 2 * pow(4,level - 1);
         size_t s = (j-1) * pow(4, level) + 3 * pow(4,level - 1);
         
-        for(size_t i = 0; i < pow(4, level - 1); i++) {
+        for (size_t i = 0; i < pow(4, level - 1); i++) {
           // level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
           level_next[p + i] = leveli[p+i];
           level_next[q + i] = circ.addGate(GateType::kMul, leveli[q], leveli[q+i]);
@@ -570,12 +638,12 @@ class Circuit {
     
     // For PrefixOR
     std::vector<wire_t> wv(k);
-    for(size_t i = 0; i < k; i++) {
+    for (size_t i = 0; i < k; i++) {
       wv[i] = circ.addConstOpGate(GateType::kConstAdd, leveli[i], one);
     }
     std::vector<wire_t> wz(k);
     wz[0] = circ.addConstOpGate(GateType::kConstAdd, wv[0], zero);
-    for(size_t i = 1; i < k; i++) {
+    for (size_t i = 1; i < k; i++) {
       wz[i] = circ.addGate(GateType::kAdd, wv[i], wv[i-1]);
     }
     wire_t wu;
@@ -590,7 +658,7 @@ class Circuit {
     Circuit circ;
     size_t k = 64;
     std::vector<wire_t> input(repeat * k);
-    for(int rep = 0; rep < repeat; rep++) {
+    for (int rep = 0; rep < repeat; rep++) {
       for (int i = 0; i < k; i++) {
         input[(rep * (k)) + i] = circ.newInputWire();
       }
@@ -600,15 +668,15 @@ class Circuit {
     std::vector<wire_t> leveli(repeat * k);
     leveli = std::move(input);
     
-    for(size_t level = 1; level <= log(k)/log(4); level++) {
+    for (size_t level = 1; level <= log(k)/log(4); level++) {
         std::vector<wire_t> level_next(repeat * k);
-          for(size_t j = 1; j <= repeat * k/pow(4, level); j++) {
+          for (size_t j = 1; j <= repeat * k/pow(4, level); j++) {
             size_t p = (j-1) * pow(4, level);
             size_t q = (j-1) * pow(4, level) + pow(4,level - 1);
             size_t r = (j-1) * pow(4, level) + 2 * pow(4,level - 1);
             size_t s = (j-1) * pow(4, level) + 3 * pow(4,level - 1);
         
-            for(size_t i = 0; i < pow(4, level -1); i++) {
+            for (size_t i = 0; i < pow(4, level -1); i++) {
               level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
               level_next[q + i] = circ.addGate(GateType::kMul, leveli[q-1], leveli[q+i]);
               level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q-1], leveli[r-1], leveli[r+i]);
@@ -616,16 +684,16 @@ class Circuit {
             }
           }
           leveli = std::move(level_next);
-          if(level == log(k)/log(4)) {
-            for(int rep = 0; rep < repeat; rep++) {
-              for(size_t i = 1; i < k; i++) {
+          if (level == log(k)/log(4)) {
+            for (int rep = 0; rep < repeat; rep++) {
+              for (size_t i = 1; i < k; i++) {
                 circ.setAsOutput(leveli[(rep * k) + i]);
               }
             }
           }
     }
           std::vector<wire_t> lastAND(repeat);
-          for(int rep = 0; rep < repeat; rep++) {
+          for (int rep = 0; rep < repeat; rep++) {
             lastAND[rep] = circ.addGate(GateType::kMul, leveli[1], leveli[2]);
           }
     return circ;
@@ -636,7 +704,7 @@ class Circuit {
     Circuit circ;
     size_t k = 64;
     std::vector<wire_t> input(repeat * k);
-    for(int rep = 0; rep < repeat; rep++) {
+    for (int rep = 0; rep < repeat; rep++) {
       for (int i = 0; i < k; i++) {
         input[rep*k + i] = circ.newInputWire();
       }
@@ -653,15 +721,15 @@ class Circuit {
     std::vector<wire_t> leveli(repeat * k);
     leveli = std::move(input);
     
-    for(size_t level = 1; level <= log(k)/log(4); level++) {
+    for (size_t level = 1; level <= log(k)/log(4); level++) {
         std::vector<wire_t> level_next(repeat * k);
-          for(size_t j = 1; j <= repeat * k/pow(4, level); j++) {
+          for (size_t j = 1; j <= repeat * k/pow(4, level); j++) {
             size_t p = (j-1) * pow(4, level);
             size_t q = (j-1) * pow(4, level) + pow(4,level - 1);
             size_t r = (j-1) * pow(4, level) + 2 * pow(4,level - 1);
             size_t s = (j-1) * pow(4, level) + 3 * pow(4,level - 1);
         
-            for(size_t i = 0; i < pow(4, level -1); i++) {
+            for (size_t i = 0; i < pow(4, level -1); i++) {
               level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
               level_next[q + i] = circ.addGate(GateType::kMul, leveli[q-1], leveli[q+i]);
               level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q-1], leveli[r-1], leveli[r+i]);
@@ -673,22 +741,22 @@ class Circuit {
 
     // For PrefixOR
     std::vector<std::vector<wire_t>> wv(repeat, std::vector<wire_t>(k));
-    for(size_t i = 0; i < repeat; i++) {
-      for(size_t j=0; j<k; j++ ) {
+    for (size_t i = 0; i < repeat; i++) {
+      for (size_t j=0; j<k; j++ ) {
         wv[i][j] = circ.addConstOpGate(GateType::kConstAdd, leveli[i*k+j], one);
       }      
     }
 
     std::vector<std::vector<wire_t>> wz(repeat, std::vector<wire_t>(k));  
-    for(size_t i=0; i< repeat; i++) {
+    for (size_t i=0; i< repeat; i++) {
       wz[i][0] = circ.addConstOpGate(GateType::kConstAdd, wv[i][0], zero);
-      for(size_t j = 1; j < k; j++) {
+      for (size_t j = 1; j < k; j++) {
         wz[i][j] = circ.addGate(GateType::kAdd, wv[i][j], wv[i][j-1]);
       }
     }
     
     std::vector<wire_t> inp1(k*repeat), inp2(k*repeat);
-    for(size_t i=0; i< repeat; i++) {
+    for (size_t i=0; i< repeat; i++) {
       inp1.insert(inp1.end(),wz[i].begin(),wz[i].end());
       inp2.insert(inp2.end(),inp_d[i].begin(),inp_d[i].end());
     }
@@ -710,9 +778,9 @@ class Circuit {
     std::vector<wire_t> leveli(k);
     leveli = std::move(input);
 
-    for(size_t level = 1; level <= log(k)/log(4); level++) {
+    for (size_t level = 1; level <= log(k)/log(4); level++) {
       std::vector<wire_t> level_next(k/pow(4, level));
-      for(size_t j = 1; j <= k / pow(4, level); j++) {
+      for (size_t j = 1; j <= k / pow(4, level); j++) {
         level_next[j-1] = circ.addGate(GateType::kMul4, leveli[(4 * j)-4], leveli[(4 * j)-3],
                                                leveli[(4 * j)-2], leveli[(4 * j) - 1]);
       }
@@ -841,16 +909,16 @@ class Circuit {
     // shuffle
     std::vector<std::vector<wire_t>> M_pi(N, std::vector<wire_t>(N));
     std::vector<wire_t> x(N);
-    for(size_t i = 0; i < N; i++) {
-        for(size_t j = 0; j < N; j++) {
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; j < N; j++) {
             M_pi[i][j] = circ.newInputWire();
         }
     }
-    for(size_t i = 0; i < N; i++) {
+    for (size_t i = 0; i < N; i++) {
       x[i] = circ.newInputWire();
     }
     // std::vector<wire_t> pi_x(N);
-    // for(int i = 0; i < N; i++) {
+    // for (int i = 0; i < N; i++) {
     //     pi_x[i] = circ.addGate(GateType::kDotprod, M_pi[i], x);
         
     // }
@@ -864,9 +932,9 @@ class Circuit {
     int bound = log(N)/log(2);
     
     // comparison
-    for(int level = 1; level <= bound; level++) {
+    for (int level = 1; level <= bound; level++) {
       std::vector<wire_t> level_next(N/pow(2,level));
-      for(int i = 0; i < N/pow(2, level); i++) {
+      for (int i = 0; i < N/pow(2, level); i++) {
         auto temp1 = circ.addGate(GateType::kSub, leveli[2*i], leveli[2*i + 1]);
         auto temp2 = circ.addGate(GateType::kLtz, temp1);
         auto temp3 = circ.addConstOpGate(GateType::kConstMul, temp2, neg_one);

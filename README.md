@@ -21,12 +21,12 @@ To build and run the docker image, execute the following commands from the root 
 #
 # Building the Docker image requires at least 4GB RAM. This needs to be set 
 # explicitly in case of Windows and MacOS.
-docker build -t asterisk .
+docker build -t graphopper .
 
 # Create and run a container.
 #
 # This should start the shell from within the container.
-docker run -it -v $PWD:/code asterisk
+docker run -it -v $PWD:/code graphopper
 
 # The following command changes the working directory to the one containing the 
 # source code and should be run on the shell started using the previous command.

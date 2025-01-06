@@ -1,8 +1,7 @@
 #include <io/netmp.h>
-#include <asterisk/offline_evaluator.h>
-#include <asterisk/online_evaluator.h>
+#include <graphsc/offline_evaluator.h>
+#include <graphsc/online_evaluator.h>
 #include <utils/circuit.h>
-#include <utils/darkpool.h>
 
 #include <algorithm>
 #include <boost/program_options.hpp>
@@ -12,11 +11,54 @@
 
 #include "utils.h"
 
-using namespace asterisk;
+using namespace graphsc;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
+
+common::utils::Circuit<Ring> generateCircuit(size_t vec_size) {
+    
+    common::utils::Circuit<Ring> circ;
+
+    std::vector<common::utils::wire_t> level_inputs(vec_size/2);
+    std::generate(level_inputs.begin(), level_inputs.end(),
+                [&]() { return circ.newInputWire(); });
+
+    std::vector<common::utils::wire_t> level_outputs(vec_size/2);
+
+    // level_outputs[0] = circ.addGate(common::utils::GateType::kMul, level_inputs[0],
+    //                                     level_inputs[1]);
+
+    auto outs = circ.addMGate(common::utils::GateType::kShuffle, level_inputs);
+    for(int i = 0; i<vec_size/2; ++i){
+        level_outputs[i] = outs[i];
+    }
+
+    // level_inputs = std::move(level_outputs);
+
+    outs = circ.addMGate(common::utils::GateType::kShuffle, outs);
+    for(int i = 0; i<vec_size/2; ++i){
+        level_outputs[i] = outs[i];
+    }
+
+    level_inputs = std::move(level_outputs);
+
+
+    // level_outputs.insert(level_outputs.begin(), outs.begin(), outs.end());
+    
+    
+    
+
+    for (auto i : level_inputs) {
+        circ.setAsOutput(i);
+    }
+
+    return circ;
+}
+
+
 void benchmark(const bpo::variables_map& opts) {
+
     bool save_output = false;
     std::string save_file;
     if (opts.count("output") != 0) {
@@ -24,11 +66,8 @@ void benchmark(const bpo::variables_map& opts) {
         save_file = opts["output"].as<std::string>();
     }
 
-    auto buy_list_size = opts["buy-list-size"].as<size_t>();
-    auto sell_list_size = opts["sell-list-size"].as<size_t>();
-    auto nP = opts["num-parties"].as<size_t>();
+    auto vec_size = opts["vec-size"].as<size_t>();
     auto pid = opts["pid"].as<size_t>();
-    auto security_param = opts["security-param"].as<size_t>();
     auto threads = opts["threads"].as<size_t>();
     auto seed = opts["seed"].as<size_t>();
     auto repeat = opts["repeat"].as<size_t>();
@@ -36,7 +75,7 @@ void benchmark(const bpo::variables_map& opts) {
 
     std::shared_ptr<io::NetIOMP> network = nullptr;
     if (opts["localhost"].as<bool>()) {
-        network = std::make_shared<io::NetIOMP>(pid, nP+1, port, nullptr, true);
+        network = std::make_shared<io::NetIOMP>(pid, 3, port, nullptr, true);
     }
     else {
         std::ifstream fnet(opts["net-config"].as<std::string>());
@@ -48,22 +87,19 @@ void benchmark(const bpo::variables_map& opts) {
         fnet >> netdata;
         fnet.close();
 
-        std::vector<std::string> ipaddress(nP+1);
+        std::vector<std::string> ipaddress(3);
         std::array<char*, 5> ip{};
-        for (size_t i = 0; i < nP+1; ++i) {
+        for (size_t i = 0; i < 3; ++i) {
             ipaddress[i] = netdata[i].get<std::string>();
             ip[i] = ipaddress[i].data();
         }
 
-        network = std::make_shared<io::NetIOMP>(pid, nP+1, port, ip.data(), false);
+        network = std::make_shared<io::NetIOMP>(pid, 3, port, ip.data(), false);
     }
 
     json output_data;
-    output_data["details"] = {{"buy_list_size", buy_list_size},
-                                {"sell_list_size", sell_list_size},
-                                {"num-parties", nP},
+    output_data["details"] = {{"vec_size", vec_size},
                                 {"pid", pid},
-                                {"security_param", security_param},
                                 {"threads", threads},
                                 {"seed", seed},
                                 {"repeat", repeat}};
@@ -75,61 +111,59 @@ void benchmark(const bpo::variables_map& opts) {
     }
     std::cout << std::endl;
 
-    size_t N = sell_list_size;
-    size_t M = buy_list_size;
-    
-    common::utils::DarkPool<Field> darkpool_ob(N,M);
-    darkpool_ob.resizeList();
-    auto CDA_circ = darkpool_ob.getCDACircuit().orderGatesByLevel();
-    
+    auto circ = generateCircuit(vec_size).orderGatesByLevel();
+
     std::cout << "--- Circuit ---\n";
-    std::cout << CDA_circ << std::endl;
-
-
+    std::cout << circ << std::endl;
+    
     std::unordered_map<common::utils::wire_t, int> input_pid_map;
-    std::unordered_map<common::utils::wire_t, Field> input_map;
+    std::unordered_map<common::utils::wire_t, Ring> input_map;
 
-    for (const auto& g : CDA_circ.gates_by_level[0]) {
+    for (const auto& g : circ.gates_by_level[0]) {
         if (g->type == common::utils::GateType::kInp) {
-            input_pid_map[g->out] = 1;
-            // input_map[g->out] = 1;
+        input_pid_map[g->out] = 1;
+        input_map[g->out] = 1;
         }
     }
+
 
     emp::PRG prg(&emp::zero_block, seed);
+    
 
-    for (size_t r = 0; r < repeat; ++r) {
-        
-        StatsPoint start(*network);
-        // Offline 
-        OfflineEvaluator CDA_off_eval(nP, pid, network, CDA_circ, security_param, threads, seed);
+    OfflineEvaluator off_eval(pid, network, circ, threads, seed);
+    network->sync();
 
-        auto CDA_preproc = CDA_off_eval.run(input_pid_map);
-        
-        // Online
-        OnlineEvaluator CDA_eval(nP, pid, network, std::move(CDA_preproc), CDA_circ, 
-                                                                  security_param, threads, seed);
-        CDA_eval.setRandomInputs();
-        
-        // auto CDA_res = CDA_eval.evaluateCircuit(input_map);
-        for (size_t i = 0; i < CDA_circ.gates_by_level.size(); ++i) {
-            CDA_eval.evaluateGatesAtDepth(i);
-        }
+    auto preproc = off_eval.run(input_pid_map, vec_size);
+   
+    // StatsPoint end_pre(*network);
+    OnlineEvaluator eval(pid, network, std::move(preproc), circ, 
+                threads, seed);
+    
+    eval.setRandomInputs();
 
-        StatsPoint end(*network);
-        auto rbench = end - start;
-        output_data["benchmarks"].push_back(rbench);
-        size_t bytes_sent = 0;
-        for (const auto& val : rbench["communication"]) {
-            bytes_sent += val.get<int64_t>();
-        }
+    StatsPoint start(*network);
+    
 
-        std::cout << "--- Repetition " << r + 1 << " ---\n";
-        std::cout << "time: " << rbench["time"] << " ms\n";
-        std::cout << "sent: " << bytes_sent << " bytes\n";
-
-        std::cout << std::endl;
+    for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
+        eval.evaluateGatesAtDepth(i);    
     }
+
+    
+    StatsPoint end(*network);
+    auto rbench = end - start;
+    output_data["benchmarks"].push_back(rbench);
+
+    size_t bytes_sent = 0;
+    for (const auto& val : rbench["communication"]) {
+        bytes_sent += val.get<int64_t>();
+    }
+
+    // std::cout << "--- Repetition " << r + 1 << " ---\n";
+    std::cout << "time: " << rbench["time"] << " ms\n";
+    std::cout << "sent: " << bytes_sent << " bytes\n";
+
+    std::cout << std::endl;
+
     output_data["stats"] = {{"peak_virtual_memory", peakVirtualMemory()},
                             {"peak_resident_set_size", peakResidentSetSize()}};
 
@@ -142,19 +176,15 @@ void benchmark(const bpo::variables_map& opts) {
     if (save_output) {
         saveJson(output_data, save_file);
     }
-
 }
 
 // clang-format off
 bpo::options_description programOptions() {
     bpo::options_description desc("Following options are supported by config file too.");
     desc.add_options()
-        ("buy-list-size,b", bpo::value<size_t>()->required(), "Buy list size.")
-        ("sell-list-size,s", bpo::value<size_t>()->required(), "Sell list size.")
-        ("num-parties,n", bpo::value<size_t>()->required(), "Number of parties.")
+        ("vec-size,v", bpo::value<size_t>()->required(), "Number of gates at each level.")
         ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
-        ("security-param", bpo::value<size_t>()->default_value(128), "Security parameter in bits.")
-        ("threads,t", bpo::value<size_t>()->default_value(1), "Number of threads (recommended 6).")
+        ("threads,t", bpo::value<size_t>()->default_value(6), "Number of threads (recommended 6).")
         ("seed", bpo::value<size_t>()->default_value(200), "Value of the random seed.")
         ("net-config", bpo::value<std::string>(), "Path to JSON file containing network details of all parties.")
         ("localhost", bpo::bool_switch(), "All parties are on same machine.")
@@ -167,11 +197,11 @@ bpo::options_description programOptions() {
 // clang-format on
 
 int main(int argc, char* argv[]) {
-    ZZ_p::init(conv<ZZ>("17816577890427308801"));
-    auto prog_opts(programOptions());
 
+    auto prog_opts(programOptions());
     bpo::options_description cmdline(
       "Benchmark online phase for multiplication gates.");
+    
     cmdline.add(prog_opts);
     cmdline.add_options()(
       "config,c", bpo::value<std::string>(),
@@ -180,7 +210,6 @@ int main(int argc, char* argv[]) {
 
     bpo::variables_map opts;
     bpo::store(bpo::command_line_parser(argc, argv).options(cmdline).run(), opts);
-
     if (opts.count("help") != 0) {
         std::cout << cmdline << std::endl;
         return 0;
@@ -197,19 +226,8 @@ int main(int argc, char* argv[]) {
 
         bpo::store(bpo::parse_config_file(fin, prog_opts), opts);
     }
-
     try {
         bpo::notify(opts);
-
-        // Check if output file already exists.
-        /*if (opts.count("output") != 0) {
-            std::ifstream ftemp(opts["output"].as<std::string>());
-            if (ftemp.good()) {
-                ftemp.close();
-                throw std::runtime_error("Output file aready exists.");
-            }
-            ftemp.close();
-        }*/
 
         if (!opts["localhost"].as<bool>() && (opts.count("net-config") == 0)) {
             throw std::runtime_error("Expected one of 'localhost' or 'net-config'");

@@ -29,7 +29,7 @@ if(EMP-TOOL_FOUND)
 endif()
 
 add_subdirectory(src)
-add_subdirectory(benchmark)
+# add_subdirectory(benchmark)
 
 enable_testing()
-add_subdirectory(test)
+# add_subdirectory(test)
