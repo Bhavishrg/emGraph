@@ -86,6 +86,24 @@ struct PreprocPermAndShGate : public PreprocGate<R> {
       : PreprocGate<R>(), a(a), tp_a(tp_a), b(b), tp_b(tp_b), delta(delta), pi(pi), tp_pi_all(tp_pi_all), pi_common(pi_common) {}
 };
 
+template <class R>
+struct PreprocAmortzdPnSGate : public PreprocGate<R> {
+  std::vector<AddShare<R>> a; // Randomly sampled vector
+  std::vector<TPShare<R>> tp_a; // Randomly sampled vector
+  std::vector<AddShare<R>> b; // Randomly sampled vector
+  std::vector<TPShare<R>> tp_b; // Randomly sampled vector
+  std::vector<AddShare<R>> delta; // Delta vector only held by the last party. Dummy values for the other parties
+  std::vector<int> pi; // Randomly sampled permutation using HP
+  std::vector<std::vector<int>> tp_pi_all; // Randomly sampled permutations of all parties using HP
+  std::vector<int> pi_common; // Common random permutation held by all parties except HP. HP holds dummy values
+  PreprocAmortzdPnSGate() = default;
+  PreprocAmortzdPnSGate(const std::vector<AddShare<R>>& a, const std::vector<TPShare<R>>& tp_a,
+                        const std::vector<AddShare<R>>& b, const std::vector<TPShare<R>>& tp_b,
+                        const std::vector<AddShare<R>>& delta, const std::vector<int>& pi, const std::vector<std::vector<int>>& tp_pi_all,
+                        const std::vector<int>& pi_common)
+      : PreprocGate<R>(), a(a), tp_a(tp_a), b(b), tp_b(tp_b), delta(delta), pi(pi), tp_pi_all(tp_pi_all), pi_common(pi_common) {}
+};
+
 // Preprocessed data for the circuit.
 template <class R>
 struct PreprocCircuit {

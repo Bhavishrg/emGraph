@@ -40,25 +40,19 @@ namespace asterisk
             if (g->type == common::utils::GateType::kInp) {
                 auto *pre_input = static_cast<PreprocInput<Ring> *>(preproc_.gates[g->out].get());
                 auto pid = pre_input->pid;
-                /*
-                    rand_sh_i = randomPRGvalue(key_for_input_owner)
-                    send(rand_sh_i)
-                    P_input_owner = input - summation(rand_sh_i)
-                */
                 if (id_ != 0) {
                     if (pid == id_) {
                         Ring accumulated_val = Ring(0);
                         for (size_t i = 1; i <= nP_; i++) {
                             if (i != pid) {
                                 Ring rand_sh;
-                                rgen_.self().random_data(&rand_sh, sizeof(Ring)); // TODO: Check which PRG key to use
-                                network_->send(i, &rand_sh, sizeof(Ring));
+                                rgen_.pi(i).random_data(&rand_sh, sizeof(Ring)); // TODO: PRG should be pairwise common b/w input owner and pid
                                 accumulated_val += rand_sh;
                             }
                         }
                         wires_[g->out] = inputs.at(g->out) - accumulated_val;
                     } else {
-                        network_->recv(pid, &wires_[g->out], sizeof(Ring));
+                        rgen_.pi(id_).random_data(&wires_[g->out], sizeof(Ring)); // TODO: PRG should be pairwise common b/w input owner and pid
                     }
                 }
             }
@@ -75,110 +69,162 @@ namespace asterisk
     }
 
     void OnlineEvaluator::shuffleEvaluate(std::vector<common::utils::SIMDOGate> &shuffle_gates) {
-        if (id_ != 0) {
-            std::vector<Ring> z_all;
-            std::vector<std::vector<Ring>> z_sum;
-            size_t total_comm = 0;
+        if (id_ == 0) { return; }
+        std::vector<Ring> z_all;
+        std::vector<std::vector<Ring>> z_sum;
+        size_t total_comm = 0;
 
-            for (auto &gate : shuffle_gates) {
-                auto *pre_shuffle = static_cast<PreprocShuffleGate<Ring> *>(preproc_.gates[gate.out].get());
-                size_t vec_size = gate.in.size();
-                total_comm += vec_size;
-                std::vector<Ring> z(vec_size, 0);
-                if (id_ != 1) {
+        for (auto &gate : shuffle_gates) {
+            auto *pre_shuffle = static_cast<PreprocShuffleGate<Ring> *>(preproc_.gates[gate.out].get());
+            size_t vec_size = gate.in.size();
+            total_comm += vec_size;
+            std::vector<Ring> z(vec_size, 0);
+            if (id_ != 1) {
+                for (int i = 0; i < vec_size; ++i) {
+                    z[i] = gate.in[i] - pre_shuffle->a[i].valueAt();
+                }
+                z_all.insert(z_all.end(), z.begin(), z.end());
+            } else {
+                z_sum.push_back(z);
+            }
+        }
+
+        if (id_ == 1) {
+            z_all.reserve(total_comm);
+            for (int pid = 2; pid <= nP_; ++pid) {
+                network_->recv(pid, z_all.data(), total_comm * sizeof(Ring));
+                size_t idx_vec = 0;
+                for (int idx_gate = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
+                    size_t vec_size = shuffle_gates[idx_gate].in.size();
+                    std::vector<Ring> z(z_all.begin() + idx_vec, z_all.begin() + idx_vec + vec_size);
                     for (int i = 0; i < vec_size; ++i) {
-                        z[i] = gate.in[i] - pre_shuffle->a[i].valueAt();
+                        z_sum[idx_gate][i] += z[i];
                     }
-                    z_all.insert(z_all.end(), z.begin(), z.end());
-                } else {
-                    z_sum.push_back(z);
+                    idx_vec += vec_size;
                 }
             }
 
-            if (id_ == 1) {
-                z_all.reserve(total_comm);
-                for (int pid = 2; pid <= nP_; ++pid) {
-                    network_->recv(pid, z_all.data(), total_comm * sizeof(Ring));
-                    size_t idx_vec = 0;
-                    for (int idx_gate = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
-                        size_t vec_size = shuffle_gates[idx_gate].in.size();
-                        std::vector<Ring> z(z_all.begin() + idx_vec, z_all.begin() + idx_vec + vec_size);
-                        for (int i = 0; i < vec_size; ++i) {
-                            z_sum[idx_gate][i] += z[i];
-                        }
-                        idx_vec += vec_size;
-                    }
+            z_all.clear();
+            z_all.reserve(total_comm);
+            for (int idx_gate = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
+                auto *pre_shuffle = static_cast<PreprocShuffleGate<Ring> *>(preproc_.gates[shuffle_gates[idx_gate].out].get());
+                size_t vec_size = shuffle_gates[idx_gate].in.size();
+                std::vector<Ring> z(vec_size);
+                for (int i = 0; i < vec_size; ++i) {
+                    z[i] = z_sum[idx_gate][pre_shuffle->pi[i]] + shuffle_gates[idx_gate].in[pre_shuffle->pi[i]] - pre_shuffle->c[i].valueAt();
+                    wires_[shuffle_gates[idx_gate].outs[i]] = pre_shuffle->b[i].valueAt();
                 }
+                z_all.insert(z_all.end(), z.begin(), z.end());
+            }
+        } else {
+            network_->send(1, z_all.data(), total_comm * sizeof(Ring));
 
-                z_all.clear();
-                z_all.reserve(total_comm);
-                for (int idx_gate = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
-                    auto *pre_shuffle = static_cast<PreprocShuffleGate<Ring> *>(preproc_.gates[shuffle_gates[idx_gate].out].get());
-                    size_t vec_size = shuffle_gates[idx_gate].in.size();
-                    std::vector<Ring> z(vec_size);
-                    for (int i = 0; i < vec_size; ++i) {
-                        z[i] = z_sum[idx_gate][pre_shuffle->pi[i]] + shuffle_gates[idx_gate].in[pre_shuffle->pi[i]] - pre_shuffle->c[i].valueAt();
+            network_->recv(id_ - 1, z_all.data(), total_comm * sizeof(Ring));
+            size_t idx_vec = 0;
+            for (int idx_gate = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
+                auto *pre_shuffle = static_cast<PreprocShuffleGate<Ring> *>(preproc_.gates[shuffle_gates[idx_gate].out].get());
+                size_t vec_size = shuffle_gates[idx_gate].in.size();
+                std::vector<Ring> z(z_all.begin() + idx_vec, z_all.begin() + idx_vec + vec_size);
+                std::vector<Ring> z_send(vec_size);
+                for (int i = 0; i < vec_size; ++i) {
+                    if (id_ != nP_) {
+                        z_send[i] = z[pre_shuffle->pi[i]] - pre_shuffle->c[i].valueAt();
                         wires_[shuffle_gates[idx_gate].outs[i]] = pre_shuffle->b[i].valueAt();
+                    } else {
+                        z_send[i] = z[pre_shuffle->pi[i]] + pre_shuffle->delta[i].valueAt();
+                        wires_[shuffle_gates[idx_gate].outs[i]] = z_send[i];
                     }
-                    z_all.insert(z_all.end(), z.begin(), z.end());
                 }
-            } else {
-                network_->send(1, z_all.data(), total_comm * sizeof(Ring));
-
-                network_->recv(id_ - 1, z_all.data(), total_comm * sizeof(Ring));
-                size_t idx_vec = 0;
-                for (int idx_gate = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
-                    auto *pre_shuffle = static_cast<PreprocShuffleGate<Ring> *>(preproc_.gates[shuffle_gates[idx_gate].out].get());
-                    size_t vec_size = shuffle_gates[idx_gate].in.size();
-                    std::vector<Ring> z(z_all.begin() + idx_vec, z_all.begin() + idx_vec + vec_size);
-                    std::vector<Ring> z_send(vec_size);
-                    for (int i = 0; i < vec_size; ++i) {
-                        if (id_ != nP_) {
-                            z_send[i] = z[pre_shuffle->pi[i]] - pre_shuffle->c[i].valueAt();
-                            wires_[shuffle_gates[idx_gate].outs[i]] = pre_shuffle->b[i].valueAt();
-                        } else {
-                            z_send[i] = z[pre_shuffle->pi[i]] + pre_shuffle->delta[i].valueAt();
-                            wires_[shuffle_gates[idx_gate].outs[i]] = z_send[i];
-                        }
-                    }
-                    z_all.insert(z_all.begin() + idx_vec, z_send.begin(), z_send.end());
-                    idx_vec += vec_size;
-                }
-                if (id_ != nP_) {
-                    network_->send(id_ + 1, z_all.data(), total_comm * sizeof(Ring));
-                }
+                z_all.insert(z_all.begin() + idx_vec, z_send.begin(), z_send.end());
+                idx_vec += vec_size;
+            }
+            if (id_ != nP_) {
+                network_->send(id_ + 1, z_all.data(), total_comm * sizeof(Ring));
             }
         }
     }
 
     void OnlineEvaluator::permAndShEvaluate(std::vector<common::utils::SIMDOGate> &permAndSh_gates) {
-        if (id_ != 0) {
-            for (auto &gate : permAndSh_gates) {
-                auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[gate.out].get());
-                size_t vec_size = gate.in.size();
-                std::vector<Ring> z(vec_size, 0);
-                if (id_ != gate.owner) {
-                    for (int i = 0; i < vec_size; ++i) {
-                        z[i] = gate.in[i] - pre_permAndSh->a[i].valueAt();
-                        wires_[gate.outs[i]] = pre_permAndSh->b[i].valueAt();
-                    }
-                    network_->send(gate.owner, z.data(), z.size() * sizeof(Ring));
-                } else {
-                    for (int pid = 1; pid <= nP_; ++pid) {
-                        std::vector<Ring> z_recv(vec_size);
-                        if (pid != gate.owner) {
-                            network_->recv(pid, z_recv.data(), z_recv.size() * sizeof(Ring));
-                            for (int i = 0; i < vec_size; ++i) {
-                                z[i] += z_recv[i];
-                            }
-                        } else {
-                            for (int i = 0; i < vec_size; ++i) {
-                                z[i] += gate.in[i];
-                            }
+        if (id_ == 0) { return; }
+        for (auto &gate : permAndSh_gates) {
+            auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[gate.out].get());
+            size_t vec_size = gate.in.size();
+            std::vector<Ring> z(vec_size, 0);
+            if (id_ != gate.owner) {
+                for (int i = 0; i < vec_size; ++i) {
+                    z[i] = gate.in[i] - pre_permAndSh->a[i].valueAt();
+                    wires_[gate.outs[i]] = pre_permAndSh->b[i].valueAt();
+                }
+                network_->send(gate.owner, z.data(), z.size() * sizeof(Ring));
+            } else {
+                for (int pid = 1; pid <= nP_; ++pid) {
+                    std::vector<Ring> z_recv(vec_size);
+                    if (pid != gate.owner) {
+                        network_->recv(pid, z_recv.data(), z_recv.size() * sizeof(Ring));
+                        for (int i = 0; i < vec_size; ++i) {
+                            z[i] += z_recv[i];
+                        }
+                    } else {
+                        for (int i = 0; i < vec_size; ++i) {
+                            z[i] += gate.in[i];
                         }
                     }
-                    for (int i = 0; i < vec_size; ++i) {
-                        wires_[gate.outs[i]] = z[pre_permAndSh->pi[i]] + pre_permAndSh->delta[i].valueAt();
+                }
+                for (int i = 0; i < vec_size; ++i) {
+                    wires_[gate.outs[i]] = z[pre_permAndSh->pi[i]] + pre_permAndSh->delta[i].valueAt();
+                }
+            }
+        }
+    }
+
+    void OnlineEvaluator::amortzdPnSEvaluate(std::vector<common::utils::SIMDMOGate> &amortzdPnS_gates) {
+        if (id_ == 0) { return; }
+        int pKing = 1; // Designated king party
+        std::vector<std::vector<Ring>> z_sum;
+        size_t total_comm = 0;
+
+        for (auto &gate : amortzdPnS_gates) {
+            auto *pre_amortzdPnS = static_cast<PreprocAmortzdPnSGate<Ring> *>(preproc_.gates[gate.out].get());
+            size_t vec_size = gate.in.size();
+
+            std::vector<Ring> z(vec_size);
+            for (int i = 0; i < vec_size; ++i) {
+                z[i] = gate.in[i] - pre_amortzdPnS->a[i].valueAt();
+            }
+
+            std::vector<Ring> z_recon(vec_size, 0);
+            if (id_ != pKing) {
+                network_->send(pKing, z.data(), z.size() * sizeof(Ring));
+                network_->recv(pKing, z_recon.data(), z_recon.size() * sizeof(Ring));
+            } else {
+                z_sum.reserve(nP_);
+                for (int pid = 1; pid <= nP_; ++pid) {
+                    std::vector<Ring> z_recv(vec_size);
+                    if (pid != pKing) {
+                        network_->recv(pid, z_recv.data(), z_recv.size() * sizeof(Ring));
+                        z_sum.push_back(z_recv);
+                    } else {
+                        z_sum.push_back(z);
+                    }
+                }
+                for (int i = 0; i < vec_size; ++i) {
+                    for (int pid = 0; pid < nP_; ++pid) {
+                        z_recon[i] += z_sum[pid][i];
+                    }
+                }
+                for (int pid = 1; pid <= nP_; ++pid) {
+                    if (pid != pKing) {
+                        network_->send(pid, z_recon.data(), z_recon.size() * sizeof(Ring));
+                    }
+                }
+            }
+
+            for (int pid = 0; pid < nP_; ++pid) {
+                for (int i = 0; i < vec_size; ++i) {
+                    if (pid == id_) {
+                        wires_[gate.multi_outs[pid][i]] = z_recon[pre_amortzdPnS->pi[i]] + pre_amortzdPnS->delta[i].valueAt();
+                    } else {
+                        wires_[gate.multi_outs[pid][i]] = pre_amortzdPnS->b[i].valueAt();
                     }
                 }
             }
@@ -186,7 +232,6 @@ namespace asterisk
     }
 
     void OnlineEvaluator::evaluateGatesAtDepthPartySend(size_t depth, std::vector<Ring> &mult_vals) {
-
         for (auto &gate : circ_.gates_by_level[depth]) {
             switch (gate->type) {
                 case common::utils::GateType::kMul: {
@@ -209,7 +254,6 @@ namespace asterisk
 
     void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth, std::vector<Ring> &mult_vals) {
         size_t idx_mult = 0;
-        size_t idx_shuffle = 0;
         for (auto &gate : circ_.gates_by_level[depth]) {
             switch (gate->type) {
                 case common::utils::GateType::kAdd: {
@@ -267,10 +311,12 @@ namespace asterisk
         size_t mult_num = 0;
         size_t shuffle_num = 0;
         size_t permAndSh_num = 0;
+        size_t amortzdPnS_num = 0;
 
         std::vector<Ring> mult_vals;
         std::vector<common::utils::SIMDOGate> shuffle_gates;
         std::vector<common::utils::SIMDOGate> permAndSh_gates;
+        std::vector<common::utils::SIMDMOGate> amortzdPnS_gates;
 
         for (auto &gate : circ_.gates_by_level[depth]) {
             switch (gate->type) {
@@ -292,6 +338,13 @@ namespace asterisk
                     permAndSh_num++;
                     break;
                 }
+
+                case common::utils::GateType::kAmortzdPnS: {
+                    auto *g = static_cast<common::utils::SIMDMOGate *>(gate.get());
+                    amortzdPnS_gates.push_back(*g);
+                    amortzdPnS_num++;
+                    break;
+                }
             }
         }
 
@@ -301,6 +354,10 @@ namespace asterisk
 
         if (permAndSh_num > 0) {
             permAndShEvaluate(permAndSh_gates);
+        }
+
+        if (amortzdPnS_num > 0) {
+            amortzdPnSEvaluate(amortzdPnS_gates);
         }
 
         if (id_ != 0) {
@@ -348,8 +405,6 @@ namespace asterisk
             return outvals;
         }
         if (id_ != 0) {
-            // std::vector<Ring> output_share_my(circ_.outputs.size());
-            // std::vector<Ring> output_share_other(circ_.outputs.size());
             std::vector<std::vector<Ring>> output_shares(nP_, std::vector<Ring>(circ_.outputs.size()));
             for (size_t i = 0; i < circ_.outputs.size(); ++i) {
                 auto wout = circ_.outputs[i];

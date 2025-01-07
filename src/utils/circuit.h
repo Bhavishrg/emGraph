@@ -36,6 +36,7 @@ enum GateType {
   kTrdotp,
   kShuffle,
   kPermAndSh,
+  kAmortzdPnS,
   kInvalid,
   NumGates
 };
@@ -49,11 +50,12 @@ struct Gate {
   int owner;
   wire_t out;
   std::vector<wire_t> outs;
+  std::vector<std::vector<wire_t>> multi_outs;
 
   Gate() = default;
   Gate(GateType type, wire_t out);
-  Gate(GateType type, wire_t out, std::vector<wire_t> outs);
   Gate(GateType type, int owner, wire_t out, std::vector<wire_t> outs);
+  Gate(GateType type, int owner, wire_t out, std::vector<std::vector<wire_t>> multi_outs);
 
   virtual ~Gate() = default;
 };
@@ -109,13 +111,22 @@ struct SIMDGate : public Gate {
 
 // Represents a gate used to denote SIMD operations.
 // These type is used to represent operations that take vectors of inputs and give vector of output but
-// might not necessarily be SIMD e.g., shuffle.
+// might not necessarily be SIMD e.g., shuffle, permute+share.
 struct SIMDOGate : public Gate {
   std::vector<wire_t> in{0};
 
   SIMDOGate() = default;
-  SIMDOGate(GateType type, std::vector<wire_t> in, std::vector<wire_t> out);
   SIMDOGate(GateType type, int owner, std::vector<wire_t> in, std::vector<wire_t> out);
+};
+
+// Represents a gate used to denote SIMD operations.
+// These type is used to represent operations that take vectors of inputs and give 2D vector of output but
+// might not necessarily be SIMD e.g., amortized permute+share.
+struct SIMDMOGate : public Gate {
+  std::vector<wire_t> in{0};
+
+  SIMDMOGate() = default;
+  SIMDMOGate(GateType type, int owner, std::vector<wire_t> in, std::vector<std::vector<wire_t>> multi_outs);
 };
 
 // Represents gates where one input is a constant.
@@ -302,11 +313,34 @@ class Circuit {
     }
 
     std::vector<wire_t> output(input.size());
-    for (int i = 0; i < input.size(); i++){
-      output[i] = i + gates_.size();
+    for (int i = 0; i < input.size(); i++) {
+      output[i] = i + gates_.size(); // TODO: should this be i+gates_.size() or i+num_wires
     }
     gates_.push_back(std::make_shared<SIMDOGate>(type, owner, input, output));
     num_wires += input.size();
+    return output;
+  }
+
+  // Function to add a multiple in + out gate.
+  std::vector<std::vector<wire_t>> addMOGate(GateType type, const std::vector<wire_t>& input, int nP) {
+    if (type != GateType::kAmortzdPnS) {
+      throw std::invalid_argument("Invalid gate type.");
+    }
+
+    for (size_t i = 0; i < input.size(); i++) {
+      if (!isWireValid(input[i])) {
+        throw std::invalid_argument("Invalid wire ID.");
+      }
+    }
+
+    std::vector<std::vector<wire_t>> output(nP, std::vector<wire_t>(input.size()));
+    for (int pid = 0; pid < nP; ++pid) {
+      for (int i = 0; i < input.size(); i++) {
+        output[pid][i] = pid * nP + i + gates_.size(); // TODO: should this be i+gates_.size() or i+num_wires
+      }
+    }
+    gates_.push_back(std::make_shared<SIMDMOGate>(type, 0, input, output));
+    num_wires += nP * input.size();
     return output;
   }
 
@@ -367,27 +401,9 @@ class Circuit {
           break;
         }
 
-        case GateType::kEqz: {
-          const auto* g = static_cast<FIn1Gate*>(gate.get());
-          gate_level[g->out] = gate_level[g->in] + 1;
-          depth = std::max(depth, gate_level[gate->out]);
-          break;
-        }
-
-        case GateType::kLtz: {
-          const auto* g = static_cast<FIn1Gate*>(gate.get());
-          gate_level[g->out] = gate_level[g->in] + 1;
-          depth = std::max(depth, gate_level[gate->out]);
-          break;
-        }
-
-        case GateType::kRelu: {
-          const auto* g = static_cast<FIn1Gate*>(gate.get());
-          gate_level[g->out] = gate_level[g->in] + 1;
-          depth = std::max(depth, gate_level[gate->out]);
-          break;
-        }
-
+        case GateType::kEqz:
+        case GateType::kLtz:
+        case GateType::kRelu:
         case GateType::kMsb: {
           const auto* g = static_cast<FIn1Gate*>(gate.get());
           gate_level[g->out] = gate_level[g->in] + 1;
@@ -408,29 +424,32 @@ class Circuit {
           break;
         }
 
-        case GateType::kShuffle: {
-          const auto* g = static_cast<SIMDOGate*>(gate.get());
-          size_t gate_depth = 0;
-          for (size_t i = 0; i < g->in.size(); i++) {
-            gate_depth = std::max({gate_level[g->in[i]], gate_depth});
-          }
-          for (int i = 0; i < g->outs.size(); i++){
-            gate_level[g->outs[i]] = gate_depth + 1;
-          }
-          depth = std::max(depth, gate_level[gate->outs[0]]);
-          break;
-        }
-
+        case GateType::kShuffle:
         case GateType::kPermAndSh: {
           const auto* g = static_cast<SIMDOGate*>(gate.get());
           size_t gate_depth = 0;
           for (size_t i = 0; i < g->in.size(); i++) {
             gate_depth = std::max({gate_level[g->in[i]], gate_depth});
           }
-          for (int i = 0; i < g->outs.size(); i++){
+          for (int i = 0; i < g->outs.size(); i++) {
             gate_level[g->outs[i]] = gate_depth + 1;
           }
           depth = std::max(depth, gate_level[gate->outs[0]]);
+          break;
+        }
+
+        case GateType::kAmortzdPnS: {
+          const auto* g = static_cast<SIMDMOGate*>(gate.get());
+          size_t gate_depth = 0;
+          for (size_t i = 0; i < g->in.size(); i++) {
+            gate_depth = std::max({gate_level[g->in[i]], gate_depth});
+          }
+          for (int i = 0; i < g->multi_outs.size(); i++) {
+            for (int j = 0; j < g->multi_outs[i].size(); ++j) {
+              gate_level[g->multi_outs[i][j]] = gate_depth + 1;
+            }
+          }
+          depth = std::max(depth, gate_level[gate->multi_outs[0][0]]);
           break;
         }
 

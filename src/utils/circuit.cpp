@@ -6,9 +6,12 @@ namespace common::utils {
 
 Gate::Gate(GateType type, wire_t out) : type(type), out(out) {}
 
-Gate::Gate(GateType type, wire_t out, std::vector<wire_t> outs) : type(type), out(out), outs(outs) {}
+// Gate::Gate(GateType type, wire_t out, std::vector<wire_t> outs) : type(type), out(out), outs(outs) {}
 
 Gate::Gate(GateType type, int owner, wire_t out, std::vector<wire_t> outs) : type(type), owner(owner), out(out), outs(outs) {}
+
+Gate::Gate(GateType type, int owner, wire_t out, std::vector<std::vector<wire_t>> multi_outs)
+    : type(type), owner(owner), out(out), multi_outs(multi_outs) {}
 
 FIn2Gate::FIn2Gate(GateType type, wire_t in1, wire_t in2, wire_t out)
     : Gate(type, out), in1{in1}, in2{in2} {}
@@ -25,11 +28,11 @@ FIn1Gate::FIn1Gate(GateType type, wire_t in, wire_t out)
 SIMDGate::SIMDGate(GateType type, std::vector<wire_t> in1, std::vector<wire_t> in2, wire_t out)
     : Gate(type, out), in1(std::move(in1)), in2(std::move(in2)) {}
 
-SIMDOGate::SIMDOGate(GateType type, std::vector<wire_t> in, std::vector<wire_t> outs)
-    : Gate(type, outs[0], outs), in(std::move(in)) {}
-
 SIMDOGate::SIMDOGate(GateType type, int owner, std::vector<wire_t> in, std::vector<wire_t> outs)
     : Gate(type, owner, outs[0], outs), in(std::move(in)) {}
+
+SIMDMOGate::SIMDMOGate(GateType type, int owner, std::vector<wire_t> in, std::vector<std::vector<wire_t>> multi_outs)
+    : Gate(type, owner, multi_outs[0][0], multi_outs), in(std::move(in)) {}
 
 std::ostream& operator<<(std::ostream& os, GateType type) {
   switch (type) {
@@ -95,6 +98,10 @@ std::ostream& operator<<(std::ostream& os, GateType type) {
 
     case kPermAndSh:
       os << "Permute and share a vector";
+      break;
+
+    case kAmortzdPnS:
+      os << "Amortized Permute and share a vector";
       break;
 
     default:

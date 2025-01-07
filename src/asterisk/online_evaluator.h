@@ -52,6 +52,8 @@ namespace asterisk
 
     void permAndShEvaluate(std::vector<common::utils::SIMDOGate> &permAndSh_gates);
 
+    void amortzdPnSEvaluate(std::vector<common::utils::SIMDMOGate> &amortzdPnS_gates);
+
     std::vector<Ring> getOutputs();
 
     // Reconstruct an authenticated additive shared value

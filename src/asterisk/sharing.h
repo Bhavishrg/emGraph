@@ -213,7 +213,7 @@ class TPShare {
     return lhs;
   }
 
-  AddShare<R> getAS(size_t pid){
+  AddShare<R> getAS(size_t pid) {
     return AddShare<R>({values_.at(pid)});
   }
 
