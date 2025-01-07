@@ -50,6 +50,8 @@ namespace asterisk
 
     void shuffleEvaluate(std::vector<common::utils::SIMDOGate> &shuffle_gates);
 
+    void permAndShEvaluate(std::vector<common::utils::SIMDOGate> &permAndSh_gates);
+
     std::vector<Ring> getOutputs();
 
     // Reconstruct an authenticated additive shared value

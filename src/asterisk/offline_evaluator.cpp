@@ -84,11 +84,11 @@ void OfflineEvaluator::randomPermutation(int nP, int pid, RandGenPool& rgen,
   }
 }
 
-void OfflineEvaluator::generateDeltaVector(int nP, int pid, RandGenPool& rgen, std::vector<AddShare<Ring>>& d,
-                                           std::vector<TPShare<Ring>>& tp_a, std::vector<TPShare<Ring>>& tp_b, std::vector<TPShare<Ring>>& tp_c,
-                                           std::vector<std::vector<int>>& tp_pi_all, size_t& vec_size,
-                                           std::vector<Ring>& rand_sh_sec, size_t& idx_rand_sh_sec) {
-  std::vector<Ring> delta(vec_size);
+void OfflineEvaluator::generateClarionDeltaVector(int nP, int pid, RandGenPool& rgen, std::vector<AddShare<Ring>>& delta,
+                                                  std::vector<TPShare<Ring>>& tp_a, std::vector<TPShare<Ring>>& tp_b, std::vector<TPShare<Ring>>& tp_c,
+                                                  std::vector<std::vector<int>>& tp_pi_all, size_t& vec_size,
+                                                  std::vector<Ring>& rand_sh_sec, size_t& idx_rand_sh_sec) {
+  std::vector<Ring> deltan(vec_size);
   Ring valn;
   if (pid == 0) {
     for (int i = 0; i < vec_size; ++i) {
@@ -99,16 +99,41 @@ void OfflineEvaluator::generateDeltaVector(int nP, int pid, RandGenPool& rgen, s
         val_a += tp_c[idx_perm][j + 1];
       }
       Ring val_b = tp_b[idx_perm].secret() - tp_b[idx_perm][nP];
-      delta[idx_perm] = val_a - tp_c[idx_perm][nP] - val_b;
+      deltan[idx_perm] = val_a - tp_c[idx_perm][nP] - val_b;
     }
     for (int i = 0; i < vec_size; ++i) {
-      rand_sh_sec.push_back(delta[i]);
+      rand_sh_sec.push_back(deltan[i]);
     }
   } else if (pid == nP) {
     for (int i = 0; i < vec_size; ++i) {
       valn = rand_sh_sec[idx_rand_sh_sec];
       idx_rand_sh_sec++;
-      d[i].pushValue(valn);
+      delta[i].pushValue(valn);
+    }
+  }
+}
+
+void OfflineEvaluator::generatePermAndShDeltaVector(int nP, int pid, RandGenPool& rgen, int owner, std::vector<AddShare<Ring>>& delta,
+                                                    std::vector<TPShare<Ring>>& tp_a, std::vector<TPShare<Ring>>& tp_b,
+                                                    std::vector<std::vector<int>>& tp_pi_all, size_t& vec_size,
+                                                    std::vector<Ring>& rand_sh_sec, size_t& idx_rand_sh_sec) {
+  std::vector<Ring> deltan(vec_size);
+  Ring valn;
+  if (pid == 0) {
+    for (int i = 0; i < vec_size; ++i) {
+      Ring val_a = tp_a[i].secret() - tp_a[i][owner];
+      int idx_perm = tp_pi_all[owner][i];
+      Ring val_b = tp_b[idx_perm].secret() - tp_b[idx_perm][owner];
+      deltan[idx_perm] = val_a - val_b;
+    }
+    for (int i = 0; i < vec_size; ++i) {
+      rand_sh_sec.push_back(deltan[i]);
+    }
+  } else if (pid == owner) {
+    for (int i = 0; i < vec_size; ++i) {
+      valn = rand_sh_sec[idx_rand_sh_sec];
+      idx_rand_sh_sec++;
+      delta[i].pushValue(valn);
     }
   }
 }
@@ -156,7 +181,7 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
           std::vector<TPShare<Ring>> tp_b(vec_size); // Randomly sampled vector
           std::vector<AddShare<Ring>> c(vec_size); // Randomly sampled vector
           std::vector<TPShare<Ring>> tp_c(vec_size); // Randomly sampled vector
-          std::vector<AddShare<Ring>> d(vec_size); // Delta vector only held by the last party. Dummy values for the other parties
+          std::vector<AddShare<Ring>> delta(vec_size); // Delta vector only held by the last party. Dummy values for the other parties
           std::vector<int> pi(vec_size); // Randomly sampled permutation using HP
           std::vector<std::vector<int>> tp_pi_all(nP_, std::vector<int>(vec_size)); // Randomly sampled permutations of all parties using HP
           std::vector<int> pi_common(vec_size); // Common random permutation held by all parties except HP. HP holds dummy values
@@ -167,8 +192,29 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
           }
           randomPermutation(nP_, id_, rgen_, pi, tp_pi_all, vec_size);
           if (id_ > 0) { randomPermutation(nP_, id_, rgen_, pi_common, tp_pi_all, vec_size); }
-          generateDeltaVector(nP_, id_, rgen_, d, tp_a, tp_b, tp_c, tp_pi_all, vec_size, rand_sh_sec, idx_rand_sh_sec);
-          preproc_.gates[gate->out] = std::move(std::make_unique<PreprocShuffleGate<Ring>>(a, tp_a, b, tp_b, c, tp_c, d, pi, tp_pi_all, pi_common));
+          generateClarionDeltaVector(nP_, id_, rgen_, delta, tp_a, tp_b, tp_c, tp_pi_all, vec_size, rand_sh_sec, idx_rand_sh_sec);
+          preproc_.gates[gate->out] = std::move(std::make_unique<PreprocShuffleGate<Ring>>(a, tp_a, b, tp_b, c, tp_c, delta, pi, tp_pi_all, pi_common));
+          break;
+        }
+
+        case common::utils::GateType::kPermAndSh: {
+          preproc_.gates[gate->out] = std::make_unique<PreprocPermAndShGate<Ring>>();
+          std::vector<AddShare<Ring>> a(vec_size); // Randomly sampled vector
+          std::vector<TPShare<Ring>> tp_a(vec_size); // Randomly sampled vector
+          std::vector<AddShare<Ring>> b(vec_size); // Randomly sampled vector
+          std::vector<TPShare<Ring>> tp_b(vec_size); // Randomly sampled vector
+          std::vector<AddShare<Ring>> delta(vec_size); // Delta vector only held by the last party. Dummy values for the other parties
+          std::vector<int> pi(vec_size); // Randomly sampled permutation using HP
+          std::vector<std::vector<int>> tp_pi_all(nP_, std::vector<int>(vec_size)); // Randomly sampled permutations of all parties using HP
+          std::vector<int> pi_common(vec_size); // Common random permutation held by all parties except HP. HP holds dummy values
+          for (int i = 0; i < vec_size; i++) {
+            randomShare(nP_, id_, rgen_, a[i], tp_a[i]);
+            randomShare(nP_, id_, rgen_, b[i], tp_b[i]);
+          }
+          randomPermutation(nP_, id_, rgen_, pi, tp_pi_all, vec_size);
+          if (id_ > 0) { randomPermutation(nP_, id_, rgen_, pi_common, tp_pi_all, vec_size); }
+          generatePermAndShDeltaVector(nP_, id_, rgen_, gate->owner, delta, tp_a, tp_b, tp_pi_all, vec_size, rand_sh_sec, idx_rand_sh_sec);
+          preproc_.gates[gate->out] = std::move(std::make_unique<PreprocPermAndShGate<Ring>>(a, tp_a, b, tp_b, delta, pi, tp_pi_all, pi_common));
           break;
         }
 

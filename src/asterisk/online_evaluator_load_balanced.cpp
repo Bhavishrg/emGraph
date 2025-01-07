@@ -137,7 +137,7 @@ namespace asterisk
                             z_send[i] = z[pre_shuffle->pi[i]] - pre_shuffle->c[i].valueAt();
                             wires_[shuffle_gates[idx_gate].outs[i]] = pre_shuffle->b[i].valueAt();
                         } else {
-                            z_send[i] = z[pre_shuffle->pi[i]] + pre_shuffle->d[i].valueAt();
+                            z_send[i] = z[pre_shuffle->pi[i]] + pre_shuffle->delta[i].valueAt();
                             wires_[shuffle_gates[idx_gate].outs[i]] = z_send[i];
                         }
                     }
@@ -146,6 +146,40 @@ namespace asterisk
                 }
                 if (id_ != nP_) {
                     network_->send(id_ + 1, z_all.data(), total_comm * sizeof(Ring));
+                }
+            }
+        }
+    }
+
+    void OnlineEvaluator::permAndShEvaluate(std::vector<common::utils::SIMDOGate> &permAndSh_gates) {
+        if (id_ != 0) {
+            for (auto &gate : permAndSh_gates) {
+                auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[gate.out].get());
+                size_t vec_size = gate.in.size();
+                std::vector<Ring> z(vec_size, 0);
+                if (id_ != gate.owner) {
+                    for (int i = 0; i < vec_size; ++i) {
+                        z[i] = gate.in[i] - pre_permAndSh->a[i].valueAt();
+                        wires_[gate.outs[i]] = pre_permAndSh->b[i].valueAt();
+                    }
+                    network_->send(gate.owner, z.data(), z.size() * sizeof(Ring));
+                } else {
+                    for (int pid = 1; pid <= nP_; ++pid) {
+                        std::vector<Ring> z_recv(vec_size);
+                        if (pid != gate.owner) {
+                            network_->recv(pid, z_recv.data(), z_recv.size() * sizeof(Ring));
+                            for (int i = 0; i < vec_size; ++i) {
+                                z[i] += z_recv[i];
+                            }
+                        } else {
+                            for (int i = 0; i < vec_size; ++i) {
+                                z[i] += gate.in[i];
+                            }
+                        }
+                    }
+                    for (int i = 0; i < vec_size; ++i) {
+                        wires_[gate.outs[i]] = z[pre_permAndSh->pi[i]] + pre_permAndSh->delta[i].valueAt();
+                    }
                 }
             }
         }
@@ -232,9 +266,11 @@ namespace asterisk
     void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
         size_t mult_num = 0;
         size_t shuffle_num = 0;
+        size_t permAndSh_num = 0;
 
         std::vector<Ring> mult_vals;
         std::vector<common::utils::SIMDOGate> shuffle_gates;
+        std::vector<common::utils::SIMDOGate> permAndSh_gates;
 
         for (auto &gate : circ_.gates_by_level[depth]) {
             switch (gate->type) {
@@ -246,7 +282,14 @@ namespace asterisk
                 case common::utils::GateType::kShuffle: {
                     auto *g = static_cast<common::utils::SIMDOGate *>(gate.get());
                     shuffle_gates.push_back(*g);
-                    shuffle_num ++;
+                    shuffle_num++;
+                    break;
+                }
+
+                case common::utils::GateType::kPermAndSh: {
+                    auto *g = static_cast<common::utils::SIMDOGate *>(gate.get());
+                    permAndSh_gates.push_back(*g);
+                    permAndSh_num++;
                     break;
                 }
             }
@@ -254,6 +297,10 @@ namespace asterisk
 
         if (shuffle_num > 0) {
             shuffleEvaluate(shuffle_gates);
+        }
+
+        if (permAndSh_num > 0) {
+            permAndShEvaluate(permAndSh_gates);
         }
 
         if (id_ != 0) {

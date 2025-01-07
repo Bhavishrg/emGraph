@@ -49,10 +49,15 @@ class OfflineEvaluator {
   static void randomPermutation(int nP, int pid, RandGenPool& rgen,
                                 std::vector<int>& pi, std::vector<std::vector<int>>& tp_pi_all, size_t& vec_size);
 
-  static void generateDeltaVector(int nP, int pid, RandGenPool& rgen, std::vector<AddShare<Ring>>& d,
-                                  std::vector<TPShare<Ring>>& tp_a, std::vector<TPShare<Ring>>& tp_b, std::vector<TPShare<Ring>>& tp_c,
-                                  std::vector<std::vector<int>>& tp_pi_all, size_t& vec_size,
-                                  std::vector<Ring>& rand_sh_sec, size_t& idx_rand_sh_sec);
+  static void generateClarionDeltaVector(int nP, int pid, RandGenPool& rgen, std::vector<AddShare<Ring>>& delta,
+                                         std::vector<TPShare<Ring>>& tp_a, std::vector<TPShare<Ring>>& tp_b, std::vector<TPShare<Ring>>& tp_c,
+                                         std::vector<std::vector<int>>& tp_pi_all, size_t& vec_size,
+                                         std::vector<Ring>& rand_sh_sec, size_t& idx_rand_sh_sec);
+
+  static void generatePermAndShDeltaVector(int nP, int pid, RandGenPool& rgen, int owner, std::vector<AddShare<Ring>>& delta,
+                                           std::vector<TPShare<Ring>>& tp_a, std::vector<TPShare<Ring>>& tp_b,
+                                           std::vector<std::vector<int>>& tp_pi_all, size_t& vec_size,
+                                           std::vector<Ring>& rand_sh_sec, size_t& idx_rand_sh_sec);
 
   // Following methods implement various preprocessing subprotocols.
 

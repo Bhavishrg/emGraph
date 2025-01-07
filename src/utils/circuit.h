@@ -35,6 +35,7 @@ enum GateType {
   kDotprod,
   kTrdotp,
   kShuffle,
+  kPermAndSh,
   kInvalid,
   NumGates
 };
@@ -45,12 +46,14 @@ std::ostream& operator<<(std::ostream& os, GateType type);
 // All gates have one output.
 struct Gate {
   GateType type{GateType::kInvalid};
+  int owner;
   wire_t out;
   std::vector<wire_t> outs;
 
   Gate() = default;
   Gate(GateType type, wire_t out);
   Gate(GateType type, wire_t out, std::vector<wire_t> outs);
+  Gate(GateType type, int owner, wire_t out, std::vector<wire_t> outs);
 
   virtual ~Gate() = default;
 };
@@ -112,6 +115,7 @@ struct SIMDOGate : public Gate {
 
   SIMDOGate() = default;
   SIMDOGate(GateType type, std::vector<wire_t> in, std::vector<wire_t> out);
+  SIMDOGate(GateType type, int owner, std::vector<wire_t> in, std::vector<wire_t> out);
 };
 
 // Represents gates where one input is a constant.
@@ -286,14 +290,14 @@ class Circuit {
   }
 
   // Function to add a multiple in + out gate.
-  std::vector<wire_t> addMGate(GateType type, const std::vector<wire_t>& input) {
-    if (type != GateType::kShuffle) {
+  std::vector<wire_t> addMGate(GateType type, const std::vector<wire_t>& input, int owner = 0) {
+    if (type != GateType::kShuffle && type != GateType::kPermAndSh) {
       throw std::invalid_argument("Invalid gate type.");
     }
 
     for (size_t i = 0; i < input.size(); i++) {
       if (!isWireValid(input[i])) {
-        throw std::invalid_argument("Invalid wire ID. for shuf");
+        throw std::invalid_argument("Invalid wire ID.");
       }
     }
 
@@ -301,7 +305,7 @@ class Circuit {
     for (int i = 0; i < input.size(); i++){
       output[i] = i + gates_.size();
     }
-    gates_.push_back(std::make_shared<SIMDOGate>(type, input, output));
+    gates_.push_back(std::make_shared<SIMDOGate>(type, owner, input, output));
     num_wires += input.size();
     return output;
   }
@@ -417,6 +421,19 @@ class Circuit {
           break;
         }
 
+        case GateType::kPermAndSh: {
+          const auto* g = static_cast<SIMDOGate*>(gate.get());
+          size_t gate_depth = 0;
+          for (size_t i = 0; i < g->in.size(); i++) {
+            gate_depth = std::max({gate_level[g->in[i]], gate_depth});
+          }
+          for (int i = 0; i < g->outs.size(); i++){
+            gate_level[g->outs[i]] = gate_depth + 1;
+          }
+          depth = std::max(depth, gate_level[gate->outs[0]]);
+          break;
+        }
+
         default:
           break;
       }
@@ -427,7 +444,7 @@ class Circuit {
     std::vector<std::vector<gate_ptr_t>> gates_by_level(depth + 1);
     for (const auto& gate : gates_) {
       res.count[gate->type]++;
-      if (gate->type == GateType::kShuffle) {
+      if (gate->type == GateType::kShuffle || gate->type == GateType::kPermAndSh) {
         gates_by_level[gate_level[gate->outs[0]]].push_back(gate);
       } else{
         gates_by_level[gate_level[gate->out]].push_back(gate);

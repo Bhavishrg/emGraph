@@ -8,6 +8,8 @@ Gate::Gate(GateType type, wire_t out) : type(type), out(out) {}
 
 Gate::Gate(GateType type, wire_t out, std::vector<wire_t> outs) : type(type), out(out), outs(outs) {}
 
+Gate::Gate(GateType type, int owner, wire_t out, std::vector<wire_t> outs) : type(type), owner(owner), out(out), outs(outs) {}
+
 FIn2Gate::FIn2Gate(GateType type, wire_t in1, wire_t in2, wire_t out)
     : Gate(type, out), in1{in1}, in2{in2} {}
 
@@ -25,6 +27,9 @@ SIMDGate::SIMDGate(GateType type, std::vector<wire_t> in1, std::vector<wire_t> i
 
 SIMDOGate::SIMDOGate(GateType type, std::vector<wire_t> in, std::vector<wire_t> outs)
     : Gate(type, outs[0], outs), in(std::move(in)) {}
+
+SIMDOGate::SIMDOGate(GateType type, int owner, std::vector<wire_t> in, std::vector<wire_t> outs)
+    : Gate(type, owner, outs[0], outs), in(std::move(in)) {}
 
 std::ostream& operator<<(std::ostream& os, GateType type) {
   switch (type) {
@@ -85,7 +90,11 @@ std::ostream& operator<<(std::ostream& os, GateType type) {
       break;
 
     case kShuffle:
-      os << "Shufle a vector";
+      os << "Shuffle a vector";
+      break;
+
+    case kPermAndSh:
+      os << "Permute and share a vector";
       break;
 
     default:
