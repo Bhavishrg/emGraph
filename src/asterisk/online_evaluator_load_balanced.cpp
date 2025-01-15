@@ -16,7 +16,7 @@ namespace asterisk
           network_(std::move(network)),
           preproc_(std::move(preproc)),
           circ_(std::move(circ)),
-          wires_(circ.num_gates)
+          wires_(circ.num_wires)
     {
         tpool_ = std::make_shared<ThreadPool>(threads);
     }
@@ -68,7 +68,7 @@ namespace asterisk
         }
     }
 
-    void OnlineEvaluator::shuffleEvaluate(std::vector<common::utils::SIMDOGate> &shuffle_gates) {
+    void OnlineEvaluator::shuffleEvaluate(const std::vector<common::utils::SIMDOGate> &shuffle_gates) {
         if (id_ == 0) { return; }
         std::vector<Ring> z_all;
         std::vector<std::vector<Ring>> z_sum;
@@ -81,7 +81,7 @@ namespace asterisk
             std::vector<Ring> z(vec_size, 0);
             if (id_ != 1) {
                 for (int i = 0; i < vec_size; ++i) {
-                    z[i] = gate.in[i] - pre_shuffle->a[i].valueAt();
+                    z[i] = wires_[gate.in[i]] - pre_shuffle->a[i].valueAt();
                 }
                 z_all.insert(z_all.end(), z.begin(), z.end());
             } else {
@@ -111,17 +111,20 @@ namespace asterisk
                 size_t vec_size = shuffle_gates[idx_gate].in.size();
                 std::vector<Ring> z(vec_size);
                 for (int i = 0; i < vec_size; ++i) {
-                    z[i] = z_sum[idx_gate][pre_shuffle->pi[i]] + shuffle_gates[idx_gate].in[pre_shuffle->pi[i]] - pre_shuffle->c[i].valueAt();
+                    z[i] = z_sum[idx_gate][pre_shuffle->pi[i]] + wires_[shuffle_gates[idx_gate].in[pre_shuffle->pi[i]]]
+                           - pre_shuffle->c[i].valueAt();
                     wires_[shuffle_gates[idx_gate].outs[i]] = pre_shuffle->b[i].valueAt();
                 }
                 z_all.insert(z_all.end(), z.begin(), z.end());
             }
+            network_->send(2, z_all.data(), z_all.size() * sizeof(Ring));
         } else {
-            network_->send(1, z_all.data(), total_comm * sizeof(Ring));
+            network_->send(1, z_all.data(), z_all.size() * sizeof(Ring));
 
-            network_->recv(id_ - 1, z_all.data(), total_comm * sizeof(Ring));
-            size_t idx_vec = 0;
-            for (int idx_gate = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
+            z_all.clear();
+            z_all.reserve(total_comm);
+            network_->recv(id_ - 1, z_all.data(), z_all.size() * sizeof(Ring));
+            for (int idx_gate = 0, idx_vec = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
                 auto *pre_shuffle = static_cast<PreprocShuffleGate<Ring> *>(preproc_.gates[shuffle_gates[idx_gate].out].get());
                 size_t vec_size = shuffle_gates[idx_gate].in.size();
                 std::vector<Ring> z(z_all.begin() + idx_vec, z_all.begin() + idx_vec + vec_size);
@@ -134,17 +137,16 @@ namespace asterisk
                         z_send[i] = z[pre_shuffle->pi[i]] + pre_shuffle->delta[i].valueAt();
                         wires_[shuffle_gates[idx_gate].outs[i]] = z_send[i];
                     }
+                    z_all[idx_vec++] = z_send[i];
                 }
-                z_all.insert(z_all.begin() + idx_vec, z_send.begin(), z_send.end());
-                idx_vec += vec_size;
             }
             if (id_ != nP_) {
-                network_->send(id_ + 1, z_all.data(), total_comm * sizeof(Ring));
+                network_->send(id_ + 1, z_all.data(), z_all.size() * sizeof(Ring));
             }
         }
     }
 
-    void OnlineEvaluator::permAndShEvaluate(std::vector<common::utils::SIMDOGate> &permAndSh_gates) {
+    void OnlineEvaluator::permAndShEvaluate(const std::vector<common::utils::SIMDOGate> &permAndSh_gates) {
         if (id_ == 0) { return; }
         for (auto &gate : permAndSh_gates) {
             auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[gate.out].get());
@@ -152,7 +154,7 @@ namespace asterisk
             std::vector<Ring> z(vec_size, 0);
             if (id_ != gate.owner) {
                 for (int i = 0; i < vec_size; ++i) {
-                    z[i] = gate.in[i] - pre_permAndSh->a[i].valueAt();
+                    z[i] = wires_[gate.in[i]] - pre_permAndSh->a[i].valueAt();
                     wires_[gate.outs[i]] = pre_permAndSh->b[i].valueAt();
                 }
                 network_->send(gate.owner, z.data(), z.size() * sizeof(Ring));
@@ -166,7 +168,7 @@ namespace asterisk
                         }
                     } else {
                         for (int i = 0; i < vec_size; ++i) {
-                            z[i] += gate.in[i];
+                            z[i] += wires_[gate.in[i]];
                         }
                     }
                 }
@@ -177,7 +179,7 @@ namespace asterisk
         }
     }
 
-    void OnlineEvaluator::amortzdPnSEvaluate(std::vector<common::utils::SIMDMOGate> &amortzdPnS_gates) {
+    void OnlineEvaluator::amortzdPnSEvaluate(const std::vector<common::utils::SIMDMOGate> &amortzdPnS_gates) {
         if (id_ == 0) { return; }
         int pKing = 1; // Designated king party
         std::vector<std::vector<Ring>> z_sum;
@@ -189,7 +191,7 @@ namespace asterisk
 
             std::vector<Ring> z(vec_size);
             for (int i = 0; i < vec_size; ++i) {
-                z[i] = gate.in[i] - pre_amortzdPnS->a[i].valueAt();
+                z[i] = wires_[gate.in[i]] - pre_amortzdPnS->a[i].valueAt();
             }
 
             std::vector<Ring> z_recon(vec_size, 0);
@@ -360,43 +362,42 @@ namespace asterisk
             amortzdPnSEvaluate(amortzdPnS_gates);
         }
 
-        if (id_ != 0) {
-            evaluateGatesAtDepthPartySend(depth, mult_vals);
-            size_t total_comm_send = mult_vals.size();
-            size_t total_comm_recv = nP_ * mult_vals.size();
-            std::vector<Ring> online_comm_send;
-            online_comm_send.reserve(total_comm_send);
-            std::vector<Ring> online_comm_recv;
-            online_comm_recv.reserve(total_comm_recv);
-            std::vector<Ring> online_comm_recv_party;
-            online_comm_recv_party.reserve(total_comm_send);
-            online_comm_send.insert(online_comm_send.begin(), mult_vals.begin(), mult_vals.end());
+        if (id_ == 0) { return; }
+        evaluateGatesAtDepthPartySend(depth, mult_vals);
+        size_t total_comm_send = mult_vals.size();
+        size_t total_comm_recv = nP_ * mult_vals.size();
+        std::vector<Ring> online_comm_send;
+        online_comm_send.reserve(total_comm_send);
+        std::vector<Ring> online_comm_recv;
+        online_comm_recv.reserve(total_comm_recv);
+        std::vector<Ring> online_comm_recv_party;
+        online_comm_recv_party.reserve(total_comm_send);
+        online_comm_send.insert(online_comm_send.begin(), mult_vals.begin(), mult_vals.end());
 
-            for (int pid = 1; pid <= nP_; ++pid) {
-                if (pid != id_) {
-                    network_->send(pid, online_comm_send.data(), sizeof(Ring) * total_comm_send);
-                }
+        for (int pid = 1; pid <= nP_; ++pid) {
+            if (pid != id_) {
+                network_->send(pid, online_comm_send.data(), sizeof(Ring) * total_comm_send);
             }
-
-            for (int pid = 1; pid <= nP_; ++pid) {
-                if (pid != id_) {
-                    network_->recv(pid, online_comm_recv_party.data(), sizeof(Ring) * total_comm_send);
-                } else {
-                    online_comm_recv_party.insert(online_comm_recv_party.begin(), online_comm_send.begin(), online_comm_send.end());
-                }
-                online_comm_recv.insert(online_comm_recv.end(), online_comm_recv_party.begin(), online_comm_recv_party.end());
-            }
-
-            size_t mult_all_recv = online_comm_recv.size();
-            std::vector<Ring> mult_all(mult_all_recv);
-            for (int i = 0, j = 0, pid = 0; i < mult_all_recv; ++i) {
-                mult_all[i] = online_comm_recv[2 * (pid * mult_num + j)];
-                mult_all[++i] = online_comm_recv[2 * (pid * mult_num + j) + 1];
-                j += (pid + 1) / nP_;
-                pid = (pid + 1) % nP_;
-            }
-            evaluateGatesAtDepthPartyRecv(depth, mult_all);
         }
+
+        for (int pid = 1; pid <= nP_; ++pid) {
+            if (pid != id_) {
+                network_->recv(pid, online_comm_recv_party.data(), sizeof(Ring) * total_comm_send);
+            } else {
+                online_comm_recv_party.insert(online_comm_recv_party.begin(), online_comm_send.begin(), online_comm_send.end());
+            }
+            online_comm_recv.insert(online_comm_recv.end(), online_comm_recv_party.begin(), online_comm_recv_party.end());
+        }
+
+        size_t mult_all_recv = online_comm_recv.size();
+        std::vector<Ring> mult_all(mult_all_recv);
+        for (int i = 0, j = 0, pid = 0; i < mult_all_recv; ++i) {
+            mult_all[i] = online_comm_recv[2 * (pid * mult_num + j)];
+            mult_all[++i] = online_comm_recv[2 * (pid * mult_num + j) + 1];
+            j += (pid + 1) / nP_;
+            pid = (pid + 1) % nP_;
+        }
+        evaluateGatesAtDepthPartyRecv(depth, mult_all);
     }
 
     std::vector<Ring> OnlineEvaluator::getOutputs() {

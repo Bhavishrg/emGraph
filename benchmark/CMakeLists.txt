@@ -8,7 +8,10 @@ macro(add_benchmark source_name)
     list(APPEND benchbin ${source_name})
 endmacro()
 
-add_benchmark(chase_shuffle)
+add_benchmark(initialization_emgraph)
+add_benchmark(mpa_graphiti)
+add_benchmark(mpa_emgraph)
+add_benchmark(test_primitives)
 
 add_custom_target(benchmarks)
 add_dependencies(benchmarks ${benchbin})

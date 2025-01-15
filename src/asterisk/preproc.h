@@ -3,6 +3,7 @@
 #include "../utils/circuit.h"
 #include "sharing.h"
 #include "../utils/types.h"
+#include <unordered_map>
 
 using namespace common::utils;
 
@@ -107,9 +108,9 @@ struct PreprocAmortzdPnSGate : public PreprocGate<R> {
 // Preprocessed data for the circuit.
 template <class R>
 struct PreprocCircuit {
-  std::vector<preprocg_ptr_t<R>> gates;
+  std::unordered_map<wire_t, preprocg_ptr_t<R>> gates;
   PreprocCircuit() = default;
-  PreprocCircuit(size_t num_gates)
-      : gates(num_gates) {}
+  // PreprocCircuit(size_t num_gates)
+  //     : gates(num_gates) {}
 };
 };  // namespace asterisk

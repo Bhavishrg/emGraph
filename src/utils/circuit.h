@@ -154,8 +154,7 @@ struct LevelOrderedCircuit {
   std::vector<wire_t> outputs;
   std::vector<std::vector<gate_ptr_t>> gates_by_level;
 
-  friend std::ostream& operator<<(std::ostream& os,
-                                  const LevelOrderedCircuit& circ);
+  friend std::ostream& operator<<(std::ostream& os, const LevelOrderedCircuit& circ);
 };
 
 // Represents an arithmetic circuit.
@@ -172,7 +171,7 @@ class Circuit {
 
   // Methods to manually build a circuit.
   wire_t newInputWire() {
-    wire_t wid = gates_.size();
+    wire_t wid = num_wires; // gates_.size();
     gates_.push_back(std::make_shared<Gate>(GateType::kInp, wid));
     num_wires += 1;
     return wid;
@@ -197,7 +196,7 @@ class Circuit {
       throw std::invalid_argument("Invalid wire ID.");
     }
 
-    wire_t output = gates_.size();
+    wire_t output = num_wires; // gates_.size();
     gates_.push_back(std::make_shared<FIn2Gate>(type, input1, input2, output));
     num_wires += 1;
 
@@ -214,7 +213,7 @@ class Circuit {
       throw std::invalid_argument("Invalid wire ID.");
     }
 
-    wire_t output = gates_.size();
+    wire_t output = num_wires; // gates_.size();
     gates_.push_back(std::make_shared<FIn3Gate>(type, input1, input2, input3, output));
     num_wires += 1;
 
@@ -233,7 +232,7 @@ class Circuit {
       throw std::invalid_argument("Invalid wire ID.");
     }
 
-    wire_t output = gates_.size();
+    wire_t output = num_wires; // gates_.size();
     gates_.push_back(std::make_shared<FIn4Gate>(type, input1, input2, 
                                           input3, input4, output));
     num_wires += 1;
@@ -252,7 +251,7 @@ class Circuit {
       throw std::invalid_argument("Invalid wire ID.");
     }
 
-    wire_t output = gates_.size();
+    wire_t output = num_wires; // gates_.size();
     gates_.push_back(std::make_shared<ConstOpGate<R>>(type, wid, cval, output));
     num_wires += 1;
 
@@ -270,7 +269,7 @@ class Circuit {
       throw std::invalid_argument("Invalid wire ID.");
     }
 
-    wire_t output = gates_.size();
+    wire_t output = num_wires; // gates_.size();
     gates_.push_back(std::make_shared<FIn1Gate>(type, input, output));
     num_wires += 1;
 
@@ -294,7 +293,7 @@ class Circuit {
       }
     }
 
-    wire_t output = gates_.size();
+    wire_t output = num_wires; // gates_.size();
     gates_.push_back(std::make_shared<SIMDGate>(type, input1, input2, output));
     num_wires += 1;
     return output;
@@ -308,13 +307,13 @@ class Circuit {
 
     for (size_t i = 0; i < input.size(); i++) {
       if (!isWireValid(input[i])) {
-        throw std::invalid_argument("Invalid wire ID.");
+        throw std::invalid_argument("Invalid wire ID. M");
       }
     }
 
     std::vector<wire_t> output(input.size());
     for (int i = 0; i < input.size(); i++) {
-      output[i] = i + gates_.size(); // TODO: should this be i+gates_.size() or i+num_wires
+      output[i] = i + num_wires; // gates_.size();
     }
     gates_.push_back(std::make_shared<SIMDOGate>(type, owner, input, output));
     num_wires += input.size();
@@ -329,14 +328,14 @@ class Circuit {
 
     for (size_t i = 0; i < input.size(); i++) {
       if (!isWireValid(input[i])) {
-        throw std::invalid_argument("Invalid wire ID.");
+        throw std::invalid_argument("Invalid wire ID. MO");
       }
     }
 
     std::vector<std::vector<wire_t>> output(nP, std::vector<wire_t>(input.size()));
     for (int pid = 0; pid < nP; ++pid) {
       for (int i = 0; i < input.size(); i++) {
-        output[pid][i] = pid * nP + i + gates_.size(); // TODO: should this be i+gates_.size() or i+num_wires
+        output[pid][i] = pid * nP + i + num_wires; // gates_.size();
       }
     }
     gates_.push_back(std::make_shared<SIMDMOGate>(type, 0, input, output));
@@ -465,7 +464,9 @@ class Circuit {
       res.count[gate->type]++;
       if (gate->type == GateType::kShuffle || gate->type == GateType::kPermAndSh) {
         gates_by_level[gate_level[gate->outs[0]]].push_back(gate);
-      } else{
+      } else if (gate->type == GateType::kAmortzdPnS) {
+        gates_by_level[gate_level[gate->multi_outs[0][0]]].push_back(gate);
+      } else {
         gates_by_level[gate_level[gate->out]].push_back(gate);
       } 
     }

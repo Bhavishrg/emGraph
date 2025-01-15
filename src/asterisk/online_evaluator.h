@@ -48,11 +48,11 @@ namespace asterisk
 
     void evaluateGatesAtDepth(size_t depth);
 
-    void shuffleEvaluate(std::vector<common::utils::SIMDOGate> &shuffle_gates);
+    void shuffleEvaluate(const std::vector<common::utils::SIMDOGate> &shuffle_gates);
 
-    void permAndShEvaluate(std::vector<common::utils::SIMDOGate> &permAndSh_gates);
+    void permAndShEvaluate(const std::vector<common::utils::SIMDOGate> &permAndSh_gates);
 
-    void amortzdPnSEvaluate(std::vector<common::utils::SIMDMOGate> &amortzdPnS_gates);
+    void amortzdPnSEvaluate(const std::vector<common::utils::SIMDMOGate> &amortzdPnS_gates);
 
     std::vector<Ring> getOutputs();
 

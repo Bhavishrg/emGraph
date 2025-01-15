@@ -1,13 +1,16 @@
 FROM ubuntu:focal
 
-RUN apt-get update
+RUN apt-get update && apt-get install -y sudo
 
 # Ensure tzdata installation (a dependency) is non-interactive.
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 RUN apt-get install -y software-properties-common wget build-essential cmake \
-    git python3-dev xxd libgmp-dev libssl-dev
+    git python3-dev xxd libgmp-dev libssl-dev libtbb-dev gdb
+RUN apt-get install -y vim
 RUN apt-get install -y --no-install-recommends libntl-dev
+RUN apt-get install -y iproute2
+RUN apt-get install -y valgrind
 
 WORKDIR /home
 RUN git clone https://github.com/nlohmann/json.git \

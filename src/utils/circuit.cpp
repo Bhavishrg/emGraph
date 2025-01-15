@@ -115,7 +115,8 @@ std::ostream& operator<<(std::ostream& os, const LevelOrderedCircuit& circ) {
   for (size_t i = 0; i < GateType::NumGates; ++i) {
     os << GateType(i) << ": " << circ.count[i] << "\n";
   }
-  os << "Total: " << circ.num_gates << "\n";
+  os << "Total Gates: " << circ.num_gates << "\n";
+  os << "Total Wires: " << circ.num_wires << "\n";
   os << "Depth: " << circ.gates_by_level.size() << "\n";
   return os;
 }
