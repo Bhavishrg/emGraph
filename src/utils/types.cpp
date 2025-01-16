@@ -31,11 +31,9 @@ BoolRing& BoolRing::operator*=(const BoolRing& rhs) {
 BoolRing& BoolRing::operator=(const BoolRing& rhs) noexcept{
   if (rhs.val_ == 0) {
     val_ = rhs.val_;
-  }
-  else {
+  } else {
     val_ = 1;
   }
-  
   return *this;
 }
 
@@ -50,7 +48,6 @@ std::vector<uint8_t> BoolRing::pack(const BoolRing* data, size_t len) {
     }
     res.push_back(temp);
   }
-
   return res;
 }
 
@@ -63,7 +60,6 @@ std::vector<BoolRing> BoolRing::unpack(const uint8_t* packed, size_t len) {
       temp >>= 1U;
     }
   }
-
   return res;
 }
 

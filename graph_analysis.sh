@@ -9,7 +9,7 @@ mkdir -p $dir
 vec_size="10000"
 
 for players in {2,5,10,15,20,25}
-# for players in 5
+# for players in 2
 do
     # for vec_size in {10000,100000,1000000,10000000}
     # do
@@ -25,13 +25,11 @@ do
                 if [ $party -eq 1 ]; then
                     # gdb --args
                     # valgrind --leak-check=full -v
-                    # src_to_dst_emgraph
-                    # propagate_emgraph
-                    # gather_emgraph
                     # initialization_emgraph
                     # test_primitives
                     # mpa_emgraph
-                    ./benchmarks/mpa_graphiti -p $party --localhost -v $vec_size -n $players 2>&1 | cat > $log &
+                    # mpa_graphiti
+                    valgrind --leak-check=full -v ./benchmarks/mpa_graphiti -p $party --localhost -v $vec_size -n $players 2>&1 | cat > $log &
                 else
                     ./benchmarks/mpa_graphiti -p $party --localhost -v $vec_size -n $players 2>&1 | cat > $log &
                 fi

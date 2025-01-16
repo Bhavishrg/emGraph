@@ -20,25 +20,37 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
     std::cout << "Generating circuit\n";
 
     common::utils::Circuit<Ring> circ;
-    for (int p = 0; p < nP; ++p) {
-        std::vector<wire_t> input(vec_size);
-        for (int i = 0; i < vec_size; ++i) {
-            input[i] = circ.newInputWire();
-            // std::cout << "in " << input[i] << "\n";
-        }
-        auto out = circ.addMGate(common::utils::GateType::kPermAndSh, input, p + 1);
-        for (int i = 0; i < out.size(); ++i) {
-            // std::cout << "out " << out[i] << "\n";
-            circ.setAsOutput(out[i]);
-        }
-    }
+    // for (int p = 0; p < nP; ++p) {
+    //     std::vector<wire_t> input(vec_size);
+    //     for (int i = 0; i < vec_size; ++i) {
+    //         input[i] = circ.newInputWire();
+    //         // std::cout << "in " << input[i] << "\n";
+    //     }
+    //     auto out = circ.addMGate(common::utils::GateType::kPermAndSh, input, p + 1);
+    //     for (int i = 0; i < out.size(); ++i) {
+    //         // std::cout << "out " << out[i] << "\n";
+    //         circ.setAsOutput(out[i]);
+    //     }
+    // }
+
     // auto mul = circ.addGate(common::utils::GateType::kMul, input[0], input[1]);
+    
+    // std::vector<wire_t> input(vec_size);
+    // for (int i = 0; i < vec_size; ++i) {
+    //     input[i] = circ.newInputWire();
+    // }
     // auto out = circ.addMOGate(common::utils::GateType::kAmortzdPnS, input, nP);
     // for (int i = 0; i < out.size(); ++i) {
     //     for (int j = 0; j < out[i].size(); ++j) {
     //         circ.setAsOutput(out[i][j]);
     //     }
     // }
+
+    for (int i = 0; i < nP; ++i) {
+        auto input = circ.newInputWire();
+        auto cmp = circ.addGate(common::utils::GateType::kEqz, input);
+        circ.setAsOutput(cmp);
+    }
 
     return circ;
 }
@@ -110,38 +122,46 @@ void benchmark(const bpo::variables_map& opts) {
         }
     }
 
+    StatsPoint start(*network);
+
     emp::PRG prg(&emp::zero_block, seed);
     OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed);
     network->sync();
 
     auto preproc = off_eval.run(input_pid_map, vec_size);
     std::cout << "Preprocessing complete " << preproc.gates.size() << "\n";
-   
-    // StatsPoint end_pre(*network);
+    StatsPoint end_pre(*network);
+
     OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, threads, seed);
-    
+
     eval.setRandomInputs();
     std::cout << "Inputs set\n";
-
-    StatsPoint start(*network);
 
     for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
         eval.evaluateGatesAtDepth(i);
     }
     std::cout << "Online Eval complete\n";
-
     StatsPoint end(*network);
+
+    auto preproc_rbench = end_pre - start;
     auto rbench = end - start;
+    output_data["benchmarks"].push_back(preproc_rbench);
     output_data["benchmarks"].push_back(rbench);
 
+    size_t pre_bytes_sent = 0;
+    for (const auto& val : preproc_rbench["communication"]) {
+        pre_bytes_sent += val.get<int64_t>();
+    }
     size_t bytes_sent = 0;
     for (const auto& val : rbench["communication"]) {
         bytes_sent += val.get<int64_t>();
     }
 
     // std::cout << "--- Repetition " << r + 1 << " ---\n";
-    std::cout << "time: " << rbench["time"] << " ms\n";
-    std::cout << "sent: " << bytes_sent << " bytes\n";
+    std::cout << "preproc time: " << preproc_rbench["time"] << " ms\n";
+    std::cout << "preproc sent: " << pre_bytes_sent << " bytes\n";
+    std::cout << "total time: " << rbench["time"] << " ms\n";
+    std::cout << "total sent: " << bytes_sent << " bytes\n";
 
     std::cout << std::endl;
 

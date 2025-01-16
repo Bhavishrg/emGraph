@@ -167,7 +167,7 @@ class Circuit {
   bool isWireValid(wire_t wid) { return wid < num_wires; }
 
  public:
-  Circuit() = default;
+  Circuit() : num_wires(0) {}
 
   // Methods to manually build a circuit.
   wire_t newInputWire() {
@@ -477,8 +477,7 @@ class Circuit {
   }
 
   // Evaluate circuit on plaintext inputs.
-  [[nodiscard]] std::vector<R> evaluate(
-      const std::unordered_map<wire_t, R>& inputs) const {
+  [[nodiscard]] std::vector<R> evaluate(const std::unordered_map<wire_t, R>& inputs) const {
     auto level_circ = orderGatesByLevel();
     std::vector<R> wires(level_circ.num_gates);
 
@@ -632,362 +631,84 @@ class Circuit {
     return outputs;
   }
 
-   static Circuit generatePrefixAND() {
-    Circuit circ;
-    size_t k = 64;
-    std::vector<wire_t> input(k);
-    std::vector<wire_t> inp_d(k);
-    for (int i = 0; i < k; i++) {
-      input[i] = circ.newInputWire();
-    }
-    for (int i = 0; i < k; i++) {
-      inp_d[i] = circ.newInputWire();
-    }
-    
-    
-    R zero = 0;
-    R one = 1;
-    std::vector<wire_t> leveli(k);
-    leveli = std::move(input);
-    
-    
-    // For PrefixAND
-    for (size_t level = 1; level <= log(k)/log(4); level++) {
-      std::vector<wire_t> level_next(k);
-        
-      for (size_t j = 1; j <= k/pow(4, level); j++) {
-            
-        size_t p = (j-1) * pow(4, level);
-        size_t q = (j-1) * pow(4, level) + pow(4,level - 1);
-        size_t r = (j-1) * pow(4, level) + 2 * pow(4,level - 1);
-        size_t s = (j-1) * pow(4, level) + 3 * pow(4,level - 1);
-        
-        for (size_t i = 0; i < pow(4, level - 1); i++) {
-          // level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
-          level_next[p + i] = leveli[p+i];
-          level_next[q + i] = circ.addGate(GateType::kMul, leveli[q], leveli[q+i]);
-          level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q], leveli[r], leveli[r+i]);
-          level_next[s + i] = circ.addGate(GateType::kMul4, leveli[q], leveli[r], leveli[s], leveli[s+i]);
-        }
-      }
-      leveli = std::move(level_next);
-    }
-    
-    // For PrefixOR
-    std::vector<wire_t> wv(k);
-    for (size_t i = 0; i < k; i++) {
-      wv[i] = circ.addConstOpGate(GateType::kConstAdd, leveli[i], one);
-    }
-    std::vector<wire_t> wz(k);
-    wz[0] = circ.addConstOpGate(GateType::kConstAdd, wv[0], zero);
-    for (size_t i = 1; i < k; i++) {
-      wz[i] = circ.addGate(GateType::kAdd, wv[i], wv[i-1]);
-    }
-    wire_t wu;
-    wu = circ.addGate(GateType::kDotprod, wz, inp_d);
-    wire_t wnu;
-    wnu = circ.addConstOpGate(GateType::kConstAdd, wu, one);
-    circ.setAsOutput(wnu);
-    return circ;
-  }
-
-  static Circuit generateParaPrefixAND(int repeat) {
-    Circuit circ;
-    size_t k = 64;
-    std::vector<wire_t> input(repeat * k);
-    for (int rep = 0; rep < repeat; rep++) {
-      for (int i = 0; i < k; i++) {
-        input[(rep * (k)) + i] = circ.newInputWire();
-      }
-    }
-    R zero = 0;
-    
-    std::vector<wire_t> leveli(repeat * k);
-    leveli = std::move(input);
-    
-    for (size_t level = 1; level <= log(k)/log(4); level++) {
-        std::vector<wire_t> level_next(repeat * k);
-          for (size_t j = 1; j <= repeat * k/pow(4, level); j++) {
-            size_t p = (j-1) * pow(4, level);
-            size_t q = (j-1) * pow(4, level) + pow(4,level - 1);
-            size_t r = (j-1) * pow(4, level) + 2 * pow(4,level - 1);
-            size_t s = (j-1) * pow(4, level) + 3 * pow(4,level - 1);
-        
-            for (size_t i = 0; i < pow(4, level -1); i++) {
-              level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
-              level_next[q + i] = circ.addGate(GateType::kMul, leveli[q-1], leveli[q+i]);
-              level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q-1], leveli[r-1], leveli[r+i]);
-              level_next[s + i] = circ.addGate(GateType::kMul4, leveli[q-1], leveli[r-1], leveli[s-1], leveli[s+i]);
-            }
-          }
-          leveli = std::move(level_next);
-          if (level == log(k)/log(4)) {
-            for (int rep = 0; rep < repeat; rep++) {
-              for (size_t i = 1; i < k; i++) {
-                circ.setAsOutput(leveli[(rep * k) + i]);
-              }
-            }
-          }
-    }
-          std::vector<wire_t> lastAND(repeat);
-          for (int rep = 0; rep < repeat; rep++) {
-            lastAND[rep] = circ.addGate(GateType::kMul, leveli[1], leveli[2]);
-          }
-    return circ;
-  }
-
-
   static Circuit generateParaPrefixOR(int repeat) {
     Circuit circ;
-    size_t k = 64;
+    size_t k = RINGSIZEBITS;
     std::vector<wire_t> input(repeat * k);
     for (int rep = 0; rep < repeat; rep++) {
       for (int i = 0; i < k; i++) {
-        input[rep*k + i] = circ.newInputWire();
+        input[rep * k + i] = circ.newInputWire();
       }
     }
     std::vector<std::vector<wire_t>> inp_d(repeat, std::vector<wire_t>(k));
-    for (int i=0; i<repeat; i++) {
-      for (int j=0; j<k; j++) {
+    for (int i = 0; i < repeat; i++) {
+      for (int j = 0; j < k; j++) {
         inp_d[i][j] = circ.newInputWire();
       }
     }
-    R zero = 0;
-    R one = 1;
-    
+    R zero = R(0);
+    R one = R(1);
     std::vector<wire_t> leveli(repeat * k);
     leveli = std::move(input);
-    
-    for (size_t level = 1; level <= log(k)/log(4); level++) {
-        std::vector<wire_t> level_next(repeat * k);
-          for (size_t j = 1; j <= repeat * k/pow(4, level); j++) {
-            size_t p = (j-1) * pow(4, level);
-            size_t q = (j-1) * pow(4, level) + pow(4,level - 1);
-            size_t r = (j-1) * pow(4, level) + 2 * pow(4,level - 1);
-            size_t s = (j-1) * pow(4, level) + 3 * pow(4,level - 1);
-        
-            for (size_t i = 0; i < pow(4, level -1); i++) {
-              level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p+i], zero);
-              level_next[q + i] = circ.addGate(GateType::kMul, leveli[q-1], leveli[q+i]);
-              level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q-1], leveli[r-1], leveli[r+i]);
-              level_next[s + i] = circ.addGate(GateType::kMul4, leveli[q-1], leveli[r-1], leveli[s-1], leveli[s+i]);
-            }
-          }
-          leveli = std::move(level_next);
+    for (size_t level = 1; level <= log(k) / log(4); level++) {
+      std::vector<wire_t> level_next(repeat * k);
+      for (size_t j = 1; j <= repeat * k / pow(4, level); j++) {
+        size_t p = (j - 1) * pow(4, level);
+        size_t q = (j - 1) * pow(4, level) + pow(4, level - 1);
+        size_t r = (j - 1) * pow(4, level) + 2 * pow(4, level - 1);
+        size_t s = (j - 1) * pow(4, level) + 3 * pow(4, level - 1);
+        for (size_t i = 0; i < pow(4, level -1); i++) {
+          level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p + i], zero);
+          level_next[q + i] = circ.addGate(GateType::kMul, leveli[q - 1], leveli[q + i]);
+          level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q - 1], leveli[r - 1], leveli[r + i]);
+          level_next[s + i] = circ.addGate(GateType::kMul4, leveli[q - 1], leveli[r - 1], leveli[s - 1], leveli[s + i]);
+        }
+      }
+      leveli = std::move(level_next);
     }          
 
     // For PrefixOR
     std::vector<std::vector<wire_t>> wv(repeat, std::vector<wire_t>(k));
     for (size_t i = 0; i < repeat; i++) {
-      for (size_t j=0; j<k; j++ ) {
-        wv[i][j] = circ.addConstOpGate(GateType::kConstAdd, leveli[i*k+j], one);
+      for (size_t j = 0; j < k; j++ ) {
+        wv[i][j] = circ.addConstOpGate(GateType::kConstAdd, leveli[i * k + j], one);
       }      
     }
-
     std::vector<std::vector<wire_t>> wz(repeat, std::vector<wire_t>(k));  
-    for (size_t i=0; i< repeat; i++) {
+    for (size_t i = 0; i < repeat; i++) {
       wz[i][0] = circ.addConstOpGate(GateType::kConstAdd, wv[i][0], zero);
       for (size_t j = 1; j < k; j++) {
-        wz[i][j] = circ.addGate(GateType::kAdd, wv[i][j], wv[i][j-1]);
+        wz[i][j] = circ.addGate(GateType::kAdd, wv[i][j], wv[i][j - 1]);
       }
     }
-    
-    std::vector<wire_t> inp1(k*repeat), inp2(k*repeat);
-    for (size_t i=0; i< repeat; i++) {
+    std::vector<wire_t> inp1(k * repeat), inp2(k * repeat);
+    for (size_t i = 0; i < repeat; i++) {
       inp1.insert(inp1.end(),wz[i].begin(),wz[i].end());
       inp2.insert(inp2.end(),inp_d[i].begin(),inp_d[i].end());
     }
     wire_t res = circ.addGate(GateType::kDotprod, inp1, inp2);
-
     circ.setAsOutput(res);
     return circ;
-    
   }
 
-   static Circuit generateMultK() {
+  static Circuit generateMultK() {
     Circuit circ;
-    size_t k = 64;
+    size_t k = RINGSIZEBITS;
     std::vector<wire_t> input(k);
     for (int i = 0; i < k; i++) {
       input[i] = circ.newInputWire();
     }
-    
     std::vector<wire_t> leveli(k);
     leveli = std::move(input);
-
-    for (size_t level = 1; level <= log(k)/log(4); level++) {
-      std::vector<wire_t> level_next(k/pow(4, level));
+    for (size_t level = 1; level <= log(k) / log(4); level++) {
+      std::vector<wire_t> level_next(k / pow(4, level));
       for (size_t j = 1; j <= k / pow(4, level); j++) {
-        level_next[j-1] = circ.addGate(GateType::kMul4, leveli[(4 * j)-4], leveli[(4 * j)-3],
-                                               leveli[(4 * j)-2], leveli[(4 * j) - 1]);
+        level_next[j - 1] = circ.addGate(GateType::kMul4, leveli[(4 * j) - 4], leveli[(4 * j) - 3], leveli[(4 * j) - 2], leveli[(4 * j) - 1]);
       }
-      leveli.resize(k/pow(4, level));
+      leveli.resize(k / pow(4, level));
       leveli = std::move(level_next);
     }
     circ.setAsOutput(leveli[0]);
-    return circ;
-  }
-
-
-  static Circuit generatePPA() {
-    Circuit circ;
-    std::vector<wire_t> input_a(64);
-    std::vector<wire_t> input_b(64);
-
-    std::vector<wire_t> loc_p, loc_g;
-    for (int i = 0; i < 64; i++) {
-      input_a[i] = circ.newInputWire();
-    }
-
-    for (int i = 0; i < 64; i++) {
-      input_b[i] = circ.newInputWire();
-    }
-
-    // input_a[0] stores the lsb.
-    for (int i = 0; i < 64; i++) {
-      auto p_id = circ.addGate(GateType::kAdd, input_a[i], input_b[i]);
-      loc_p.push_back(p_id);
-
-      auto g_id = circ.addGate(GateType::kMul, input_a[i], input_b[i]);
-      loc_g.push_back(g_id);
-    }
-
-    for (int level = 1; level <= 6; level++) {
-      for (int count = 1; count <= 64 / std::pow(2, level); count++) {
-        int temp =
-            std::pow(2, level - 1) + (count - 1) * std::pow(2, level) - 1;
-        for (int i = 0; i < std::pow(2, level - 1); i++) {
-          auto w1 =
-              circ.addGate(GateType::kMul, loc_p[temp + i + 1], loc_g[temp]);
-
-          auto w2 = circ.addGate(GateType::kAdd, loc_g[temp + i + 1], w1);
-
-          loc_g[temp + i + 1] = w2;
-          auto w3 =
-              circ.addGate(GateType::kMul, loc_p[temp + i + 1], loc_p[temp]);
-
-          loc_p[temp + i + 1] = w3;
-        }
-      }
-    }
-
-    std::vector<wire_t> S;
-
-    S.push_back(circ.addGate(GateType::kAdd, input_a[0], input_b[0]));
-    for (int i = 1; i < 64; i++) {
-      auto w = circ.addGate(GateType::kAdd, input_a[i], input_b[i]);
-      S.push_back(circ.addGate(GateType::kAdd, w, loc_g[i - 1]));
-    }
-
-    for (int i = 0; i < 64; i++) {
-      circ.setAsOutput(S[i]);
-    }
-    return circ;
-  }
-
-  static Circuit generatePPAMSB() {
-    Circuit circ;
-    std::vector<wire_t> input_a(64);
-    std::vector<wire_t> input_b(64);
-
-    std::vector<wire_t> loc_p, loc_g;
-    for (int i = 0; i < 64; i++) {
-      input_a[i] = circ.newInputWire();
-    }
-
-    for (int i = 0; i < 64; i++) {
-      input_b[i] = circ.newInputWire();
-    }
-
-    // input_a[0] stores the lsb.
-    for (int i = 0; i < 64; i++) {
-      auto p_id = circ.addGate(GateType::kAdd, input_a[i], input_b[i]);
-      loc_p.push_back(p_id);
-      auto g_id = circ.addGate(GateType::kMul, input_a[i], input_b[i]);
-      loc_g.push_back(g_id);
-    }
-
-    for (int level = 1; level <= 6; level++) {
-      for (int count = 1; count <= 64 / std::pow(2, level); count++) {
-        int temp =
-            std::pow(2, level - 1) + (count - 1) * std::pow(2, level) - 1;
-        int offset = std::pow(2, level - 1);
-        if (count < 64 / std::pow(2, level)) {
-          auto w1 =
-              circ.addGate(GateType::kMul, loc_p[temp + offset], loc_g[temp]);
-          auto w2 = circ.addGate(GateType::kAdd, loc_g[temp + offset], w1);
-          loc_g[temp + offset] = w2;
-
-          auto w3 =
-              circ.addGate(GateType::kMul, loc_p[temp + offset], loc_p[temp]);
-          loc_p[temp + offset] = w3;
-        } else {
-          if (level != 1) {
-            auto w1 = circ.addGate(GateType::kMul, loc_p[62], loc_g[temp]);
-            auto w2 = circ.addGate(GateType::kAdd, loc_g[62], w1);
-            loc_g[62] = w2;
-
-            auto w3 = circ.addGate(GateType::kMul, loc_p[62], loc_p[temp]);
-            loc_p[62] = w3;
-          }
-        }
-      }
-    }
-    auto w = circ.addGate(GateType::kAdd, input_a[63], input_b[63]);
-
-    auto msb = circ.addGate(GateType::kAdd, w, loc_g[62]);
-
-    circ.setAsOutput(msb);
-    return circ;
-  }
-
-  static Circuit generateAuction(int N) {
-    Circuit circ;
-    // shuffle
-    std::vector<std::vector<wire_t>> M_pi(N, std::vector<wire_t>(N));
-    std::vector<wire_t> x(N);
-    for (size_t i = 0; i < N; i++) {
-        for (size_t j = 0; j < N; j++) {
-            M_pi[i][j] = circ.newInputWire();
-        }
-    }
-    for (size_t i = 0; i < N; i++) {
-      x[i] = circ.newInputWire();
-    }
-    // std::vector<wire_t> pi_x(N);
-    // for (int i = 0; i < N; i++) {
-    //     pi_x[i] = circ.addGate(GateType::kDotprod, M_pi[i], x);
-        
-    // }
-    std::vector<wire_t> leveli(N);
-    // leveli = std::move(pi_x);
-    leveli = std::move(x);
-
-    R neg_one = R(-1);
-    R one = R(1);
-
-    int bound = log(N)/log(2);
-    
-    // comparison
-    for (int level = 1; level <= bound; level++) {
-      std::vector<wire_t> level_next(N/pow(2,level));
-      for (int i = 0; i < N/pow(2, level); i++) {
-        auto temp1 = circ.addGate(GateType::kSub, leveli[2*i], leveli[2*i + 1]);
-        auto temp2 = circ.addGate(GateType::kLtz, temp1);
-        auto temp3 = circ.addConstOpGate(GateType::kConstMul, temp2, neg_one);
-        auto temp4 = circ.addConstOpGate(GateType::kConstAdd, temp3, one);
-        auto temp5 = circ.addGate(GateType::kMul, temp4, temp1);
-        level_next[i] = circ.addGate(GateType::kAdd, temp5, leveli[2*i + 1]);
-      }
-      leveli.resize(N/pow(2,level));
-      leveli = std::move(level_next);
-    }
-    circ.setAsOutput(leveli[0]);
-    return circ;
-  }
-
-  static Circuit generateCDA(int M, int N) {
-    Circuit circ;
     return circ;
   }
 };

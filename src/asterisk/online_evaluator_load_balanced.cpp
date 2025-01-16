@@ -32,7 +32,7 @@ namespace asterisk
           preproc_(std::move(preproc)),
           circ_(std::move(circ)),
           tpool_(std::move(tpool)),
-          wires_(circ.num_gates) {}
+          wires_(circ.num_wires) {}
 
     void OnlineEvaluator::setInputs(const std::unordered_map<common::utils::wire_t, Ring> &inputs) {
         // Input gates have depth 0
@@ -65,6 +65,111 @@ namespace asterisk
             if (g->type == common::utils::GateType::kInp) {
                 rgen_.pi(id_).random_data(&wires_[g->out], sizeof(Ring)); // TODO: What key to use for PRG
             }
+        }
+    }
+
+    void OnlineEvaluator::eqzEvaluate(const std::vector<common::utils::FIn1Gate> &eqz_gates) {
+        if (id_ == 0) { return; }
+        int pKing = 1; // Designated king party
+        auto multk_circ = common::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel();
+        size_t num_eqz_gates = eqz_gates.size();
+        std::vector<Ring> all_share_send;
+        all_share_send.reserve(num_eqz_gates);
+        for (auto &eqz_gate : eqz_gates) {
+            auto *pre_eqz = static_cast<PreprocEqzGate<Ring> *>(preproc_.gates[eqz_gate.out].get());
+            Ring share_d = eqz_gate.in + pre_eqz->share_r.valueAt();
+            all_share_send.push_back(share_d);
+        }
+
+        std::vector<Ring> recon_vals(num_eqz_gates, 0);
+        if (id_ != pKing) {
+            network_->send(pKing, all_share_send.data(), all_share_send.size() * sizeof(Ring));
+            network_->recv(pKing, recon_vals.data(), recon_vals.size() * sizeof(Ring));
+        } else {
+            std::vector<Ring> share_recv;
+            share_recv.reserve(num_eqz_gates);
+            for (int pid = 1; pid <= nP_; ++pid) {
+                if (pid != pKing) {
+                    network_->recv(pid, share_recv.data(), share_recv.size() * sizeof(Ring));
+                } else {
+                    share_recv.insert(share_recv.begin(), all_share_send.begin(), all_share_send.end());
+                }
+                for (int i = 0; i < num_eqz_gates; ++i) {
+                    recon_vals[i] += share_recv[i];
+                }
+            }
+            for (int pid = 1; pid <= nP_; ++pid) {
+                if (pid != pKing) {
+                    network_->send(pid, recon_vals.data(), recon_vals.size() * sizeof(Ring));
+                }
+            }
+        }
+
+        std::vector<preprocg_ptr_t<BoolRing> *> vpreproc(num_eqz_gates);
+        for (int i = 0; i < num_eqz_gates; ++i) {
+            auto *pre_eqz = static_cast<PreprocEqzGate<Ring> *>(preproc_.gates[eqz_gates[i].out].get());
+            vpreproc[i] = pre_eqz->multk_gates.data();
+        }
+
+        BoolEval bool_eval(id_, nP_, network_, vpreproc, multk_circ);
+        for (int i = 0; i < num_eqz_gates; ++i) {
+            auto *pre_eqz = static_cast<PreprocEqzGate<Ring> *>(preproc_.gates[eqz_gates[i].out].get());
+            Ring recon_d = recon_vals[i];
+            std::vector<BoolRing> recon_d_bits;
+            recon_d_bits.reserve(RINGSIZEBITS);
+            recon_d_bits = bitDecomposeTwo(recon_d); // Treat as constant
+            for (size_t j = 0; j < multk_circ.gates_by_level[0].size(); ++j) {
+                const auto &bool_gate = multk_circ.gates_by_level[0][j];
+                if (bool_gate->type == common::utils::GateType::kInp) {
+                    bool_eval.vwires[i][bool_gate->out] = 1 + recon_d_bits[j] + pre_eqz->share_r_bits[j].valueAt(); // TODO: check if correct
+                }
+            }
+        }
+        bool_eval.evaluateAllLevels();
+        auto output_shares = bool_eval.getOutputShares();
+
+        std::vector<BoolRing> all_out_send(output_shares.size()); // Each EQZ gate has just 1 output wire. So size=1*num_eqz
+        for (int i = 0; i < output_shares.size(); ++i) {
+            all_out_send[i] = output_shares[i][0];
+        }
+
+        std::vector<Ring> recon_out(num_eqz_gates);
+        if (id_ != pKing) {
+            auto net_data_send = BoolRing::pack(all_out_send.data(), all_out_send.size());
+            network_->send(pKing, net_data_send.data(), net_data_send.size() * sizeof(uint8_t));
+            network_->recv(pKing, recon_out.data(), recon_out.size() * sizeof(Ring));
+        } else {
+            auto nbytes = (all_out_send.size() + 7) / 8;
+            std::vector<uint8_t> out_recv(nbytes);
+            std::vector<BoolRing> all_out_recv;
+            std::vector<BoolRing> out(num_eqz_gates, BoolRing(0));
+            for (int pid = 1; pid <= nP_; ++pid) {
+                all_out_recv.clear();
+                if (pid != pKing) {
+                    network_->recv(pid, out_recv.data(), out_recv.size() * sizeof(uint8_t));
+                    all_out_recv = BoolRing::unpack(out_recv.data(), all_out_send.size());
+                } else {
+                    all_out_recv = all_out_send;
+                }
+                for (int i = 0; i < num_eqz_gates; ++i) {
+                    out[i] += all_out_recv[i];
+                }
+            }
+            for (int i = 0; i < out.size(); ++i) {
+                if (out[i] == BoolRing(1)) {
+                    recon_out[i] = Ring(1);
+                } else {
+                    recon_out[i] = Ring(0);
+                }
+            }
+            for (int pid = 1; pid <= nP_; ++pid) {
+                if (pid != pKing) {
+                    network_->send(pid, recon_out.data(), recon_out.size() * sizeof(Ring));
+                }
+            }
+        }
+        for (int i = 0; i < num_eqz_gates; ++i) {
+            wires_[eqz_gates[i].out] = recon_out[i]; // Reconstructed output
         }
     }
 
@@ -233,18 +338,44 @@ namespace asterisk
         }
     }
 
-    void OnlineEvaluator::evaluateGatesAtDepthPartySend(size_t depth, std::vector<Ring> &mult_vals) {
+    void OnlineEvaluator::evaluateGatesAtDepthPartySend(size_t depth, std::vector<Ring> &mult_vals,
+                                                        std::vector<Ring> &mult3_vals, std::vector<Ring> &mult4_vals) {
+        if (id_ == 0) { return; }
         for (auto &gate : circ_.gates_by_level[depth]) {
             switch (gate->type) {
                 case common::utils::GateType::kMul: {
                     auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
-                    if (id_ != 0) {
-                        auto *pre_out = static_cast<PreprocMultGate<Ring> *>(preproc_.gates[g->out].get());
-                        auto u = pre_out->triple_a.valueAt() - wires_[g->in1];
-                        auto v = pre_out->triple_b.valueAt() - wires_[g->in2];
-                        mult_vals.push_back(u);
-                        mult_vals.push_back(v);
-                    }
+                    auto *pre_out = static_cast<PreprocMultGate<Ring> *>(preproc_.gates[g->out].get());
+                    auto u = pre_out->triple_a.valueAt() - wires_[g->in1];
+                    auto v = pre_out->triple_b.valueAt() - wires_[g->in2];
+                    mult_vals.push_back(u);
+                    mult_vals.push_back(v);
+                    break;
+                }
+
+                case common::utils::GateType::kMul3: {
+                    auto *g = static_cast<common::utils::FIn3Gate *>(gate.get());
+                    auto *pre_out = static_cast<PreprocMult3Gate<Ring> *>(preproc_.gates[g->out].get());
+                    auto u = pre_out->share_a.valueAt() - wires_[g->in1];
+                    auto v = pre_out->share_b.valueAt() - wires_[g->in2];
+                    auto w = pre_out->share_c.valueAt() - wires_[g->in3];
+                    mult3_vals.push_back(u);
+                    mult3_vals.push_back(v);
+                    mult3_vals.push_back(w);
+                    break;
+                }
+
+                case common::utils::GateType::kMul4: {
+                    auto *g = static_cast<common::utils::FIn4Gate *>(gate.get());
+                    auto *pre_out = static_cast<PreprocMult4Gate<Ring> *>(preproc_.gates[g->out].get());
+                    auto u = pre_out->share_a.valueAt() - wires_[g->in1];
+                    auto v = pre_out->share_b.valueAt() - wires_[g->in2];
+                    auto w = pre_out->share_c.valueAt() - wires_[g->in3];
+                    auto x = pre_out->share_d.valueAt() - wires_[g->in4];
+                    mult4_vals.push_back(u);
+                    mult4_vals.push_back(v);
+                    mult4_vals.push_back(w);
+                    mult4_vals.push_back(x);
                     break;
                 }
 
@@ -254,21 +385,23 @@ namespace asterisk
         }
     }
 
-    void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth, std::vector<Ring> &mult_vals) {
+    void OnlineEvaluator::evaluateGatesAtDepthPartyRecv(size_t depth, std::vector<Ring> &mult_vals,
+                                                        std::vector<Ring> &mult3_vals, std::vector<Ring> &mult4_vals) {
+        if (id_ == 0) { return; }
         size_t idx_mult = 0;
+        size_t idx_mult3 = 0;
+        size_t idx_mult4 = 0;
         for (auto &gate : circ_.gates_by_level[depth]) {
             switch (gate->type) {
                 case common::utils::GateType::kAdd: {
                     auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
-                    if (id_ != 0)
-                        wires_[g->out] = wires_[g->in1] + wires_[g->in2];
+                    wires_[g->out] = wires_[g->in1] + wires_[g->in2];
                     break;
                 }
 
                 case common::utils::GateType::kSub: {
                     auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
-                    if (id_ != 0)
-                        wires_[g->out] = wires_[g->in1] - wires_[g->in2];
+                    wires_[g->out] = wires_[g->in1] - wires_[g->in2];
                     break;
                 }
 
@@ -280,26 +413,79 @@ namespace asterisk
 
                 case common::utils::GateType::kConstMul: {
                     auto *g = static_cast<common::utils::ConstOpGate<Ring> *>(gate.get());
-                    if (id_ != 0)
-                        wires_[g->out] = wires_[g->in] * g->cval;
+                    wires_[g->out] = wires_[g->in] * g->cval;
                     break;
                 }
 
                 case common::utils::GateType::kMul: {
                     auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
-                    if (id_ != 0) {
-                        auto *pre_out = static_cast<PreprocMultGate<Ring> *>(preproc_.gates[g->out].get());
-                        Ring u = Ring(0);
-                        Ring v = Ring(0);
-                        Ring a = pre_out->triple_a.valueAt();
-                        Ring b = pre_out->triple_b.valueAt();
-                        Ring c = pre_out->triple_c.valueAt();
-                        for (int i = 1; i <= nP_; ++i) {
-                            u += mult_vals[idx_mult++];
-                            v += mult_vals[idx_mult++];
-                        }
-                        wires_[g->out] = u * v + u * b + v * a + c;
+                    auto *pre_out = static_cast<PreprocMultGate<Ring> *>(preproc_.gates[g->out].get());
+                    Ring u = Ring(0);
+                    Ring v = Ring(0);
+                    Ring a = pre_out->triple_a.valueAt();
+                    Ring b = pre_out->triple_b.valueAt();
+                    Ring c = pre_out->triple_c.valueAt();
+                    for (int i = 1; i <= nP_; ++i) {
+                        u += mult_vals[idx_mult++];
+                        v += mult_vals[idx_mult++];
                     }
+                    wires_[g->out] = u * v + u * b + v * a + c;
+                    break;
+                }
+
+                case common::utils::GateType::kMul3: {
+                    auto *g = static_cast<common::utils::FIn3Gate *>(gate.get());
+                    auto *pre_out = static_cast<PreprocMult3Gate<Ring> *>(preproc_.gates[g->out].get());
+                    Ring u = Ring(0);
+                    Ring v = Ring(0);
+                    Ring w = Ring(0);
+                    Ring a = pre_out->share_a.valueAt();
+                    Ring b = pre_out->share_b.valueAt();
+                    Ring c = pre_out->share_c.valueAt();
+                    Ring ab = pre_out->share_ab.valueAt();
+                    Ring bc = pre_out->share_bc.valueAt();
+                    Ring ca = pre_out->share_ca.valueAt();
+                    Ring abc = pre_out->share_abc.valueAt();
+                    for (int i = 1; i <= nP_; ++i) {
+                        u += mult3_vals[idx_mult3++];
+                        v += mult3_vals[idx_mult3++];
+                        w += mult3_vals[idx_mult3++];
+                    }
+                    wires_[g->out] = (u * v * w) + (u * v * c) + (u * w * b) + (v * w * a) + (u * bc) + (v * ca) + (w * ab) + abc;
+                    break;
+                }
+
+                case common::utils::GateType::kMul4: {
+                    auto *g = static_cast<common::utils::FIn4Gate *>(gate.get());
+                    auto *pre_out = static_cast<PreprocMult4Gate<Ring> *>(preproc_.gates[g->out].get());
+                    Ring u = Ring(0);
+                    Ring v = Ring(0);
+                    Ring w = Ring(0);
+                    Ring x = Ring(0);
+                    Ring a = pre_out->share_a.valueAt();
+                    Ring b = pre_out->share_b.valueAt();
+                    Ring c = pre_out->share_c.valueAt();
+                    Ring d = pre_out->share_c.valueAt();
+                    Ring ab = pre_out->share_ab.valueAt();
+                    Ring ac = pre_out->share_ac.valueAt();
+                    Ring ad = pre_out->share_ad.valueAt();
+                    Ring bc = pre_out->share_bc.valueAt();
+                    Ring bd = pre_out->share_bd.valueAt();
+                    Ring cd = pre_out->share_cd.valueAt();
+                    Ring abc = pre_out->share_abc.valueAt();
+                    Ring abd = pre_out->share_abd.valueAt();
+                    Ring acd = pre_out->share_acd.valueAt();
+                    Ring bcd = pre_out->share_bcd.valueAt();
+                    Ring abcd = pre_out->share_abcd.valueAt();
+                    for (int i = 1; i <= nP_; ++i) {
+                        u += mult4_vals[idx_mult4++];
+                        v += mult4_vals[idx_mult4++];
+                        w += mult4_vals[idx_mult4++];
+                        x += mult4_vals[idx_mult4++];
+                    }
+                    wires_[g->out] = (u * v * w * x) + (u * v * w * d) + (u * v * x * c) + (u * w * x * b) + (v * w * x * a)
+                                    + (u * v * cd) + (u * w * bd) + (u * x * bc) + (v * w * ad) + (v * x * ac) + (w * x * ab)
+                                    + (u * bcd) + (v * acd) + (w * abd) + (x * abc) + abcd;
                     break;
                 }
 
@@ -310,12 +496,19 @@ namespace asterisk
     }
 
     void OnlineEvaluator::evaluateGatesAtDepth(size_t depth) {
+        if (id_ == 0) { return; }
         size_t mult_num = 0;
+        size_t mult3_num = 0;
+        size_t mult4_num = 0;
+        size_t eqz_num = 0;
         size_t shuffle_num = 0;
         size_t permAndSh_num = 0;
         size_t amortzdPnS_num = 0;
 
         std::vector<Ring> mult_vals;
+        std::vector<Ring> mult3_vals;
+        std::vector<Ring> mult4_vals;
+        std::vector<common::utils::FIn1Gate> eqz_gates;
         std::vector<common::utils::SIMDOGate> shuffle_gates;
         std::vector<common::utils::SIMDOGate> permAndSh_gates;
         std::vector<common::utils::SIMDMOGate> amortzdPnS_gates;
@@ -324,6 +517,23 @@ namespace asterisk
             switch (gate->type) {
                 case common::utils::GateType::kMul: {
                     mult_num++;
+                    break;
+                }
+
+                case common::utils::GateType::kMul3: {
+                    mult3_num++;
+                    break;
+                }
+
+                case common::utils::GateType::kMul4: {
+                    mult4_num++;
+                    break;
+                }
+
+                case ::common::utils::GateType::kEqz: {
+                    auto *g = static_cast<common::utils::FIn1Gate *>(gate.get());
+                    eqz_gates.push_back(*g);
+                    eqz_num++;
                     break;
                 }
 
@@ -350,6 +560,10 @@ namespace asterisk
             }
         }
 
+        if (eqz_num > 0) {
+            eqzEvaluate(eqz_gates);
+        }
+
         if (shuffle_num > 0) {
             shuffleEvaluate(shuffle_gates);
         }
@@ -362,17 +576,16 @@ namespace asterisk
             amortzdPnSEvaluate(amortzdPnS_gates);
         }
 
-        if (id_ == 0) { return; }
-        evaluateGatesAtDepthPartySend(depth, mult_vals);
-        size_t total_comm_send = mult_vals.size();
-        size_t total_comm_recv = nP_ * mult_vals.size();
+        evaluateGatesAtDepthPartySend(depth, mult_vals, mult3_vals, mult4_vals);
+        size_t total_comm_send = mult_vals.size() + mult3_vals.size() + mult4_vals.size();
+        size_t total_comm_recv = nP_ * (mult_vals.size() + mult3_vals.size() + mult4_vals.size());
         std::vector<Ring> online_comm_send;
         online_comm_send.reserve(total_comm_send);
         std::vector<Ring> online_comm_recv;
         online_comm_recv.reserve(total_comm_recv);
-        std::vector<Ring> online_comm_recv_party;
-        online_comm_recv_party.reserve(total_comm_send);
-        online_comm_send.insert(online_comm_send.begin(), mult_vals.begin(), mult_vals.end());
+        online_comm_send.insert(online_comm_send.end(), mult_vals.begin(), mult_vals.end());
+        online_comm_send.insert(online_comm_send.end(), mult3_vals.begin(), mult3_vals.end());
+        online_comm_send.insert(online_comm_send.end(), mult4_vals.begin(), mult4_vals.end());
 
         for (int pid = 1; pid <= nP_; ++pid) {
             if (pid != id_) {
@@ -380,6 +593,8 @@ namespace asterisk
             }
         }
 
+        std::vector<Ring> online_comm_recv_party;
+        online_comm_recv_party.reserve(total_comm_send);
         for (int pid = 1; pid <= nP_; ++pid) {
             if (pid != id_) {
                 network_->recv(pid, online_comm_recv_party.data(), sizeof(Ring) * total_comm_send);
@@ -389,15 +604,36 @@ namespace asterisk
             online_comm_recv.insert(online_comm_recv.end(), online_comm_recv_party.begin(), online_comm_recv_party.end());
         }
 
-        size_t mult_all_recv = online_comm_recv.size();
+        size_t mult_all_recv = nP_ * mult_vals.size();
         std::vector<Ring> mult_all(mult_all_recv);
-        for (int i = 0, j = 0, pid = 0; i < mult_all_recv; ++i) {
-            mult_all[i] = online_comm_recv[2 * (pid * mult_num + j)];
-            mult_all[++i] = online_comm_recv[2 * (pid * mult_num + j) + 1];
+        for (int i = 0, j = 0, pid = 0; i < mult_all_recv;) {
+            mult_all[i++] = online_comm_recv[pid * total_comm_send + 2 * j];
+            mult_all[i++] = online_comm_recv[pid * total_comm_send + 2 * j + 1];
             j += (pid + 1) / nP_;
             pid = (pid + 1) % nP_;
         }
-        evaluateGatesAtDepthPartyRecv(depth, mult_all);
+
+        size_t mult3_all_recv = nP_ * mult3_vals.size();
+        std::vector<Ring> mult3_all(mult3_all_recv);
+        for (int i = 0, j = 0, pid = 0; i < mult3_all_recv;) {
+            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + 3 * j];
+            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + 3 * j + 1];
+            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + 3 * j + 2];
+            j += (pid + 1) / nP_;
+            pid = (pid + 1) % nP_;
+        }
+
+        size_t mult4_all_recv = nP_ * mult4_vals.size();
+        std::vector<Ring> mult4_all(mult4_all_recv);
+        for (int i = 0, j = 0, pid = 0; i < mult4_all_recv;) {
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j + 1];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j + 2];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j + 3];
+            j += (pid + 1) / nP_;
+            pid = (pid + 1) % nP_;
+        }
+        evaluateGatesAtDepthPartyRecv(depth, mult_all, mult3_all, mult4_all);
     }
 
     std::vector<Ring> OnlineEvaluator::getOutputs() {
@@ -457,5 +693,296 @@ namespace asterisk
             evaluateGatesAtDepth(i);
         }
         return getOutputs();
+    }
+
+    BoolEval::BoolEval(int my_id, int nP, std::shared_ptr<io::NetIOMP> network,
+                       std::vector<preprocg_ptr_t<BoolRing> *> vpreproc,
+                       common::utils::LevelOrderedCircuit circ, int seed)
+        : id(my_id),
+          nP(nP),
+          rgen(id, seed),
+          network(std::move(network)),
+          vwires(vpreproc.size(), std::vector<BoolRing>(circ.num_wires)),
+          vpreproc(std::move(vpreproc)),
+          circ(std::move(circ)) {}
+
+    void BoolEval::evaluateGatesAtDepthPartySend(size_t depth, std::vector<BoolRing> &mult_vals,
+                                                 std::vector<BoolRing> &mult3_vals, std::vector<BoolRing> &mult4_vals) {
+        if (id == 0) { return; }
+        for (size_t i = 0; i < vwires.size(); ++i) {
+            const auto &preproc = vpreproc[i];
+            auto &wires = vwires[i];
+            for (auto &gate : circ.gates_by_level[depth]) {
+                switch (gate->type) {
+                    case common::utils::GateType::kMul: {
+                        auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
+                        auto *pre_out = static_cast<PreprocMultGate<BoolRing> *>(preproc[g->out].get());
+                        auto u = pre_out->triple_a.valueAt() - wires[g->in1];
+                        auto v = pre_out->triple_b.valueAt() - wires[g->in2];
+                        mult_vals.push_back(u);
+                        mult_vals.push_back(v);
+                        break;
+                    }
+
+                    case common::utils::GateType::kMul3: {
+                        auto *g = static_cast<common::utils::FIn3Gate *>(gate.get());
+                        auto *pre_out = static_cast<PreprocMult3Gate<BoolRing> *>(preproc[g->out].get());
+                        auto u = pre_out->share_a.valueAt() - wires[g->in1];
+                        auto v = pre_out->share_b.valueAt() - wires[g->in2];
+                        auto w = pre_out->share_c.valueAt() - wires[g->in3];
+                        mult3_vals.push_back(u);
+                        mult3_vals.push_back(v);
+                        mult3_vals.push_back(w);
+                        break;
+                    }
+
+                    case common::utils::GateType::kMul4: {
+                        auto *g = static_cast<common::utils::FIn4Gate *>(gate.get());
+                        auto *pre_out = static_cast<PreprocMult4Gate<BoolRing> *>(preproc[g->out].get());
+                        auto u = pre_out->share_a.valueAt() - wires[g->in1];
+                        auto v = pre_out->share_b.valueAt() - wires[g->in2];
+                        auto w = pre_out->share_c.valueAt() - wires[g->in3];
+                        auto x = pre_out->share_d.valueAt() - wires[g->in4];
+                        mult4_vals.push_back(u);
+                        mult4_vals.push_back(v);
+                        mult4_vals.push_back(w);
+                        mult4_vals.push_back(x);
+                        break;
+                    }
+
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    void BoolEval::evaluateGatesAtDepthPartyRecv(size_t depth, std::vector<BoolRing> &mult_vals,
+                                                 std::vector<BoolRing> &mult3_vals, std::vector<BoolRing> &mult4_vals) {
+        if (id == 0) { return; }
+        size_t idx_mult = 0;
+        size_t idx_mult3 = 0;
+        size_t idx_mult4 = 0;
+        for (size_t i = 0; i < vwires.size(); ++i) {
+            const auto &preproc = vpreproc[i];
+            auto &wires = vwires[i];
+            for (auto &gate : circ.gates_by_level[depth]) {
+                switch (gate->type) {
+                    case common::utils::GateType::kAdd: {
+                        auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
+                        wires[g->out] = wires[g->in1] + wires[g->in2];
+                        break;
+                    }
+
+                    case common::utils::GateType::kSub: {
+                        auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
+                        wires[g->out] = wires[g->in1] - wires[g->in2];
+                        break;
+                    }
+
+                    case common::utils::GateType::kConstAdd: {
+                        auto *g = static_cast<common::utils::ConstOpGate<BoolRing> *>(gate.get());
+                        wires[g->out] = wires[g->in] + g->cval;
+                        break;
+                    }
+
+                    case common::utils::GateType::kConstMul: {
+                        auto *g = static_cast<common::utils::ConstOpGate<BoolRing> *>(gate.get());
+                        wires[g->out] = wires[g->in] * g->cval;
+                        break;
+                    }
+
+                    case common::utils::GateType::kMul: {
+                        auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
+                        auto *pre_out = static_cast<PreprocMultGate<BoolRing> *>(preproc[g->out].get());
+                        BoolRing u = 0;
+                        BoolRing v = 0;
+                        BoolRing a = pre_out->triple_a.valueAt();
+                        BoolRing b = pre_out->triple_b.valueAt();
+                        BoolRing c = pre_out->triple_c.valueAt();
+                        for (int i = 1; i <= nP; ++i) {
+                            u += mult_vals[idx_mult++];
+                            v += mult_vals[idx_mult++];
+                        }
+                        wires[g->out] = u * v + u * b + v * a + c;
+                        break;
+                    }
+
+                    case common::utils::GateType::kMul3: {
+                        auto *g = static_cast<common::utils::FIn3Gate *>(gate.get());
+                        auto *pre_out = static_cast<PreprocMult3Gate<BoolRing> *>(preproc[g->out].get());
+                        BoolRing u = 0;
+                        BoolRing v = 0;
+                        BoolRing w = 0;
+                        BoolRing a = pre_out->share_a.valueAt();
+                        BoolRing b = pre_out->share_b.valueAt();
+                        BoolRing c = pre_out->share_c.valueAt();
+                        BoolRing ab = pre_out->share_ab.valueAt();
+                        BoolRing bc = pre_out->share_bc.valueAt();
+                        BoolRing ca = pre_out->share_ca.valueAt();
+                        BoolRing abc = pre_out->share_abc.valueAt();
+                        for (int i = 1; i <= nP; ++i) {
+                            u += mult3_vals[idx_mult3++];
+                            v += mult3_vals[idx_mult3++];
+                            w += mult3_vals[idx_mult3++];
+                        }
+                        wires[g->out] = (u * v * w) + (u * v * c) + (u * w * b) + (v * w * a) + (u * bc) + (v * ca) + (w * ab) + abc;
+                        break;
+                    }
+
+                    case common::utils::GateType::kMul4: {
+                        auto *g = static_cast<common::utils::FIn4Gate *>(gate.get());
+                        auto *pre_out = static_cast<PreprocMult4Gate<BoolRing> *>(preproc[g->out].get());
+                        BoolRing u = 0;
+                        BoolRing v = 0;
+                        BoolRing w = 0;
+                        BoolRing x = 0;
+                        BoolRing a = pre_out->share_a.valueAt();
+                        BoolRing b = pre_out->share_b.valueAt();
+                        BoolRing c = pre_out->share_c.valueAt();
+                        BoolRing d = pre_out->share_c.valueAt();
+                        BoolRing ab = pre_out->share_ab.valueAt();
+                        BoolRing ac = pre_out->share_ac.valueAt();
+                        BoolRing ad = pre_out->share_ad.valueAt();
+                        BoolRing bc = pre_out->share_bc.valueAt();
+                        BoolRing bd = pre_out->share_bd.valueAt();
+                        BoolRing cd = pre_out->share_cd.valueAt();
+                        BoolRing abc = pre_out->share_abc.valueAt();
+                        BoolRing abd = pre_out->share_abd.valueAt();
+                        BoolRing acd = pre_out->share_acd.valueAt();
+                        BoolRing bcd = pre_out->share_bcd.valueAt();
+                        BoolRing abcd = pre_out->share_abcd.valueAt();
+                        for (int i = 1; i <= nP; ++i) {
+                            u += mult4_vals[idx_mult4++];
+                            v += mult4_vals[idx_mult4++];
+                            w += mult4_vals[idx_mult4++];
+                            x += mult4_vals[idx_mult4++];
+                        }
+                        wires[g->out] = (u * v * w * x) + (u * v * w * d) + (u * v * x * c) + (u * w * x * b) + (v * w * x * a)
+                                        + (u * v * cd) + (u * w * bd) + (u * x * bc) + (v * w * ad) + (v * x * ac) + (w * x * ab)
+                                        + (u * bcd) + (v * acd) + (w * abd) + (x * abc) + abcd;
+                        break;
+                    }
+
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    void BoolEval::evaluateGatesAtDepth(size_t depth) {
+        if (id == 0) { return; }
+        size_t mult_num = 0;
+        size_t mult3_num = 0;
+        size_t mult4_num = 0;
+
+        for (auto &gate : circ.gates_by_level[depth]) {
+            switch (gate->type) {
+                case common::utils::GateType::kMul: {
+                    mult_num++;
+                    break;
+                }
+
+                case common::utils::GateType::kMul3: {
+                    mult3_num++;
+                    break;
+                }
+
+                case common::utils::GateType::kMul4: {
+                    mult4_num++;
+                    break;
+                }
+            }
+        }
+
+        mult_num *= vwires.size();
+        mult3_num *= vwires.size();
+        mult4_num *= vwires.size();
+        size_t total_comm_send = mult_num + mult3_num + mult4_num;
+        size_t total_comm_recv = nP * total_comm_send;
+        std::vector<BoolRing> mult_vals;
+        std::vector<BoolRing> mult3_vals;
+        std::vector<BoolRing> mult4_vals;
+
+        evaluateGatesAtDepthPartySend(depth, mult_vals, mult3_vals, mult4_vals);
+
+        std::vector<BoolRing> online_comm_send;
+        online_comm_send.reserve(total_comm_send);
+        std::vector<BoolRing> online_comm_recv;
+        online_comm_recv.reserve(total_comm_recv);
+        online_comm_send.insert(online_comm_send.end(), mult_vals.begin(), mult_vals.end());
+        online_comm_send.insert(online_comm_send.end(), mult3_vals.begin(), mult3_vals.end());
+        online_comm_send.insert(online_comm_send.end(), mult4_vals.begin(), mult4_vals.end());
+
+        for (int pid = 1; pid <= nP; ++pid) {
+            if (pid != id) {
+                auto net_data = BoolRing::pack(online_comm_send.data(), total_comm_send);
+                network->send(pid, net_data.data(), sizeof(uint8_t) * net_data.size());
+            }
+        }
+
+        std::vector<BoolRing> online_comm_recv_party;
+        for (int pid = 1; pid <= nP; ++pid) {
+            online_comm_recv_party.clear();
+            online_comm_recv_party.reserve(total_comm_send);
+            if (pid != id) {
+                size_t nbytes = (total_comm_send + 7) / 8;
+                std::vector<uint8_t> net_data(nbytes);
+                network->recv(pid, net_data.data(), nbytes);
+                online_comm_recv_party = BoolRing::unpack(net_data.data(), total_comm_send);
+            } else {
+                online_comm_recv_party.insert(online_comm_recv_party.end(), online_comm_send.begin(), online_comm_send.end());
+            }
+            online_comm_recv.insert(online_comm_recv.end(), online_comm_recv_party.begin(), online_comm_recv_party.end());
+        }
+
+        size_t mult_all_recv = nP * mult_vals.size();
+        std::vector<BoolRing> mult_all(mult_all_recv);
+        for (int i = 0, j = 0, pid = 0; i < mult_all_recv;) {
+            mult_all[i++] = online_comm_recv[pid * total_comm_send + 2 * j];
+            mult_all[i++] = online_comm_recv[pid * total_comm_send + 2 * j + 1];
+            j += (pid + 1) / nP;
+            pid = (pid + 1) % nP;
+        }
+
+        size_t mult3_all_recv = nP * mult3_vals.size();
+        std::vector<BoolRing> mult3_all(mult3_all_recv);
+        for (int i = 0, j = 0, pid = 0; i < mult3_all_recv;) {
+            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + 3 * j];
+            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + 3 * j + 1];
+            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + 3 * j + 2];
+            j += (pid + 1) / nP;
+            pid = (pid + 1) % nP;
+        }
+
+        size_t mult4_all_recv = nP * mult4_vals.size();
+        std::vector<BoolRing> mult4_all(mult4_all_recv);
+        for (int i = 0, j = 0, pid = 0; i < mult4_all_recv;) {
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j + 1];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j + 2];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j + 3];
+            j += (pid + 1) / nP;
+            pid = (pid + 1) % nP;
+        }
+        evaluateGatesAtDepthPartyRecv(depth, mult_all, mult3_all, mult4_all);
+    }
+
+    void BoolEval::evaluateAllLevels() {
+        for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
+            evaluateGatesAtDepth(i);
+        }
+    }
+
+    std::vector<std::vector<BoolRing>> BoolEval::getOutputShares() {
+        std::vector<std::vector<BoolRing>> outputs(vwires.size(), std::vector<BoolRing>(circ.outputs.size()));
+        for (size_t i = 0; i < vwires.size(); ++i) {
+            const auto &wires = vwires[i];
+            for (size_t j = 0; j < circ.outputs.size(); ++j) {
+                outputs[i][j] = wires[circ.outputs[j]];
+            }
+        }
+        return outputs;
     }
 }; // namespace asterisk

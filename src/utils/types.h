@@ -15,6 +15,8 @@ using Ring = uint64_t;
 
 // using Field = NTL::ZZ_p;
 constexpr uint64_t FIELDSIZE = 8; // bytes
+constexpr uint64_t RINGSIZE = 8; // bytes
+constexpr uint64_t RINGSIZEBITS = 64; // bits
 // using Field = uint64_t;
 constexpr uint64_t FRACTION = 16;
 // using Field = int;
@@ -24,7 +26,7 @@ using Field = ZZ_p;
 class BoolRing {
   bool val_;
 
- public:
+public:
   BoolRing();
   BoolRing(bool val);
   BoolRing(int val);

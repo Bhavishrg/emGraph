@@ -24,7 +24,6 @@ std::vector<BoolRing> bitDecompose(R val) {
   for (size_t i = 0; i < num_bits; ++i) {
     res[i] = ((val >> i) & 1ULL) == 1;
   }
-
   return res;
 }
 

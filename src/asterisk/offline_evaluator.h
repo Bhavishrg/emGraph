@@ -64,7 +64,6 @@ class OfflineEvaluator {
   // subprotocols.
   void setWireMasksParty(const std::unordered_map<common::utils::wire_t, int>& input_pid_map,
                          std::vector<Ring>& rand_sh_sec, std::vector<BoolRing>& b_rand_sh_sec,
-                         std::vector<Ring>& rand_sh_party, std::vector<BoolRing>& b_rand_sh_party,
                          std::vector<std::vector<Ring>>& delta_sh, size_t& vec_size);
 
   void setWireMasks(const std::unordered_map<common::utils::wire_t, int>& input_pid_map, size_t& vec_size);
@@ -73,5 +72,35 @@ class OfflineEvaluator {
 
   // Efficiently runs above subprotocols.
   PreprocCircuit<Ring> run(const std::unordered_map<common::utils::wire_t, int>& input_pid_map, size_t& vec_size);
+};
+
+// TODO: Complete EQZ, LTZ, BoolEval
+
+class OfflineBoolEvaluator {
+  int nP_;  
+  int id_;
+  RandGenPool rgen_;
+  std::shared_ptr<io::NetIOMP> network_;
+  common::utils::LevelOrderedCircuit circ_;
+  PreprocCircuit<BoolRing> preproc_;
+
+  public:
+  OfflineBoolEvaluator(int nP, int my_id, std::shared_ptr<io::NetIOMP> network,
+                       common::utils::LevelOrderedCircuit circ, int seed = 200);
+
+  static void randomShare(int nP, int pid, RandGenPool& rgen, AddShare<BoolRing>& share, TPShare<BoolRing>& tpShare);
+
+  static void randomShareSecret(int nP, int pid, RandGenPool& rgen,
+                                AddShare<BoolRing>& share, TPShare<BoolRing>& tpShare, BoolRing secret,
+                                std::vector<BoolRing>& rand_sh_sec, size_t& idx_rand_sh_sec);
+
+  // void setWireMasksParty(const std::unordered_map<common::utils::wire_t, int>& input_pid_map,
+  //                        std::vector<BoolRing>& rand_sh_sec);
+
+  // void setWireMasks(const std::unordered_map<common::utils::wire_t, int>& input_pid_map);
+
+  // PreprocCircuit<BoolRing> getPreproc();
+
+  // PreprocCircuit<BoolRing> run(const std::unordered_map<common::utils::wire_t, int>& input_pid_map);
 };
 };  // namespace asterisk
