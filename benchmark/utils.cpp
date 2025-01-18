@@ -41,7 +41,7 @@ bool saveJson(const nlohmann::json& data, const std::string& fpath) {
   //fout.open(fpath, std::fstream::out);
   fout.open(fpath, std::fstream::app);
   if (!fout.is_open()) {
-    std::cerr << "Could not open save file at " << fpath << "\n";
+    std::cerr << "Could not open save file at " << fpath << std::endl;
     return false;
   }
 

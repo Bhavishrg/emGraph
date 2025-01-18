@@ -172,7 +172,7 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
         case common::utils::GateType::kMul3: {
           AddShare<Ring> share_a; // Holds one share of a random value a
           TPShare<Ring> tp_share_a; // Holds all the shares of a random value a
-          AddShare<Ring> share_b; // Holds one of a random value b
+          AddShare<Ring> share_b; // Holds one share of a random value b
           TPShare<Ring> tp_share_b; // Holds all the shares of a random value b
           AddShare<Ring> share_c; // Holds one share of a random value c
           TPShare<Ring> tp_share_c; // Holds all the shares of a random value c
@@ -274,6 +274,28 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
           break;
         }
 
+        case common::utils::GateType::kDotprod: {
+          const auto* g = static_cast<common::utils::SIMDGate*>(gate.get());
+          auto vec_len = g->in1.size();
+          std::vector<AddShare<Ring>> triple_a_vec(vec_len);
+          std::vector<TPShare<Ring>> tp_triple_a_vec(vec_len);
+          std::vector<AddShare<Ring>> triple_b_vec(vec_len);
+          std::vector<TPShare<Ring>> tp_triple_b_vec(vec_len);
+          std::vector<AddShare<Ring>> triple_c_vec(vec_len);
+          std::vector<TPShare<Ring>> tp_triple_c_vec(vec_len);
+          for (int i = 0; i < vec_len; ++i) {
+            randomShare(nP_, id_, rgen_, triple_a_vec[i], tp_triple_a_vec[i]);
+            randomShare(nP_, id_, rgen_, triple_b_vec[i], tp_triple_b_vec[i]);
+            Ring tp_prod;
+            if (id_ == 0) { tp_prod = tp_triple_a_vec[i].secret() * tp_triple_b_vec[i].secret(); }
+            randomShareSecret(nP_, id_, rgen_, triple_c_vec[i], tp_triple_c_vec[i], tp_prod, rand_sh_sec, idx_rand_sh_sec);
+          }
+          preproc_.gates[gate->out] =
+              std::move(std::make_unique<PreprocDotpGate<Ring>>(triple_a_vec, tp_triple_a_vec, triple_b_vec, tp_triple_b_vec,
+                                                                triple_c_vec, tp_triple_c_vec));
+          break;
+        }
+
         case common::utils::GateType::kEqz: {
           AddShare<Ring> share_r;
           TPShare<Ring> tp_share_r;
@@ -304,36 +326,36 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
                 }
 
                 case common::utils::GateType::kMul4:{
-                  AddShare<BoolRing> share_a; // Holds one share of a random value a
-                  TPShare<BoolRing> tp_share_a; // Holds all the shares of a random value a
-                  AddShare<BoolRing> share_b; // Holds one of a random value b
-                  TPShare<BoolRing> tp_share_b; // Holds all the shares of a random value b
-                  AddShare<BoolRing> share_c; // Holds one share of a random value c
-                  TPShare<BoolRing> tp_share_c; // Holds all the shares of a random value c
-                  AddShare<BoolRing> share_d; // Holds one share of a random value d
-                  TPShare<BoolRing> tp_share_d; // Holds all the shares of a random value d
-                  AddShare<BoolRing> share_ab; // Holds one share of a*b
-                  TPShare<BoolRing> tp_share_ab; // Holds all the shares of a*b
-                  AddShare<BoolRing> share_ac; // Holds one share of a*c
-                  TPShare<BoolRing> tp_share_ac; // Holds all the shares of a*c
-                  AddShare<BoolRing> share_ad; // Holds one share of a*d
-                  TPShare<BoolRing> tp_share_ad; // Holds all the shares of a*d
-                  AddShare<BoolRing> share_bc; // Holds one share of b*c
-                  TPShare<BoolRing> tp_share_bc; // Holds all the shares of b*c
-                  AddShare<BoolRing> share_bd; // Holds one share of b*d
-                  TPShare<BoolRing> tp_share_bd; // Holds all the shares of b*d
-                  AddShare<BoolRing> share_cd; // Holds one share of c*d
-                  TPShare<BoolRing> tp_share_cd; // Holds all the shares of c*d
-                  AddShare<BoolRing> share_abc; // Holds one share of a*b*c
-                  TPShare<BoolRing> tp_share_abc; // Holds all the shares of a*b*c
-                  AddShare<BoolRing> share_abd; // Holds one share of a*b*d
-                  TPShare<BoolRing> tp_share_abd; // Holds all the shares of a*b*d
-                  AddShare<BoolRing> share_acd; // Holds one share of a*c*d
-                  TPShare<BoolRing> tp_share_acd; // Holds all the shares of a*c*d
-                  AddShare<BoolRing> share_bcd; // Holds one share of b*c*d
-                  TPShare<BoolRing> tp_share_bcd; // Holds all the shares of b*c*d
-                  AddShare<BoolRing> share_abcd; // Holds one share of a*b*c*d
-                  TPShare<BoolRing> tp_share_abcd; // Holds all the shares of a*b*c*d
+                  AddShare<BoolRing> share_a;
+                  TPShare<BoolRing> tp_share_a;
+                  AddShare<BoolRing> share_b;
+                  TPShare<BoolRing> tp_share_b;
+                  AddShare<BoolRing> share_c;
+                  TPShare<BoolRing> tp_share_c;
+                  AddShare<BoolRing> share_d;
+                  TPShare<BoolRing> tp_share_d;
+                  AddShare<BoolRing> share_ab;
+                  TPShare<BoolRing> tp_share_ab;
+                  AddShare<BoolRing> share_ac;
+                  TPShare<BoolRing> tp_share_ac;
+                  AddShare<BoolRing> share_ad;
+                  TPShare<BoolRing> tp_share_ad;
+                  AddShare<BoolRing> share_bc;
+                  TPShare<BoolRing> tp_share_bc;
+                  AddShare<BoolRing> share_bd;
+                  TPShare<BoolRing> tp_share_bd;
+                  AddShare<BoolRing> share_cd;
+                  TPShare<BoolRing> tp_share_cd;
+                  AddShare<BoolRing> share_abc;
+                  TPShare<BoolRing> tp_share_abc;
+                  AddShare<BoolRing> share_abd;
+                  TPShare<BoolRing> tp_share_abd;
+                  AddShare<BoolRing> share_acd;
+                  TPShare<BoolRing> tp_share_acd;
+                  AddShare<BoolRing> share_bcd;
+                  TPShare<BoolRing> tp_share_bcd;
+                  AddShare<BoolRing> share_abcd;
+                  TPShare<BoolRing> tp_share_abcd;
                   OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, share_a, tp_share_a);
                   OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, share_b, tp_share_b);
                   OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, share_c, tp_share_c);
@@ -376,23 +398,193 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
               }
             }
           }
-          // // The above method gives boolean output(sharing)
-          // // this method expects Field type values and output is also field type
-          // // perform Bit2A
-          // Ring arith_b;
-          // AddShare<Ring> mask_b;
-          // TPShare<Ring> tpmask_b;
-          // if(id_ == 0) { 
-          //   auto wout = multk_circ.outputs[0];
-          //   BoolRing bitb;
-          //   bitb = multk_gates[wout]->tpmask.secret();
-          //   if(bitb == 1) {arith_b = 1; }
-          //   else { arith_b = 0;}
-          // }
-          // randomShareSecret(nP_, id_, rgen_, *network_, 
-          //                       mask_b, tpmask_b, arith_b, key, keySh, rand_sh_sec, idx_rand_sh_sec);
           preproc_.gates[gate->out] =
               std::make_unique<PreprocEqzGate<Ring>>(share_r, tp_share_r, share_r_bits, tp_share_r_bits, std::move(multk_gates));
+          break;
+        }
+
+        case common::utils::GateType::kLtz: {
+          AddShare<Ring> share_r;
+          TPShare<Ring> tp_share_r;
+          std::vector<AddShare<BoolRing>> share_r_bits(RINGSIZEBITS);
+          std::vector<TPShare<BoolRing>> tp_share_r_bits(RINGSIZEBITS);
+          randomShare(nP_, id_, rgen_, share_r, tp_share_r);
+          Ring tp_r = Ring(0);
+          std::vector<BoolRing> tp_r_bits(RINGSIZEBITS);
+          if (id_ == 0) {
+            tp_r = tp_share_r.secret();
+            tp_r_bits = bitDecomposeTwo(tp_r);
+            std::reverse(tp_r_bits.begin(), tp_r_bits.end());
+          }
+          for (int i = 0; i < RINGSIZEBITS; ++i) {
+            OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_r_bits[i], tp_share_r_bits[i], tp_r_bits[i],
+                                                    b_rand_sh_sec, b_idx_rand_sh_sec);
+          }
+          // preproc for prefixOR gate 
+          auto prefixOR_circ = common::utils::Circuit<BoolRing>::generateParaPrefixOR(2).orderGatesByLevel();
+          std::vector<preprocg_ptr_t<BoolRing>> prefixOR_gates(prefixOR_circ.num_gates);
+          for (const auto& prefixOR_level : prefixOR_circ.gates_by_level) {
+            for (auto& prefixOR_gate : prefixOR_level) {
+              switch (prefixOR_gate->type) {
+                case common::utils::GateType::kInp: {
+                  auto pregate = std::make_unique<PreprocInput<BoolRing>>();
+                  pregate->pid = 0;
+                  prefixOR_gates[prefixOR_gate->out] = std::move(pregate);
+                  break;
+                }
+
+                case common::utils::GateType::kMul: {
+                  AddShare<BoolRing> triple_a;
+                  TPShare<BoolRing> tp_triple_a;
+                  AddShare<BoolRing> triple_b;
+                  TPShare<BoolRing> tp_triple_b;
+                  AddShare<BoolRing> triple_c;
+                  TPShare<BoolRing> tp_triple_c;
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, triple_a, tp_triple_a);
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, triple_b, tp_triple_b);
+                  BoolRing tp_prod;
+                  if (id_ == 0) { tp_prod = tp_triple_a.secret() * tp_triple_b.secret(); }
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, triple_c, tp_triple_c, tp_prod, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  prefixOR_gates[prefixOR_gate->out] =
+                      std::move(std::make_unique<PreprocMultGate<BoolRing>>(triple_a, tp_triple_a, triple_b, tp_triple_b,
+                                                                            triple_c, tp_triple_c));
+                  break;
+                }
+
+                case common::utils::GateType::kMul3: {
+                  AddShare<BoolRing> share_a;
+                  TPShare<BoolRing> tp_share_a;
+                  AddShare<BoolRing> share_b;
+                  TPShare<BoolRing> tp_share_b;
+                  AddShare<BoolRing> share_c;
+                  TPShare<BoolRing> tp_share_c;
+                  AddShare<BoolRing> share_ab;
+                  TPShare<BoolRing> tp_share_ab;
+                  AddShare<BoolRing> share_bc;
+                  TPShare<BoolRing> tp_share_bc;
+                  AddShare<BoolRing> share_ca;
+                  TPShare<BoolRing> tp_share_ca;
+                  AddShare<BoolRing> share_abc;
+                  TPShare<BoolRing> tp_share_abc;
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, share_a, tp_share_a);
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, share_b, tp_share_b);
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, share_c, tp_share_c);
+                  BoolRing tp_ab, tp_bc, tp_ca, tp_abc;
+                  if (id_ == 0) {
+                    tp_ab = tp_share_a.secret() * tp_share_b.secret();
+                    tp_bc = tp_share_b.secret() * tp_share_c.secret();
+                    tp_ca = tp_share_c.secret() * tp_share_a.secret();
+                    tp_abc = tp_share_a.secret() * tp_share_b.secret() * tp_share_c.secret();
+                  }
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_ab, tp_share_ab, tp_ab, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_bc, tp_share_bc, tp_bc, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_ca, tp_share_ca, tp_ca, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_abc, tp_share_abc, tp_abc, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  prefixOR_gates[prefixOR_gate->out] =
+                      std::move(std::make_unique<PreprocMult3Gate<BoolRing>>(share_a, tp_share_a, share_b, tp_share_b, share_c, tp_share_c,
+                                                                             share_ab, tp_share_ab, share_bc, tp_share_bc,
+                                                                             share_ca, tp_share_ca, share_abc, tp_share_abc));
+                  break;
+                }
+
+                case common::utils::GateType::kMul4:{
+                  AddShare<BoolRing> share_a;
+                  TPShare<BoolRing> tp_share_a;
+                  AddShare<BoolRing> share_b;
+                  TPShare<BoolRing> tp_share_b;
+                  AddShare<BoolRing> share_c;
+                  TPShare<BoolRing> tp_share_c;
+                  AddShare<BoolRing> share_d;
+                  TPShare<BoolRing> tp_share_d;
+                  AddShare<BoolRing> share_ab;
+                  TPShare<BoolRing> tp_share_ab;
+                  AddShare<BoolRing> share_ac;
+                  TPShare<BoolRing> tp_share_ac;
+                  AddShare<BoolRing> share_ad;
+                  TPShare<BoolRing> tp_share_ad;
+                  AddShare<BoolRing> share_bc;
+                  TPShare<BoolRing> tp_share_bc;
+                  AddShare<BoolRing> share_bd;
+                  TPShare<BoolRing> tp_share_bd;
+                  AddShare<BoolRing> share_cd;
+                  TPShare<BoolRing> tp_share_cd;
+                  AddShare<BoolRing> share_abc;
+                  TPShare<BoolRing> tp_share_abc;
+                  AddShare<BoolRing> share_abd;
+                  TPShare<BoolRing> tp_share_abd;
+                  AddShare<BoolRing> share_acd;
+                  TPShare<BoolRing> tp_share_acd;
+                  AddShare<BoolRing> share_bcd;
+                  TPShare<BoolRing> tp_share_bcd;
+                  AddShare<BoolRing> share_abcd;
+                  TPShare<BoolRing> tp_share_abcd;
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, share_a, tp_share_a);
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, share_b, tp_share_b);
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, share_c, tp_share_c);
+                  OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, share_d, tp_share_d);
+                  BoolRing tp_ab, tp_ac, tp_ad, tp_bc, tp_bd, tp_cd, tp_abc, tp_abd, tp_acd, tp_bcd, tp_abcd;
+                  if (id_ == 0) {
+                    tp_ab = tp_share_a.secret() * tp_share_b.secret();
+                    tp_ac = tp_share_a.secret() * tp_share_c.secret();
+                    tp_ad = tp_share_a.secret() * tp_share_d.secret();
+                    tp_bc = tp_share_b.secret() * tp_share_c.secret();
+                    tp_bd = tp_share_b.secret() * tp_share_d.secret();
+                    tp_cd = tp_share_c.secret() * tp_share_d.secret();
+                    tp_abc = tp_share_a.secret() * tp_share_b.secret() * tp_share_c.secret();
+                    tp_abd = tp_share_a.secret() * tp_share_b.secret() * tp_share_d.secret();
+                    tp_acd = tp_share_a.secret() * tp_share_c.secret() * tp_share_d.secret();
+                    tp_bcd = tp_share_b.secret() * tp_share_c.secret() * tp_share_d.secret();
+                    tp_abcd = tp_share_a.secret() * tp_share_b.secret() * tp_share_c.secret() * tp_share_d.secret();
+                  }
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_ab, tp_share_ab, tp_ab, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_ac, tp_share_ac, tp_ac, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_ad, tp_share_ad, tp_ad, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_bc, tp_share_bc, tp_bc, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_bd, tp_share_bd, tp_bd, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_cd, tp_share_cd, tp_cd, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_abc, tp_share_abc, tp_abc, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_abd, tp_share_abd, tp_abd, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_acd, tp_share_acd, tp_acd, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_bcd, tp_share_bcd, tp_bcd, b_rand_sh_sec, b_idx_rand_sh_sec);
+                  OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_abcd, tp_share_abcd, tp_abcd,
+                                                          b_rand_sh_sec, b_idx_rand_sh_sec);
+                  prefixOR_gates[prefixOR_gate->out] =
+                      std::move(std::make_unique<PreprocMult4Gate<BoolRing>>(share_a, tp_share_a, share_b, tp_share_b, share_c, tp_share_c,
+                                                                             share_d, tp_share_d, share_ab, tp_share_ab, share_ac, tp_share_ac,
+                                                                             share_ad, tp_share_ad, share_bc, tp_share_bc, share_bd,
+                                                                             tp_share_bd, share_cd, tp_share_cd, share_abc, tp_share_abc,
+                                                                             share_abd, tp_share_abd, share_acd, tp_share_acd, share_bcd,
+                                                                             tp_share_bcd, share_abcd, tp_share_abcd));
+                  break;
+                }
+
+                case common::utils::GateType::kDotprod: {
+                  const auto* g = static_cast<common::utils::SIMDGate*>(prefixOR_gate.get());
+                  auto vec_len = g->in1.size();
+                  std::vector<AddShare<BoolRing>> triple_a_vec(vec_len);
+                  std::vector<TPShare<BoolRing>> tp_triple_a_vec(vec_len);
+                  std::vector<AddShare<BoolRing>> triple_b_vec(vec_len);
+                  std::vector<TPShare<BoolRing>> tp_triple_b_vec(vec_len);
+                  std::vector<AddShare<BoolRing>> triple_c_vec(vec_len);
+                  std::vector<TPShare<BoolRing>> tp_triple_c_vec(vec_len);
+                  for (int i = 0; i < vec_len; ++i) {
+                    OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, triple_a_vec[i], tp_triple_a_vec[i]);
+                    OfflineBoolEvaluator::randomShare(nP_, id_, rgen_, triple_b_vec[i], tp_triple_b_vec[i]);
+                    BoolRing tp_prod;
+                    if (id_ == 0) { tp_prod = tp_triple_a_vec[i].secret() * tp_triple_b_vec[i].secret(); }
+                    OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, triple_c_vec[i], tp_triple_c_vec[i], tp_prod,
+                                                            b_rand_sh_sec, b_idx_rand_sh_sec);
+                  }
+                  prefixOR_gates[prefixOR_gate->out] =
+                      std::move(std::make_unique<PreprocDotpGate<BoolRing>>(triple_a_vec, tp_triple_a_vec, triple_b_vec, tp_triple_b_vec,
+                                                                            triple_c_vec, tp_triple_c_vec));
+                  break;
+                }
+              }
+            }
+          }
+          preproc_.gates[gate->out] =
+              std::make_unique<PreprocLtzGate<Ring>>(share_r, tp_share_r, share_r_bits, tp_share_r_bits, std::move(prefixOR_gates));
           break;
         }
 
@@ -485,8 +677,12 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
 
     for (int pid = 1; pid < nP_; ++pid) {
       size_t delta_sh_num = delta_sh[pid - 1].size();
+      // std::cout << "1 send: " << sizeof(size_t) << std::endl;
       network_->send(pid, &delta_sh_num, sizeof(size_t));
+      // std::cout << "1 sent" << std::endl;
+      // std::cout << "2 send: " << delta_sh_num << std::endl;
       network_->send(pid, delta_sh[pid - 1].data(), delta_sh_num * sizeof(size_t));
+      // std::cout << "2 sent" << std::endl;
     }
 
     size_t rand_sh_sec_num = rand_sh_sec.size();
@@ -500,9 +696,11 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
     lengths[2] = bool_comm;
     lengths[3] = b_rand_sh_sec_num;
     lengths[4] = delta_sh_last_num;
-    std::cout << lengths[0] << " " << lengths[1] << " " << lengths[2] << " " << lengths[3] << " " << lengths[4] << "\n";
+    // std::cout << lengths[0] << " " << lengths[1] << " " << lengths[2] << " " << lengths[3] << " " << lengths[4] << std::endl;
 
+    // std::cout << "3 send: " << lengths.size() << std::endl;
     network_->send(nP_, lengths.data(), sizeof(size_t) * lengths.size());
+    // std::cout << "3 sent" << std::endl;
 
     std::vector<Ring> offline_arith_comm(arith_comm);
     std::vector<BoolRing> offline_bool_comm(bool_comm);
@@ -513,20 +711,31 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
       offline_bool_comm[i] = b_rand_sh_sec[i];
     }
     auto net_data = BoolRing::pack(offline_bool_comm.data(), bool_comm);
+    // std::cout << "4 send: " << arith_comm << std::endl;
     network_->send(nP_, offline_arith_comm.data(), sizeof(Ring) * arith_comm);
+    // std::cout << "4 sent" << std::endl;
+    // std::cout << "5 send: " << net_data.size() << std::endl;
     network_->send(nP_, net_data.data(), sizeof(uint8_t) * net_data.size());
+    // std::cout << "5 sent" << std::endl;
+    // std::cout << "6 send: " << delta_sh_last_num << std::endl;
     network_->send(nP_, delta_sh[nP_ - 1].data(), sizeof(Ring) * delta_sh_last_num);
+    // std::cout << "6 sent" << std::endl;
   } else if (id_ != nP_) {
     size_t delta_sh_num;
+    // std::cout << "1 recv " << sizeof(size_t) << std::endl;
     network_->recv(0, &delta_sh_num, sizeof(size_t));
-    std::cout << "setWireMasks6 " << delta_sh_num << "\n";
+    // std::cout << "1 recvd" << std::endl;
     std::vector<std::vector<Ring>> delta_sh(nP_);
     delta_sh[id_ - 1] = std::vector<Ring>(delta_sh_num);
+    // std::cout << "2 recv " << delta_sh_num << std::endl;
     network_->recv(0, delta_sh[id_ - 1].data(), delta_sh_num * sizeof(Ring));
+    // std::cout << "2 recvd" << std::endl;
     setWireMasksParty(input_pid_map, rand_sh_sec, b_rand_sh_sec, delta_sh, vec_size);
   } else {
     std::vector<size_t> lengths(5);
+    // std::cout << "3 recv " << lengths.size() << std::endl;
     network_->recv(0, lengths.data(), sizeof(size_t) * lengths.size());
+    // std::cout << "3 recvd" << std::endl;
     size_t arith_comm = lengths[0];
     size_t rand_sh_sec_num = lengths[1];
     size_t bool_comm = lengths[2];
@@ -534,7 +743,7 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
     size_t delta_sh_num = lengths[4];
 
     auto max_vector_size = 623782648909640;
-    std::cout << "setWireMasks5 " << lengths[0] << " " << lengths[1] << " " << lengths[2] << " " << lengths[3] << " " << lengths[4] << "\n";
+    // std::cout << "setWireMasks5 " << lengths[0] << " " << lengths[1] << " " << lengths[2] << " " << lengths[3] << " " << lengths[4] << std::endl;
     if (arith_comm > max_vector_size) {
       std::cout << "Weird Error happening" << std::endl;
       arith_comm = 0;
@@ -545,14 +754,20 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
     }
 
     std::vector<Ring> offline_arith_comm(arith_comm);
+    // std::cout << "4 recv " << arith_comm << std::endl;
     network_->recv(0, offline_arith_comm.data(), sizeof(Ring) * arith_comm);
+    // std::cout << "4 recvd" << std::endl;
 
     size_t nbytes = (bool_comm + 7) / 8;
     std::vector<uint8_t> net_data(nbytes);
+    // std::cout << "5 recv " << nbytes << std::endl;
     network_->recv(0, net_data.data(), nbytes * sizeof(uint8_t));
+    // std::cout << "5 recvd" << std::endl;
     std::vector<std::vector<Ring>> delta_sh(nP_);
     delta_sh[id_ - 1] = std::vector<Ring>(delta_sh_num);
+    // std::cout << "6 recv " << delta_sh_num << std::endl;
     network_->recv(0, delta_sh[id_ - 1].data(), sizeof(Ring) * delta_sh_num);
+    // std::cout << "6 recvd" << std::endl;
     auto offline_bool_comm = BoolRing::unpack(net_data.data(), bool_comm);
 
     rand_sh_sec.resize(rand_sh_sec_num);
@@ -634,190 +849,4 @@ void OfflineBoolEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen,
     }
   }
 }
-
-// void OfflineBoolEvaluator::setWireMasksParty(const std::unordered_map<common::utils::wire_t, int>& input_pid_map,
-//                                              std::vector<BoolRing>& rand_sh_sec) {
-//   size_t idx_rand_sh_sec = 0;
-//   for (const auto& level : circ_.gates_by_level) {
-//     for (const auto& gate : level) {
-//       switch (gate->type) {
-//         case common::utils::GateType::kInp: {
-//           auto pregate = std::make_unique<PreprocInput<BoolRing>>();
-//           auto pid = input_pid_map.at(gate->out);
-//           pregate->pid = pid;
-//           preproc_.gates[gate->out] = std::move(pregate);
-//           break;
-//         }
-
-//         case common::utils::GateType::kMul: {
-//           AddShare<BoolRing> triple_a; // Holds one beaver triple share of a random value a
-//           TPShare<BoolRing> tp_triple_a; // Holds all the beaver triple shares of a random value a
-//           AddShare<BoolRing> triple_b; // Holds one beaver triple share of a random value b
-//           TPShare<BoolRing> tp_triple_b; // Holds all the beaver triple shares of a random value b
-//           AddShare<BoolRing> triple_c; // Holds one beaver triple share of c=a*b
-//           TPShare<BoolRing> tp_triple_c; // Holds all the beaver triple shares of c=a*b
-//           randomShare(nP_, id_, rgen_, triple_a, tp_triple_a);
-//           randomShare(nP_, id_, rgen_, triple_b, tp_triple_b);
-//           BoolRing tp_prod;
-//           if (id_ == 0) { tp_prod = tp_triple_a.secret() * tp_triple_b.secret(); }
-//           randomShareSecret(nP_, id_, rgen_, triple_c, tp_triple_c, tp_prod, rand_sh_sec, idx_rand_sh_sec);
-//           preproc_.gates[gate->out] =
-//               std::move(std::make_unique<PreprocMultGate<BoolRing>>(triple_a, tp_triple_a, triple_b, tp_triple_b, triple_c, tp_triple_c));
-//           break;
-//         }
-
-//         case common::utils::GateType::kMul3: {
-//           AddShare<BoolRing> share_a; // Holds one share of a random value a
-//           TPShare<BoolRing> tp_share_a; // Holds all the shares of a random value a
-//           AddShare<BoolRing> share_b; // Holds one of a random value b
-//           TPShare<BoolRing> tp_share_b; // Holds all the shares of a random value b
-//           AddShare<BoolRing> share_c; // Holds one share of a random value c
-//           TPShare<BoolRing> tp_share_c; // Holds all the shares of a random value c
-//           AddShare<BoolRing> share_ab; // Holds one share of a*b
-//           TPShare<BoolRing> tp_share_ab; // Holds all the shares of a*b
-//           AddShare<BoolRing> share_bc; // Holds one share of b*c
-//           TPShare<BoolRing> tp_share_bc; // Holds all the shares of b*c
-//           AddShare<BoolRing> share_ca; // Holds one share of c*a
-//           TPShare<BoolRing> tp_share_ca; // Holds all the shares of c*a
-//           AddShare<BoolRing> share_abc; // Holds one share of a*b*c
-//           TPShare<BoolRing> tp_share_abc; // Holds all the shares of a*b*c
-//           randomShare(nP_, id_, rgen_, share_a, tp_share_a);
-//           randomShare(nP_, id_, rgen_, share_b, tp_share_b);
-//           randomShare(nP_, id_, rgen_, share_c, tp_share_c);
-//           BoolRing tp_ab, tp_bc, tp_ca, tp_abc;
-//           if (id_ == 0) {
-//             tp_ab = tp_share_a.secret() * tp_share_b.secret();
-//             tp_bc = tp_share_b.secret() * tp_share_c.secret();
-//             tp_ca = tp_share_c.secret() * tp_share_a.secret();
-//             tp_abc = tp_share_a.secret() * tp_share_b.secret() * tp_share_c.secret();
-//           }
-//           randomShareSecret(nP_, id_, rgen_, share_ab, tp_share_ab, tp_ab, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_bc, tp_share_bc, tp_bc, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_ca, tp_share_ca, tp_ca, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_abc, tp_share_abc, tp_abc, rand_sh_sec, idx_rand_sh_sec);
-//           preproc_.gates[gate->out] =
-//               std::move(std::make_unique<PreprocMult3Gate<BoolRing>>(share_a, tp_share_a, share_b, tp_share_b, share_c, tp_share_c,
-//                                                                  share_ab, tp_share_ab, share_bc, tp_share_bc, share_ca, tp_share_ca,
-//                                                                  share_abc, tp_share_abc));
-//           break;
-//         }
-
-//         case common::utils::GateType::kMul4: {
-//           AddShare<BoolRing> share_a; // Holds one share of a random value a
-//           TPShare<BoolRing> tp_share_a; // Holds all the shares of a random value a
-//           AddShare<BoolRing> share_b; // Holds one of a random value b
-//           TPShare<BoolRing> tp_share_b; // Holds all the shares of a random value b
-//           AddShare<BoolRing> share_c; // Holds one share of a random value c
-//           TPShare<BoolRing> tp_share_c; // Holds all the shares of a random value c
-//           AddShare<BoolRing> share_d; // Holds one share of a random value d
-//           TPShare<BoolRing> tp_share_d; // Holds all the shares of a random value d
-//           AddShare<BoolRing> share_ab; // Holds one share of a*b
-//           TPShare<BoolRing> tp_share_ab; // Holds all the shares of a*b
-//           AddShare<BoolRing> share_ac; // Holds one share of a*c
-//           TPShare<BoolRing> tp_share_ac; // Holds all the shares of a*c
-//           AddShare<BoolRing> share_ad; // Holds one share of a*d
-//           TPShare<BoolRing> tp_share_ad; // Holds all the shares of a*d
-//           AddShare<BoolRing> share_bc; // Holds one share of b*c
-//           TPShare<BoolRing> tp_share_bc; // Holds all the shares of b*c
-//           AddShare<BoolRing> share_bd; // Holds one share of b*d
-//           TPShare<BoolRing> tp_share_bd; // Holds all the shares of b*d
-//           AddShare<BoolRing> share_cd; // Holds one share of c*d
-//           TPShare<BoolRing> tp_share_cd; // Holds all the shares of c*d
-//           AddShare<BoolRing> share_abc; // Holds one share of a*b*c
-//           TPShare<BoolRing> tp_share_abc; // Holds all the shares of a*b*c
-//           AddShare<BoolRing> share_abd; // Holds one share of a*b*d
-//           TPShare<BoolRing> tp_share_abd; // Holds all the shares of a*b*d
-//           AddShare<BoolRing> share_acd; // Holds one share of a*c*d
-//           TPShare<BoolRing> tp_share_acd; // Holds all the shares of a*c*d
-//           AddShare<BoolRing> share_bcd; // Holds one share of b*c*d
-//           TPShare<BoolRing> tp_share_bcd; // Holds all the shares of b*c*d
-//           AddShare<BoolRing> share_abcd; // Holds one share of a*b*c*d
-//           TPShare<BoolRing> tp_share_abcd; // Holds all the shares of a*b*c*d
-//           randomShare(nP_, id_, rgen_, share_a, tp_share_a);
-//           randomShare(nP_, id_, rgen_, share_b, tp_share_b);
-//           randomShare(nP_, id_, rgen_, share_c, tp_share_c);
-//           randomShare(nP_, id_, rgen_, share_d, tp_share_d);
-//           BoolRing tp_ab, tp_ac, tp_ad, tp_bc, tp_bd, tp_cd, tp_abc, tp_abd, tp_acd, tp_bcd, tp_abcd;
-//           if (id_ == 0) {
-//             tp_ab = tp_share_a.secret() * tp_share_b.secret();
-//             tp_ac = tp_share_a.secret() * tp_share_c.secret();
-//             tp_ad = tp_share_a.secret() * tp_share_d.secret();
-//             tp_bc = tp_share_b.secret() * tp_share_c.secret();
-//             tp_bd = tp_share_b.secret() * tp_share_d.secret();
-//             tp_cd = tp_share_c.secret() * tp_share_d.secret();
-//             tp_abc = tp_share_a.secret() * tp_share_b.secret() * tp_share_c.secret();
-//             tp_abd = tp_share_a.secret() * tp_share_b.secret() * tp_share_d.secret();
-//             tp_acd = tp_share_a.secret() * tp_share_c.secret() * tp_share_d.secret();
-//             tp_bcd = tp_share_b.secret() * tp_share_c.secret() * tp_share_d.secret();
-//             tp_abcd = tp_share_a.secret() * tp_share_b.secret() * tp_share_c.secret() * tp_share_d.secret();
-//           }
-//           randomShareSecret(nP_, id_, rgen_, share_ab, tp_share_ab, tp_ab, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_ac, tp_share_ac, tp_ac, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_ad, tp_share_ad, tp_ad, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_bc, tp_share_bc, tp_bc, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_bd, tp_share_bd, tp_bd, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_cd, tp_share_cd, tp_cd, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_abc, tp_share_abc, tp_abc, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_abd, tp_share_abd, tp_abd, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_acd, tp_share_acd, tp_acd, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_bcd, tp_share_bcd, tp_bcd, rand_sh_sec, idx_rand_sh_sec);
-//           randomShareSecret(nP_, id_, rgen_, share_abcd, tp_share_abcd, tp_abcd, rand_sh_sec, idx_rand_sh_sec);
-//           preproc_.gates[gate->out] =
-//               std::move(std::make_unique<PreprocMult4Gate<BoolRing>>(share_a, tp_share_a, share_b, tp_share_b, share_c, tp_share_c,
-//                                                                  share_d, tp_share_d, share_ab, tp_share_ab, share_ac, tp_share_ac,
-//                                                                  share_ad, tp_share_ad, share_bc, tp_share_bc, share_bd, tp_share_bd,
-//                                                                  share_cd, tp_share_cd, share_abc, tp_share_abc, share_abd, tp_share_abd,
-//                                                                  share_acd, tp_share_acd, share_bcd, tp_share_bcd, share_abcd, tp_share_abcd));
-//           break;
-//         }
-
-//         default: {
-//           break;
-//         }
-//       }
-//     }
-//   }
-// }
-
-// void OfflineBoolEvaluator::setWireMasks(const std::unordered_map<common::utils::wire_t, int>& input_pid_map) {   
-//   std::vector<BoolRing> rand_sh_sec;
-//   size_t idx_rand_sh_sec;
-//   if (id_ != nP_) {
-//     setWireMasksParty(input_pid_map, rand_sh_sec);
-//     if (id_ == 0) {
-//       size_t rand_sh_sec_num = rand_sh_sec.size();
-//       size_t total_comm = rand_sh_sec_num;
-//       std::vector<size_t> lengths(2);
-//       lengths[0] = total_comm;
-//       lengths[1] = rand_sh_sec_num;
-//       network_->send(nP_, lengths.data(), sizeof(size_t) * lengths.size());
-//       std::vector<BoolRing> offline_comm(total_comm);
-//       for (size_t i = 0; i < rand_sh_sec_num; i++) {
-//         offline_comm[i] = rand_sh_sec[i];
-//       }
-//       network_->send(nP_, offline_comm.data(), sizeof(BoolRing) * total_comm);
-//     }
-//   } else {
-//     std::vector<size_t> lengths(2);
-//     network_->recv(0, lengths.data(), sizeof(size_t) * lengths.size());
-//     size_t total_comm = lengths[0];
-//     size_t rand_sh_sec_num = lengths[1];
-//     std::vector<BoolRing> offline_comm(total_comm);
-//     network_->recv(0, offline_comm.data(), sizeof(BoolRing) * total_comm);
-//     rand_sh_sec.resize(rand_sh_sec_num);
-//     for(int i = 0; i < rand_sh_sec_num; i++) {
-//       rand_sh_sec[i] = offline_comm[i];
-//     }
-//     setWireMasksParty(input_pid_map, rand_sh_sec);
-//   }
-// }
-
-// PreprocCircuit<BoolRing> OfflineBoolEvaluator::getPreproc() {
-//   return std::move(preproc_);
-// }
-
-// PreprocCircuit<BoolRing> OfflineBoolEvaluator::run(const std::unordered_map<common::utils::wire_t, int>& input_pid_map) {
-//   setWireMasks(input_pid_map);
-//   return std::move(preproc_);
-// }
 };  // namespace asterisk

@@ -148,6 +148,23 @@ struct PreprocMult4Gate : public PreprocGate<R> {
 };
 
 template <class R>
+struct PreprocDotpGate : public PreprocGate<R> {
+  std::vector<AddShare<R>> triple_a_vec{};
+  std::vector<TPShare<R>> tp_triple_a_vec{};
+  std::vector<AddShare<R>> triple_b_vec{};
+  std::vector<TPShare<R>> tp_triple_b_vec{};
+  std::vector<AddShare<R>> triple_c_vec{};
+  std::vector<TPShare<R>> tp_triple_c_vec{};
+  PreprocDotpGate() = default;
+  PreprocDotpGate(const std::vector<AddShare<R>>& triple_a_vec, const std::vector<TPShare<R>>& tp_triple_a_vec,
+                  const std::vector<AddShare<R>>& triple_b_vec, const std::vector<TPShare<R>>& tp_triple_b_vec,
+                  const std::vector<AddShare<R>>& triple_c_vec, const std::vector<TPShare<R>>& tp_triple_c_vec)
+      : PreprocGate<R>(), triple_a_vec(triple_a_vec), tp_triple_a_vec(tp_triple_a_vec),
+        triple_b_vec(triple_b_vec), tp_triple_b_vec(tp_triple_b_vec),
+        triple_c_vec(triple_c_vec), tp_triple_c_vec(tp_triple_c_vec) {}
+};
+
+template <class R>
 struct PreprocEqzGate : public PreprocGate<R> {
   AddShare<R> share_r;
   TPShare<R> tp_share_r;
@@ -160,6 +177,21 @@ struct PreprocEqzGate : public PreprocGate<R> {
                  std::vector<preprocg_ptr_t<BoolRing>> multk_gates)
     : PreprocGate<R>(), share_r(share_r), tp_share_r(tp_share_r), share_r_bits(share_r_bits), tp_share_r_bits(tp_share_r_bits),
       multk_gates(std::move(multk_gates)) {}
+};
+
+template <class R>
+struct PreprocLtzGate : public PreprocGate<R> {
+  AddShare<R> share_r;
+  TPShare<R> tp_share_r;
+  std::vector<AddShare<BoolRing>> share_r_bits;
+  std::vector<TPShare<BoolRing>> tp_share_r_bits;
+  std::vector<preprocg_ptr_t<BoolRing>> PrefixOR_gates;
+  PreprocLtzGate() = default;
+  PreprocLtzGate(const AddShare<R> &share_r, const TPShare<R> &tp_share_r,
+                 const std::vector<AddShare<BoolRing>> &share_r_bits, const std::vector<TPShare<BoolRing>> &tp_share_r_bits,
+                 std::vector<preprocg_ptr_t<BoolRing>> PrefixOR_gates)
+    : PreprocGate<R>(), share_r(share_r), tp_share_r(tp_share_r), share_r_bits(share_r_bits), tp_share_r_bits(tp_share_r_bits),
+      PrefixOR_gates(std::move(PrefixOR_gates)) {}
 };
 
 template <class R>

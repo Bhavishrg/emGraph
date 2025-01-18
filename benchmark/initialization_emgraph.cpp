@@ -17,7 +17,7 @@ namespace bpo = boost::program_options;
 
 common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size) {
 
-    std::cout << "Generating circuit\n";
+    std::cout << "Generating circuit" << std::endl;
     
     common::utils::Circuit<Ring> circ;
 
@@ -35,7 +35,7 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
         }
     }
 
-    std::cout << "num_vert " << num_vert << " num_edge " << num_edge << "\n";
+    std::cout << "num_vert " << num_vert << " num_edge " << num_edge << std::endl;
 
     // INPUT SHARING PHASE
     std::vector<wire_t> full_vertex_list(num_vert);
@@ -51,7 +51,7 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
         subg_edge_list[i] = subg_edge_list_party;
     }
 
-    std::cout << "Input sharing done\n";
+    std::cout << "Input sharing done" << std::endl;
 
     // INITIALIZATION PHASE
     auto subg_dag_list_size = std::min(num_vert, 2 * subg_num_edge[pid - 1]) + subg_num_edge[pid - 1];
@@ -115,7 +115,7 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
     //     }
     // }
 
-    std::cout << "Initialization done\n";
+    std::cout << "Initialization done" << std::endl;
 
     // MESSAGE PASSING
     auto subg_sorted_vert_list = circ.addMOGate(common::utils::GateType::kAmortzdPnS, full_vertex_list, nP);
@@ -170,15 +170,15 @@ void benchmark(const bpo::variables_map& opts) {
                               {"repeat", repeat}};
     output_data["benchmarks"] = json::array();
 
-    std::cout << "--- Details ---\n";
+    std::cout << "--- Details ---" << std::endl;
     for (const auto& [key, value] : output_data["details"].items()) {
-        std::cout << key << ": " << value << "\n";
+        std::cout << key << ": " << value << std::endl;
     }
     std::cout << std::endl;
 
     auto circ = generateCircuit(network, nP, pid, vec_size).orderGatesByLevel();
 
-    std::cout << "--- Circuit ---\n";
+    std::cout << "--- Circuit ---" << std::endl;
     std::cout << circ << std::endl;
     
     std::unordered_map<common::utils::wire_t, int> input_pid_map;
@@ -193,20 +193,20 @@ void benchmark(const bpo::variables_map& opts) {
     OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed);
     network->sync();
 
-    std::cout << "Hello1\n";
+    std::cout << "Hello1" << std::endl;
 
     auto preproc = off_eval.run(input_pid_map, vec_size);
 
-    std::cout << "Hello2\n";
+    std::cout << "Hello2" << std::endl;
    
     // StatsPoint end_pre(*network);
     OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, threads, seed);
 
-    std::cout << "Hello3\n";
+    std::cout << "Hello3" << std::endl;
     
     eval.setRandomInputs();
 
-    std::cout << "Hello4\n";
+    std::cout << "Hello4" << std::endl;
 
     StatsPoint start(*network);
 
@@ -214,7 +214,7 @@ void benchmark(const bpo::variables_map& opts) {
         eval.evaluateGatesAtDepth(i);
     }
 
-    std::cout << "Hello5\n";
+    std::cout << "Hello5" << std::endl;
 
     StatsPoint end(*network);
     auto rbench = end - start;
@@ -225,18 +225,18 @@ void benchmark(const bpo::variables_map& opts) {
         bytes_sent += val.get<int64_t>();
     }
 
-    // std::cout << "--- Repetition " << r + 1 << " ---\n";
-    std::cout << "time: " << rbench["time"] << " ms\n";
-    std::cout << "sent: " << bytes_sent << " bytes\n";
+    // std::cout << "--- Repetition " << r + 1 << " ---" << std::endl;
+    std::cout << "time: " << rbench["time"] << " ms" << std::endl;
+    std::cout << "sent: " << bytes_sent << " bytes" << std::endl;
 
     std::cout << std::endl;
 
     output_data["stats"] = {{"peak_virtual_memory", peakVirtualMemory()},
                             {"peak_resident_set_size", peakResidentSetSize()}};
 
-    std::cout << "--- Statistics ---\n";
+    std::cout << "--- Statistics ---" << std::endl;
     for (const auto& [key, value] : output_data["stats"].items()) {
-        std::cout << key << ": " << value << "\n";
+        std::cout << key << ": " << value << std::endl;
     }
     std::cout << std::endl;
 
@@ -281,7 +281,7 @@ int main(int argc, char* argv[]) {
         std::string cpath(opts["config"].as<std::string>());
         std::ifstream fin(cpath.c_str());
         if (fin.fail()) {
-            std::cerr << "Could not open configuration file at " << cpath << "\n";
+            std::cerr << "Could not open configuration file at " << cpath << std::endl;
             return 1;
         }
         bpo::store(bpo::parse_config_file(fin, prog_opts), opts);

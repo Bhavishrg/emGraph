@@ -657,7 +657,7 @@ class Circuit {
         size_t q = (j - 1) * pow(4, level) + pow(4, level - 1);
         size_t r = (j - 1) * pow(4, level) + 2 * pow(4, level - 1);
         size_t s = (j - 1) * pow(4, level) + 3 * pow(4, level - 1);
-        for (size_t i = 0; i < pow(4, level -1); i++) {
+        for (size_t i = 0; i < pow(4, level - 1); i++) {
           level_next[p + i] = circ.addConstOpGate(GateType::kConstAdd, leveli[p + i], zero);
           level_next[q + i] = circ.addGate(GateType::kMul, leveli[q - 1], leveli[q + i]);
           level_next[r + i] = circ.addGate(GateType::kMul3, leveli[q - 1], leveli[r - 1], leveli[r + i]);
@@ -665,16 +665,15 @@ class Circuit {
         }
       }
       leveli = std::move(level_next);
-    }          
-
+    }
     // For PrefixOR
     std::vector<std::vector<wire_t>> wv(repeat, std::vector<wire_t>(k));
     for (size_t i = 0; i < repeat; i++) {
       for (size_t j = 0; j < k; j++ ) {
         wv[i][j] = circ.addConstOpGate(GateType::kConstAdd, leveli[i * k + j], one);
-      }      
+      }
     }
-    std::vector<std::vector<wire_t>> wz(repeat, std::vector<wire_t>(k));  
+    std::vector<std::vector<wire_t>> wz(repeat, std::vector<wire_t>(k));
     for (size_t i = 0; i < repeat; i++) {
       wz[i][0] = circ.addConstOpGate(GateType::kConstAdd, wv[i][0], zero);
       for (size_t j = 1; j < k; j++) {
@@ -683,8 +682,8 @@ class Circuit {
     }
     std::vector<wire_t> inp1(k * repeat), inp2(k * repeat);
     for (size_t i = 0; i < repeat; i++) {
-      inp1.insert(inp1.end(),wz[i].begin(),wz[i].end());
-      inp2.insert(inp2.end(),inp_d[i].begin(),inp_d[i].end());
+      inp1.insert(inp1.begin(), wz[i].begin(), wz[i].end());
+      inp2.insert(inp2.begin(), inp_d[i].begin(), inp_d[i].end());
     }
     wire_t res = circ.addGate(GateType::kDotprod, inp1, inp2);
     circ.setAsOutput(res);

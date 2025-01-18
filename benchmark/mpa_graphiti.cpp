@@ -17,7 +17,7 @@ namespace bpo = boost::program_options;
 
 common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size) {
 
-    std::cout << "Generating circuit\n";
+    std::cout << "Generating circuit" << std::endl;
     
     common::utils::Circuit<Ring> circ;
 
@@ -118,15 +118,15 @@ void benchmark(const bpo::variables_map& opts) {
                               {"repeat", repeat}};
     output_data["benchmarks"] = json::array();
 
-    std::cout << "--- Details ---\n";
+    std::cout << "--- Details ---" << std::endl;
     for (const auto& [key, value] : output_data["details"].items()) {
-        std::cout << key << ": " << value << "\n";
+        std::cout << key << ": " << value << std::endl;
     }
     std::cout << std::endl;
 
     auto circ = generateCircuit(network, nP, pid, vec_size).orderGatesByLevel();
 
-    std::cout << "--- Circuit ---\n";
+    std::cout << "--- Circuit ---" << std::endl;
     std::cout << circ << std::endl;
     
     std::unordered_map<common::utils::wire_t, int> input_pid_map;
@@ -144,48 +144,57 @@ void benchmark(const bpo::variables_map& opts) {
     network->sync();
 
     auto preproc = off_eval.run(input_pid_map, vec_size);
-    std::cout << "Preprocessing complete " << preproc.gates.size() << "\n";
+    std::cout << "Preprocessing complete " << preproc.gates.size() << std::endl;
+    network->sync();
     StatsPoint end_pre(*network);
 
     OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, threads, seed);
 
     eval.setRandomInputs();
-    std::cout << "Inputs set\n";
+    std::cout << "Inputs set" << std::endl;
 
     for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
         eval.evaluateGatesAtDepth(i);
     }
-    std::cout << "Online Eval complete\n";
+    std::cout << "Online Eval complete" << std::endl;
     StatsPoint end(*network);
+    // network->sync();
 
     auto preproc_rbench = end_pre - start;
+    auto online_rbench = end - end_pre;
     auto rbench = end - start;
     output_data["benchmarks"].push_back(preproc_rbench);
+    output_data["benchmarks"].push_back(online_rbench);
     output_data["benchmarks"].push_back(rbench);
 
     size_t pre_bytes_sent = 0;
     for (const auto& val : preproc_rbench["communication"]) {
         pre_bytes_sent += val.get<int64_t>();
     }
+    size_t online_bytes_sent = 0;
+    for (const auto& val : online_rbench["communication"]) {
+        online_bytes_sent += val.get<int64_t>();
+    }
     size_t bytes_sent = 0;
     for (const auto& val : rbench["communication"]) {
         bytes_sent += val.get<int64_t>();
     }
 
-    // std::cout << "--- Repetition " << r + 1 << " ---\n";
-    std::cout << "preproc time: " << preproc_rbench["time"] << " ms\n";
-    std::cout << "preproc sent: " << pre_bytes_sent << " bytes\n";
-    std::cout << "total time: " << rbench["time"] << " ms\n";
-    std::cout << "total sent: " << bytes_sent << " bytes\n";
-
+    // std::cout << "--- Repetition " << r + 1 << " ---" << std::endl;
+    std::cout << "preproc time: " << preproc_rbench["time"] << " ms" << std::endl;
+    std::cout << "preproc sent: " << pre_bytes_sent << " bytes" << std::endl;
+    std::cout << "online time: " << online_rbench["time"] << " ms" << std::endl;
+    std::cout << "online sent: " << online_bytes_sent << " bytes" << std::endl;
+    std::cout << "total time: " << rbench["time"] << " ms" << std::endl;
+    std::cout << "total sent: " << bytes_sent << " bytes" << std::endl;
     std::cout << std::endl;
 
     output_data["stats"] = {{"peak_virtual_memory", peakVirtualMemory()},
                             {"peak_resident_set_size", peakResidentSetSize()}};
 
-    std::cout << "--- Statistics ---\n";
+    std::cout << "--- Statistics ---" << std::endl;
     for (const auto& [key, value] : output_data["stats"].items()) {
-        std::cout << key << ": " << value << "\n";
+        std::cout << key << ": " << value << std::endl;
     }
     std::cout << std::endl;
 
@@ -230,7 +239,7 @@ int main(int argc, char* argv[]) {
         std::string cpath(opts["config"].as<std::string>());
         std::ifstream fin(cpath.c_str());
         if (fin.fail()) {
-            std::cerr << "Could not open configuration file at " << cpath << "\n";
+            std::cerr << "Could not open configuration file at " << cpath << std::endl;
             return 1;
         }
         bpo::store(bpo::parse_config_file(fin, prog_opts), opts);

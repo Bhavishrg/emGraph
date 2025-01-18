@@ -9,7 +9,7 @@ mkdir -p $dir
 vec_size="10000"
 
 for players in {2,5,10,15,20,25}
-# for players in 2
+# for players in 10
 do
     # for vec_size in {10000,100000,1000000,10000000}
     # do
@@ -29,14 +29,14 @@ do
                     # test_primitives
                     # mpa_emgraph
                     # mpa_graphiti
-                    valgrind --leak-check=full -v ./benchmarks/mpa_graphiti -p $party --localhost -v $vec_size -n $players 2>&1 | cat > $log &
+                    ./benchmarks/test_primitives -p $party --localhost -v $vec_size -n $players 2>&1 | cat > $log &
                 else
-                    ./benchmarks/mpa_graphiti -p $party --localhost -v $vec_size -n $players 2>&1 | cat > $log &
+                    ./benchmarks/test_primitives -p $party --localhost -v $vec_size -n $players 2>&1 | cat > $log &
                 fi
                 codes[$party]=$!
             done
 
-            ./benchmarks/mpa_graphiti -p 0 --localhost -v $vec_size -n $players 2>&1 | cat > $tplog &
+            ./benchmarks/test_primitives -p 0 --localhost -v $vec_size -n $players 2>&1 | cat > $tplog &
             codes[0]=$!
             for party in $(seq 0 $players)
             do

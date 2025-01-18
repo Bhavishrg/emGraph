@@ -74,7 +74,7 @@ class OfflineEvaluator {
   PreprocCircuit<Ring> run(const std::unordered_map<common::utils::wire_t, int>& input_pid_map, size_t& vec_size);
 };
 
-// TODO: Complete EQZ, LTZ, BoolEval
+// TODO: Complete LTZ
 
 class OfflineBoolEvaluator {
   int nP_;  
@@ -93,14 +93,5 @@ class OfflineBoolEvaluator {
   static void randomShareSecret(int nP, int pid, RandGenPool& rgen,
                                 AddShare<BoolRing>& share, TPShare<BoolRing>& tpShare, BoolRing secret,
                                 std::vector<BoolRing>& rand_sh_sec, size_t& idx_rand_sh_sec);
-
-  // void setWireMasksParty(const std::unordered_map<common::utils::wire_t, int>& input_pid_map,
-  //                        std::vector<BoolRing>& rand_sh_sec);
-
-  // void setWireMasks(const std::unordered_map<common::utils::wire_t, int>& input_pid_map);
-
-  // PreprocCircuit<BoolRing> getPreproc();
-
-  // PreprocCircuit<BoolRing> run(const std::unordered_map<common::utils::wire_t, int>& input_pid_map);
 };
 };  // namespace asterisk

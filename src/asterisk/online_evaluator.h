@@ -40,15 +40,17 @@ namespace asterisk {
 
     void setRandomInputs();
 
-    void evaluateGatesAtDepthPartySend(size_t depth, std::vector<Ring> &mult_vals,
-                                       std::vector<Ring> &mult3_vals, std::vector<Ring> &mult4_vals);
+    void evaluateGatesAtDepthPartySend(size_t depth, std::vector<Ring> &mult_vals, std::vector<Ring> &mult3_vals,
+                                       std::vector<Ring> &mult4_vals, std::vector<Ring> &dotp_vals);
 
-    void evaluateGatesAtDepthPartyRecv(size_t depth, std::vector<Ring> &mult_vals,
-                                       std::vector<Ring> &mult3_vals, std::vector<Ring> &mult4_vals);
+    void evaluateGatesAtDepthPartyRecv(size_t depth, std::vector<Ring> &mult_vals, std::vector<Ring> &mult3_vals,
+                                       std::vector<Ring> &mult4_vals, std::vector<Ring> &dotp_vals);
 
     void evaluateGatesAtDepth(size_t depth);
 
     void eqzEvaluate(const std::vector<common::utils::FIn1Gate> &eqz_gates);
+  
+    void ltzEvaluate(const std::vector<common::utils::FIn1Gate> &ltz_gates);
 
     void shuffleEvaluate(const std::vector<common::utils::SIMDOGate> &shuffle_gates);
 
@@ -79,11 +81,11 @@ namespace asterisk {
                       std::vector<preprocg_ptr_t<BoolRing> *> vpreproc,
                       common::utils::LevelOrderedCircuit circ, int seed = 200);
 
-    void evaluateGatesAtDepthPartySend(size_t depth, std::vector<BoolRing> &mult_vals,
-                                       std::vector<BoolRing> &mult3_vals, std::vector<BoolRing> &mult4_vals);
+    void evaluateGatesAtDepthPartySend(size_t depth, std::vector<BoolRing> &mult_vals, std::vector<BoolRing> &mult3_vals,
+                                       std::vector<BoolRing> &mult4_vals, std::vector<BoolRing> &dotp_vals);
 
-    void evaluateGatesAtDepthPartyRecv(size_t depth, std::vector<BoolRing> &mult_vals,
-                                       std::vector<BoolRing> &mult3_vals, std::vector<BoolRing> &mult4_vals);
+    void evaluateGatesAtDepthPartyRecv(size_t depth, std::vector<BoolRing> &mult_vals, std::vector<BoolRing> &mult3_vals,
+                                       std::vector<BoolRing> &mult4_vals, std::vector<BoolRing> &dotp_vals);
 
     void evaluateGatesAtDepth(size_t depth);
 
