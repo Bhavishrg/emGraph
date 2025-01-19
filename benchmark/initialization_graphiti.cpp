@@ -15,112 +15,23 @@ using namespace asterisk;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> network, int nP, int pid, size_t vec_size) {
+common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size) {
 
     std::cout << "Generating circuit" << std::endl;
     
     common::utils::Circuit<Ring> circ;
 
-    size_t num_vert = 0.1 * vec_size;
-    size_t num_edge = vec_size - num_vert;
-    std::vector<size_t> subg_num_vert(nP);
-    std::vector<size_t> subg_num_edge(nP);
-    for (int i = 0; i < subg_num_vert.size(); ++i) {
-        if (i != nP - 1) {
-            subg_num_vert[i] = num_vert / nP;
-            subg_num_edge[i] = num_edge / nP;
-        } else {
-            subg_num_vert[i] = num_vert / nP + num_vert % nP;
-            subg_num_edge[i] = num_edge / nP + num_edge % nP;
-        }
+    int num_vert = vec_size * 0.1;
+    int num_edge = vec_size - num_vert;
+
+    std::vector<common::utils::wire_t> dag_list(vec_size);
+    std::generate(dag_list.begin(), dag_list.end(), [&]() { return circ.newInputWire(); });
+
+    for (int i = 0; i < dag_list.size() - 1; ++i) {
+        auto diff = circ.addGate(common::utils::GateType::kSub, dag_list[i], dag_list[dag_list.size() - 1]);
+        auto cmp = circ.addGate(common::utils::GateType::kLtz, diff);
+        circ.setAsOutput(cmp);
     }
-
-    std::cout << "num_vert " << num_vert << " num_edge " << num_edge << std::endl;
-
-    // INPUT SHARING PHASE
-    std::vector<wire_t> full_vertex_list(num_vert);
-    for (int i = 0; i < num_vert; ++i) {
-        full_vertex_list[i] = circ.newInputWire();
-    }
-    std::vector<std::vector<wire_t>> subg_edge_list(nP);
-    for (int i = 0; i < subg_edge_list.size(); ++i) {
-        std::vector<wire_t> subg_edge_list_party(subg_num_edge[i]);
-        for (int j = 0; j < subg_edge_list[i].size(); ++j) {
-            subg_edge_list_party[j] = circ.newInputWire();
-        }
-        subg_edge_list[i] = subg_edge_list_party;
-    }
-
-    std::cout << "Input sharing done" << std::endl;
-
-    // INITIALIZATION PHASE
-    if (pid != 0) {
-        auto subg_dag_list_size = std::min(num_vert, 2 * subg_num_edge[pid - 1]) + subg_num_edge[pid - 1];
-        std::vector<int> perm_send(num_vert + 3 * subg_dag_list_size);
-        std::vector<std::vector<int>> perm_recv;
-
-        std::vector<int> rand_perm_g(num_vert);
-        std::vector<int> perm_g(num_vert);
-        for (int i = 0; i < perm_g.size(); ++i) {
-            perm_g[i] = i;
-            rand_perm_g[i] = i;
-        }
-        for (int i = 0; i < perm_g.size(); ++i) {
-            perm_send[i] = perm_g[rand_perm_g[i]];
-        }
-
-        std::vector<int> rand_perm_s(subg_dag_list_size);
-        std::vector<int> perm_s(subg_dag_list_size);
-        for (int i = 0; i < perm_s.size(); ++i) {
-            perm_s[i] = i;
-            rand_perm_s[i] = i;
-        }
-        for (int i = 0; i < perm_s.size(); ++i) {
-            perm_send[i + perm_g.size()] = perm_s[rand_perm_s[i]];
-        }
-
-        std::vector<int> rand_perm_d(subg_dag_list_size);
-        std::vector<int> perm_d(subg_dag_list_size);
-        for (int i = 0; i < perm_d.size(); ++i) {
-            perm_d[i] = i;
-            rand_perm_d[i] = i;
-        }
-        for (int i = 0; i < perm_d.size(); ++i) {
-            perm_send[i + perm_g.size() + perm_s.size()] = perm_d[rand_perm_d[i]];
-        }
-
-        std::vector<int> rand_perm_v(subg_dag_list_size);
-        std::vector<int> perm_v(subg_dag_list_size);
-        for (int i = 0; i < perm_v.size(); ++i) {
-            perm_v[i] = i;
-            rand_perm_v[i] = i;
-        }
-        for (int i = 0; i < perm_v.size(); ++i) {
-            perm_send[i + perm_g.size() + perm_s.size() + perm_d.size()] = perm_v[rand_perm_v[i]];
-        }
-
-        std::cout << "Sending perms" << std::endl;
-
-        for (int i = 1; i <= nP; ++i) {
-            if (i != pid) {
-                network->send(i, perm_send.data(), perm_send.size() * sizeof(int));
-            }
-        }
-        for (int i = 1; i <= nP; ++i) {
-            if (i != pid) {
-                std::vector<int> perm_recv_party(perm_send.size());
-                network->recv(i, perm_recv_party.data(), perm_recv_party.size() * sizeof(int));
-                perm_recv.push_back(perm_recv_party);
-            } else {
-                perm_recv.push_back(perm_send);
-            }
-        }
-    }
-
-    std::cout << "Initialization done" << std::endl;
-
-    // MESSAGE PASSING
-    auto subg_sorted_vert_list = circ.addMOGate(common::utils::GateType::kAmortzdPnS, full_vertex_list, nP);
     return circ;
 }
 
