@@ -6,8 +6,8 @@ project(Asterisk VERSION 0.1)
 # Specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_C_FLAGS "-march=native -maes -mrdseed -lntl -g")
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS}")
+set(CMAKE_C_FLAGS "-march=native -maes -mrdseed -lntl -g -pg -ltbb")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_CXX_FLAGS}")
 
 # Path to custom cmake files for external libs
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -21,6 +21,7 @@ find_package(Boost 1.72.0 COMPONENTS unit_test_framework program_options system 
 find_package(emp-tool REQUIRED)
 find_package(nlohmann_json 3.9.0 REQUIRED)
 find_package(NTL 11.0.0 REQUIRED)
+find_package(OpenMP 5.0 REQUIRED)
 
 if(EMP-TOOL_FOUND)
     add_library(EMPTool INTERFACE)

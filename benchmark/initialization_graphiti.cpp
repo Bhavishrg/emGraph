@@ -156,7 +156,8 @@ void benchmark(const bpo::variables_map& opts) {
     std::cout << "gencirc sent: " << gencirc_bytes_sent << " bytes" << std::endl;
     std::cout << "preproc time: " << preproc_rbench["time"] << " ms" << std::endl;
     std::cout << "preproc sent: " << pre_bytes_sent << " bytes" << std::endl;
-    std::cout << "online time: " << online_rbench["time"] << " ms" << std::endl;
+    std::cout << "1 round online time: " << online_rbench["time"] << " ms" << std::endl;
+    // std::cout << "log(n) rounds online time: " << online_rbench["time"].get<double>() * log(vec_size) / log(2) << " ms" << std::endl;
     std::cout << "online sent: " << online_bytes_sent << " bytes" << std::endl;
     std::cout << "total time: " << rbench["time"] << " ms" << std::endl;
     std::cout << "total sent: " << bytes_sent << " bytes" << std::endl;

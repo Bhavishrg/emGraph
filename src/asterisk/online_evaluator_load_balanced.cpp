@@ -1,6 +1,8 @@
 #include "online_evaluator.h"
 
 #include "../utils/helpers.h"
+#include <omp.h>
+#include <chrono>
 
 namespace asterisk
 {
@@ -16,7 +18,7 @@ namespace asterisk
           circ_(std::move(circ)),
           wires_(circ.num_wires)
     {
-        tpool_ = std::make_shared<ThreadPool>(threads);
+        // tpool_ = std::make_shared<ThreadPool>(threads);
     }
 
     OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
@@ -91,10 +93,12 @@ namespace asterisk
             network_->send(pKing, all_share_send.data(), all_share_send.size() * sizeof(Ring));
             // std::cout << "eqz 1 sent" << std::endl;
             // std::cout << "eqz 2 recv " << recon_vals.size() << std::endl;
+            usleep(50000);
             network_->recv(pKing, recon_vals.data(), recon_vals.size() * sizeof(Ring));
             // std::cout << "eqz 2 recvd" << std::endl;
         } else {
             std::vector<Ring> share_recv;
+            usleep(50000);
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != pKing) {
                     share_recv.resize(num_eqz_gates);
@@ -145,6 +149,7 @@ namespace asterisk
             network_->send(pKing, net_data_send.data(), net_data_send.size() * sizeof(uint8_t));
             // std::cout << "eqz 3 sent" << std::endl;
             // std::cout << "eqz 4 recv " << recon_out.size() << std::endl;
+            usleep(50000);
             network_->recv(pKing, recon_out.data(), recon_out.size() * sizeof(Ring));
             // std::cout << "eqz 4 recvd" << std::endl;
         } else {
@@ -152,6 +157,7 @@ namespace asterisk
             std::vector<uint8_t> out_recv(nbytes);
             std::vector<BoolRing> all_out_recv;
             std::vector<BoolRing> out(num_eqz_gates, BoolRing(0));
+            usleep(50000);
             for (int pid = 1; pid <= nP_; ++pid) {
                 all_out_recv.clear();
                 if (pid != pKing) {
@@ -213,6 +219,7 @@ namespace asterisk
             network_->send(pKing, all_share_send.data(), all_share_send.size() * sizeof(Ring));
             // std::cout << "ltz 1 sent" << std::endl;
             // std::cout << "ltz 2 recv " << recon_vals_a.size() << std::endl;
+            usleep(50000);
             network_->recv(pKing, recon_vals_a.data(), recon_vals_a.size() * sizeof(Ring));
             // std::cout << "ltz 2 recvd" << std::endl;
             for (int i = 0; i < num_ltz_gates; ++i) {
@@ -220,6 +227,7 @@ namespace asterisk
             }
         } else {
             std::vector<Ring> share_recv;
+            usleep(50000);
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != pKing) {
                     share_recv.resize(num_ltz_gates);
@@ -280,6 +288,7 @@ namespace asterisk
             network_->send(pKing, net_data_send.data(), net_data_send.size() * sizeof(uint8_t));
             // std::cout << "ltz 3 sent" << std::endl;
             // std::cout << "ltz 4 recv " << recon_out.size() << std::endl;
+            usleep(50000);
             network_->recv(pKing, recon_out.data(), recon_out.size() * sizeof(Ring));
             // std::cout << "ltz 4 recvd" << std::endl;
         } else {
@@ -287,6 +296,7 @@ namespace asterisk
             std::vector<uint8_t> out_recv(nbytes);
             std::vector<BoolRing> all_out_recv;
             std::vector<BoolRing> out(num_ltz_gates, BoolRing(0));
+            usleep(50000);
             for (int pid = 1; pid <= nP_; ++pid) {
                 all_out_recv.clear();
                 if (pid != pKing) {
@@ -345,6 +355,7 @@ namespace asterisk
         }
 
         if (id_ == 1) {
+            usleep(50000);
             for (int pid = 2; pid <= nP_; ++pid) {
                 std::vector<Ring> z_recv(total_comm);
                 // std::cout << pid << " shuffle 1 recv " << z_recv.size() << std::endl;
@@ -379,13 +390,14 @@ namespace asterisk
         } else {
             // std::cout << id_ << " shuffle 1 send " << z_all.size() << std::endl;
             network_->send(1, z_all.data(), z_all.size() * sizeof(Ring));
-            network_->flush();
+            network_->flush(1);
             // std::cout << id_  << " shuffle 1 sent" << std::endl;
 
             z_all.clear();
             z_all.resize(total_comm);
             // std::cout << "shuffle 2 recv " << z_all.size() << std::endl;
             network_->recv(id_ - 1, z_all.data(), z_all.size() * sizeof(Ring));
+            usleep(50000);
             // std::cout << "shuffle 2 recvd" << std::endl;
             for (int idx_gate = 0, idx_vec = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
                 auto *pre_shuffle = static_cast<PreprocShuffleGate<Ring> *>(preproc_.gates[shuffle_gates[idx_gate].out].get());
@@ -413,39 +425,67 @@ namespace asterisk
 
     void OnlineEvaluator::permAndShEvaluate(const std::vector<common::utils::SIMDOGate> &permAndSh_gates) {
         if (id_ == 0) { return; }
-        for (auto &gate : permAndSh_gates) {
-            auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[gate.out].get());
-            size_t vec_size = gate.in.size();
+        // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << " permAndShEvaluate1" << std::endl;
+        // auto ms3 = std::chrono::high_resolution_clock::now();
+        #pragma omp parallel for
+        for (int idx_gate = 0; idx_gate < permAndSh_gates.size(); ++idx_gate) {
+            // std::cout << "permAndShEvaluate2 " << omp_get_thread_num() << std::endl;
+            auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[permAndSh_gates[idx_gate].out].get());
+            size_t vec_size = permAndSh_gates[idx_gate].in.size();
             std::vector<Ring> z(vec_size, 0);
-            if (id_ != gate.owner) {
+            if (id_ != permAndSh_gates[idx_gate].owner) {
+                // auto ms1 = std::chrono::high_resolution_clock::now();
                 for (int i = 0; i < vec_size; ++i) {
-                    z[i] = wires_[gate.in[i]] - pre_permAndSh->a[i].valueAt();
-                    wires_[gate.outs[i]] = pre_permAndSh->b[i].valueAt();
+                    z[i] = wires_[permAndSh_gates[idx_gate].in[i]] - pre_permAndSh->a[i].valueAt();
+                    wires_[permAndSh_gates[idx_gate].outs[i]] = pre_permAndSh->b[i].valueAt();
                 }
                 // std::cout << "perm 1 send " << z.size() << std::endl;
-                network_->send(gate.owner, z.data(), z.size() * sizeof(Ring));
-                // std::cout << "perm 1 sent" << std::endl;
-            } else {
+                network_->send(permAndSh_gates[idx_gate].owner, z.data(), z.size() * sizeof(Ring));
+                // network_->flush();
+                // auto ms2 = std::chrono::high_resolution_clock::now();
+                // std::cout << omp_get_thread_num() << " " << permAndSh_gates[idx_gate].owner << ": perm 1 sent " << std::chrono::duration<double, std::milli>(ms2 - ms1).count() << std::endl;
+            }
+        }
+        // auto ms4 = std::chrono::high_resolution_clock::now();
+        // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << ": permAndShEvaluate3 " << std::chrono::duration<double, std::milli>(ms4 - ms3).count() << std::endl;
+        // ms3 = std::chrono::high_resolution_clock::now();
+        usleep(50000);
+        for (int idx_gate = 0; idx_gate < permAndSh_gates.size(); ++idx_gate) {
+            // std::cout << "permAndShEvaluate4 " << omp_get_thread_num() << std::endl;
+            if (id_ == permAndSh_gates[idx_gate].owner) {
+                auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[permAndSh_gates[idx_gate].out].get());
+                size_t vec_size = permAndSh_gates[idx_gate].in.size();
+                std::vector<std::vector<Ring>> z(nP_, std::vector<Ring>(vec_size, 0));
+                #pragma omp parallel for
                 for (int pid = 1; pid <= nP_; ++pid) {
+                    // std::cout << "permAndShEvaluate5 " << omp_get_thread_num() << std::endl;
                     std::vector<Ring> z_recv(vec_size);
-                    if (pid != gate.owner) {
+                    if (pid != permAndSh_gates[idx_gate].owner) {
                         // std::cout << "perm 1 recv " << z_recv.size() << std::endl;
+                        // auto ms1 = std::chrono::high_resolution_clock::now();
                         network_->recv(pid, z_recv.data(), z_recv.size() * sizeof(Ring));
-                        // std::cout << "perm 1 recvd" << std::endl;
+                        // auto ms2 = std::chrono::high_resolution_clock::now();
+                        // std::cout << omp_get_thread_num() << " " << pid << ": perm 1 recvd " << std::chrono::duration<double, std::milli>(ms2 - ms1).count() << std::endl;
                         for (int i = 0; i < vec_size; ++i) {
-                            z[i] += z_recv[i];
+                            z[pid - 1][i] += z_recv[i];
                         }
                     } else {
                         for (int i = 0; i < vec_size; ++i) {
-                            z[i] += wires_[gate.in[i]];
+                            z[pid - 1][i] += wires_[permAndSh_gates[idx_gate].in[i]];
                         }
                     }
                 }
                 for (int i = 0; i < vec_size; ++i) {
-                    wires_[gate.outs[i]] = z[pre_permAndSh->pi[i]] + pre_permAndSh->delta[i].valueAt();
+                    Ring sum = Ring(0);
+                    for (int pid = 0; pid < nP_; ++pid) {
+                        sum += z[pid][pre_permAndSh->pi[i]];
+                    }
+                    wires_[permAndSh_gates[idx_gate].outs[i]] = sum + pre_permAndSh->delta[i].valueAt();
                 }
             }
         }
+        // ms4 = std::chrono::high_resolution_clock::now();
+        // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << ": permAndShEvaluate4 " << std::chrono::duration<double, std::milli>(ms4 - ms3).count() << std::endl;
     }
 
     void OnlineEvaluator::amortzdPnSEvaluate(const std::vector<common::utils::SIMDMOGate> &amortzdPnS_gates) {
@@ -469,10 +509,12 @@ namespace asterisk
                 network_->send(pKing, z.data(), z.size() * sizeof(Ring));
                 // std::cout << "amort 1 sent" << std::endl;
                 // std::cout << "amort 2 recv " << z_recon.size() << std::endl;
+                usleep(50000);
                 network_->recv(pKing, z_recon.data(), z_recon.size() * sizeof(Ring));
                 // std::cout << "amort 2 recvd" << std::endl;
             } else {
                 z_sum.reserve(nP_);
+                usleep(50000);
                 for (int pid = 1; pid <= nP_; ++pid) {
                     std::vector<Ring> z_recv(vec_size);
                     if (pid != pKing) {
@@ -824,6 +866,7 @@ namespace asterisk
             }
         }
 
+        usleep(50000);
         for (int pid = 1; pid <= nP_; ++pid) {
             if (pid != id_) {
                 std::vector<Ring> online_comm_recv_party(total_comm_send);
@@ -893,6 +936,7 @@ namespace asterisk
                     network_->send(pid, output_shares[id_].data(), output_shares[id_].size() * sizeof(Ring));
                 }
             }
+            usleep(50000);
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != id_) {
                     network_->recv(pid, output_shares[pid].data(), output_shares[pid].size() * sizeof(Ring));
@@ -917,6 +961,7 @@ namespace asterisk
                     network_->send(i, &shares.valueAt(), sizeof(Ring));
                 }
             }
+            usleep(50000);
             for (size_t i = 1; i <= nP_; ++i) {
                 Ring share_val = Ring(0);
                 if (i != id_) {
@@ -1209,6 +1254,7 @@ namespace asterisk
             }
         }
 
+        usleep(50000);
         for (int pid = 1; pid <= nP; ++pid) {
             if (pid != id) {
                 size_t nbytes = (total_comm_send + 7) / 8;

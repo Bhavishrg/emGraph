@@ -86,12 +86,13 @@ void benchmark(const bpo::variables_map& opts) {
     auto seed = opts["seed"].as<size_t>();
     auto repeat = opts["repeat"].as<size_t>();
     auto port = opts["port"].as<int>();
+    omp_set_num_threads(nP);
+    std::cout << "Starting benchmarks " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
 
     std::shared_ptr<io::NetIOMP> network = nullptr;
     if (opts["localhost"].as<bool>()) {
         network = std::make_shared<io::NetIOMP>(pid, nP + 1, port, nullptr, true);
-    } 
-    else {
+    } else {
         std::ifstream fnet(opts["net-config"].as<std::string>());
         if (!fnet.good()) {
             fnet.close();
@@ -108,6 +109,7 @@ void benchmark(const bpo::variables_map& opts) {
         }
         network = std::make_shared<io::NetIOMP>(pid, nP + 1, port, ip.data(), false);
     }
+    std::cout << "Network set " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
 
     json output_data;
     output_data["details"] = {{"num_parties", nP},
@@ -126,7 +128,7 @@ void benchmark(const bpo::variables_map& opts) {
 
     auto circ = generateCircuit(network, nP, pid, vec_size).orderGatesByLevel();
 
-    std::cout << "--- Circuit ---" << std::endl;
+    std::cout << "--- Circuit --- " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
     std::cout << circ << std::endl;
     
     std::unordered_map<common::utils::wire_t, int> input_pid_map;
@@ -137,17 +139,17 @@ void benchmark(const bpo::variables_map& opts) {
         }
     }
 
+    network->sync();
     StatsPoint start(*network);
-
     emp::PRG prg(&emp::zero_block, seed);
     OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed);
-    network->sync();
 
     auto preproc = off_eval.run(input_pid_map, vec_size);
-    std::cout << "Preprocessing complete " << preproc.gates.size() << std::endl;
+    std::cout << "Preprocessing complete " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
     network->sync();
-    StatsPoint end_pre(*network);
+    std::cout << "Starting Online Evaluation " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
 
+    StatsPoint online_start(*network);
     OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, threads, seed);
 
     eval.setRandomInputs();
@@ -156,15 +158,18 @@ void benchmark(const bpo::variables_map& opts) {
     for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
         eval.evaluateGatesAtDepth(i);
     }
-    std::cout << "Online Eval complete" << std::endl;
+    std::cout << "Online Eval complete" << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+    StatsPoint end_test(*network);
+    network->sync();
     StatsPoint end(*network);
-    // network->sync();
 
-    auto preproc_rbench = end_pre - start;
-    auto online_rbench = end - end_pre;
+    auto preproc_rbench = online_start - start;
+    auto online_rbench = end - online_start;
+    auto online_test_rbench = end_test - online_start;
     auto rbench = end - start;
     output_data["benchmarks"].push_back(preproc_rbench);
     output_data["benchmarks"].push_back(online_rbench);
+    output_data["benchmarks"].push_back(online_test_rbench);
     output_data["benchmarks"].push_back(rbench);
 
     size_t pre_bytes_sent = 0;
@@ -183,6 +188,7 @@ void benchmark(const bpo::variables_map& opts) {
     // std::cout << "--- Repetition " << r + 1 << " ---" << std::endl;
     std::cout << "preproc time: " << preproc_rbench["time"] << " ms" << std::endl;
     std::cout << "preproc sent: " << pre_bytes_sent << " bytes" << std::endl;
+    std::cout << "online test time: " << online_test_rbench["time"] << " ms" << std::endl;
     std::cout << "online time: " << online_rbench["time"] << " ms" << std::endl;
     std::cout << "online sent: " << online_bytes_sent << " bytes" << std::endl;
     std::cout << "total time: " << rbench["time"] << " ms" << std::endl;

@@ -1,17 +1,18 @@
 #!/bin/bash
 # set -x
 
-dir=$PWD/../Results
+dir=$PWD/../Results-omp
 
 # rm -rf $dir/*.log $dir/g*.json
 rm -rf $dir
 mkdir -p $dir
 vec_size="10000"
 
-for players in {2,5,10,15,20,25}
-# for players in 10
+for players in {2,5,10,15,20}
+# for players in 2
 do
-    # for vec_size in {10000,100000,1000000,10000000}
+    sleep 1
+    # for vec_size in {10000,100000,1000000}
     # do
         # for rounds in {1,2,3}
         for rounds in 1
@@ -26,22 +27,24 @@ do
                     # gdb --args
                     # valgrind --leak-check=full -v
                     # initialization_emgraph
+                    # initialization_graphiti
                     # test_primitives
                     # mpa_emgraph
                     # mpa_graphiti
-                    ./benchmarks/test_primitives -p $party --localhost -v $vec_size -n $players 2>&1 | cat > $log &
+                    ./benchmarks/initialization_graphiti -p $party --localhost -v $vec_size -n $players 2>&1 | cat > $log &
                 else
-                    ./benchmarks/test_primitives -p $party --localhost -v $vec_size -n $players 2>&1 | cat > $log &
+                    ./benchmarks/initialization_graphiti -p $party --localhost -v $vec_size -n $players 2>&1 | cat > $log &
                 fi
                 codes[$party]=$!
             done
 
-            ./benchmarks/test_primitives -p 0 --localhost -v $vec_size -n $players 2>&1 | cat > $tplog &
+            ./benchmarks/initialization_graphiti -p 0 --localhost -v $vec_size -n $players 2>&1 | cat > $tplog &
             codes[0]=$!
             for party in $(seq 0 $players)
             do
                 wait ${codes[$party]} || return 1
             done
         done
+        python3 /code/getAggStat.py $dir/$players\_PC/$vec_size\_Nodes/TestRun/
     # done
 done

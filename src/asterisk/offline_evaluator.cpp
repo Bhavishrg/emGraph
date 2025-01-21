@@ -21,7 +21,7 @@ OfflineEvaluator::OfflineEvaluator(int nP, int my_id,
       circ_(std::move(circ))
       // preproc_(circ.num_gates)
 
-      { tpool_ = std::make_shared<ThreadPool>(threads); }
+      { } // tpool_ = std::make_shared<ThreadPool>(threads); }
 
 void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, AddShare<Ring>& share, TPShare<Ring>& tpShare) {
   Ring val = Ring(0);
@@ -723,6 +723,7 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
   } else if (id_ != nP_) {
     size_t delta_sh_num;
     // std::cout << "1 recv " << sizeof(size_t) << std::endl;
+    usleep(50000);
     network_->recv(0, &delta_sh_num, sizeof(size_t));
     // std::cout << "1 recvd" << std::endl;
     std::vector<std::vector<Ring>> delta_sh(nP_);
@@ -734,6 +735,7 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
   } else {
     std::vector<size_t> lengths(5);
     // std::cout << "3 recv " << lengths.size() << std::endl;
+    usleep(50000);
     network_->recv(0, lengths.data(), sizeof(size_t) * lengths.size());
     // std::cout << "3 recvd" << std::endl;
     size_t arith_comm = lengths[0];

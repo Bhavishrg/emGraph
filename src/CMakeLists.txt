@@ -8,4 +8,4 @@ add_library(Asterisk
     asterisk/online_evaluator_load_balanced.cpp)
 
 target_include_directories(Asterisk PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(Asterisk PUBLIC Boost::system EMPTool NTL GMP)
+target_link_libraries(Asterisk PUBLIC Boost::system EMPTool NTL GMP OpenMP::OpenMP_CXX rt tbb)

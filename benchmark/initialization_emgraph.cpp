@@ -8,6 +8,7 @@
 #include <cmath>
 #include <iostream>
 #include <memory>
+#include <omp.h>
 
 #include "utils.h"
 
@@ -15,9 +16,9 @@ using namespace asterisk;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> network, int nP, int pid, size_t vec_size) {
+void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pid, size_t vec_size) {
 
-    std::cout << "Generating circuit" << std::endl;
+    std::cout << "Initializing Phase Starting " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
     
     common::utils::Circuit<Ring> circ;
 
@@ -37,27 +38,11 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> networ
 
     std::cout << "num_vert " << num_vert << " num_edge " << num_edge << std::endl;
 
-    // INPUT SHARING PHASE
-    std::vector<wire_t> full_vertex_list(num_vert);
-    for (int i = 0; i < num_vert; ++i) {
-        full_vertex_list[i] = circ.newInputWire();
-    }
-    std::vector<std::vector<wire_t>> subg_edge_list(nP);
-    for (int i = 0; i < subg_edge_list.size(); ++i) {
-        std::vector<wire_t> subg_edge_list_party(subg_num_edge[i]);
-        for (int j = 0; j < subg_edge_list[i].size(); ++j) {
-            subg_edge_list_party[j] = circ.newInputWire();
-        }
-        subg_edge_list[i] = subg_edge_list_party;
-    }
-
-    std::cout << "Input sharing done" << std::endl;
-
     // INITIALIZATION PHASE
     if (pid != 0) {
         auto subg_dag_list_size = std::min(num_vert, 2 * subg_num_edge[pid - 1]) + subg_num_edge[pid - 1];
         std::vector<int> perm_send(num_vert + 3 * subg_dag_list_size);
-        std::vector<std::vector<int>> perm_recv;
+        std::vector<std::vector<int>> perm_recv(nP, std::vector<int>(perm_send.size()));
 
         std::vector<int> rand_perm_g(num_vert);
         std::vector<int> perm_g(num_vert);
@@ -99,29 +84,37 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> networ
             perm_send[i + perm_g.size() + perm_s.size() + perm_d.size()] = perm_v[rand_perm_v[i]];
         }
 
-        std::cout << "Sending perms" << std::endl;
+        std::cout << "Sending permutations " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
 
+        #pragma omp parallel for
         for (int i = 1; i <= nP; ++i) {
             if (i != pid) {
+                // std::cout << "Send " << i << std::endl;
                 network->send(i, perm_send.data(), perm_send.size() * sizeof(int));
+                network->flush(i);
+                // std::cout << "Sent " << i << std::endl;
             }
         }
+
+        std::cout << "Receiving permutations " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+        #pragma omp parallel for
         for (int i = 1; i <= nP; ++i) {
             if (i != pid) {
-                std::vector<int> perm_recv_party(perm_send.size());
-                network->recv(i, perm_recv_party.data(), perm_recv_party.size() * sizeof(int));
-                perm_recv.push_back(perm_recv_party);
+                // std::vector<int> perm_recv_party(perm_send.size());
+                // network->recv(i, perm_recv_party.data(), perm_recv_party.size() * sizeof(int));
+                // perm_recv.push_back(perm_recv_party);
+                // std::cout << "Recv " << i << std::endl;
+                usleep(50000);
+                network->recv(i, perm_recv[i - 1].data(), perm_recv[i - 1].size() * sizeof(int));
+                // std::cout << "Recvd " << i << std::endl;
             } else {
-                perm_recv.push_back(perm_send);
+                // perm_recv.push_back(perm_send);
+                std::copy(perm_send.begin(), perm_send.end(), perm_recv[i - 1].begin());
             }
         }
     }
 
-    std::cout << "Initialization done" << std::endl;
-
-    // MESSAGE PASSING
-    auto subg_sorted_vert_list = circ.addMOGate(common::utils::GateType::kAmortzdPnS, full_vertex_list, nP);
-    return circ;
+    std::cout << "Initialization done " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
 }
 
 
@@ -141,6 +134,8 @@ void benchmark(const bpo::variables_map& opts) {
     auto seed = opts["seed"].as<size_t>();
     auto repeat = opts["repeat"].as<size_t>();
     auto port = opts["port"].as<int>();
+    omp_set_num_threads(nP);
+    std::cout << "Starting benchmark " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
 
     std::shared_ptr<io::NetIOMP> network = nullptr;
     if (opts["localhost"].as<bool>()) {
@@ -162,6 +157,7 @@ void benchmark(const bpo::variables_map& opts) {
         }
         network = std::make_shared<io::NetIOMP>(pid, nP + 1, port, ip.data(), false);
     }
+    std::cout << "Network set " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
 
     json output_data;
     output_data["details"] = {{"num_parties", nP},
@@ -178,76 +174,26 @@ void benchmark(const bpo::variables_map& opts) {
     }
     std::cout << std::endl;
 
-    StatsPoint gencirc(*network);
-    auto circ = generateCircuit(network, nP, pid, vec_size).orderGatesByLevel();
-
-    std::cout << "--- Circuit ---" << std::endl;
-    std::cout << circ << std::endl;
-    
-    std::unordered_map<common::utils::wire_t, int> input_pid_map;
-
-    for (const auto& g : circ.gates_by_level[0]) {
-        if (g->type == common::utils::GateType::kInp) {
-            input_pid_map[g->out] = 1;
-        }
-    }
-
-    network->sync();
-    StatsPoint start(*network);
-    emp::PRG prg(&emp::zero_block, seed);
-    OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed);
-
-    auto preproc = off_eval.run(input_pid_map, vec_size);
-    std::cout << "Preprocessing complete " << preproc.gates.size() << std::endl;
-    network->sync();
-
-    StatsPoint online_start(*network);
-    OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, threads, seed);
-
-    eval.setRandomInputs();
-    std::cout << "Inputs set" << std::endl;
-
-    for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
-        eval.evaluateGatesAtDepth(i);
-    }
-    std::cout << "Online Eval complete" << std::endl;
-    StatsPoint end(*network);
     // network->sync();
+    StatsPoint init_start(*network);
+    initializePermutations(network, nP, pid, vec_size);
+    StatsPoint init_end(*network);
+    network->sync();
+    StatsPoint init_sync_end(*network);
 
-    auto gencirc_rbench = start - gencirc;
-    auto preproc_rbench = online_start - start;
-    auto online_rbench = end - online_start;
-    auto rbench = end - start;
-    output_data["benchmarks"].push_back(gencirc_rbench);
-    output_data["benchmarks"].push_back(preproc_rbench);
-    output_data["benchmarks"].push_back(online_rbench);
+    auto rbench = init_end - init_start;
+    auto sync_rbench = init_sync_end - init_start;
+    output_data["benchmarks"].push_back(sync_rbench);
     output_data["benchmarks"].push_back(rbench);
 
-    size_t gencirc_bytes_sent = 0;
-    for (const auto& val : gencirc_rbench["communication"]) {
-        gencirc_bytes_sent += val.get<int64_t>();
-    }
-    size_t pre_bytes_sent = 0;
-    for (const auto& val : preproc_rbench["communication"]) {
-        pre_bytes_sent += val.get<int64_t>();
-    }
-    size_t online_bytes_sent = 0;
-    for (const auto& val : online_rbench["communication"]) {
-        online_bytes_sent += val.get<int64_t>();
-    }
     size_t bytes_sent = 0;
     for (const auto& val : rbench["communication"]) {
         bytes_sent += val.get<int64_t>();
     }
 
     // std::cout << "--- Repetition " << r + 1 << " ---" << std::endl;
-    std::cout << "gencirc time: " << gencirc_rbench["time"] << " ms" << std::endl;
-    std::cout << "gencirc sent: " << gencirc_bytes_sent << " bytes" << std::endl;
-    std::cout << "preproc time: " << preproc_rbench["time"] << " ms" << std::endl;
-    std::cout << "preproc sent: " << pre_bytes_sent << " bytes" << std::endl;
-    std::cout << "online time: " << online_rbench["time"] << " ms" << std::endl;
-    std::cout << "online sent: " << online_bytes_sent << " bytes" << std::endl;
     std::cout << "total time: " << rbench["time"] << " ms" << std::endl;
+    std::cout << "total sync time: " << sync_rbench["time"] << " ms" << std::endl;
     std::cout << "total sent: " << bytes_sent << " bytes" << std::endl;
     std::cout << std::endl;
 
