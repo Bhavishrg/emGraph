@@ -67,19 +67,10 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen,
 }
 
 // TODO: change to random permutations from identity permutations
-void OfflineEvaluator::randomPermutation(int nP, int pid, RandGenPool& rgen,
-                                         std::vector<int>& pi, std::vector<std::vector<int>>& tp_pi_all, size_t& vec_size) {
-  if (pid == 0) {
-    std::vector<int> rand_pi(vec_size);
-    for (int i = 0; i < nP; ++i) {
-      for (int j = 0; j < vec_size; ++j) {
-        rand_pi[j] = j; // sample using key common to HP and P_i
-      }
-      tp_pi_all[i] = rand_pi;
-    }
-  } else {
+void OfflineEvaluator::randomPermutation(int nP, int pid, RandGenPool& rgen, std::vector<int>& pi, size_t& vec_size) {
+  if (pid != 0) {
     for (int i = 0; i < vec_size; ++i) {
-      pi[i] = i; // sample using key common to HP and P_i or common to all P_i except for HP if computing pi_common
+      pi[i] = i; // sample using key common to all P_i except for HP if computing pi_common
     }
   }
 }
@@ -136,7 +127,7 @@ void OfflineEvaluator::generatePermAndShDeltaVector(int nP, int pid, RandGenPool
 
 void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils::wire_t, int>& input_pid_map, 
                                          std::vector<Ring>& rand_sh_sec, std::vector<BoolRing>& b_rand_sh_sec,
-                                         std::vector<std::vector<Ring>>& delta_sh, size_t& vec_size) {
+                                         std::vector<std::vector<Ring>>& delta_sh) {
   size_t idx_rand_sh_sec = 0;
   size_t idx_delta_sh = 0;
   size_t b_idx_rand_sh_sec = 0;
@@ -589,23 +580,32 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
         }
 
         case common::utils::GateType::kShuffle: {
+          auto *shuffle_g = static_cast<common::utils::SIMDOGate *>(gate.get());
+          auto vec_size = shuffle_g->in.size();
           std::vector<AddShare<Ring>> a(vec_size); // Randomly sampled vector
           std::vector<TPShare<Ring>> tp_a(vec_size); // Randomly sampled vector
           std::vector<AddShare<Ring>> b(vec_size); // Randomly sampled vector
           std::vector<TPShare<Ring>> tp_b(vec_size); // Randomly sampled vector
           std::vector<AddShare<Ring>> c(vec_size); // Randomly sampled vector
           std::vector<TPShare<Ring>> tp_c(vec_size); // Randomly sampled vector
-          std::vector<AddShare<Ring>> delta(vec_size); // Delta vector only held by the last party. Dummy values for the other parties
-          std::vector<int> pi(vec_size); // Randomly sampled permutation using HP
-          std::vector<std::vector<int>> tp_pi_all(nP_); // Randomly sampled permutations of all parties using HP
-          std::vector<int> pi_common(vec_size); // Common random permutation held by all parties except HP. HP holds dummy values
           for (int i = 0; i < vec_size; i++) {
             randomShare(nP_, id_, rgen_, a[i], tp_a[i]);
             randomShare(nP_, id_, rgen_, b[i], tp_b[i]);
             randomShare(nP_, id_, rgen_, c[i], tp_c[i]);
           }
-          randomPermutation(nP_, id_, rgen_, pi, tp_pi_all, vec_size);
-          if (id_ > 0) { randomPermutation(nP_, id_, rgen_, pi_common, tp_pi_all, vec_size); }
+
+          std::vector<int> pi; // Randomly sampled permutation using HP
+          std::vector<std::vector<int>> tp_pi_all; // Randomly sampled permutations of all parties using HP
+          if (id_ != 0) {
+            pi = std::move(shuffle_g->permutation[0]);
+          } else {
+            tp_pi_all = std::move(shuffle_g->permutation);
+          }
+
+          std::vector<int> pi_common(vec_size); // Common random permutation held by all parties except HP. HP holds dummy values
+          if (id_ != 0) { randomPermutation(nP_, id_, rgen_, pi_common, vec_size); }
+
+          std::vector<AddShare<Ring>> delta(vec_size); // Delta vector only held by the last party. Dummy values for the other parties
           generateShuffleDeltaVector(nP_, id_, rgen_, delta, tp_a, tp_b, tp_c, tp_pi_all, vec_size, rand_sh_sec, idx_rand_sh_sec);
           preproc_.gates[gate->out] =
               std::move(std::make_unique<PreprocShuffleGate<Ring>>(a, tp_a, b, tp_b, c, tp_c, delta, pi, tp_pi_all, pi_common));
@@ -613,20 +613,29 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
         }
 
         case common::utils::GateType::kPermAndSh: {
+          auto *permAndSh_g = static_cast<common::utils::SIMDOGate *>(gate.get());
+          auto vec_size = permAndSh_g->in.size();
           std::vector<AddShare<Ring>> a(vec_size); // Randomly sampled vector
           std::vector<TPShare<Ring>> tp_a(vec_size); // Randomly sampled vector
           std::vector<AddShare<Ring>> b(vec_size); // Randomly sampled vector
           std::vector<TPShare<Ring>> tp_b(vec_size); // Randomly sampled vector
-          std::vector<AddShare<Ring>> delta(vec_size); // Delta vector only held by the gate owner party. Dummy values for the other parties
-          std::vector<int> pi(vec_size); // Randomly sampled permutation using HP
-          std::vector<std::vector<int>> tp_pi_all(nP_); // Randomly sampled permutation of gate owner party using HP.
-          std::vector<int> pi_common(vec_size); // Common random permutation held by all parties except HP. HP holds dummy values
           for (int i = 0; i < vec_size; i++) {
             randomShare(nP_, id_, rgen_, a[i], tp_a[i]);
             randomShare(nP_, id_, rgen_, b[i], tp_b[i]);
           }
-          randomPermutation(nP_, id_, rgen_, pi, tp_pi_all, vec_size);
-          if (id_ != 0) { randomPermutation(nP_, id_, rgen_, pi_common, tp_pi_all, vec_size); }
+
+          std::vector<int> pi; // Randomly sampled permutation using HP
+          std::vector<std::vector<int>> tp_pi_all; // Randomly sampled permutation of gate owner party using HP.
+          if (id_ != 0) {
+            pi = std::move(permAndSh_g->permutation[0]);
+          } else {
+            tp_pi_all = std::move(permAndSh_g->permutation);
+          }
+
+          std::vector<int> pi_common(vec_size); // Common random permutation held by all parties except HP. HP holds dummy values
+          if (id_ != 0) { randomPermutation(nP_, id_, rgen_, pi_common, vec_size); }
+
+          std::vector<AddShare<Ring>> delta(vec_size); // Delta vector only held by the gate owner party. Dummy values for the other parties
           generatePermAndShDeltaVector(nP_, id_, rgen_, gate->owner, delta, tp_a, tp_b,
                                        tp_pi_all[gate->owner - 1], vec_size, delta_sh[gate->owner - 1], idx_delta_sh);
           preproc_.gates[gate->out] =
@@ -635,20 +644,29 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
         }
 
         case common::utils::GateType::kAmortzdPnS: {
+          auto *amortzdPnS_g = static_cast<common::utils::SIMDMOGate *>(gate.get());
+          auto vec_size = amortzdPnS_g->in.size();
           std::vector<AddShare<Ring>> a(vec_size); // Randomly sampled vector
           std::vector<TPShare<Ring>> tp_a(vec_size); // Randomly sampled vector
           std::vector<AddShare<Ring>> b(vec_size); // Randomly sampled vector
           std::vector<TPShare<Ring>> tp_b(vec_size); // Randomly sampled vector
-          std::vector<AddShare<Ring>> delta(vec_size); // Delta vector only held by all parties for their respective permutation
-          std::vector<int> pi(vec_size); // TODO: This should come as input from the party and then secret shared
-          std::vector<std::vector<int>> tp_pi_all(nP_); // Randomly sampled permutations of all parties using HP
-          std::vector<int> pi_common(vec_size); // Common random permutation held by all parties except HP. HP holds dummy values
           for (int i = 0; i < vec_size; i++) {
             randomShare(nP_, id_, rgen_, a[i], tp_a[i]);
             randomShare(nP_, id_, rgen_, b[i], tp_b[i]);
           }
-          randomPermutation(nP_, id_, rgen_, pi, tp_pi_all, vec_size);
-          if (id_ != 0) { randomPermutation(nP_, id_, rgen_, pi_common, tp_pi_all, vec_size); }
+
+          std::vector<int> pi; // Randomly sampled permutation using HP
+          std::vector<std::vector<int>> tp_pi_all; // Randomly sampled permutations of all parties using HP
+          if (id_ != 0) {
+            pi = std::move(amortzdPnS_g->permutation[0]);
+          } else {
+            tp_pi_all = std::move(amortzdPnS_g->permutation);
+          }
+
+          std::vector<int> pi_common(vec_size); // Common random permutation held by all parties except HP. HP holds dummy values
+          if (id_ != 0) { randomPermutation(nP_, id_, rgen_, pi_common, vec_size); }
+
+          std::vector<AddShare<Ring>> delta(vec_size); // Delta vector only held by all parties for their respective permutation
           for (int pid = 1; pid <= nP_; ++pid) {
             generatePermAndShDeltaVector(nP_, id_, rgen_, pid, delta, tp_a, tp_b,
                                          tp_pi_all[pid - 1], vec_size, delta_sh[pid - 1], idx_delta_sh);
@@ -667,22 +685,18 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
 }
 
 
-void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire_t, int>& input_pid_map, size_t& vec_size) {
+void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire_t, int>& input_pid_map) {
   std::vector<Ring> rand_sh_sec;
   std::vector<BoolRing> b_rand_sh_sec;
   std::vector<std::vector<Ring>> delta_sh(nP_, std::vector<Ring>());
 
   if (id_ == 0) {
-    setWireMasksParty(input_pid_map, rand_sh_sec, b_rand_sh_sec, delta_sh, vec_size);
+    setWireMasksParty(input_pid_map, rand_sh_sec, b_rand_sh_sec, delta_sh);
 
     for (int pid = 1; pid < nP_; ++pid) {
       size_t delta_sh_num = delta_sh[pid - 1].size();
-      // std::cout << "1 send: " << sizeof(size_t) << std::endl;
       network_->send(pid, &delta_sh_num, sizeof(size_t));
-      // std::cout << "1 sent" << std::endl;
-      // std::cout << "2 send: " << delta_sh_num << std::endl;
       network_->send(pid, delta_sh[pid - 1].data(), delta_sh_num * sizeof(size_t));
-      // std::cout << "2 sent" << std::endl;
     }
 
     size_t rand_sh_sec_num = rand_sh_sec.size();
@@ -696,11 +710,8 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
     lengths[2] = bool_comm;
     lengths[3] = b_rand_sh_sec_num;
     lengths[4] = delta_sh_last_num;
-    // std::cout << lengths[0] << " " << lengths[1] << " " << lengths[2] << " " << lengths[3] << " " << lengths[4] << std::endl;
-
-    // std::cout << "3 send: " << lengths.size() << std::endl;
+  
     network_->send(nP_, lengths.data(), sizeof(size_t) * lengths.size());
-    // std::cout << "3 sent" << std::endl;
 
     std::vector<Ring> offline_arith_comm(arith_comm);
     std::vector<BoolRing> offline_bool_comm(bool_comm);
@@ -711,65 +722,40 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
       offline_bool_comm[i] = b_rand_sh_sec[i];
     }
     auto net_data = BoolRing::pack(offline_bool_comm.data(), bool_comm);
-    // std::cout << "4 send: " << arith_comm << std::endl;
     network_->send(nP_, offline_arith_comm.data(), sizeof(Ring) * arith_comm);
-    // std::cout << "4 sent" << std::endl;
-    // std::cout << "5 send: " << net_data.size() << std::endl;
     network_->send(nP_, net_data.data(), sizeof(uint8_t) * net_data.size());
-    // std::cout << "5 sent" << std::endl;
-    // std::cout << "6 send: " << delta_sh_last_num << std::endl;
     network_->send(nP_, delta_sh[nP_ - 1].data(), sizeof(Ring) * delta_sh_last_num);
-    // std::cout << "6 sent" << std::endl;
+
   } else if (id_ != nP_) {
+
     size_t delta_sh_num;
-    // std::cout << "1 recv " << sizeof(size_t) << std::endl;
     usleep(50000);
     network_->recv(0, &delta_sh_num, sizeof(size_t));
-    // std::cout << "1 recvd" << std::endl;
     std::vector<std::vector<Ring>> delta_sh(nP_);
     delta_sh[id_ - 1] = std::vector<Ring>(delta_sh_num);
-    // std::cout << "2 recv " << delta_sh_num << std::endl;
     network_->recv(0, delta_sh[id_ - 1].data(), delta_sh_num * sizeof(Ring));
-    // std::cout << "2 recvd" << std::endl;
-    setWireMasksParty(input_pid_map, rand_sh_sec, b_rand_sh_sec, delta_sh, vec_size);
+    setWireMasksParty(input_pid_map, rand_sh_sec, b_rand_sh_sec, delta_sh);
+
   } else {
+
     std::vector<size_t> lengths(5);
-    // std::cout << "3 recv " << lengths.size() << std::endl;
     usleep(50000);
     network_->recv(0, lengths.data(), sizeof(size_t) * lengths.size());
-    // std::cout << "3 recvd" << std::endl;
     size_t arith_comm = lengths[0];
     size_t rand_sh_sec_num = lengths[1];
     size_t bool_comm = lengths[2];
     size_t b_rand_sh_sec_num = lengths[3];
     size_t delta_sh_num = lengths[4];
 
-    auto max_vector_size = 623782648909640;
-    // std::cout << "setWireMasks5 " << lengths[0] << " " << lengths[1] << " " << lengths[2] << " " << lengths[3] << " " << lengths[4] << std::endl;
-    if (arith_comm > max_vector_size) {
-      std::cout << "Weird Error happening" << std::endl;
-      arith_comm = 0;
-      rand_sh_sec_num = 0;
-      bool_comm = 0;
-      b_rand_sh_sec_num = 0;
-      delta_sh_num = 0;
-    }
-
     std::vector<Ring> offline_arith_comm(arith_comm);
-    // std::cout << "4 recv " << arith_comm << std::endl;
     network_->recv(0, offline_arith_comm.data(), sizeof(Ring) * arith_comm);
-    // std::cout << "4 recvd" << std::endl;
 
     size_t nbytes = (bool_comm + 7) / 8;
     std::vector<uint8_t> net_data(nbytes);
-    // std::cout << "5 recv " << nbytes << std::endl;
     network_->recv(0, net_data.data(), nbytes * sizeof(uint8_t));
-    // std::cout << "5 recvd" << std::endl;
     std::vector<std::vector<Ring>> delta_sh(nP_);
     delta_sh[id_ - 1] = std::vector<Ring>(delta_sh_num);
-    // std::cout << "6 recv " << delta_sh_num << std::endl;
     network_->recv(0, delta_sh[id_ - 1].data(), sizeof(Ring) * delta_sh_num);
-    // std::cout << "6 recvd" << std::endl;
     auto offline_bool_comm = BoolRing::unpack(net_data.data(), bool_comm);
 
     rand_sh_sec.resize(rand_sh_sec_num);
@@ -780,7 +766,7 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
     for (int i = 0; i < b_rand_sh_sec_num; i++) {
       b_rand_sh_sec[i] = offline_bool_comm[i];
     }
-    setWireMasksParty(input_pid_map, rand_sh_sec, b_rand_sh_sec, delta_sh, vec_size);
+    setWireMasksParty(input_pid_map, rand_sh_sec, b_rand_sh_sec, delta_sh);
   }
 }
 
@@ -788,8 +774,8 @@ PreprocCircuit<Ring> OfflineEvaluator::getPreproc() {
   return std::move(preproc_);
 }
 
-PreprocCircuit<Ring> OfflineEvaluator::run(const std::unordered_map<common::utils::wire_t, int>& input_pid_map, size_t& vec_size) {
-  setWireMasks(input_pid_map, vec_size);
+PreprocCircuit<Ring> OfflineEvaluator::run(const std::unordered_map<common::utils::wire_t, int>& input_pid_map) {
+  setWireMasks(input_pid_map);
   return std::move(preproc_);
 }
 

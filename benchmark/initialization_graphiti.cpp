@@ -108,7 +108,7 @@ void benchmark(const bpo::variables_map& opts) {
     emp::PRG prg(&emp::zero_block, seed);
     OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed);
 
-    auto preproc = off_eval.run(input_pid_map, vec_size);
+    auto preproc = off_eval.run(input_pid_map);
     std::cout << "Preprocessing complete " << preproc.gates.size() << std::endl;
     network->sync();
 

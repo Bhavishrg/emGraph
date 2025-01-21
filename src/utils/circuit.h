@@ -37,6 +37,7 @@ enum GateType {
   kShuffle,
   kPermAndSh,
   kAmortzdPnS,
+  kPublicPerm,
   kInvalid,
   NumGates
 };
@@ -85,8 +86,7 @@ struct FIn4Gate : public Gate {
   wire_t in4{0};
 
   FIn4Gate() = default;
-  FIn4Gate(GateType type, wire_t in1, wire_t in2, 
-            wire_t in3, wire_t in4, wire_t out);
+  FIn4Gate(GateType type, wire_t in1, wire_t in2, wire_t in3, wire_t in4, wire_t out);
 };
 
 // Represents a gate with fan-in 1.
@@ -105,8 +105,7 @@ struct SIMDGate : public Gate {
   std::vector<wire_t> in2{0};
 
   SIMDGate() = default;
-  SIMDGate(GateType type, std::vector<wire_t> in1, std::vector<wire_t> in2,
-           wire_t out);
+  SIMDGate(GateType type, std::vector<wire_t> in1, std::vector<wire_t> in2, wire_t out);
 };
 
 // Represents a gate used to denote SIMD operations.
@@ -114,9 +113,10 @@ struct SIMDGate : public Gate {
 // might not necessarily be SIMD e.g., shuffle, permute+share.
 struct SIMDOGate : public Gate {
   std::vector<wire_t> in{0};
+  std::vector<std::vector<int>> permutation{0};
 
   SIMDOGate() = default;
-  SIMDOGate(GateType type, int owner, std::vector<wire_t> in, std::vector<wire_t> out);
+  SIMDOGate(GateType type, int owner, std::vector<wire_t> in, std::vector<wire_t> out, std::vector<std::vector<int>> permutation);
 };
 
 // Represents a gate used to denote SIMD operations.
@@ -124,9 +124,11 @@ struct SIMDOGate : public Gate {
 // might not necessarily be SIMD e.g., amortized permute+share.
 struct SIMDMOGate : public Gate {
   std::vector<wire_t> in{0};
+  std::vector<std::vector<int>> permutation{0};
 
   SIMDMOGate() = default;
-  SIMDMOGate(GateType type, int owner, std::vector<wire_t> in, std::vector<std::vector<wire_t>> multi_outs);
+  SIMDMOGate(GateType type, int owner, std::vector<wire_t> in, std::vector<std::vector<wire_t>> multi_outs,
+             std::vector<std::vector<int>> permutation);
 };
 
 // Represents gates where one input is a constant.
@@ -171,7 +173,7 @@ class Circuit {
 
   // Methods to manually build a circuit.
   wire_t newInputWire() {
-    wire_t wid = num_wires; // gates_.size();
+    wire_t wid = num_wires;
     gates_.push_back(std::make_shared<Gate>(GateType::kInp, wid));
     num_wires += 1;
     return wid;
@@ -196,7 +198,7 @@ class Circuit {
       throw std::invalid_argument("Invalid wire ID.");
     }
 
-    wire_t output = num_wires; // gates_.size();
+    wire_t output = num_wires;
     gates_.push_back(std::make_shared<FIn2Gate>(type, input1, input2, output));
     num_wires += 1;
 
@@ -213,7 +215,7 @@ class Circuit {
       throw std::invalid_argument("Invalid wire ID.");
     }
 
-    wire_t output = num_wires; // gates_.size();
+    wire_t output = num_wires;
     gates_.push_back(std::make_shared<FIn3Gate>(type, input1, input2, input3, output));
     num_wires += 1;
 
@@ -232,7 +234,7 @@ class Circuit {
       throw std::invalid_argument("Invalid wire ID.");
     }
 
-    wire_t output = num_wires; // gates_.size();
+    wire_t output = num_wires;
     gates_.push_back(std::make_shared<FIn4Gate>(type, input1, input2, 
                                           input3, input4, output));
     num_wires += 1;
@@ -251,7 +253,7 @@ class Circuit {
       throw std::invalid_argument("Invalid wire ID.");
     }
 
-    wire_t output = num_wires; // gates_.size();
+    wire_t output = num_wires;
     gates_.push_back(std::make_shared<ConstOpGate<R>>(type, wid, cval, output));
     num_wires += 1;
 
@@ -269,7 +271,7 @@ class Circuit {
       throw std::invalid_argument("Invalid wire ID.");
     }
 
-    wire_t output = num_wires; // gates_.size();
+    wire_t output = num_wires;
     gates_.push_back(std::make_shared<FIn1Gate>(type, input, output));
     num_wires += 1;
 
@@ -293,52 +295,101 @@ class Circuit {
       }
     }
 
-    wire_t output = num_wires; // gates_.size();
+    wire_t output = num_wires;
     gates_.push_back(std::make_shared<SIMDGate>(type, input1, input2, output));
     num_wires += 1;
     return output;
   }
 
   // Function to add a multiple in + out gate.
-  std::vector<wire_t> addMGate(GateType type, const std::vector<wire_t>& input, int owner = 0) {
+  std::vector<wire_t> addMGate(GateType type, const std::vector<wire_t>& input, const std::vector<std::vector<int>> &permutation,
+                               int owner = 0) {
     if (type != GateType::kShuffle && type != GateType::kPermAndSh) {
       throw std::invalid_argument("Invalid gate type.");
     }
 
     for (size_t i = 0; i < input.size(); i++) {
       if (!isWireValid(input[i])) {
-        throw std::invalid_argument("Invalid wire ID. M");
+        throw std::invalid_argument("Invalid wire ID.");
+      }
+    }
+
+    if (permutation.size() == 0) {
+      throw std::invalid_argument("No permutation passed.");
+    }
+
+    for (size_t i = 0; i < permutation.size(); ++i) {
+      if (input.size() != permutation[i].size()) {
+        throw std::invalid_argument("Permutation size mismatch.");
       }
     }
 
     std::vector<wire_t> output(input.size());
     for (int i = 0; i < input.size(); i++) {
-      output[i] = i + num_wires; // gates_.size();
+      output[i] = i + num_wires;
     }
-    gates_.push_back(std::make_shared<SIMDOGate>(type, owner, input, output));
+    gates_.push_back(std::make_shared<SIMDOGate>(type, owner, input, output, permutation));
+    num_wires += input.size();
+    return output;
+  }
+
+  std::vector<wire_t> addConstOpMGate(GateType type, const std::vector<wire_t>& input, const std::vector<int> &permutation) {
+    if (type != GateType::kPublicPerm) {
+      throw std::invalid_argument("Invalid gate type.");
+    }
+
+    if (input.size() != permutation.size()) {
+      throw std::invalid_argument("Permutation size mismatch.");
+    }
+
+    for (size_t i = 0; i < input.size(); i++) {
+      if (!isWireValid(input[i])) {
+        throw std::invalid_argument("Invalid wire ID.");
+      }
+    }
+
+    std::vector<std::vector<int>> permutation_wrapper(1);
+    permutation_wrapper[0] = std::move(permutation);
+
+    std::vector<wire_t> output(input.size());
+    for (int i = 0; i < input.size(); i++) {
+      output[i] = i + num_wires;
+    }
+    gates_.push_back(std::make_shared<SIMDOGate>(type, 0, input, output, permutation_wrapper));
     num_wires += input.size();
     return output;
   }
 
   // Function to add a multiple in + out gate.
-  std::vector<std::vector<wire_t>> addMOGate(GateType type, const std::vector<wire_t>& input, int nP) {
+  std::vector<std::vector<wire_t>> addMOGate(GateType type, const std::vector<wire_t>& input, const std::vector<std::vector<int>> &permutation,
+                                             int nP) {
     if (type != GateType::kAmortzdPnS) {
       throw std::invalid_argument("Invalid gate type.");
     }
 
     for (size_t i = 0; i < input.size(); i++) {
       if (!isWireValid(input[i])) {
-        throw std::invalid_argument("Invalid wire ID. MO");
+        throw std::invalid_argument("Invalid wire ID.");
+      }
+    }
+
+    if (permutation.size() == 0) {
+      throw std::invalid_argument("No permutation passed.");
+    }
+
+    for (size_t i = 0; i < permutation.size(); ++i) {
+      if (input.size() != permutation[i].size()) {
+        throw std::invalid_argument("Permutation size mismatch.");
       }
     }
 
     std::vector<std::vector<wire_t>> output(nP, std::vector<wire_t>(input.size()));
     for (int pid = 0; pid < nP; ++pid) {
       for (int i = 0; i < input.size(); i++) {
-        output[pid][i] = pid * nP + i + num_wires; // gates_.size();
+        output[pid][i] = pid * nP + i + num_wires;
       }
     }
-    gates_.push_back(std::make_shared<SIMDMOGate>(type, 0, input, output));
+    gates_.push_back(std::make_shared<SIMDMOGate>(type, 0, input, output, permutation));
     num_wires += nP * input.size();
     return output;
   }
@@ -452,6 +503,19 @@ class Circuit {
           break;
         }
 
+        case GateType::kPublicPerm: {
+          const auto* g = static_cast<SIMDOGate*>(gate.get());
+          size_t gate_depth = 0;
+          for (size_t i = 0; i < g->in.size(); i++) {
+            gate_depth = std::max({gate_level[g->in[i]], gate_depth});
+          }
+          for (int i = 0; i < g->outs.size(); i++) {
+            gate_level[g->outs[i]] = gate_depth;
+          }
+          depth = std::max(depth, gate_level[gate->outs[0]]);
+          break;
+        }
+
         default:
           break;
       }
@@ -462,7 +526,7 @@ class Circuit {
     std::vector<std::vector<gate_ptr_t>> gates_by_level(depth + 1);
     for (const auto& gate : gates_) {
       res.count[gate->type]++;
-      if (gate->type == GateType::kShuffle || gate->type == GateType::kPermAndSh) {
+      if (gate->type == GateType::kShuffle || gate->type == GateType::kPermAndSh || gate->type == GateType::kPublicPerm) {
         gates_by_level[gate_level[gate->outs[0]]].push_back(gate);
       } else if (gate->type == GateType::kAmortzdPnS) {
         gates_by_level[gate_level[gate->multi_outs[0][0]]].push_back(gate);

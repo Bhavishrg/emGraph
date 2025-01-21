@@ -20,16 +20,27 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
 
     std::cout << "Generating circuit" << std::endl;
 
+    std::vector<std::vector<int>> permutation;
+    std::vector<int> tmp_perm(vec_size);
+    for (int i = 0; i < vec_size; ++i) {
+        tmp_perm[i] = i;
+    }
+    permutation.push_back(tmp_perm);
+    if (pid == 0) {
+        for (int i = 1; i < nP; ++i) {
+            permutation.push_back(tmp_perm);
+        }
+    }
+
     common::utils::Circuit<Ring> circ;
-    int in_size = vec_size / nP;
+    int in_size = vec_size;
     for (int p = 0; p < nP; ++p) {
         std::vector<wire_t> input(in_size);
         for (int i = 0; i < input.size(); ++i) {
             input[i] = circ.newInputWire();
             // std::cout << "in " << input[i] << std::endl;
         }
-        auto tmp = circ.addMGate(common::utils::GateType::kPermAndSh, input, p + 1);
-        auto out = circ.addMGate(common::utils::GateType::kPermAndSh, tmp, p + 1);
+        auto out = circ.addConstOpMGate(common::utils::GateType::kPublicPerm, input, tmp_perm);
         for (int i = 0; i < out.size(); ++i) {
             // std::cout << "out " << out[i] << std::endl;
             circ.setAsOutput(out[i]);
@@ -152,7 +163,7 @@ void benchmark(const bpo::variables_map& opts) {
     emp::PRG prg(&emp::zero_block, seed);
     OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed);
 
-    auto preproc = off_eval.run(input_pid_map, vec_size);
+    auto preproc = off_eval.run(input_pid_map);
     std::cout << "Preprocessing complete " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
     network->sync();
     std::cout << "Starting Online Evaluation " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;

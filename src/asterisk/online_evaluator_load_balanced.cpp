@@ -89,22 +89,16 @@ namespace asterisk
         // Reconstruct the masked input d
         std::vector<Ring> recon_vals(num_eqz_gates, 0);
         if (id_ != pKing) {
-            // std::cout << pKing << " eqz 1 send " << all_share_send.size() << std::endl;
             network_->send(pKing, all_share_send.data(), all_share_send.size() * sizeof(Ring));
-            // std::cout << "eqz 1 sent" << std::endl;
-            // std::cout << "eqz 2 recv " << recon_vals.size() << std::endl;
             usleep(50000);
             network_->recv(pKing, recon_vals.data(), recon_vals.size() * sizeof(Ring));
-            // std::cout << "eqz 2 recvd" << std::endl;
         } else {
             std::vector<Ring> share_recv;
             usleep(50000);
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != pKing) {
                     share_recv.resize(num_eqz_gates);
-                    // std::cout << pid << " eqz 1 recv " << share_recv.size() << std::endl;
                     network_->recv(pid, share_recv.data(), share_recv.size() * sizeof(Ring));
-                    // std::cout << "eqz 1 recvd" << std::endl;
                 } else {
                     share_recv.insert(share_recv.begin(), all_share_send.begin(), all_share_send.end());
                 }
@@ -114,9 +108,7 @@ namespace asterisk
             }
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != pKing) {
-                    // std::cout << "eqz 2 send " << recon_vals.size() << std::endl;
                     network_->send(pid, recon_vals.data(), recon_vals.size() * sizeof(Ring));
-                    // std::cout << "eqz 2 sent" << std::endl;
                 }
             }
         }
@@ -145,13 +137,9 @@ namespace asterisk
         std::vector<Ring> recon_out(num_eqz_gates);
         if (id_ != pKing) {
             auto net_data_send = BoolRing::pack(all_out_send.data(), all_out_send.size());
-            // std::cout << "eqz 3 send " << net_data_send.size() << std::endl;
             network_->send(pKing, net_data_send.data(), net_data_send.size() * sizeof(uint8_t));
-            // std::cout << "eqz 3 sent" << std::endl;
-            // std::cout << "eqz 4 recv " << recon_out.size() << std::endl;
             usleep(50000);
             network_->recv(pKing, recon_out.data(), recon_out.size() * sizeof(Ring));
-            // std::cout << "eqz 4 recvd" << std::endl;
         } else {
             auto nbytes = (all_out_send.size() + 7) / 8;
             std::vector<uint8_t> out_recv(nbytes);
@@ -161,9 +149,7 @@ namespace asterisk
             for (int pid = 1; pid <= nP_; ++pid) {
                 all_out_recv.clear();
                 if (pid != pKing) {
-                    // std::cout << "eqz 3 recv " << out_recv.size() << std::endl;
                     network_->recv(pid, out_recv.data(), out_recv.size() * sizeof(uint8_t));
-                    // std::cout << "eqz 3 recvd" << std::endl;
                     all_out_recv = BoolRing::unpack(out_recv.data(), all_out_send.size());
                 } else {
                     all_out_recv = all_out_send;
@@ -181,9 +167,7 @@ namespace asterisk
             }
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != pKing) {
-                    // std::cout << "eqz 4 send " << recon_out.size() << std::endl;
                     network_->send(pid, recon_out.data(), recon_out.size() * sizeof(Ring));
-                    // std::cout << "eqz 4 sent" << std::endl;
                 }
             }
         }
@@ -215,13 +199,9 @@ namespace asterisk
         std::vector<Ring> recon_vals_a(num_ltz_gates, 0); // a = x + r
         std::vector<Ring> recon_vals_b(num_ltz_gates, M); // b = a + M
         if (id_ != pKing) {
-            // std::cout << "ltz 1 send " << all_share_send.size() << std::endl;
             network_->send(pKing, all_share_send.data(), all_share_send.size() * sizeof(Ring));
-            // std::cout << "ltz 1 sent" << std::endl;
-            // std::cout << "ltz 2 recv " << recon_vals_a.size() << std::endl;
             usleep(50000);
             network_->recv(pKing, recon_vals_a.data(), recon_vals_a.size() * sizeof(Ring));
-            // std::cout << "ltz 2 recvd" << std::endl;
             for (int i = 0; i < num_ltz_gates; ++i) {
                 recon_vals_b[i] += recon_vals_a[i];
             }
@@ -231,9 +211,7 @@ namespace asterisk
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != pKing) {
                     share_recv.resize(num_ltz_gates);
-                    // std::cout << "ltz 1 recv " << share_recv.size() << std::endl;
                     network_->recv(pid, share_recv.data(), share_recv.size() * sizeof(Ring));
-                    // std::cout << "ltz 1 recvd" << std::endl;
                 } else {
                     share_recv.insert(share_recv.begin(), all_share_send.begin(), all_share_send.end());
                 }
@@ -244,9 +222,7 @@ namespace asterisk
             }
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != pKing) {
-                    // std::cout << "ltz 2 send " << recon_vals_a.size() << std::endl;
                     network_->send(pid, recon_vals_a.data(), recon_vals_a.size() * sizeof(Ring));
-                    // std::cout << "ltz 2 sent" << std::endl;
                 }
             }
         }
@@ -256,7 +232,6 @@ namespace asterisk
         for (int i = 0; i < num_ltz_gates; ++i) {
             auto recon_a_bits = bitDecomposeTwo(recon_vals_a[i]);
             auto recon_b_bits = bitDecomposeTwo(recon_vals_b[i]);
-            // std::cout << "LTZ Eval " << i << " " << prefixOR_circ.gates_by_level[0].size() << std::endl;
             for (int j = 0; j < prefixOR_circ.gates_by_level[0].size(); ++j) {
                 const auto &gate = prefixOR_circ.gates_by_level[0][j];
                 if (gate->type == common::utils::GateType::kInp) {
@@ -284,13 +259,9 @@ namespace asterisk
         std::vector<Ring> recon_out(num_ltz_gates);
         if (id_ != pKing) {
             auto net_data_send = BoolRing::pack(all_out_send.data(), all_out_send.size());
-            // std::cout << "ltz 3 send " << net_data_send.size() << std::endl;
             network_->send(pKing, net_data_send.data(), net_data_send.size() * sizeof(uint8_t));
-            // std::cout << "ltz 3 sent" << std::endl;
-            // std::cout << "ltz 4 recv " << recon_out.size() << std::endl;
             usleep(50000);
             network_->recv(pKing, recon_out.data(), recon_out.size() * sizeof(Ring));
-            // std::cout << "ltz 4 recvd" << std::endl;
         } else {
             auto nbytes = (all_out_send.size() + 7) / 8;
             std::vector<uint8_t> out_recv(nbytes);
@@ -300,9 +271,7 @@ namespace asterisk
             for (int pid = 1; pid <= nP_; ++pid) {
                 all_out_recv.clear();
                 if (pid != pKing) {
-                    // std::cout << "ltz 3 recv " << out_recv.size() << std::endl;
                     network_->recv(pid, out_recv.data(), out_recv.size() * sizeof(uint8_t));
-                    // std::cout << "ltz 3 recvd" << std::endl;
                     all_out_recv = BoolRing::unpack(out_recv.data(), all_out_send.size());
                 } else {
                     all_out_recv = all_out_send;
@@ -322,9 +291,7 @@ namespace asterisk
             }
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != pKing) {
-                    // std::cout << "ltz 4 send " << recon_out.size() << std::endl;
                     network_->send(pid, recon_out.data(), recon_out.size() * sizeof(Ring));
-                    // std::cout << "ltz 4 sent" << std::endl;
                 }
             }
         }
@@ -358,9 +325,7 @@ namespace asterisk
             usleep(50000);
             for (int pid = 2; pid <= nP_; ++pid) {
                 std::vector<Ring> z_recv(total_comm);
-                // std::cout << pid << " shuffle 1 recv " << z_recv.size() << std::endl;
                 network_->recv(pid, z_recv.data(), z_recv.size() * sizeof(Ring));
-                // std::cout << pid << " shuffle 1 recvd" << std::endl;
                 size_t idx_vec = 0;
                 for (int idx_gate = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
                     size_t vec_size = shuffle_gates[idx_gate].in.size();
@@ -384,21 +349,15 @@ namespace asterisk
                 }
                 z_all.insert(z_all.end(), z.begin(), z.end());
             }
-            // std::cout << "shuffle 2 send " << z_all.size() << std::endl;
             network_->send(2, z_all.data(), z_all.size() * sizeof(Ring));
-            // std::cout << "shuffle 2 sent" << std::endl;
         } else {
-            // std::cout << id_ << " shuffle 1 send " << z_all.size() << std::endl;
             network_->send(1, z_all.data(), z_all.size() * sizeof(Ring));
             network_->flush(1);
-            // std::cout << id_  << " shuffle 1 sent" << std::endl;
 
             z_all.clear();
             z_all.resize(total_comm);
-            // std::cout << "shuffle 2 recv " << z_all.size() << std::endl;
             network_->recv(id_ - 1, z_all.data(), z_all.size() * sizeof(Ring));
             usleep(50000);
-            // std::cout << "shuffle 2 recvd" << std::endl;
             for (int idx_gate = 0, idx_vec = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
                 auto *pre_shuffle = static_cast<PreprocShuffleGate<Ring> *>(preproc_.gates[shuffle_gates[idx_gate].out].get());
                 size_t vec_size = shuffle_gates[idx_gate].in.size();
@@ -416,20 +375,15 @@ namespace asterisk
                 }
             }
             if (id_ != nP_) {
-                // std::cout << "shuffle 2 send " << z_all.size() << std::endl;
                 network_->send(id_ + 1, z_all.data(), z_all.size() * sizeof(Ring));
-                // std::cout << "shuffle 2 sent" << std::endl;
             }
         }
     }
 
     void OnlineEvaluator::permAndShEvaluate(const std::vector<common::utils::SIMDOGate> &permAndSh_gates) {
         if (id_ == 0) { return; }
-        // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << " permAndShEvaluate1" << std::endl;
-        // auto ms3 = std::chrono::high_resolution_clock::now();
         #pragma omp parallel for
         for (int idx_gate = 0; idx_gate < permAndSh_gates.size(); ++idx_gate) {
-            // std::cout << "permAndShEvaluate2 " << omp_get_thread_num() << std::endl;
             auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[permAndSh_gates[idx_gate].out].get());
             size_t vec_size = permAndSh_gates[idx_gate].in.size();
             std::vector<Ring> z(vec_size, 0);
@@ -439,33 +393,22 @@ namespace asterisk
                     z[i] = wires_[permAndSh_gates[idx_gate].in[i]] - pre_permAndSh->a[i].valueAt();
                     wires_[permAndSh_gates[idx_gate].outs[i]] = pre_permAndSh->b[i].valueAt();
                 }
-                // std::cout << "perm 1 send " << z.size() << std::endl;
                 network_->send(permAndSh_gates[idx_gate].owner, z.data(), z.size() * sizeof(Ring));
-                // network_->flush();
-                // auto ms2 = std::chrono::high_resolution_clock::now();
-                // std::cout << omp_get_thread_num() << " " << permAndSh_gates[idx_gate].owner << ": perm 1 sent " << std::chrono::duration<double, std::milli>(ms2 - ms1).count() << std::endl;
             }
         }
-        // auto ms4 = std::chrono::high_resolution_clock::now();
-        // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << ": permAndShEvaluate3 " << std::chrono::duration<double, std::milli>(ms4 - ms3).count() << std::endl;
-        // ms3 = std::chrono::high_resolution_clock::now();
+
         usleep(50000);
         for (int idx_gate = 0; idx_gate < permAndSh_gates.size(); ++idx_gate) {
-            // std::cout << "permAndShEvaluate4 " << omp_get_thread_num() << std::endl;
             if (id_ == permAndSh_gates[idx_gate].owner) {
                 auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[permAndSh_gates[idx_gate].out].get());
                 size_t vec_size = permAndSh_gates[idx_gate].in.size();
                 std::vector<std::vector<Ring>> z(nP_, std::vector<Ring>(vec_size, 0));
                 #pragma omp parallel for
                 for (int pid = 1; pid <= nP_; ++pid) {
-                    // std::cout << "permAndShEvaluate5 " << omp_get_thread_num() << std::endl;
                     std::vector<Ring> z_recv(vec_size);
                     if (pid != permAndSh_gates[idx_gate].owner) {
-                        // std::cout << "perm 1 recv " << z_recv.size() << std::endl;
                         // auto ms1 = std::chrono::high_resolution_clock::now();
                         network_->recv(pid, z_recv.data(), z_recv.size() * sizeof(Ring));
-                        // auto ms2 = std::chrono::high_resolution_clock::now();
-                        // std::cout << omp_get_thread_num() << " " << pid << ": perm 1 recvd " << std::chrono::duration<double, std::milli>(ms2 - ms1).count() << std::endl;
                         for (int i = 0; i < vec_size; ++i) {
                             z[pid - 1][i] += z_recv[i];
                         }
@@ -484,8 +427,6 @@ namespace asterisk
                 }
             }
         }
-        // ms4 = std::chrono::high_resolution_clock::now();
-        // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << ": permAndShEvaluate4 " << std::chrono::duration<double, std::milli>(ms4 - ms3).count() << std::endl;
     }
 
     void OnlineEvaluator::amortzdPnSEvaluate(const std::vector<common::utils::SIMDMOGate> &amortzdPnS_gates) {
@@ -505,22 +446,16 @@ namespace asterisk
 
             std::vector<Ring> z_recon(vec_size, 0);
             if (id_ != pKing) {
-                // std::cout << "amort 1 send " << z.size() << std::endl;
                 network_->send(pKing, z.data(), z.size() * sizeof(Ring));
-                // std::cout << "amort 1 sent" << std::endl;
-                // std::cout << "amort 2 recv " << z_recon.size() << std::endl;
                 usleep(50000);
                 network_->recv(pKing, z_recon.data(), z_recon.size() * sizeof(Ring));
-                // std::cout << "amort 2 recvd" << std::endl;
             } else {
                 z_sum.reserve(nP_);
                 usleep(50000);
                 for (int pid = 1; pid <= nP_; ++pid) {
                     std::vector<Ring> z_recv(vec_size);
                     if (pid != pKing) {
-                        // std::cout << "amort 1 recv " << z_recv.size() << std::endl;
                         network_->recv(pid, z_recv.data(), z_recv.size() * sizeof(Ring));
-                        // std::cout << "amort 1 recvd" << std::endl;
                         z_sum.push_back(z_recv);
                     } else {
                         z_sum.push_back(z);
@@ -533,9 +468,7 @@ namespace asterisk
                 }
                 for (int pid = 1; pid <= nP_; ++pid) {
                     if (pid != pKing) {
-                        // std::cout << "amort 2 send " << z_recon.size() << std::endl;
                         network_->send(pid, z_recon.data(), z_recon.size() * sizeof(Ring));
-                        // std::cout << "amort 2 sent" << std::endl;
                     }
                 }
             }
@@ -738,6 +671,16 @@ namespace asterisk
                     break;
                 }
 
+                case common::utils::GateType::kPublicPerm: {
+                    auto *g = static_cast<common::utils::SIMDOGate *>(gate.get());
+                    auto vec_len = g->in.size();
+                    for (int i = 0; i < vec_len; ++i) {
+                        auto idx_perm = g->permutation[0][i];
+                        wires_[g->outs[idx_perm]] = wires_[g->in[i]];
+                    }
+                    break;
+                }
+
                 default:
                     break;
             }
@@ -847,7 +790,6 @@ namespace asterisk
 
         evaluateGatesAtDepthPartySend(depth, mult_vals, mult3_vals, mult4_vals, dotp_vals);
         size_t total_comm_send = mult_vals.size() + mult3_vals.size() + mult4_vals.size() + dotp_vals.size();
-        // std::cout << "online total_comm_send " << total_comm_send << std::endl;
         size_t total_comm_recv = nP_ * total_comm_send;
         std::vector<Ring> online_comm_send;
         online_comm_send.reserve(total_comm_send);
@@ -860,9 +802,7 @@ namespace asterisk
 
         for (int pid = 1; pid <= nP_; ++pid) {
             if (pid != id_) {
-                // std::cout << "online 1 send " << online_comm_send.size() << std::endl;
                 network_->send(pid, online_comm_send.data(), sizeof(Ring) * online_comm_send.size());
-                // std::cout << "online 1 sent" << std::endl;
             }
         }
 
@@ -870,9 +810,7 @@ namespace asterisk
         for (int pid = 1; pid <= nP_; ++pid) {
             if (pid != id_) {
                 std::vector<Ring> online_comm_recv_party(total_comm_send);
-                // std::cout << "online 1 recv " << online_comm_recv_party.size() << std::endl;
                 network_->recv(pid, online_comm_recv_party.data(), sizeof(Ring) * online_comm_recv_party.size());
-                // std::cout << "online 1 recvd" << std::endl;
                 online_comm_recv.insert(online_comm_recv.end(), online_comm_recv_party.begin(), online_comm_recv_party.end());
             } else {
                 online_comm_recv.insert(online_comm_recv.end(), online_comm_send.begin(), online_comm_send.end());
@@ -1248,9 +1186,7 @@ namespace asterisk
         for (int pid = 1; pid <= nP; ++pid) {
             if (pid != id) {
                 auto net_data = BoolRing::pack(online_comm_send.data(), total_comm_send);
-                // std::cout << "bool 1 send " << net_data.size() << std::endl;
                 network->send(pid, net_data.data(), sizeof(uint8_t) * net_data.size());
-                // std::cout << "bool 1 sent" << std::endl;
             }
         }
 
@@ -1259,9 +1195,7 @@ namespace asterisk
             if (pid != id) {
                 size_t nbytes = (total_comm_send + 7) / 8;
                 std::vector<uint8_t> net_data(nbytes);
-                // std::cout << "bool 1 recv " << net_data.size() << std::endl;
                 network->recv(pid, net_data.data(), net_data.size());
-                // std::cout << "bool 1 recvd" << std::endl;
                 auto online_comm_recv_party = BoolRing::unpack(net_data.data(), total_comm_send);
                 online_comm_recv.insert(online_comm_recv.end(), online_comm_recv_party.begin(), online_comm_recv_party.end());
             } else {

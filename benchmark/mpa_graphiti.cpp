@@ -18,6 +18,18 @@ namespace bpo = boost::program_options;
 common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size) {
 
     std::cout << "Generating circuit" << std::endl;
+
+    std::vector<std::vector<int>> permutation;
+    std::vector<int> tmp_perm(vec_size);
+    for (int i = 0; i < vec_size; ++i) {
+        tmp_perm[i] = i;
+    }
+    permutation.push_back(tmp_perm);
+    if (pid == 0) {
+        for (int i = 1; i < nP; ++i) {
+            permutation.push_back(tmp_perm);
+        }
+    }
     
     common::utils::Circuit<Ring> circ;
 
@@ -32,7 +44,7 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
     for (int i = num_vert - 1; i > 0; --i) {
         dag_list[i] = circ.addGate(common::utils::GateType::kSub, dag_list[i], dag_list[i - 1]);
     }
-    auto tmp1 = circ.addMGate(common::utils::GateType::kShuffle, dag_list);
+    auto tmp1 = circ.addMGate(common::utils::GateType::kShuffle, dag_list, permutation);
     std::vector<common::utils::wire_t> propagate_list(vec_size);
     for (int i = 0; i < vec_size; ++i){
         propagate_list[i] = tmp1[i];
@@ -46,13 +58,13 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
     }
 
     // SRC TO DST
-    auto dst_list = circ.addMGate(common::utils::GateType::kShuffle, propagate_list);
+    auto dst_list = circ.addMGate(common::utils::GateType::kShuffle, propagate_list, permutation);
 
     // GATHER
     for (int i = 1; i < vec_size; ++i) {
         dst_list[i] = circ.addGate(common::utils::GateType::kAdd, dst_list[i], dst_list[i - 1]);
     }
-    auto tmp2 = circ.addMGate(common::utils::GateType::kShuffle, dst_list);
+    auto tmp2 = circ.addMGate(common::utils::GateType::kShuffle, dst_list, permutation);
     std::vector<common::utils::wire_t> gather_list(vec_size);
     for (int i = 0; i < vec_size; ++i){
         gather_list[i] = tmp2[i];
@@ -144,7 +156,7 @@ void benchmark(const bpo::variables_map& opts) {
     emp::PRG prg(&emp::zero_block, seed);
     OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed);
 
-    auto preproc = off_eval.run(input_pid_map, vec_size);
+    auto preproc = off_eval.run(input_pid_map);
     std::cout << "Preprocessing complete " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
     network->sync();
     std::cout << "Starting Online Evaluation " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;

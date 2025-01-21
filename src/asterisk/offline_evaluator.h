@@ -46,8 +46,7 @@ class OfflineEvaluator {
                                 std::vector<Ring>& rand_sh_sec, size_t& idx_rand_sh_sec);
 
   // Generate sharing of a random unknown permutation.
-  static void randomPermutation(int nP, int pid, RandGenPool& rgen,
-                                std::vector<int>& pi, std::vector<std::vector<int>>& tp_pi_all, size_t& vec_size);
+  static void randomPermutation(int nP, int pid, RandGenPool& rgen, std::vector<int>& pi, size_t& vec_size);
 
   void generateShuffleDeltaVector(int nP, int pid, RandGenPool& rgen, std::vector<AddShare<Ring>>& delta,
                                   std::vector<TPShare<Ring>>& tp_a, std::vector<TPShare<Ring>>& tp_b,
@@ -64,14 +63,14 @@ class OfflineEvaluator {
   // subprotocols.
   void setWireMasksParty(const std::unordered_map<common::utils::wire_t, int>& input_pid_map,
                          std::vector<Ring>& rand_sh_sec, std::vector<BoolRing>& b_rand_sh_sec,
-                         std::vector<std::vector<Ring>>& delta_sh, size_t& vec_size);
+                         std::vector<std::vector<Ring>>& delta_sh);
 
-  void setWireMasks(const std::unordered_map<common::utils::wire_t, int>& input_pid_map, size_t& vec_size);
+  void setWireMasks(const std::unordered_map<common::utils::wire_t, int>& input_pid_map);
 
   PreprocCircuit<Ring> getPreproc();
 
   // Efficiently runs above subprotocols.
-  PreprocCircuit<Ring> run(const std::unordered_map<common::utils::wire_t, int>& input_pid_map, size_t& vec_size);
+  PreprocCircuit<Ring> run(const std::unordered_map<common::utils::wire_t, int>& input_pid_map);
 };
 
 // TODO: Complete LTZ

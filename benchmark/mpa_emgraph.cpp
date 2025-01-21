@@ -52,25 +52,52 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
     }
 
     // MESSAGE PASSING
-    auto subg_sorted_vert_list = circ.addMOGate(common::utils::GateType::kAmortzdPnS, full_vertex_list, nP);
+
+    std::vector<std::vector<int>> permutation;
+    std::vector<int> tmp_perm(num_vert);
+    for (int i = 0; i < num_vert; ++i) {
+        tmp_perm[i] = i;
+    }
+    permutation.push_back(tmp_perm);
+    if (pid == 0) {
+        for (int i = 1; i < nP; ++i) {
+            permutation.push_back(tmp_perm);
+        }
+    }
+    // auto subg_sorted_vert_list = circ.addMOGate(common::utils::GateType::kAmortzdPnS, full_vertex_list, permutation, nP);
+    std::vector<wire_t> subg_sorted_vert_list(num_vert, 0);
     for (int i = 0; i < nP; ++i) {
         // SUB GRAPH GEN
         auto num_subg_vert = std::min(num_vert, 2 * subg_num_edge[i]);
         std::vector<wire_t> subg_dag_list_party;
         subg_dag_list_party.reserve(num_subg_vert + subg_edge_list[i].size());
-        std::vector<wire_t> subg_permuted_vert_list(subg_sorted_vert_list[i].size());
+        // std::vector<wire_t> subg_permuted_vert_list(subg_sorted_vert_list[i].size());
+        std::vector<wire_t> subg_permuted_vert_list(subg_sorted_vert_list.size());
         for (int j = 0; j < subg_permuted_vert_list.size(); ++j) {
-            subg_permuted_vert_list[j] = subg_sorted_vert_list[i][j];
+            // subg_permuted_vert_list[j] = subg_sorted_vert_list[i][j];
+            subg_permuted_vert_list[j] = full_vertex_list[j];
         }
         subg_dag_list_party.insert(subg_dag_list_party.end(), subg_permuted_vert_list.begin(), subg_permuted_vert_list.begin() + num_subg_vert);
         subg_dag_list_party.insert(subg_dag_list_party.end(), subg_edge_list[i].begin(), subg_edge_list[i].end());
+
+        std::vector<std::vector<int>> subg_permutation;
+        std::vector<int> subg_tmp_perm(subg_dag_list_party.size());
+        for (int i = 0; i < subg_tmp_perm.size(); ++i) {
+            subg_tmp_perm[i] = i;
+        }
+        subg_permutation.push_back(subg_tmp_perm);
+        if (pid == 0) {
+            for (int i = 1; i < nP; ++i) {
+                subg_permutation.push_back(subg_tmp_perm);
+            }
+        }
 
         // PROPAGATE
         std::vector<wire_t> tmp(subg_dag_list_party.size());
         for (int j = num_subg_vert - 1; j > 0; --j) {
             tmp[j] = circ.addGate(common::utils::GateType::kSub, subg_dag_list_party[j], subg_dag_list_party[j - 1]);
         }
-        auto permAndSh_list1 = circ.addMGate(common::utils::GateType::kPermAndSh, tmp, i + 1);
+        auto permAndSh_list1 = circ.addMGate(common::utils::GateType::kPermAndSh, tmp, subg_permutation, i + 1);
         std::vector<wire_t> propagate_list(permAndSh_list1.size());
         for (int j = 0; j < permAndSh_list1.size(); ++j) {
             propagate_list[j] = permAndSh_list1[j];
@@ -84,7 +111,7 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
         }
 
         // SRC TO DST
-        auto permAndSh_list2 = circ.addMGate(common::utils::GateType::kPermAndSh, propagate_list, i + 1);
+        auto permAndSh_list2 = circ.addMGate(common::utils::GateType::kPermAndSh, propagate_list, subg_permutation, i + 1);
         std::vector<wire_t> tmp2(permAndSh_list2.size());
         for (int j = 1; j < permAndSh_list2.size(); ++j) {
             tmp2[j] = permAndSh_list2[j];
@@ -95,7 +122,7 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
         for (int j = 1; j < permAndSh_list3.size(); ++j) {
             permAndSh_list3[j] = circ.addGate(common::utils::GateType::kAdd, tmp2[j], tmp2[j - 1]);
         }
-        auto permAndSh_list4 = circ.addMGate(common::utils::GateType::kPermAndSh, permAndSh_list3, i + 1);
+        auto permAndSh_list4 = circ.addMGate(common::utils::GateType::kPermAndSh, permAndSh_list3, subg_permutation, i + 1);
         std::vector<wire_t> tmp3(permAndSh_list4.size());
         for (int j = 0; j < permAndSh_list4.size(); ++j) {
             tmp3[j] = permAndSh_list4[j];
@@ -190,7 +217,7 @@ void benchmark(const bpo::variables_map& opts) {
     emp::PRG prg(&emp::zero_block, seed);
     OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed);
 
-    auto preproc = off_eval.run(input_pid_map, vec_size);
+    auto preproc = off_eval.run(input_pid_map);
     std::cout << "Preprocessing complete " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
     network->sync();
     std::cout << "Starting Online Evaluation " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;

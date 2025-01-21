@@ -19,8 +19,6 @@ namespace bpo = boost::program_options;
 void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pid, size_t vec_size) {
 
     std::cout << "Initializing Phase Starting " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
-    
-    common::utils::Circuit<Ring> circ;
 
     size_t num_vert = 0.1 * vec_size;
     size_t num_edge = vec_size - num_vert;
