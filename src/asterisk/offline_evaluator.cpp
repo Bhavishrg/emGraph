@@ -66,11 +66,10 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen,
   }
 }
 
-// TODO: change to random permutations from identity permutations
 void OfflineEvaluator::randomPermutation(int nP, int pid, RandGenPool& rgen, std::vector<int>& pi, size_t& vec_size) {
   if (pid != 0) {
     for (int i = 0; i < vec_size; ++i) {
-      pi[i] = i; // sample using key common to all P_i except for HP if computing pi_common
+      pi[i] = i;
     }
   }
 }
@@ -729,7 +728,7 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
   } else if (id_ != nP_) {
 
     size_t delta_sh_num;
-    usleep(50000);
+    usleep(250);
     network_->recv(0, &delta_sh_num, sizeof(size_t));
     std::vector<std::vector<Ring>> delta_sh(nP_);
     delta_sh[id_ - 1] = std::vector<Ring>(delta_sh_num);
@@ -739,7 +738,7 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
   } else {
 
     std::vector<size_t> lengths(5);
-    usleep(50000);
+    usleep(250);
     network_->recv(0, lengths.data(), sizeof(size_t) * lengths.size());
     size_t arith_comm = lengths[0];
     size_t rand_sh_sec_num = lengths[1];

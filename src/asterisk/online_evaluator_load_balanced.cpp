@@ -2,7 +2,6 @@
 
 #include "../utils/helpers.h"
 #include <omp.h>
-#include <chrono>
 
 namespace asterisk
 {
@@ -90,20 +89,24 @@ namespace asterisk
         std::vector<Ring> recon_vals(num_eqz_gates, 0);
         if (id_ != pKing) {
             network_->send(pKing, all_share_send.data(), all_share_send.size() * sizeof(Ring));
-            usleep(50000);
+            usleep(250);
             network_->recv(pKing, recon_vals.data(), recon_vals.size() * sizeof(Ring));
         } else {
-            std::vector<Ring> share_recv;
-            usleep(50000);
+            std::vector<std::vector<Ring>> share_recv(nP_);
+            usleep(250);
+            #pragma omp parallel for
             for (int pid = 1; pid <= nP_; ++pid) {
+                share_recv[pid - 1] = std::vector<Ring>();
                 if (pid != pKing) {
-                    share_recv.resize(num_eqz_gates);
-                    network_->recv(pid, share_recv.data(), share_recv.size() * sizeof(Ring));
+                    share_recv[pid - 1].resize(num_eqz_gates);
+                    network_->recv(pid, share_recv[pid - 1].data(), share_recv[pid - 1].size() * sizeof(Ring));
                 } else {
-                    share_recv.insert(share_recv.begin(), all_share_send.begin(), all_share_send.end());
+                    share_recv[pid - 1].insert(share_recv[pid - 1].begin(), all_share_send.begin(), all_share_send.end());
                 }
+            }
+            for (int pid = 0; pid < nP_; ++pid) {
                 for (int i = 0; i < num_eqz_gates; ++i) {
-                    recon_vals[i] += share_recv[i];
+                    recon_vals[i] += share_recv[pid][i];
                 }
             }
             for (int pid = 1; pid <= nP_; ++pid) {
@@ -138,24 +141,26 @@ namespace asterisk
         if (id_ != pKing) {
             auto net_data_send = BoolRing::pack(all_out_send.data(), all_out_send.size());
             network_->send(pKing, net_data_send.data(), net_data_send.size() * sizeof(uint8_t));
-            usleep(50000);
+            usleep(250);
             network_->recv(pKing, recon_out.data(), recon_out.size() * sizeof(Ring));
         } else {
             auto nbytes = (all_out_send.size() + 7) / 8;
-            std::vector<uint8_t> out_recv(nbytes);
-            std::vector<BoolRing> all_out_recv;
+            std::vector<std::vector<BoolRing>> all_out_recv(nP_);
             std::vector<BoolRing> out(num_eqz_gates, BoolRing(0));
-            usleep(50000);
+            usleep(250);
+            #pragma omp parallel for
             for (int pid = 1; pid <= nP_; ++pid) {
-                all_out_recv.clear();
                 if (pid != pKing) {
+                    std::vector<uint8_t> out_recv(nbytes);
                     network_->recv(pid, out_recv.data(), out_recv.size() * sizeof(uint8_t));
-                    all_out_recv = BoolRing::unpack(out_recv.data(), all_out_send.size());
+                    all_out_recv[pid - 1] = BoolRing::unpack(out_recv.data(), all_out_send.size());
                 } else {
-                    all_out_recv = all_out_send;
+                    all_out_recv[pid - 1] = all_out_send;
                 }
+            }
+            for (int pid = 0; pid < nP_; ++pid) {
                 for (int i = 0; i < num_eqz_gates; ++i) {
-                    out[i] += all_out_recv[i];
+                    out[i] += all_out_recv[pid][i];
                 }
             }
             for (int i = 0; i < out.size(); ++i) {
@@ -200,24 +205,28 @@ namespace asterisk
         std::vector<Ring> recon_vals_b(num_ltz_gates, M); // b = a + M
         if (id_ != pKing) {
             network_->send(pKing, all_share_send.data(), all_share_send.size() * sizeof(Ring));
-            usleep(50000);
+            usleep(250);
             network_->recv(pKing, recon_vals_a.data(), recon_vals_a.size() * sizeof(Ring));
             for (int i = 0; i < num_ltz_gates; ++i) {
                 recon_vals_b[i] += recon_vals_a[i];
             }
         } else {
-            std::vector<Ring> share_recv;
-            usleep(50000);
+            std::vector<std::vector<Ring>> share_recv(nP_);
+            usleep(250);
+            #pragma omp parallel for
             for (int pid = 1; pid <= nP_; ++pid) {
+                share_recv[pid - 1] = std::vector<Ring>();
                 if (pid != pKing) {
-                    share_recv.resize(num_ltz_gates);
-                    network_->recv(pid, share_recv.data(), share_recv.size() * sizeof(Ring));
+                    share_recv[pid - 1].resize(num_ltz_gates);
+                    network_->recv(pid, share_recv[pid - 1].data(), share_recv[pid - 1].size() * sizeof(Ring));
                 } else {
-                    share_recv.insert(share_recv.begin(), all_share_send.begin(), all_share_send.end());
+                    share_recv[pid - 1].insert(share_recv[pid - 1].begin(), all_share_send.begin(), all_share_send.end());
                 }
+            }
+            for (int pid = 0; pid < nP_; ++pid) {
                 for (int i = 0; i < num_ltz_gates; ++i) {
-                    recon_vals_a[i] += share_recv[i];
-                    recon_vals_b[i] += share_recv[i];
+                    recon_vals_a[i] += share_recv[pid][i];
+                    recon_vals_b[i] += share_recv[pid][i];
                 }
             }
             for (int pid = 1; pid <= nP_; ++pid) {
@@ -250,7 +259,6 @@ namespace asterisk
         bool_eval.evaluateAllLevels();
         auto output_shares = bool_eval.getOutputShares();
 
-
         // Reconstruct the output shares of the prefix_OR circuit to compute LTZ and share it in clear
         std::vector<BoolRing> all_out_send(output_shares.size()); // Each LTZ gate has just 1 output wire. So size=1*num_ltz
         for (int i = 0; i < output_shares.size(); ++i) {
@@ -260,24 +268,26 @@ namespace asterisk
         if (id_ != pKing) {
             auto net_data_send = BoolRing::pack(all_out_send.data(), all_out_send.size());
             network_->send(pKing, net_data_send.data(), net_data_send.size() * sizeof(uint8_t));
-            usleep(50000);
+            usleep(250);
             network_->recv(pKing, recon_out.data(), recon_out.size() * sizeof(Ring));
         } else {
             auto nbytes = (all_out_send.size() + 7) / 8;
-            std::vector<uint8_t> out_recv(nbytes);
-            std::vector<BoolRing> all_out_recv;
+            std::vector<std::vector<BoolRing>> all_out_recv(nP_);
             std::vector<BoolRing> out(num_ltz_gates, BoolRing(0));
-            usleep(50000);
+            usleep(250);
+            #pragma omp parallel for
             for (int pid = 1; pid <= nP_; ++pid) {
-                all_out_recv.clear();
+                std::vector<uint8_t> out_recv(nbytes);
                 if (pid != pKing) {
                     network_->recv(pid, out_recv.data(), out_recv.size() * sizeof(uint8_t));
-                    all_out_recv = BoolRing::unpack(out_recv.data(), all_out_send.size());
+                    all_out_recv[pid - 1] = BoolRing::unpack(out_recv.data(), all_out_send.size());
                 } else {
-                    all_out_recv = all_out_send;
+                    all_out_recv[pid - 1] = all_out_send;
                 }
+            }
+            for (int pid = 0; pid < nP_; ++pid) {
                 for (int i = 0; i < num_ltz_gates; ++i) {
-                    out[i] += all_out_recv[i];
+                    out[i] += all_out_recv[pid][i];
                 }
             }
             for (int i = 0; i < out.size(); ++i) {
@@ -322,14 +332,18 @@ namespace asterisk
         }
 
         if (id_ == 1) {
-            usleep(50000);
+            usleep(250);
+            std::vector<std::vector<Ring>> z_recv_all(nP_);
+            #pragma omp parallel for
             for (int pid = 2; pid <= nP_; ++pid) {
-                std::vector<Ring> z_recv(total_comm);
-                network_->recv(pid, z_recv.data(), z_recv.size() * sizeof(Ring));
+                z_recv_all[pid - 1] = std::vector<Ring>(total_comm);
+                network_->recv(pid, z_recv_all[pid - 1].data(), z_recv_all[pid - 1].size() * sizeof(Ring));
+            }
+            for (int pid = 1; pid < nP_; ++pid) {
                 size_t idx_vec = 0;
                 for (int idx_gate = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
                     size_t vec_size = shuffle_gates[idx_gate].in.size();
-                    std::vector<Ring> z(z_recv.begin() + idx_vec, z_recv.begin() + idx_vec + vec_size);
+                    std::vector<Ring> z(z_recv_all[pid].begin() + idx_vec, z_recv_all[pid].begin() + idx_vec + vec_size);
                     for (int i = 0; i < vec_size; ++i) {
                         z_sum[idx_gate][i] += z[i];
                     }
@@ -357,7 +371,7 @@ namespace asterisk
             z_all.clear();
             z_all.resize(total_comm);
             network_->recv(id_ - 1, z_all.data(), z_all.size() * sizeof(Ring));
-            usleep(50000);
+            usleep(250);
             for (int idx_gate = 0, idx_vec = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
                 auto *pre_shuffle = static_cast<PreprocShuffleGate<Ring> *>(preproc_.gates[shuffle_gates[idx_gate].out].get());
                 size_t vec_size = shuffle_gates[idx_gate].in.size();
@@ -382,48 +396,58 @@ namespace asterisk
 
     void OnlineEvaluator::permAndShEvaluate(const std::vector<common::utils::SIMDOGate> &permAndSh_gates) {
         if (id_ == 0) { return; }
-        #pragma omp parallel for
-        for (int idx_gate = 0; idx_gate < permAndSh_gates.size(); ++idx_gate) {
-            auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[permAndSh_gates[idx_gate].out].get());
-            size_t vec_size = permAndSh_gates[idx_gate].in.size();
-            std::vector<Ring> z(vec_size, 0);
-            if (id_ != permAndSh_gates[idx_gate].owner) {
-                // auto ms1 = std::chrono::high_resolution_clock::now();
-                for (int i = 0; i < vec_size; ++i) {
-                    z[i] = wires_[permAndSh_gates[idx_gate].in[i]] - pre_permAndSh->a[i].valueAt();
-                    wires_[permAndSh_gates[idx_gate].outs[i]] = pre_permAndSh->b[i].valueAt();
-                }
-                network_->send(permAndSh_gates[idx_gate].owner, z.data(), z.size() * sizeof(Ring));
-            }
-        }
-
-        usleep(50000);
-        for (int idx_gate = 0; idx_gate < permAndSh_gates.size(); ++idx_gate) {
-            if (id_ == permAndSh_gates[idx_gate].owner) {
-                auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[permAndSh_gates[idx_gate].out].get());
-                size_t vec_size = permAndSh_gates[idx_gate].in.size();
-                std::vector<std::vector<Ring>> z(nP_, std::vector<Ring>(vec_size, 0));
+        #pragma omp parallel sections
+        {
+            #pragma omp section
+            {
+                if (nP_ < 10) { omp_set_num_threads(nP_); }
+                else { omp_set_num_threads(10); }
                 #pragma omp parallel for
-                for (int pid = 1; pid <= nP_; ++pid) {
-                    std::vector<Ring> z_recv(vec_size);
-                    if (pid != permAndSh_gates[idx_gate].owner) {
-                        // auto ms1 = std::chrono::high_resolution_clock::now();
-                        network_->recv(pid, z_recv.data(), z_recv.size() * sizeof(Ring));
+                for (int idx_gate = 0; idx_gate < permAndSh_gates.size(); ++idx_gate) {
+                    auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[permAndSh_gates[idx_gate].out].get());
+                    size_t vec_size = permAndSh_gates[idx_gate].in.size();
+                    std::vector<Ring> z(vec_size, 0);
+                    if (id_ != permAndSh_gates[idx_gate].owner) {
                         for (int i = 0; i < vec_size; ++i) {
-                            z[pid - 1][i] += z_recv[i];
+                            z[i] = wires_[permAndSh_gates[idx_gate].in[i]] - pre_permAndSh->a[i].valueAt();
+                            wires_[permAndSh_gates[idx_gate].outs[i]] = pre_permAndSh->b[i].valueAt();
                         }
-                    } else {
-                        for (int i = 0; i < vec_size; ++i) {
-                            z[pid - 1][i] += wires_[permAndSh_gates[idx_gate].in[i]];
-                        }
+                        network_->send(permAndSh_gates[idx_gate].owner, z.data(), z.size() * sizeof(Ring));
+                        network_->flush(permAndSh_gates[idx_gate].owner);
                     }
                 }
-                for (int i = 0; i < vec_size; ++i) {
-                    Ring sum = Ring(0);
-                    for (int pid = 0; pid < nP_; ++pid) {
-                        sum += z[pid][pre_permAndSh->pi[i]];
+            }
+
+            #pragma omp section
+            {
+                usleep(250);
+                for (int idx_gate = 0; idx_gate < permAndSh_gates.size(); ++idx_gate) {
+                    if (id_ == permAndSh_gates[idx_gate].owner) {
+                        auto *pre_permAndSh = static_cast<PreprocPermAndShGate<Ring> *>(preproc_.gates[permAndSh_gates[idx_gate].out].get());
+                        size_t vec_size = permAndSh_gates[idx_gate].in.size();
+                        std::vector<std::vector<Ring>> z(nP_, std::vector<Ring>(vec_size, 0));
+                        #pragma omp parallel for
+                        for (int pid = 1; pid <= nP_; ++pid) {
+                            if (pid != permAndSh_gates[idx_gate].owner) {
+                                std::vector<Ring> z_recv(vec_size);
+                                network_->recv(pid, z_recv.data(), z_recv.size() * sizeof(Ring));
+                                for (int i = 0; i < vec_size; ++i) {
+                                    z[pid - 1][i] += z_recv[i];
+                                }
+                            } else {
+                                for (int i = 0; i < vec_size; ++i) {
+                                    z[pid - 1][i] += wires_[permAndSh_gates[idx_gate].in[i]];
+                                }
+                            }
+                        }
+                        for (int i = 0; i < vec_size; ++i) {
+                            Ring sum = Ring(0);
+                            for (int pid = 0; pid < nP_; ++pid) {
+                                sum += z[pid][pre_permAndSh->pi[i]];
+                            }
+                            wires_[permAndSh_gates[idx_gate].outs[i]] = sum + pre_permAndSh->delta[i].valueAt();
+                        }
                     }
-                    wires_[permAndSh_gates[idx_gate].outs[i]] = sum + pre_permAndSh->delta[i].valueAt();
                 }
             }
         }
@@ -432,7 +456,7 @@ namespace asterisk
     void OnlineEvaluator::amortzdPnSEvaluate(const std::vector<common::utils::SIMDMOGate> &amortzdPnS_gates) {
         if (id_ == 0) { return; }
         int pKing = 1; // Designated king party
-        std::vector<std::vector<Ring>> z_sum;
+        std::vector<std::vector<Ring>> z_sum(nP_);
         size_t total_comm = 0;
 
         for (auto &gate : amortzdPnS_gates) {
@@ -447,18 +471,19 @@ namespace asterisk
             std::vector<Ring> z_recon(vec_size, 0);
             if (id_ != pKing) {
                 network_->send(pKing, z.data(), z.size() * sizeof(Ring));
-                usleep(50000);
+                network_->flush(pKing);
+                usleep(250);
                 network_->recv(pKing, z_recon.data(), z_recon.size() * sizeof(Ring));
             } else {
-                z_sum.reserve(nP_);
-                usleep(50000);
+                usleep(250);
+                #pragma omp parallel for
                 for (int pid = 1; pid <= nP_; ++pid) {
                     std::vector<Ring> z_recv(vec_size);
                     if (pid != pKing) {
                         network_->recv(pid, z_recv.data(), z_recv.size() * sizeof(Ring));
-                        z_sum.push_back(z_recv);
+                        z_sum[pid - 1] = z_recv;
                     } else {
-                        z_sum.push_back(z);
+                        z_sum[pid - 1] = z;
                     }
                 }
                 for (int i = 0; i < vec_size; ++i) {
@@ -469,6 +494,7 @@ namespace asterisk
                 for (int pid = 1; pid <= nP_; ++pid) {
                     if (pid != pKing) {
                         network_->send(pid, z_recon.data(), z_recon.size() * sizeof(Ring));
+                        network_->flush(pid);
                     }
                 }
             }
@@ -806,12 +832,18 @@ namespace asterisk
             }
         }
 
-        usleep(50000);
+        usleep(250);
+        std::vector<std::vector<Ring>> online_comm_recv_party(nP_);
+        #pragma omp parallel for
         for (int pid = 1; pid <= nP_; ++pid) {
             if (pid != id_) {
-                std::vector<Ring> online_comm_recv_party(total_comm_send);
-                network_->recv(pid, online_comm_recv_party.data(), sizeof(Ring) * online_comm_recv_party.size());
-                online_comm_recv.insert(online_comm_recv.end(), online_comm_recv_party.begin(), online_comm_recv_party.end());
+                online_comm_recv_party[pid - 1] = std::vector<Ring>(total_comm_send);
+                network_->recv(pid, online_comm_recv_party[pid - 1].data(), sizeof(Ring) * online_comm_recv_party[pid - 1].size());
+            }
+        }
+        for (int pid = 0; pid < nP_; ++pid) {
+            if (pid != id_ - 1) {
+                online_comm_recv.insert(online_comm_recv.end(), online_comm_recv_party[pid].begin(), online_comm_recv_party[pid].end());
             } else {
                 online_comm_recv.insert(online_comm_recv.end(), online_comm_send.begin(), online_comm_send.end());
             }
@@ -867,23 +899,24 @@ namespace asterisk
             std::vector<std::vector<Ring>> output_shares(nP_, std::vector<Ring>(circ_.outputs.size()));
             for (size_t i = 0; i < circ_.outputs.size(); ++i) {
                 auto wout = circ_.outputs[i];
-                output_shares[id_][i] = wires_[wout];
+                output_shares[id_ - 1][i] = wires_[wout];
             }
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != id_) {
-                    network_->send(pid, output_shares[id_].data(), output_shares[id_].size() * sizeof(Ring));
+                    network_->send(pid, output_shares[id_ - 1].data(), output_shares[id_ - 1].size() * sizeof(Ring));
                 }
             }
-            usleep(50000);
+            usleep(250);
+            #pragma omp parallel for
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != id_) {
-                    network_->recv(pid, output_shares[pid].data(), output_shares[pid].size() * sizeof(Ring));
+                    network_->recv(pid, output_shares[pid - 1].data(), output_shares[pid - 1].size() * sizeof(Ring));
                 }
             }
             for (size_t i = 0; i < circ_.outputs.size(); ++i) {
                 Ring outmask = Ring(0);
                 for (int pid = 1; pid <= nP_; ++pid) {
-                    outmask += output_shares[pid][i];
+                    outmask += output_shares[pid - 1][i];
                 }
                 outvals[i] = outmask;
             }
@@ -891,25 +924,25 @@ namespace asterisk
         return outvals;
     }
 
-    Ring OnlineEvaluator::reconstruct(AddShare<Ring> &shares) {
-        Ring reconstructed_value = Ring(0);
-        if (id_ != 0) {
-            for (size_t i = 1; i <= nP_; ++i) {
-                if (i != id_) {
-                    network_->send(i, &shares.valueAt(), sizeof(Ring));
-                }
-            }
-            usleep(50000);
-            for (size_t i = 1; i <= nP_; ++i) {
-                Ring share_val = Ring(0);
-                if (i != id_) {
-                    network_->recv(i, &share_val, sizeof(Ring));
-                }
-                reconstructed_value += share_val;
-            }
-        }
-        return reconstructed_value;
-    }
+    // Ring OnlineEvaluator::reconstruct(AddShare<Ring> &shares) {
+    //     Ring reconstructed_value = Ring(0);
+    //     if (id_ != 0) {
+    //         for (size_t i = 1; i <= nP_; ++i) {
+    //             if (i != id_) {
+    //                 network_->send(i, &shares.valueAt(), sizeof(Ring));
+    //             }
+    //         }
+    //         usleep(50000);
+    //         for (size_t i = 1; i <= nP_; ++i) {
+    //             Ring share_val = Ring(0);
+    //             if (i != id_) {
+    //                 network_->recv(i, &share_val, sizeof(Ring));
+    //             }
+    //             reconstructed_value += share_val;
+    //         }
+    //     }
+    //     return reconstructed_value;
+    // }
 
     std::vector<Ring> OnlineEvaluator::evaluateCircuit(const std::unordered_map<common::utils::wire_t, Ring> &inputs) {
         setInputs(inputs);
@@ -1185,19 +1218,25 @@ namespace asterisk
 
         for (int pid = 1; pid <= nP; ++pid) {
             if (pid != id) {
-                auto net_data = BoolRing::pack(online_comm_send.data(), total_comm_send);
-                network->send(pid, net_data.data(), sizeof(uint8_t) * net_data.size());
+                auto net_data = BoolRing::pack(online_comm_send.data(), total_comm_send);\
+                network->send(pid, net_data.data(), sizeof(uint8_t) * net_data.size());\
             }
         }
 
-        usleep(50000);
+        usleep(250);
+        size_t nbytes = (total_comm_send + 7) / 8;
+        std::vector<std::vector<BoolRing>> online_comm_recv_party(nP);
+        #pragma omp parallel for
         for (int pid = 1; pid <= nP; ++pid) {
             if (pid != id) {
-                size_t nbytes = (total_comm_send + 7) / 8;
                 std::vector<uint8_t> net_data(nbytes);
                 network->recv(pid, net_data.data(), net_data.size());
-                auto online_comm_recv_party = BoolRing::unpack(net_data.data(), total_comm_send);
-                online_comm_recv.insert(online_comm_recv.end(), online_comm_recv_party.begin(), online_comm_recv_party.end());
+                online_comm_recv_party[pid - 1] = BoolRing::unpack(net_data.data(), total_comm_send);
+            }
+        }
+        for (int pid = 0; pid < nP; ++pid) {
+            if (pid != id - 1) {
+                online_comm_recv.insert(online_comm_recv.end(), online_comm_recv_party[pid].begin(), online_comm_recv_party[pid].end());
             } else {
                 online_comm_recv.insert(online_comm_recv.end(), online_comm_send.begin(), online_comm_send.end());
             }

@@ -60,7 +60,7 @@ namespace asterisk {
 
     std::vector<Ring> getOutputs();
 
-    Ring reconstruct(AddShare<Ring> &shares);
+    // Ring reconstruct(AddShare<Ring> &shares);
 
     // Evaluate online phase for circuit
     std::vector<Ring> evaluateCircuit(const std::unordered_map<common::utils::wire_t, Ring> &inputs);

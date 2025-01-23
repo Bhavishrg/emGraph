@@ -8,6 +8,7 @@
 #include <cmath>
 #include <iostream>
 #include <memory>
+#include <omp.h>
 
 #include "utils.h"
 
@@ -25,9 +26,8 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
                             std::vector<std::vector<int>> &pub_perm_d,
                             std::vector<std::vector<int>> &pub_perm_v) {
 
-    std::cout << "Initializing Phase Starting " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+    std::cout << "Initializing Phase Starting" << std::endl;
 
-    // TODO: Read the permutations from a file or generate randomly
     if (pid != 0) {
         auto total_comm = num_vert + 3 * subg_num_dag_list[pid - 1];
         std::vector<int> perm_send(total_comm);
@@ -73,7 +73,7 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
             rand_perm_v[0][i] = i;
         }
 
-        std::cout << "Sending permutations " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+        std::cout << "Sending permutations" << std::endl;
 
         for (int i = 0; i < perm_g[0].size(); ++i) {
             perm_send[i] = perm_g[0][rand_perm_g[0][i]];
@@ -88,47 +88,53 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
             perm_send[i + perm_g[0].size() + perm_s[0].size() + perm_d[0].size()] = perm_v[0][rand_perm_v[0][i]];
         }
 
-        #pragma omp parallel for
-        for (int i = 1; i <= nP; ++i) {
-            if (i != pid) {
-                network->send(i, perm_send.data(), perm_send.size() * sizeof(int));
-                network->flush(i);
-            }
-        }
-
-        std::cout << "Receiving permutations " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
         pub_perm_g = std::vector<std::vector<int>>(nP);
         pub_perm_s = std::vector<std::vector<int>>(nP);
         pub_perm_d = std::vector<std::vector<int>>(nP);
         pub_perm_v = std::vector<std::vector<int>>(nP);
+
         #pragma omp parallel for
         for (int i = 1; i <= nP; ++i) {
-            perm_recv[i - 1] = std::vector<int>(num_vert + 3 * subg_num_dag_list[i - 1]);
-            if (i != pid) {
-                usleep(50000);
-                network->recv(i, perm_recv[i - 1].data(), perm_recv[i - 1].size() * sizeof(int));
-            } else {
-                perm_recv[i - 1] = std::move(perm_send);
-            }
+            omp_set_num_threads(2);
+            #pragma omp parallel sections
+            {
+                #pragma omp section
+                {
+                    if (i != pid) {
+                        network->send(i, perm_send.data(), perm_send.size() * sizeof(int));
+                        network->flush(i);
+                    }
+                }
+                #pragma omp section
+                {
+                    perm_recv[i - 1] = std::vector<int>(num_vert + 3 * subg_num_dag_list[i - 1]);
+                    if (i != pid) {
+                        usleep(250);
+                        network->recv(i, perm_recv[i - 1].data(), perm_recv[i - 1].size() * sizeof(int));
+                    } else {
+                        perm_recv[i - 1] = std::move(perm_send);
+                    }
 
-            pub_perm_g[i - 1] = std::vector<int>(num_vert);
-            for (int idx = 0; idx < num_vert; ++idx) {
-                pub_perm_g[i - 1][idx] = perm_recv[i - 1][idx];
-            }
+                    pub_perm_g[i - 1] = std::vector<int>(num_vert);
+                    for (int idx = 0; idx < num_vert; ++idx) {
+                        pub_perm_g[i - 1][idx] = perm_recv[i - 1][idx];
+                    }
 
-            pub_perm_s[i - 1] = std::vector<int>(subg_num_dag_list[i - 1]);
-            for (int idx = 0; idx < subg_num_dag_list[i - 1]; ++idx) {
-                pub_perm_s[i - 1][idx] = perm_recv[i - 1][idx + num_vert];
-            }
+                    pub_perm_s[i - 1] = std::vector<int>(subg_num_dag_list[i - 1]);
+                    for (int idx = 0; idx < subg_num_dag_list[i - 1]; ++idx) {
+                        pub_perm_s[i - 1][idx] = perm_recv[i - 1][idx + num_vert];
+                    }
 
-            pub_perm_d[i - 1] = std::vector<int>(subg_num_dag_list[i - 1]);
-            for (int idx = 0; idx < subg_num_dag_list[i - 1]; ++idx) {
-                pub_perm_d[i - 1][idx] = perm_recv[i - 1][idx + num_vert + subg_num_dag_list[i - 1]];
-            }
+                    pub_perm_d[i - 1] = std::vector<int>(subg_num_dag_list[i - 1]);
+                    for (int idx = 0; idx < subg_num_dag_list[i - 1]; ++idx) {
+                        pub_perm_d[i - 1][idx] = perm_recv[i - 1][idx + num_vert + subg_num_dag_list[i - 1]];
+                    }
 
-            pub_perm_v[i - 1] = std::vector<int>(subg_num_dag_list[i - 1]);
-            for (int idx = 0; idx < subg_num_dag_list[i - 1]; ++idx) {
-                pub_perm_v[i - 1][idx] = perm_recv[i - 1][idx + num_vert + 2 * subg_num_dag_list[i - 1]];
+                    pub_perm_v[i - 1] = std::vector<int>(subg_num_dag_list[i - 1]);
+                    for (int idx = 0; idx < subg_num_dag_list[i - 1]; ++idx) {
+                        pub_perm_v[i - 1][idx] = perm_recv[i - 1][idx + num_vert + 2 * subg_num_dag_list[i - 1]];
+                    }
+                }
             }
         }
     } else {
@@ -184,7 +190,7 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
         }
     }
 
-    std::cout << "Initialization done " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+    std::cout << "Initialization done" << std::endl;
 }
 
 common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size, int iter) {
@@ -301,7 +307,6 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
     return circ;
 }
 
-
 void benchmark(const bpo::variables_map& opts) {
 
     bool save_output = false;
@@ -321,12 +326,15 @@ void benchmark(const bpo::variables_map& opts) {
     auto repeat = opts["repeat"].as<size_t>();
     auto port = opts["port"].as<int>();
 
-    omp_set_num_threads(nP);
-    std::cout << "Starting benchmarks " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+    omp_set_nested(1);
+    // omp_set_num_threads(nP);
+    if (nP < 10) { omp_set_num_threads(nP); }
+    else { omp_set_num_threads(10); }
+    std::cout << "Starting benchmarks" << std::endl;
 
     std::shared_ptr<io::NetIOMP> network = nullptr;
     if (opts["localhost"].as<bool>()) {
-        network = std::make_shared<io::NetIOMP>(pid, nP + 1, port, nullptr, true);
+        network = std::make_shared<io::NetIOMP>(pid, nP + 1, latency, port, nullptr, true);
     } else {
         std::ifstream fnet(opts["net-config"].as<std::string>());
         if (!fnet.good()) {
@@ -342,9 +350,8 @@ void benchmark(const bpo::variables_map& opts) {
             ipaddress[i] = netdata[i].get<std::string>();
             ip[i] = ipaddress[i].data();
         }
-        network = std::make_shared<io::NetIOMP>(pid, nP + 1, port, ip.data(), false);
+        network = std::make_shared<io::NetIOMP>(pid, nP + 1, latency, port, ip.data(), false);
     }
-    std::cout << "Network set " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
 
     json output_data;
     output_data["details"] = {{"num_parties", nP},
@@ -368,9 +375,10 @@ void benchmark(const bpo::variables_map& opts) {
     network->sync();
     StatsPoint init_start(*network);
     auto circ = generateCircuit(network, nP, pid, vec_size, iter).orderGatesByLevel();
+    network->sync();
     StatsPoint init_end(*network);
 
-    std::cout << "--- Circuit --- " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+    std::cout << "--- Circuit ---" << std::endl;
     std::cout << circ << std::endl;
     
     std::unordered_map<common::utils::wire_t, int> input_pid_map;
@@ -380,26 +388,25 @@ void benchmark(const bpo::variables_map& opts) {
         }
     }
 
-    network->sync();
-    std::cout << "Starting preprocessing " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+    std::cout << "Starting preprocessing" << std::endl;
     StatsPoint preproc_start(*network);
     emp::PRG prg(&emp::zero_block, seed);
     OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed);
     auto preproc = off_eval.run(input_pid_map);
-    StatsPoint preproc_end(*network);
-    std::cout << "Preprocessing complete " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
-
+    std::cout << "Preprocessing complete" << std::endl;
     network->sync();
-    std::cout << "Starting online evaluation " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+    StatsPoint preproc_end(*network);
+
+    std::cout << "Starting online evaluation" << std::endl;
     StatsPoint online_start(*network);
     OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, threads, seed);
     eval.setRandomInputs();
     for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
         eval.evaluateGatesAtDepth(i);
     }
-    std::cout << "Online evaluation complete " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
-    StatsPoint online_end(*network);
+    std::cout << "Online evaluation complete" << std::endl;
     network->sync();
+    StatsPoint online_end(*network);
 
     StatsPoint end(*network);
 

@@ -30,7 +30,6 @@
 #include <emp-tool/emp-tool.h>
 #include "../utils/types.h"
 #include <vector>
-#include <omp.h>
 
 namespace io {
 using namespace emp;
@@ -42,10 +41,11 @@ class NetIOMP {
   std::vector<std::unique_ptr<NetIO>> ios2;
   int party;
   int nP;
+  double latency;
   std::vector<bool> sent;
 
-  NetIOMP(int party, int nP, int port, char* IP[], bool localhost = false)
-      : ios(nP), ios2(nP), party(party), nP(nP), sent(nP, false) {
+  NetIOMP(int party, int nP, double latency, int port, char* IP[], bool localhost = false)
+      : ios(nP), ios2(nP), party(party), nP(nP), latency(latency), sent(nP, false) {
     #pragma omp parallel for
     for (int i = 0; i < nP; ++i) {
       for (int j = i + 1; j < nP; ++j) {
@@ -246,7 +246,6 @@ class NetIOMP {
   }
 
   void sync() {
-    #pragma omp parallel for
     for (int i = 0; i < nP; ++i) {
       for (int j = 0; j < nP; ++j) {
         if (i < j) {

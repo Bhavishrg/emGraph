@@ -42,7 +42,7 @@ for filename in os.listdir(directory):
         filepath = os.path.join(directory, filename)
         f = open(filepath, "r")
         for x in f:
-            if "total time:" in x:
+            if "online time:" in x:
                 time = re.findall(r'\d+\.\d+', x)
                 agg.write(filename + " " + time[0] + "\n")
                 t = float(time[0])
@@ -51,7 +51,7 @@ for filename in os.listdir(directory):
                     max_time =  t
                     max_p = filename
                     
-            if "total sent:" in x:
+            if "online sent:" in x:
                 comm = re.findall(r'\d+', x)
                 online_comm += float(comm[0])
                 agg.write(filename + " online_comm: " + comm[0] + "\n")

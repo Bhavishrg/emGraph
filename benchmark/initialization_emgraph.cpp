@@ -18,7 +18,7 @@ namespace bpo = boost::program_options;
 
 void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pid, size_t vec_size) {
 
-    std::cout << "Initializing Phase Starting " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+    std::cout << "Initializing Phase Starting" << std::endl;
 
     size_t num_vert = 0.1 * vec_size;
     size_t num_edge = vec_size - num_vert;
@@ -82,39 +82,33 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
             perm_send[i + perm_g.size() + perm_s.size() + perm_d.size()] = perm_v[rand_perm_v[i]];
         }
 
-        std::cout << "Sending permutations " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+        std::cout << "Sending permutations" << std::endl;
 
         #pragma omp parallel for
         for (int i = 1; i <= nP; ++i) {
             if (i != pid) {
-                // std::cout << "Send " << i << std::endl;
-                network->send(i, perm_send.data(), perm_send.size() * sizeof(int));
-                network->flush(i);
-                // std::cout << "Sent " << i << std::endl;
-            }
-        }
-
-        std::cout << "Receiving permutations " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
-        #pragma omp parallel for
-        for (int i = 1; i <= nP; ++i) {
-            if (i != pid) {
-                // std::vector<int> perm_recv_party(perm_send.size());
-                // network->recv(i, perm_recv_party.data(), perm_recv_party.size() * sizeof(int));
-                // perm_recv.push_back(perm_recv_party);
-                // std::cout << "Recv " << i << std::endl;
-                usleep(50000);
-                network->recv(i, perm_recv[i - 1].data(), perm_recv[i - 1].size() * sizeof(int));
-                // std::cout << "Recvd " << i << std::endl;
+                omp_set_num_threads(2);
+                #pragma omp parallel sections
+                {
+                    #pragma omp section
+                    {
+                        network->send(i, perm_send.data(), perm_send.size() * sizeof(int));
+                        network->flush(i);
+                    }
+                    #pragma omp section
+                    {
+                        usleep(250);
+                        network->recv(i, perm_recv[i - 1].data(), perm_recv[i - 1].size() * sizeof(int));
+                    }
+                }
             } else {
-                // perm_recv.push_back(perm_send);
                 std::copy(perm_send.begin(), perm_send.end(), perm_recv[i - 1].begin());
             }
         }
     }
 
-    std::cout << "Initialization done " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+    std::cout << "Initialization done" << std::endl;
 }
-
 
 void benchmark(const bpo::variables_map& opts) {
 
@@ -127,17 +121,23 @@ void benchmark(const bpo::variables_map& opts) {
 
     auto nP = opts["num-parties"].as<int>();
     auto vec_size = opts["vec-size"].as<size_t>();
+    auto iter = opts["iter"].as<int>();
+    auto latency = opts["latency"].as<double>();
     auto pid = opts["pid"].as<size_t>();
     auto threads = opts["threads"].as<size_t>();
     auto seed = opts["seed"].as<size_t>();
     auto repeat = opts["repeat"].as<size_t>();
     auto port = opts["port"].as<int>();
-    omp_set_num_threads(nP);
-    std::cout << "Starting benchmark " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+
+    omp_set_nested(1);
+    // omp_set_num_threads(nP);
+    if (nP < 10) { omp_set_num_threads(nP); }
+    else { omp_set_num_threads(10); }
+    std::cout << "Starting benchmarks" << std::endl;
 
     std::shared_ptr<io::NetIOMP> network = nullptr;
     if (opts["localhost"].as<bool>()) {
-        network = std::make_shared<io::NetIOMP>(pid, nP + 1, port, nullptr, true);
+        network = std::make_shared<io::NetIOMP>(pid, nP + 1, latency, port, nullptr, true);
     } else {
         std::ifstream fnet(opts["net-config"].as<std::string>());
         if (!fnet.good()) {
@@ -153,13 +153,14 @@ void benchmark(const bpo::variables_map& opts) {
             ipaddress[i] = netdata[i].get<std::string>();
             ip[i] = ipaddress[i].data();
         }
-        network = std::make_shared<io::NetIOMP>(pid, nP + 1, port, ip.data(), false);
+        network = std::make_shared<io::NetIOMP>(pid, nP + 1, latency, port, ip.data(), false);
     }
-    std::cout << "Network set " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
 
     json output_data;
     output_data["details"] = {{"num_parties", nP},
                               {"vec_size", vec_size},
+                              {"iterations", iter},
+                              {"latency (ms)", latency},
                               {"pid", pid},
                               {"threads", threads},
                               {"seed", seed},
@@ -172,27 +173,35 @@ void benchmark(const bpo::variables_map& opts) {
     }
     std::cout << std::endl;
 
-    // network->sync();
+    StatsPoint start(*network);
+
+    network->sync();
     StatsPoint init_start(*network);
     initializePermutations(network, nP, pid, vec_size);
-    StatsPoint init_end(*network);
     network->sync();
-    StatsPoint init_sync_end(*network);
+    StatsPoint init_end(*network);
 
-    auto rbench = init_end - init_start;
-    auto sync_rbench = init_sync_end - init_start;
-    output_data["benchmarks"].push_back(sync_rbench);
-    output_data["benchmarks"].push_back(rbench);
+    StatsPoint end(*network);
 
-    size_t bytes_sent = 0;
-    for (const auto& val : rbench["communication"]) {
-        bytes_sent += val.get<int64_t>();
+    auto init_rbench = init_end - init_start;
+    auto total_rbench = end - start;
+    output_data["benchmarks"].push_back(init_rbench);
+    output_data["benchmarks"].push_back(total_rbench);
+
+    size_t init_bytes_sent = 0;
+    for (const auto& val : init_rbench["communication"]) {
+        init_bytes_sent += val.get<int64_t>();
+    }
+    size_t total_bytes_sent = 0;
+    for (const auto& val : total_rbench["communication"]) {
+        total_bytes_sent += val.get<int64_t>();
     }
 
     // std::cout << "--- Repetition " << r + 1 << " ---" << std::endl;
-    std::cout << "total time: " << rbench["time"] << " ms" << std::endl;
-    std::cout << "total sync time: " << sync_rbench["time"] << " ms" << std::endl;
-    std::cout << "total sent: " << bytes_sent << " bytes" << std::endl;
+    std::cout << "init time: " << init_rbench["time"] << " ms" << std::endl;
+    std::cout << "init sent: " << init_bytes_sent << " bytes" << std::endl;
+    std::cout << "total time: " << total_rbench["time"] << " ms" << std::endl;
+    std::cout << "total sent: " << total_bytes_sent << " bytes" << std::endl;
     std::cout << std::endl;
 
     output_data["stats"] = {{"peak_virtual_memory", peakVirtualMemory()},
@@ -215,6 +224,8 @@ bpo::options_description programOptions() {
     desc.add_options()
         ("num-parties,n", bpo::value<int>()->required(), "Number of parties.")
         ("vec-size,v", bpo::value<size_t>()->required(), "Number of gates at each level.")
+        ("iter,i", bpo::value<int>()->default_value(1), "Number of iterations for message passing.")
+        ("latency,l", bpo::value<double>()->required(), "Network latency in ms.")
         ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
         ("threads,t", bpo::value<size_t>()->default_value(6), "Number of threads (recommended 6).")
         ("seed", bpo::value<size_t>()->default_value(200), "Value of the random seed.")

@@ -8,6 +8,7 @@
 #include <cmath>
 #include <iostream>
 #include <memory>
+#include <omp.h>
 
 #include "utils.h"
 
@@ -15,7 +16,7 @@ using namespace asterisk;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size) {
+common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size, int iter) {
 
     std::cout << "Generating circuit" << std::endl;
 
@@ -82,8 +83,8 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
     return circ;
 }
 
-
 void benchmark(const bpo::variables_map& opts) {
+
     bool save_output = false;
     std::string save_file;
     if (opts.count("output") != 0) {
@@ -93,17 +94,23 @@ void benchmark(const bpo::variables_map& opts) {
 
     auto nP = opts["num-parties"].as<int>();
     auto vec_size = opts["vec-size"].as<size_t>();
+    auto iter = opts["iter"].as<int>();
+    auto latency = opts["latency"].as<double>();
     auto pid = opts["pid"].as<size_t>();
     auto threads = opts["threads"].as<size_t>();
     auto seed = opts["seed"].as<size_t>();
     auto repeat = opts["repeat"].as<size_t>();
     auto port = opts["port"].as<int>();
-    omp_set_num_threads(nP);
-    std::cout << "Starting benchmarks " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+
+    omp_set_nested(1);
+    // omp_set_num_threads(nP);
+    if (nP < 10) { omp_set_num_threads(nP); }
+    else { omp_set_num_threads(10); }
+    std::cout << "Starting benchmarks" << std::endl;
 
     std::shared_ptr<io::NetIOMP> network = nullptr;
     if (opts["localhost"].as<bool>()) {
-        network = std::make_shared<io::NetIOMP>(pid, nP + 1, port, nullptr, true);
+        network = std::make_shared<io::NetIOMP>(pid, nP + 1, latency, port, nullptr, true);
     } else {
         std::ifstream fnet(opts["net-config"].as<std::string>());
         if (!fnet.good()) {
@@ -119,13 +126,14 @@ void benchmark(const bpo::variables_map& opts) {
             ipaddress[i] = netdata[i].get<std::string>();
             ip[i] = ipaddress[i].data();
         }
-        network = std::make_shared<io::NetIOMP>(pid, nP + 1, port, ip.data(), false);
+        network = std::make_shared<io::NetIOMP>(pid, nP + 1, latency, port, ip.data(), false);
     }
-    std::cout << "Network set " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
 
     json output_data;
     output_data["details"] = {{"num_parties", nP},
                               {"vec_size", vec_size},
+                              {"iterations", iter},
+                              {"latency (ms)", latency},
                               {"pid", pid},
                               {"threads", threads},
                               {"seed", seed},
@@ -138,52 +146,59 @@ void benchmark(const bpo::variables_map& opts) {
     }
     std::cout << std::endl;
 
-    auto circ = generateCircuit(network, nP, pid, vec_size).orderGatesByLevel();
+    StatsPoint start(*network);
 
-    std::cout << "--- Circuit --- " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+    network->sync();
+    StatsPoint init_start(*network);
+    auto circ = generateCircuit(network, nP, pid, vec_size, iter).orderGatesByLevel();
+    network->sync();
+    StatsPoint init_end(*network);
+
+    std::cout << "--- Circuit ---" << std::endl;
     std::cout << circ << std::endl;
     
     std::unordered_map<common::utils::wire_t, int> input_pid_map;
-
     for (const auto& g : circ.gates_by_level[0]) {
         if (g->type == common::utils::GateType::kInp) {
             input_pid_map[g->out] = 1;
         }
     }
 
-    network->sync();
-    StatsPoint start(*network);
+    std::cout << "Starting preprocessing" << std::endl;
+    StatsPoint preproc_start(*network);
     emp::PRG prg(&emp::zero_block, seed);
     OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed);
-
     auto preproc = off_eval.run(input_pid_map);
-    std::cout << "Preprocessing complete " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+    std::cout << "Preprocessing complete" << std::endl;
     network->sync();
-    std::cout << "Starting Online Evaluation " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
+    StatsPoint preproc_end(*network);
 
+    std::cout << "Starting online evaluation" << std::endl;
     StatsPoint online_start(*network);
     OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, threads, seed);
-
     eval.setRandomInputs();
-    std::cout << "Inputs set" << std::endl;
-
     for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
         eval.evaluateGatesAtDepth(i);
     }
-    std::cout << "Online Eval complete" << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
-    StatsPoint end_test(*network);
+    std::cout << "Online evaluation complete" << std::endl;
     network->sync();
+    StatsPoint online_end(*network);
+
     StatsPoint end(*network);
 
-    auto preproc_rbench = online_start - start;
-    auto online_rbench = end - online_start;
-    auto online_test_rbench = end_test - online_start;
-    auto rbench = end - start;
+    auto init_rbench = init_end - init_start;
+    auto preproc_rbench = preproc_end - preproc_start;
+    auto online_rbench = online_end - online_start;
+    auto total_rbench = end - start;
+    output_data["benchmarks"].push_back(init_rbench);
     output_data["benchmarks"].push_back(preproc_rbench);
     output_data["benchmarks"].push_back(online_rbench);
-    output_data["benchmarks"].push_back(online_test_rbench);
-    output_data["benchmarks"].push_back(rbench);
+    output_data["benchmarks"].push_back(total_rbench);
 
+    size_t init_bytes_sent = 0;
+    for (const auto& val : init_rbench["communication"]) {
+        init_bytes_sent += val.get<int64_t>();
+    }
     size_t pre_bytes_sent = 0;
     for (const auto& val : preproc_rbench["communication"]) {
         pre_bytes_sent += val.get<int64_t>();
@@ -192,19 +207,20 @@ void benchmark(const bpo::variables_map& opts) {
     for (const auto& val : online_rbench["communication"]) {
         online_bytes_sent += val.get<int64_t>();
     }
-    size_t bytes_sent = 0;
-    for (const auto& val : rbench["communication"]) {
-        bytes_sent += val.get<int64_t>();
+    size_t total_bytes_sent = 0;
+    for (const auto& val : total_rbench["communication"]) {
+        total_bytes_sent += val.get<int64_t>();
     }
 
     // std::cout << "--- Repetition " << r + 1 << " ---" << std::endl;
+    std::cout << "init time: " << init_rbench["time"] << " ms" << std::endl;
+    std::cout << "init sent: " << init_bytes_sent << " bytes" << std::endl;
     std::cout << "preproc time: " << preproc_rbench["time"] << " ms" << std::endl;
     std::cout << "preproc sent: " << pre_bytes_sent << " bytes" << std::endl;
-    std::cout << "online test time: " << online_test_rbench["time"] << " ms" << std::endl;
     std::cout << "online time: " << online_rbench["time"] << " ms" << std::endl;
     std::cout << "online sent: " << online_bytes_sent << " bytes" << std::endl;
-    std::cout << "total time: " << rbench["time"] << " ms" << std::endl;
-    std::cout << "total sent: " << bytes_sent << " bytes" << std::endl;
+    std::cout << "total time: " << total_rbench["time"] << " ms" << std::endl;
+    std::cout << "total sent: " << total_bytes_sent << " bytes" << std::endl;
     std::cout << std::endl;
 
     output_data["stats"] = {{"peak_virtual_memory", peakVirtualMemory()},
@@ -227,6 +243,8 @@ bpo::options_description programOptions() {
     desc.add_options()
         ("num-parties,n", bpo::value<int>()->required(), "Number of parties.")
         ("vec-size,v", bpo::value<size_t>()->required(), "Number of gates at each level.")
+        ("iter,i", bpo::value<int>()->default_value(1), "Number of iterations for message passing.")
+        ("latency,l", bpo::value<double>()->required(), "Network latency in ms.")
         ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
         ("threads,t", bpo::value<size_t>()->default_value(6), "Number of threads (recommended 6).")
         ("seed", bpo::value<size_t>()->default_value(200), "Value of the random seed.")
