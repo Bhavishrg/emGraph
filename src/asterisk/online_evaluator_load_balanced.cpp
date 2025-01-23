@@ -45,13 +45,13 @@ namespace asterisk
                         for (size_t i = 1; i <= nP_; i++) {
                             if (i != pid) {
                                 Ring rand_sh;
-                                rgen_.pi(i).random_data(&rand_sh, sizeof(Ring)); // TODO: PRG should be pairwise common b/w input owner and pid
+                                rgen_.pi(i).random_data(&rand_sh, sizeof(Ring));
                                 accumulated_val += rand_sh;
                             }
                         }
                         wires_[g->out] = inputs.at(g->out) - accumulated_val;
                     } else {
-                        rgen_.pi(id_).random_data(&wires_[g->out], sizeof(Ring)); // TODO: PRG should be pairwise common b/w input owner and pid
+                        rgen_.pi(id_).random_data(&wires_[g->out], sizeof(Ring));
                     }
                 }
             }
@@ -62,7 +62,7 @@ namespace asterisk
         // Input gates have depth 0.
         for (auto &g : circ_.gates_by_level[0]) {
             if (g->type == common::utils::GateType::kInp) {
-                rgen_.pi(id_).random_data(&wires_[g->out], sizeof(Ring)); // TODO: What key to use for PRG
+                rgen_.pi(id_).random_data(&wires_[g->out], sizeof(Ring));
             }
         }
     }
@@ -125,7 +125,7 @@ namespace asterisk
             for (size_t j = 0; j < multk_circ.gates_by_level[0].size(); ++j) {
                 const auto &bool_gate = multk_circ.gates_by_level[0][j];
                 if (bool_gate->type == common::utils::GateType::kInp) {
-                    bool_eval.vwires[i][bool_gate->out] = 1 + recon_d_bits[j] + pre_eqz->share_r_bits[j].valueAt(); // TODO: check if correct
+                    bool_eval.vwires[i][bool_gate->out] = 1 + recon_d_bits[j] + pre_eqz->share_r_bits[j].valueAt();
                 }
             }
         }

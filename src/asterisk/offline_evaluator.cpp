@@ -29,11 +29,11 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, AddShare<
     share.pushValue(Ring(0));
     tpShare.pushValues(Ring(0));
     for (int i = 1; i <= nP; i++) {
-      rgen.pi(i).random_data(&val, sizeof(Ring)); // TODO: Check if this is the key common b/w P_i and HP only
+      rgen.pi(i).random_data(&val, sizeof(Ring));
       tpShare.pushValues(val);
     }
   } else {
-    rgen.p0().random_data(&val, sizeof(Ring)); // TODO: Check if this is the key common b/w P_i and HP only
+    rgen.p0().random_data(&val, sizeof(Ring));
     share.pushValue(val);
   }
 }
@@ -47,7 +47,7 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen,
     share.pushValue(Ring(0));
     tpShare.pushValues(Ring(0));
     for (int i = 1; i < nP; i++) {
-      rgen.pi(i).random_data(&val, sizeof(Ring)); // TODO: Check if this is the key common b/w P_i and HP only
+      rgen.pi(i).random_data(&val, sizeof(Ring));
       tpShare.pushValues(val);
       valn += val;
     }
@@ -57,7 +57,7 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen,
   } else {
     if (pid != nP) {
       Ring val;
-      rgen.p0().random_data(&val, sizeof(Ring)); // TODO: Check if this is the key common b/w P_i and HP only
+      rgen.p0().random_data(&val, sizeof(Ring));
       share.pushValue(val);
     } else {
       share.pushValue(rand_sh_sec[idx_rand_sh_sec]);

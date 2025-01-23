@@ -17,16 +17,16 @@ All required dependencies to compile and run the project are available through t
 To build and run the docker image, execute the following commands from the root directory of the repository:
 
 ```sh
-# Build the Asterisk Docker image.
+# Build the EmGraph Docker image.
 #
 # Building the Docker image requires at least 4GB RAM. This needs to be set 
 # explicitly in case of Windows and MacOS.
-docker build -t graphopper .
+docker build -t emgraph .
 
 # Create and run a container.
 #
 # This should start the shell from within the container.
-docker run -it -v $PWD:/code graphopper
+docker run -it -v $PWD:/code emgraph
 
 # The following command changes the working directory to the one containing the 
 # source code and should be run on the shell started using the previous command.
@@ -50,52 +50,28 @@ make <target>
 A short description of the compiled programs is given below.
 All of them provide detailed usage description on using the `--help` option.
 
-- `benchmarks/asterisk_mpc`: Benchmark the performance of the Asterisk protocol (both offline and online phases) by evaluating a circuit with a given depth and number of multiplication gates at each depth.
-- `benchmarks/asterisk_online`: Benchmark the performance of the Asterisk online phase for a circuit with a given depth and number of multiplication gates at each depth.
-- `benchmarks/asterisk_offline`: Benchmark the performance of the Asterisk offline phase for a circuit with a given depth and number of multiplication gates at each depth.
-- `benchmarks/assistedmpc_offline`: Benchmark the performance of the Assisted MPC offline phase for a circuit with a given depth and number of multiplication gates at each depth.
-- `benchmarks/Darkpool_CDA`: Benchmark the performance of the Darkpool CDA algorithm for a given buy list and sell list size.
-- `benchmarks/Darkpool_VM`: Benchmark the performance of the Darkpool VM algorithm for a given buy list and sell list size. Here, the number of parties = buy list size + sell list size.
-- `tests/*`: These programs contain unit tests for various parts of the codebase. 
-
+- `benchmarks/e2e_emgraph`: Benchmark the performance of the end to end emgraph protocol with initialization, preprocessing and online phases.
+- `benchmarks/initialization_emgraph`: Benchmark the performance of the initialization phase of the emgraph protocol.
+- `benchmarks/initialization_graphiti`: Benchmark the performance of the initialization phase of the graphiti protocol.
+- `benchmarks/mpa_emgraph`: Benchmark the performance of the preprocessing and online phases of 1 round of message passing for emgraph.
+- `benchmarks/mpa_graphiti`: Benchmark the performance of the preprocessing and online phases of 1 round of message passing for graphiti.
 Execute the following commands from the `build` directory created during compilation to run the programs:
 ```sh
-# Benchmark Asterisk MPC.
+# Benchmark EmGraph MPA.
 #
 # The command below should be run on n+1 different terminals with $PID set to
 # 0, 1, 2, upto n i.e., one instance corresponding to each party.
 #
-# The number of threads can be set using the '-t' option. '-g' denotes the 
-# number of gates at each level, '-d' denotes the depth of the circuit and '-n'
-# the number of parties participating in the protocol.
+# The -v option can be used to vary the graph size. The -i option can be used to
+# vary the number of iterations for message passing. The -l option will later on
+# allow to vary the network latency.
 #
 # The program can be run on different machines by replacing the `--localhost`
 # option with '--net-config <net_config.json>' where 'net_config.json' is a
 # JSON file containing the IPs of the parties. A template is given in the
 # repository root.
-./benchmarks/asterisk_mpc -p $PID --localhost -g 100 -d 10 -n 5
+./benchmarks/e2e_emgraph -p $party --localhost -l 100.0 -v $vec_size -i 10 -n $players
 
-# The `asterisk_mpc` script in the repository root can be used to run the programs 
-# for all parties from the same terminal.
-# For example, the previous benchmark can be run using the script as shown
-# below.
-./../asterisk_mpc.sh 100 10
-
-# All other benchmark programs have similar options and behaviour. The '-h'
-# option can be used for detailed usage information.
-
-# Benchmark online phase for Asterisk MPC.
-./../asterisk_online.sh 100 10
-
-# Benchmark offline phase for Asterisk MPC.
-./../asterisk_offline.sh 100 10
-
-# Benchmark offline phase for Assisted MPC.
-./../assistedmpc_offline.sh 100 10
-
-# Benchmark Darkpool CDA algorithm for buy list size b=10 and sell list size s=20.
-./../Darkpool_CDA.sh 10 20
-
-# Benchmark Darkpool VM algorithm for buy list size = sell list size = 5/10/25/50/100.
-./../Darkpool_VM.sh
+# Run the graph_analysis script to automatically run the benchmarks
+./../graph_analysis.sh
 ```

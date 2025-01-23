@@ -289,7 +289,6 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
             }
 
             // APPLYV - PAGERANK
-            // TODO: Implement the actual pagerank formula
             std::vector<wire_t> applyv_list(gather_list.size());
             for (int j = 0; j < applyv_list.size(); ++j) {
                 auto pgr = circ.addConstOpGate(common::utils::GateType::kConstMul, gather_list[j], Ring(1));

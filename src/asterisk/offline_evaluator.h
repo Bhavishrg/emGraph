@@ -73,8 +73,6 @@ class OfflineEvaluator {
   PreprocCircuit<Ring> run(const std::unordered_map<common::utils::wire_t, int>& input_pid_map);
 };
 
-// TODO: Complete LTZ
-
 class OfflineBoolEvaluator {
   int nP_;  
   int id_;

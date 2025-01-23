@@ -9,8 +9,6 @@ using namespace common::utils;
 
 namespace asterisk {
 
-// TODO: Understand which PRGs to add/remove to support permutation generation etc
-
 // Collection of PRGs.
 class RandGenPool {
   int id_;

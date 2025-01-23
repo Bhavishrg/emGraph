@@ -66,8 +66,6 @@ namespace asterisk {
     std::vector<Ring> evaluateCircuit(const std::unordered_map<common::utils::wire_t, Ring> &inputs);
   };
 
-// TODO: Complete LTZ
-
   struct BoolEval {
     int id;
     int nP;
