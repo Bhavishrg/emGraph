@@ -7,7 +7,7 @@
 
 using namespace common::utils;
 
-namespace asterisk {
+namespace emgraph {
 // Preprocessed data for a gate.
 template <class R>
 struct PreprocGate {
@@ -258,4 +258,4 @@ struct PreprocCircuit {
   std::unordered_map<wire_t, preprocg_ptr_t<R>> gates;
   PreprocCircuit() = default;
 };
-};  // namespace asterisk
+};  // namespace emgraph

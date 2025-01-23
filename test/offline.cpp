@@ -3,8 +3,8 @@
 #include <emp-tool/emp-tool.h>
 #include <io/netmp.h>
 #include <utils/helpers.h>
-#include <asterisk/offline_evaluator.h>
-#include <asterisk/rand_gen_pool.h>
+#include <emgraph/offline_evaluator.h>
+#include <emgraph/rand_gen_pool.h>
 #include <utils/circuit.h>
 
 #include <algorithm>
@@ -17,7 +17,7 @@
 #include <random>
 #include <vector>
 
-using namespace asterisk;
+using namespace emgraph;
 namespace bdata = boost::unit_test::data;
  
 

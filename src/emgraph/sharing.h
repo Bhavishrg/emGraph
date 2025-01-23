@@ -10,7 +10,7 @@
 
 using namespace common::utils;
 
-namespace asterisk {
+namespace emgraph {
 
 template <class R>
 class AddShare {
@@ -338,4 +338,4 @@ struct DummyShare {
 
 //template <>
 //void TPShare<BoolRing>::randomize(emp::PRG& prg);
-};  // namespace asterisk
+};  // namespace emgraph

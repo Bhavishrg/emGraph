@@ -1,11 +1,11 @@
-add_library(Asterisk
+add_library(EmGraph
     utils/circuit.cpp
     utils/types.cpp
     utils/helpers.cpp
-    asterisk/sharing.cpp
-    asterisk/rand_gen_pool.cpp
-    asterisk/offline_evaluator.cpp
-    asterisk/online_evaluator_load_balanced.cpp)
+    emgraph/sharing.cpp
+    emgraph/rand_gen_pool.cpp
+    emgraph/offline_evaluator.cpp
+    emgraph/online_evaluator_load_balanced.cpp)
 
-target_include_directories(Asterisk PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(Asterisk PUBLIC Boost::system EMPTool NTL GMP OpenMP::OpenMP_CXX rt tbb)
+target_include_directories(EmGraph PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(EmGraph PUBLIC Boost::system EMPTool NTL GMP OpenMP::OpenMP_CXX rt tbb)

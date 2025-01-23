@@ -1,6 +1,6 @@
 #include <io/netmp.h>
-#include <asterisk/offline_evaluator.h>
-#include <asterisk/online_evaluator.h>
+#include <emgraph/offline_evaluator.h>
+#include <emgraph/online_evaluator.h>
 #include <utils/circuit.h>
 
 #include <algorithm>
@@ -12,7 +12,7 @@
 
 #include "utils.h"
 
-using namespace asterisk;
+using namespace emgraph;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 

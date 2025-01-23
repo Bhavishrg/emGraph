@@ -13,7 +13,7 @@
 
 using namespace common::utils;
 
-namespace asterisk {
+namespace emgraph {
   class OnlineEvaluator {
     int nP_;
     int id_;
@@ -91,4 +91,4 @@ namespace asterisk {
 
     std::vector<std::vector<BoolRing>> getOutputShares();
   };
-}; // namespace asterisk
+}; // namespace emgraph

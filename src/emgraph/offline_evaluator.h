@@ -12,13 +12,13 @@
 
 
 #include "preproc.h"
-#include "asterisk/rand_gen_pool.h"
+#include "emgraph/rand_gen_pool.h"
 #include "sharing.h"
 #include "../utils/types.h"
 
 using namespace common::utils;
 
-namespace asterisk {
+namespace emgraph {
 class OfflineEvaluator {
   int nP_;  
   int id_;
@@ -91,4 +91,4 @@ class OfflineBoolEvaluator {
                                 AddShare<BoolRing>& share, TPShare<BoolRing>& tpShare, BoolRing secret,
                                 std::vector<BoolRing>& rand_sh_sec, size_t& idx_rand_sh_sec);
 };
-};  // namespace asterisk
+};  // namespace emgraph

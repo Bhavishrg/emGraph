@@ -1,6 +1,6 @@
-# Asterisk
+# EmGraph
 
-This directory contains the implementation of the Asterisk fair protocol.
+This directory contains the implementation of the EmGraph secure graph analysis protocol.
 The protocol is implemented in C++17 and [CMake](https://cmake.org/) is used as the build system.
 
 ## External Dependencies

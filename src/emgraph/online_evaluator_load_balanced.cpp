@@ -3,7 +3,7 @@
 #include "../utils/helpers.h"
 #include <omp.h>
 
-namespace asterisk
+namespace emgraph
 {
     OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                                      PreprocCircuit<Ring> preproc,
@@ -1299,4 +1299,4 @@ namespace asterisk
         }
         return outputs;
     }
-}; // namespace asterisk
+}; // namespace emgraph
