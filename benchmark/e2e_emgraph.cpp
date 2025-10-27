@@ -12,6 +12,8 @@
 
 #include "utils.h"
 
+#include <iomanip>
+
 using namespace emgraph;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
@@ -24,7 +26,7 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
                             std::vector<std::vector<int>> &pub_perm_g,
                             std::vector<std::vector<int>> &pub_perm_s,
                             std::vector<std::vector<int>> &pub_perm_d,
-                            std::vector<std::vector<int>> &pub_perm_v) {
+                            std::vector<std::vector<int>> &pub_perm_v, int latency_usec) {
 
     std::cout << "Initializing Phase Starting" << std::endl;
 
@@ -93,48 +95,56 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
         pub_perm_d = std::vector<std::vector<int>>(nP);
         pub_perm_v = std::vector<std::vector<int>>(nP);
 
-        #pragma omp parallel for
-        for (int i = 1; i <= nP; ++i) {
-            omp_set_num_threads(2);
-            #pragma omp parallel sections
+        // Parallelize send and receive safely using OpenMP tasks
+        #pragma omp parallel
+        {
+            #pragma omp single
             {
-                #pragma omp section
-                {
+                // Create a send task for each party
+                for (int i = 1; i <= nP; ++i) {
                     if (i != pid) {
-                        network->send(i, perm_send.data(), perm_send.size() * sizeof(int));
-                        network->flush(i);
+                        #pragma omp task firstprivate(i)
+                        {
+                            network->send(i, perm_send.data(), perm_send.size() * sizeof(int));
+                            network->flush(i);
+                        }
                     }
                 }
-                #pragma omp section
-                {
-                    perm_recv[i - 1] = std::vector<int>(num_vert + 3 * subg_num_dag_list[i - 1]);
-                    if (i != pid) {
-                        usleep(250);
-                        network->recv(i, perm_recv[i - 1].data(), perm_recv[i - 1].size() * sizeof(int));
-                    } else {
-                        perm_recv[i - 1] = std::move(perm_send);
-                    }
 
-                    pub_perm_g[i - 1] = std::vector<int>(num_vert);
-                    for (int idx = 0; idx < num_vert; ++idx) {
-                        pub_perm_g[i - 1][idx] = perm_recv[i - 1][idx];
-                    }
+                // Create a receive task for each party
+                usleep(latency_usec);
+                for (int i = 1; i <= nP; ++i) {
+                    #pragma omp task firstprivate(i)
+                    {
+                        perm_recv[i - 1] = std::vector<int>(num_vert + 3 * subg_num_dag_list[i - 1]);
+                        if (i != pid) {
+                            network->recv(i, perm_recv[i - 1].data(), perm_recv[i - 1].size() * sizeof(int));
+                        } else {
+                            perm_recv[i - 1] = perm_send;
+                        }
 
-                    pub_perm_s[i - 1] = std::vector<int>(subg_num_dag_list[i - 1]);
-                    for (int idx = 0; idx < subg_num_dag_list[i - 1]; ++idx) {
-                        pub_perm_s[i - 1][idx] = perm_recv[i - 1][idx + num_vert];
-                    }
+                        pub_perm_g[i - 1] = std::vector<int>(num_vert);
+                        for (int idx = 0; idx < num_vert; ++idx) {
+                            pub_perm_g[i - 1][idx] = perm_recv[i - 1][idx];
+                        }
 
-                    pub_perm_d[i - 1] = std::vector<int>(subg_num_dag_list[i - 1]);
-                    for (int idx = 0; idx < subg_num_dag_list[i - 1]; ++idx) {
-                        pub_perm_d[i - 1][idx] = perm_recv[i - 1][idx + num_vert + subg_num_dag_list[i - 1]];
-                    }
+                        pub_perm_s[i - 1] = std::vector<int>(subg_num_dag_list[i - 1]);
+                        for (int idx = 0; idx < subg_num_dag_list[i - 1]; ++idx) {
+                            pub_perm_s[i - 1][idx] = perm_recv[i - 1][idx + num_vert];
+                        }
 
-                    pub_perm_v[i - 1] = std::vector<int>(subg_num_dag_list[i - 1]);
-                    for (int idx = 0; idx < subg_num_dag_list[i - 1]; ++idx) {
-                        pub_perm_v[i - 1][idx] = perm_recv[i - 1][idx + num_vert + 2 * subg_num_dag_list[i - 1]];
+                        pub_perm_d[i - 1] = std::vector<int>(subg_num_dag_list[i - 1]);
+                        for (int idx = 0; idx < subg_num_dag_list[i - 1]; ++idx) {
+                            pub_perm_d[i - 1][idx] = perm_recv[i - 1][idx + num_vert + subg_num_dag_list[i - 1]];
+                        }
+
+                        pub_perm_v[i - 1] = std::vector<int>(subg_num_dag_list[i - 1]);
+                        for (int idx = 0; idx < subg_num_dag_list[i - 1]; ++idx) {
+                            pub_perm_v[i - 1][idx] = perm_recv[i - 1][idx + num_vert + 2 * subg_num_dag_list[i - 1]];
+                        }
                     }
                 }
+                // Implicit taskwait at the end of single region
             }
         }
     } else {
@@ -193,7 +203,7 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
     std::cout << "Initialization done" << std::endl;
 }
 
-common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size, int iter) {
+common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size, int iter, int latency_usec) {
 
     std::cout << "Generating circuit" << std::endl;
     
@@ -225,7 +235,8 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
     std::vector<std::vector<wire_t>> subg_edge_list(nP);
     for (int i = 0; i < subg_edge_list.size(); ++i) {
         std::vector<wire_t> subg_edge_list_party(subg_num_edge[i]);
-        for (int j = 0; j < subg_edge_list[i].size(); ++j) {
+        std::cout << "Party " << pid << " creating " << subg_edge_list_party.size() << " input wires for subgraph " << i << std::endl;
+        for (int j = 0; j < subg_edge_list_party.size(); ++j) {
             subg_edge_list_party[j] = circ.newInputWire();
         }
         subg_edge_list[i] = subg_edge_list_party;
@@ -238,7 +249,7 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
     std::vector<std::vector<int>> perm_v, rand_perm_v, pub_perm_v;
     initializePermutations(network, nP, pid, num_vert, subg_num_dag_list,
                            perm_g, rand_perm_g, perm_s, rand_perm_s, perm_d, rand_perm_d, perm_v, rand_perm_v,
-                           pub_perm_g, pub_perm_s, pub_perm_d, pub_perm_v);
+                           pub_perm_g, pub_perm_s, pub_perm_d, pub_perm_v, latency_usec);
 
     // MESSAGE PASSING
     for (int r = 0; r < iter; ++r) {
@@ -372,11 +383,13 @@ void benchmark(const bpo::variables_map& opts) {
     }
     std::cout << std::endl;
 
+    int latency_usec = static_cast<int>(latency * 1000);  // Convert latency from ms to microseconds
+
     StatsPoint start(*network);
 
     network->sync();
     StatsPoint init_start(*network);
-    auto circ = generateCircuit(network, nP, pid, vec_size, iter).orderGatesByLevel();
+    auto circ = generateCircuit(network, nP, pid, vec_size, iter, latency_usec).orderGatesByLevel();
     network->sync();
     StatsPoint init_end(*network);
 
@@ -393,7 +406,8 @@ void benchmark(const bpo::variables_map& opts) {
     std::cout << "Starting preprocessing" << std::endl;
     StatsPoint preproc_start(*network);
     emp::PRG prg(&emp::zero_block, seed);
-    OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed);
+    int latency_ms = static_cast<int>(latency);  // Convert latency from double to int milliseconds
+    OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed, latency_ms);
     auto preproc = off_eval.run(input_pid_map);
     std::cout << "Preprocessing complete" << std::endl;
     network->sync();
@@ -401,7 +415,7 @@ void benchmark(const bpo::variables_map& opts) {
 
     std::cout << "Starting online evaluation" << std::endl;
     StatsPoint online_start(*network);
-    OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, threads, seed);
+    OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, threads, seed, latency_ms);
     eval.setRandomInputs();
     for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
         eval.evaluateGatesAtDepth(i);
@@ -439,6 +453,7 @@ void benchmark(const bpo::variables_map& opts) {
     }
 
     // std::cout << "--- Repetition " << r + 1 << " ---" << std::endl;
+    std::cout << std::fixed << std::setprecision(2);
     std::cout << "init time: " << init_rbench["time"] << " ms" << std::endl;
     std::cout << "init sent: " << init_bytes_sent << " bytes" << std::endl;
     std::cout << "preproc time: " << preproc_rbench["time"] << " ms" << std::endl;
@@ -470,7 +485,7 @@ bpo::options_description programOptions() {
         ("num-parties,n", bpo::value<int>()->required(), "Number of parties.")
         ("vec-size,v", bpo::value<size_t>()->required(), "Number of gates at each level.")
         ("iter,i", bpo::value<int>()->default_value(1), "Number of iterations for message passing.")
-        ("latency,l", bpo::value<double>()->required(), "Network latency in ms.")
+        ("latency,l", bpo::value<double>()->default_value(100.0), "Network latency in ms.")
         ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
         ("threads,t", bpo::value<size_t>()->default_value(6), "Number of threads (recommended 6).")
         ("seed", bpo::value<size_t>()->default_value(200), "Value of the random seed.")

@@ -12,6 +12,8 @@
 
 #include "utils.h"
 
+#include <iomanip>
+
 using namespace emgraph;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
@@ -46,7 +48,7 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
     std::vector<std::vector<wire_t>> subg_edge_list(nP);
     for (int i = 0; i < subg_edge_list.size(); ++i) {
         std::vector<wire_t> subg_edge_list_party(subg_num_edge[i]);
-        for (int j = 0; j < subg_edge_list[i].size(); ++j) {
+        for (int j = 0; j < subg_edge_list_party.size(); ++j) {
             subg_edge_list_party[j] = circ.newInputWire();
         }
         subg_edge_list[i] = subg_edge_list_party;
@@ -229,7 +231,8 @@ void benchmark(const bpo::variables_map& opts) {
     std::cout << "Starting preprocessing" << std::endl;
     StatsPoint preproc_start(*network);
     emp::PRG prg(&emp::zero_block, seed);
-    OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed);
+    int latency_ms = static_cast<int>(latency);  // Convert latency from double to int milliseconds
+    OfflineEvaluator off_eval(nP, pid, network, circ, threads, seed, latency_ms);
     auto preproc = off_eval.run(input_pid_map);
     std::cout << "Preprocessing complete" << std::endl;
     network->sync();
@@ -237,7 +240,7 @@ void benchmark(const bpo::variables_map& opts) {
 
     std::cout << "Starting online evaluation" << std::endl;
     StatsPoint online_start(*network);
-    OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, threads, seed);
+    OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, threads, seed, latency_ms);
     eval.setRandomInputs();
     for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
         eval.evaluateGatesAtDepth(i);
@@ -275,6 +278,7 @@ void benchmark(const bpo::variables_map& opts) {
     }
 
     // std::cout << "--- Repetition " << r + 1 << " ---" << std::endl;
+    std::cout << std::fixed << std::setprecision(2);
     std::cout << "init time: " << init_rbench["time"] << " ms" << std::endl;
     std::cout << "init sent: " << init_bytes_sent << " bytes" << std::endl;
     std::cout << "preproc time: " << preproc_rbench["time"] << " ms" << std::endl;
@@ -306,7 +310,7 @@ bpo::options_description programOptions() {
         ("num-parties,n", bpo::value<int>()->required(), "Number of parties.")
         ("vec-size,v", bpo::value<size_t>()->required(), "Number of gates at each level.")
         ("iter,i", bpo::value<int>()->default_value(1), "Number of iterations for message passing.")
-        ("latency,l", bpo::value<double>()->required(), "Network latency in ms.")
+        ("latency,l", bpo::value<double>()->default_value(100.0), "Network latency in ms.")
         ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
         ("threads,t", bpo::value<size_t>()->default_value(6), "Number of threads (recommended 6).")
         ("seed", bpo::value<size_t>()->default_value(200), "Value of the random seed.")

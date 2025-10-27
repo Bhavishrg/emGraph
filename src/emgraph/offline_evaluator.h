@@ -27,6 +27,7 @@ class OfflineEvaluator {
   common::utils::LevelOrderedCircuit circ_;
   std::shared_ptr<ThreadPool> tpool_;
   PreprocCircuit<Ring> preproc_;
+  int latency_usec_;
 
   // Used for running common coin protocol. Returns common random PRG key which
   // is then used to generate randomness for common coin output.
@@ -34,7 +35,7 @@ class OfflineEvaluator {
 
   public:
   OfflineEvaluator(int nP, int my_id, std::shared_ptr<io::NetIOMP> network,
-                   common::utils::LevelOrderedCircuit circ, int threads, int seed = 200);
+                   common::utils::LevelOrderedCircuit circ, int threads, int seed = 200, int latency_ms = 100);
 
   // Generate sharing of a random unknown value.
   static void randomShare(int nP, int pid, RandGenPool& rgen, AddShare<Ring>& share, TPShare<Ring>& tpShare);
@@ -71,6 +72,12 @@ class OfflineEvaluator {
 
   // Efficiently runs above subprotocols.
   PreprocCircuit<Ring> run(const std::unordered_map<common::utils::wire_t, int>& input_pid_map);
+
+ private:
+  // Cache Boolean circuit templates to avoid regenerating them for every preprocessing call.
+  // These are shared across all OfflineEvaluator instances and invocations.
+  static const common::utils::LevelOrderedCircuit& getMultKCircuitTemplate();
+  static const common::utils::LevelOrderedCircuit& getPrefixORCircuitTemplate();
 };
 
 class OfflineBoolEvaluator {
@@ -80,10 +87,11 @@ class OfflineBoolEvaluator {
   std::shared_ptr<io::NetIOMP> network_;
   common::utils::LevelOrderedCircuit circ_;
   PreprocCircuit<BoolRing> preproc_;
+  int latency_usec_;
 
   public:
   OfflineBoolEvaluator(int nP, int my_id, std::shared_ptr<io::NetIOMP> network,
-                       common::utils::LevelOrderedCircuit circ, int seed = 200);
+                       common::utils::LevelOrderedCircuit circ, int seed = 200, int latency_ms = 100);
 
   static void randomShare(int nP, int pid, RandGenPool& rgen, AddShare<BoolRing>& share, TPShare<BoolRing>& tpShare);
 

@@ -10,15 +10,28 @@
 // #include "../utils/helpers.h"
 
 namespace emgraph {
+
+// Static circuit template cache implementation.
+// These are lazily initialized on first use and shared across all preprocessing calls.
+const common::utils::LevelOrderedCircuit& OfflineEvaluator::getMultKCircuitTemplate() {
+  static const auto circuit = common::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel();
+  return circuit;
+}
+
+const common::utils::LevelOrderedCircuit& OfflineEvaluator::getPrefixORCircuitTemplate() {
+  static const auto circuit = common::utils::Circuit<BoolRing>::generateParaPrefixOR(2).orderGatesByLevel();
+  return circuit;
+}
 OfflineEvaluator::OfflineEvaluator(int nP, int my_id,
                                    std::shared_ptr<io::NetIOMP> network,
                                    common::utils::LevelOrderedCircuit circ,
-                                   int threads, int seed)
+                                   int threads, int seed, int latency_ms)
     : nP_(nP),
       id_(my_id),
       rgen_(my_id, seed), 
       network_(std::move(network)),
-      circ_(std::move(circ))
+      circ_(std::move(circ)),
+      latency_usec_(latency_ms * 1000)
       // preproc_(circ.num_gates)
 
       { } // tpool_ = std::make_shared<ThreadPool>(threads); }
@@ -130,6 +143,12 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
   size_t idx_rand_sh_sec = 0;
   size_t idx_delta_sh = 0;
   size_t b_idx_rand_sh_sec = 0;
+
+  // Use cached boolean sub-circuit templates (shared across all invocations)
+  // to avoid regenerating the same circuit topology for every gate or call.
+  // This reduces memory churn and temporary allocations significantly.
+  const auto& multk_circ_template = getMultKCircuitTemplate();
+  const auto& prefixOR_circ_template = getPrefixORCircuitTemplate();
 
   for (const auto& level : circ_.gates_by_level) {
     for (const auto& gate : level) {
@@ -302,8 +321,8 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
             OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_r_bits[i], tp_share_r_bits[i], tp_r_bits[i],
                                                     b_rand_sh_sec, b_idx_rand_sh_sec);
           }
-          // preproc for multk gate 
-          auto multk_circ = common::utils::Circuit<BoolRing>::generateMultK().orderGatesByLevel();
+          // preproc for multk gate (reuse template generated above)
+          const auto& multk_circ = multk_circ_template;
           std::vector<preprocg_ptr_t<BoolRing>> multk_gates(multk_circ.num_gates);
           for (const auto& multk_level : multk_circ.gates_by_level) {
             for (auto& multk_gate : multk_level) {
@@ -410,8 +429,8 @@ void OfflineEvaluator::setWireMasksParty(const std::unordered_map<common::utils:
             OfflineBoolEvaluator::randomShareSecret(nP_, id_, rgen_, share_r_bits[i], tp_share_r_bits[i], tp_r_bits[i],
                                                     b_rand_sh_sec, b_idx_rand_sh_sec);
           }
-          // preproc for prefixOR gate 
-          auto prefixOR_circ = common::utils::Circuit<BoolRing>::generateParaPrefixOR(2).orderGatesByLevel();
+          // preproc for prefixOR gate (reuse template generated above)
+          const auto& prefixOR_circ = prefixOR_circ_template;
           std::vector<preprocg_ptr_t<BoolRing>> prefixOR_gates(prefixOR_circ.num_gates);
           for (const auto& prefixOR_level : prefixOR_circ.gates_by_level) {
             for (auto& prefixOR_gate : prefixOR_level) {
@@ -695,7 +714,7 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
     for (int pid = 1; pid < nP_; ++pid) {
       size_t delta_sh_num = delta_sh[pid - 1].size();
       network_->send(pid, &delta_sh_num, sizeof(size_t));
-      network_->send(pid, delta_sh[pid - 1].data(), delta_sh_num * sizeof(size_t));
+      network_->send(pid, delta_sh[pid - 1].data(), delta_sh_num * sizeof(Ring));
     }
 
     size_t rand_sh_sec_num = rand_sh_sec.size();
@@ -728,7 +747,7 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
   } else if (id_ != nP_) {
 
     size_t delta_sh_num;
-    usleep(250);
+    usleep(latency_usec_);
     network_->recv(0, &delta_sh_num, sizeof(size_t));
     std::vector<std::vector<Ring>> delta_sh(nP_);
     delta_sh[id_ - 1] = std::vector<Ring>(delta_sh_num);
@@ -738,7 +757,7 @@ void OfflineEvaluator::setWireMasks(const std::unordered_map<common::utils::wire
   } else {
 
     std::vector<size_t> lengths(5);
-    usleep(250);
+    usleep(latency_usec_);
     network_->recv(0, lengths.data(), sizeof(size_t) * lengths.size());
     size_t arith_comm = lengths[0];
     size_t rand_sh_sec_num = lengths[1];
@@ -779,61 +798,65 @@ PreprocCircuit<Ring> OfflineEvaluator::run(const std::unordered_map<common::util
 }
 
 OfflineBoolEvaluator::OfflineBoolEvaluator(int nP, int my_id, std::shared_ptr<io::NetIOMP> network,
-                                           common::utils::LevelOrderedCircuit circ, int seed)
+                                           common::utils::LevelOrderedCircuit circ, int seed, int latency_ms)
   : nP_(nP),
     id_(my_id),
     rgen_(my_id, seed),
     network_(std::move(network)),
     circ_(std::move(circ)),
+    latency_usec_(latency_ms * 1000),
     preproc_() {}
 
-void OfflineBoolEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, AddShare<BoolRing>& share, TPShare<BoolRing>& tpShare) {
-  BoolRing val = 0;
-  if (pid == 0) {
-    share.pushValue(0);
-    tpShare.pushValues(0);
-    for(int i = 1; i <= nP; i++) {
-      uint8_t tmp;
-      rgen.pi(i).random_data(&tmp, sizeof(uint8_t));
-      val = tmp % 2;
-      tpShare.pushValues(val);
-    }
-  } else {
-    uint8_t tmp;
-    rgen.p0().random_data(&tmp, sizeof(uint8_t));
-    val = tmp % 2;
-    share.pushValue(val);
-  }
-}
 
-void OfflineBoolEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen,
-                                             AddShare<BoolRing>& share, TPShare<BoolRing>& tpShare, BoolRing secret,
-                                             std::vector<BoolRing>& rand_sh_sec, size_t& idx_rand_sh_sec) {
-  if (pid == 0) {
+  void OfflineBoolEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, AddShare<BoolRing>& share, TPShare<BoolRing>& tpShare) {
     BoolRing val = 0;
-    BoolRing valn = 0;
-    share.pushValue(0);
-    tpShare.pushValues(0);
-    for (int i = 1; i < nP; i++) {
-      uint8_t tmp;
-      rgen.pi(i).random_data(&tmp, sizeof(uint8_t));
-      val = tmp % 2; 
-      tpShare.pushValues(val);
-      valn += val;
-    }
-    valn = secret - valn;
-    tpShare.pushValues(valn);
-    rand_sh_sec.push_back(valn);
-  } else {
-    if (pid != nP) {
+    if (pid == 0) {
+      share.pushValue(0);
+      tpShare.pushValues(0);
+      for(int i = 1; i <= nP; i++) {
+        uint8_t tmp;
+        rgen.pi(i).random_data(&tmp, sizeof(uint8_t));
+        val = tmp % 2;
+        tpShare.pushValues(val);
+      }
+    } else {
       uint8_t tmp;
       rgen.p0().random_data(&tmp, sizeof(uint8_t));
-      BoolRing val = tmp % 2;
+      val = tmp % 2;
       share.pushValue(val);
-    } else {
-      share.pushValue(rand_sh_sec[idx_rand_sh_sec]);
-      idx_rand_sh_sec++;
     }
   }
+
+  void OfflineBoolEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen,
+                                              AddShare<BoolRing>& share, TPShare<BoolRing>& tpShare, BoolRing secret,
+                                              std::vector<BoolRing>& rand_sh_sec, size_t& idx_rand_sh_sec) {
+    if (pid == 0) {
+      BoolRing val = 0;
+      BoolRing valn = 0;
+      share.pushValue(0);
+      tpShare.pushValues(0);
+      for (int i = 1; i < nP; i++) {
+        uint8_t tmp;
+        rgen.pi(i).random_data(&tmp, sizeof(uint8_t));
+        val = tmp % 2; 
+        tpShare.pushValues(val);
+        valn += val;
+      }
+      valn = secret - valn;
+      tpShare.pushValues(valn);
+      rand_sh_sec.push_back(valn);
+    } else {
+      if (pid != nP) {
+        uint8_t tmp;
+        rgen.p0().random_data(&tmp, sizeof(uint8_t));
+        BoolRing val = tmp % 2;
+        share.pushValue(val);
+      } else {
+        share.pushValue(rand_sh_sec[idx_rand_sh_sec]);
+        idx_rand_sh_sec++;
+      }
+    }
 }
+
+
 };  // namespace emgraph

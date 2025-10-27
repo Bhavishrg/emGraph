@@ -187,6 +187,16 @@ struct PreprocLtzGate : public PreprocGate<R> {
   std::vector<TPShare<BoolRing>> tp_share_r_bits;
   std::vector<preprocg_ptr_t<BoolRing>> PrefixOR_gates;
   PreprocLtzGate() = default;
+
+  // Enable efficient move semantics to avoid unnecessary copies of large
+  // per-gate preprocessed vectors (bit shares and prefix OR gate preproc).
+  PreprocLtzGate(PreprocLtzGate&&) noexcept = default;
+  PreprocLtzGate& operator=(PreprocLtzGate&&) noexcept = default;
+
+  // Keep copy operations default (if ever needed).
+  PreprocLtzGate(const PreprocLtzGate&) = default;
+  PreprocLtzGate& operator=(const PreprocLtzGate&) = default;
+
   PreprocLtzGate(const AddShare<R> &share_r, const TPShare<R> &tp_share_r,
                  const std::vector<AddShare<BoolRing>> &share_r_bits, const std::vector<TPShare<BoolRing>> &tp_share_r_bits,
                  std::vector<preprocg_ptr_t<BoolRing>> PrefixOR_gates)

@@ -23,18 +23,19 @@ namespace emgraph {
     common::utils::LevelOrderedCircuit circ_;
     std::vector<Ring> wires_;
     std::shared_ptr<ThreadPool> tpool_;
+    int latency_usec_;
 
     // write reconstruction function
   public:
     OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                     PreprocCircuit<Ring> preproc,
                     common::utils::LevelOrderedCircuit circ,
-                    int threads, int seed = 200);
+                    int threads, int seed = 200, int latency_ms = 100);
 
     OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                     PreprocCircuit<Ring> preproc,
                     common::utils::LevelOrderedCircuit circ,
-                    std::shared_ptr<ThreadPool> tpool, int seed = 200);
+                    std::shared_ptr<ThreadPool> tpool, int seed = 200, int latency_ms = 100);
 
     void setInputs(const std::unordered_map<common::utils::wire_t, Ring> &inputs);
 
@@ -47,6 +48,13 @@ namespace emgraph {
                                        std::vector<Ring> &mult4_vals, std::vector<Ring> &dotp_vals);
 
     void evaluateGatesAtDepth(size_t depth);
+
+    // Memory management helpers
+    // Release large internal buffers held by the evaluator (call after evaluation completes)
+    void releaseMemory();
+
+    // Free preprocessing data for a specific depth (used for progressive cleanup)
+    void freeDepthPreproc(size_t depth);
 
     void eqzEvaluate(const std::vector<common::utils::FIn1Gate> &eqz_gates);
   
@@ -74,10 +82,11 @@ namespace emgraph {
     std::vector<std::vector<BoolRing>> vwires;
     std::vector<preprocg_ptr_t<BoolRing> *> vpreproc;
     common::utils::LevelOrderedCircuit circ;
+    int latency_usec;
 
     explicit BoolEval(int my_id, int nP, std::shared_ptr<io::NetIOMP> network,
                       std::vector<preprocg_ptr_t<BoolRing> *> vpreproc,
-                      common::utils::LevelOrderedCircuit circ, int seed = 200);
+                      common::utils::LevelOrderedCircuit circ, int seed = 200, int latency_ms = 100);
 
     void evaluateGatesAtDepthPartySend(size_t depth, std::vector<BoolRing> &mult_vals, std::vector<BoolRing> &mult3_vals,
                                        std::vector<BoolRing> &mult4_vals, std::vector<BoolRing> &dotp_vals);

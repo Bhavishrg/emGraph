@@ -49,10 +49,9 @@ A short description of the compiled programs is given below.
 All of them provide detailed usage description on using the `--help` option.
 
 - `benchmarks/e2e_emgraph`: Benchmark the performance of the end to end emgraph protocol with initialization, preprocessing and online phases.
-- `benchmarks/initialization_emgraph`: Benchmark the performance of the initialization phase of the emgraph protocol.
-- `benchmarks/initialization_graphiti`: Benchmark the performance of the initialization phase of the graphiti protocol.
-- `benchmarks/mpa_emgraph`: Benchmark the performance of the preprocessing and online phases of 1 round of message passing for emgraph.
-- `benchmarks/mpa_graphiti`: Benchmark the performance of the preprocessing and online phases of 1 round of message passing for graphiti.
+- `benchmarks/mpa_emgraph`: Benchmark the performance of the message-passing phase of the emgraph protocol.
+- `benchmarks/e2e_graphiti`: Benchmark the performance of the end to end graphiti protocol.
+- `benchmarks/mpa_graphiti`: Benchmark the performance of message passing phase of the graphiti protocol.
 Execute the following commands from the `build` directory created during compilation to run the programs:
 ```sh
 # Benchmark EmGraph MPA.
@@ -69,7 +68,52 @@ Execute the following commands from the `build` directory created during compila
 # JSON file containing the IPs of the parties. A template is given in the
 # repository root.
 ./benchmarks/e2e_emgraph -p $party --localhost -l 100.0 -v $vec_size -i 10 -n $players
-
-# Run the graph_analysis script to automatically run the benchmarks
-./../graph_analysis.sh
 ```
+
+## Scripts
+
+Two helper scripts are provided to run benchmarks and collect logs: `graph_analysis.sh` and `run.sh`.
+
+### graph_analysis.sh
+
+Usage: ./../graph_analysis.sh <benchmark_name> [benchmark_options...]
+
+Available benchmarks:
+  - e2e_emgraph
+  - e2e_graphiti
+  - mpa_emgraph
+  - mpa_graphiti
+
+Example usage:
+
+```
+./../graph_analysis.sh mpa_emgraph -l 0.5 --vec-size 10000 -i 10
+```
+
+
+### run.sh
+
+Simple wrapper to run all benchmarks reported in the paper and save logs.
+
+Usage notes / examples:
+
+```
+# from build directory:
+./../run.sh
+```
+
+### Results / logs layout
+
+Both scripts store logs under the `Results/` directory with the following layout:
+
+```
+Results/<benchmark_name>/<num_parties>_PC/<graph_size>/
+	party_0.log   # trusted party (or party 0)
+	party_1.log
+	party_2.log
+	...
+```
+`aggregate_stat.log` reports the aggregated runtime and communication.
+
+The included Python scripts under `pythonScripts/generate_tables.py` can be used to aggregate and convert these logs into human-friendly tables.
+

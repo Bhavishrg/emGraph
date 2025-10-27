@@ -16,7 +16,7 @@ using namespace emgraph;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pid, size_t vec_size) {
+void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pid, size_t vec_size, int latency_usec) {
 
     std::cout << "Initializing Phase Starting" << std::endl;
 
@@ -97,7 +97,7 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
                     }
                     #pragma omp section
                     {
-                        usleep(250);
+                        usleep(latency_usec);
                         network->recv(i, perm_recv[i - 1].data(), perm_recv[i - 1].size() * sizeof(int));
                     }
                 }
@@ -180,7 +180,8 @@ void benchmark(const bpo::variables_map& opts) {
 
     network->sync();
     StatsPoint init_start(*network);
-    initializePermutations(network, nP, pid, vec_size);
+    int latency_usec = static_cast<int>(latency * 1000);  // Convert latency from ms to microseconds
+    initializePermutations(network, nP, pid, vec_size, latency_usec);
     network->sync();
     StatsPoint init_end(*network);
 
@@ -228,7 +229,7 @@ bpo::options_description programOptions() {
         ("num-parties,n", bpo::value<int>()->required(), "Number of parties.")
         ("vec-size,v", bpo::value<size_t>()->required(), "Number of gates at each level.")
         ("iter,i", bpo::value<int>()->default_value(1), "Number of iterations for message passing.")
-        ("latency,l", bpo::value<double>()->required(), "Network latency in ms.")
+        ("latency,l", bpo::value<double>()->default_value(100.0), "Network latency in ms.")
         ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
         ("threads,t", bpo::value<size_t>()->default_value(6), "Number of threads (recommended 6).")
         ("seed", bpo::value<size_t>()->default_value(200), "Value of the random seed.")

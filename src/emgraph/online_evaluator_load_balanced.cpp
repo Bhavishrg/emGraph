@@ -8,14 +8,15 @@ namespace emgraph
     OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                                      PreprocCircuit<Ring> preproc,
                                      common::utils::LevelOrderedCircuit circ,
-                                     int threads, int seed)
+                                     int threads, int seed, int latency_ms)
         : nP_(nP),
           id_(id),
           rgen_(id, seed),
           network_(std::move(network)),
           preproc_(std::move(preproc)),
           circ_(std::move(circ)),
-          wires_(circ.num_wires)
+          wires_(circ.num_wires),
+          latency_usec_(latency_ms * 1000)
     {
         // tpool_ = std::make_shared<ThreadPool>(threads);
     }
@@ -23,7 +24,7 @@ namespace emgraph
     OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                                      PreprocCircuit<Ring> preproc,
                                      common::utils::LevelOrderedCircuit circ,
-                                     std::shared_ptr<ThreadPool> tpool, int seed)
+                                     std::shared_ptr<ThreadPool> tpool, int seed, int latency_ms)
         : nP_(nP),
           id_(id),
           rgen_(id, seed),
@@ -31,7 +32,8 @@ namespace emgraph
           preproc_(std::move(preproc)),
           circ_(std::move(circ)),
           tpool_(std::move(tpool)),
-          wires_(circ.num_wires) {}
+          wires_(circ.num_wires),
+          latency_usec_(latency_ms * 1000) {}
 
     void OnlineEvaluator::setInputs(const std::unordered_map<common::utils::wire_t, Ring> &inputs) {
         // Input gates have depth 0
@@ -89,11 +91,11 @@ namespace emgraph
         std::vector<Ring> recon_vals(num_eqz_gates, 0);
         if (id_ != pKing) {
             network_->send(pKing, all_share_send.data(), all_share_send.size() * sizeof(Ring));
-            usleep(250);
+            usleep(latency_usec_);
             network_->recv(pKing, recon_vals.data(), recon_vals.size() * sizeof(Ring));
         } else {
             std::vector<std::vector<Ring>> share_recv(nP_);
-            usleep(250);
+            usleep(latency_usec_);
             #pragma omp parallel for
             for (int pid = 1; pid <= nP_; ++pid) {
                 share_recv[pid - 1] = std::vector<Ring>();
@@ -114,10 +116,16 @@ namespace emgraph
                     network_->send(pid, recon_vals.data(), recon_vals.size() * sizeof(Ring));
                 }
             }
+            // Free share_recv after reconstruction
+            share_recv.clear();
+            share_recv.shrink_to_fit();
         }
+        // Free all_share_send after reconstruction
+        all_share_send.clear();
+        all_share_send.shrink_to_fit();
 
         // Evaluate the multK circuit with bits of d as input
-        BoolEval bool_eval(id_, nP_, network_, vpreproc, multk_circ);
+        BoolEval bool_eval(id_, nP_, network_, vpreproc, multk_circ, 200, latency_usec_ / 1000);
         for (int i = 0; i < num_eqz_gates; ++i) {
             auto *pre_eqz = static_cast<PreprocEqzGate<Ring> *>(preproc_.gates[eqz_gates[i].out].get());
             Ring recon_d = recon_vals[i];
@@ -141,13 +149,13 @@ namespace emgraph
         if (id_ != pKing) {
             auto net_data_send = BoolRing::pack(all_out_send.data(), all_out_send.size());
             network_->send(pKing, net_data_send.data(), net_data_send.size() * sizeof(uint8_t));
-            usleep(250);
+            usleep(latency_usec_);
             network_->recv(pKing, recon_out.data(), recon_out.size() * sizeof(Ring));
         } else {
             auto nbytes = (all_out_send.size() + 7) / 8;
             std::vector<std::vector<BoolRing>> all_out_recv(nP_);
             std::vector<BoolRing> out(num_eqz_gates, BoolRing(0));
-            usleep(250);
+            usleep(latency_usec_);
             #pragma omp parallel for
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != pKing) {
@@ -200,19 +208,20 @@ namespace emgraph
         }
 
         // Reconstruct the masked input a
-        Ring M = pow(2, RINGSIZEBITS - 1); // M = half of ring size
+        // Use integer bit-shift instead of pow to avoid double->Ring overflow
+        Ring M = (Ring(1) << (RINGSIZEBITS - 1)); // M = half of ring size
         std::vector<Ring> recon_vals_a(num_ltz_gates, 0); // a = x + r
         std::vector<Ring> recon_vals_b(num_ltz_gates, M); // b = a + M
         if (id_ != pKing) {
             network_->send(pKing, all_share_send.data(), all_share_send.size() * sizeof(Ring));
-            usleep(250);
+            usleep(latency_usec_);
             network_->recv(pKing, recon_vals_a.data(), recon_vals_a.size() * sizeof(Ring));
             for (int i = 0; i < num_ltz_gates; ++i) {
                 recon_vals_b[i] += recon_vals_a[i];
             }
         } else {
             std::vector<std::vector<Ring>> share_recv(nP_);
-            usleep(250);
+            usleep(latency_usec_);
             #pragma omp parallel for
             for (int pid = 1; pid <= nP_; ++pid) {
                 share_recv[pid - 1] = std::vector<Ring>();
@@ -310,6 +319,7 @@ namespace emgraph
         }
     }
 
+
     void OnlineEvaluator::shuffleEvaluate(const std::vector<common::utils::SIMDOGate> &shuffle_gates) {
         if (id_ == 0) { return; }
         std::vector<Ring> z_all;
@@ -332,7 +342,7 @@ namespace emgraph
         }
 
         if (id_ == 1) {
-            usleep(250);
+            usleep(latency_usec_);
             std::vector<std::vector<Ring>> z_recv_all(nP_);
             #pragma omp parallel for
             for (int pid = 2; pid <= nP_; ++pid) {
@@ -371,7 +381,7 @@ namespace emgraph
             z_all.clear();
             z_all.resize(total_comm);
             network_->recv(id_ - 1, z_all.data(), z_all.size() * sizeof(Ring));
-            usleep(250);
+            usleep(latency_usec_);
             for (int idx_gate = 0, idx_vec = 0; idx_gate < shuffle_gates.size(); ++idx_gate) {
                 auto *pre_shuffle = static_cast<PreprocShuffleGate<Ring> *>(preproc_.gates[shuffle_gates[idx_gate].out].get());
                 size_t vec_size = shuffle_gates[idx_gate].in.size();
@@ -725,15 +735,39 @@ namespace emgraph
         size_t permAndSh_num = 0;
         size_t amortzdPnS_num = 0;
 
+        // Pre-count gate types to reserve exact vector sizes (avoid over-allocation)
+        for (auto &gate : circ_.gates_by_level[depth]) {
+            switch (gate->type) {
+                case common::utils::GateType::kMul: mult_num++; break;
+                case common::utils::GateType::kMul3: mult3_num++; break;
+                case common::utils::GateType::kMul4: mult4_num++; break;
+                case common::utils::GateType::kDotprod: dotp_num++; break;
+                case ::common::utils::GateType::kEqz: eqz_num++; break;
+                case ::common::utils::GateType::kLtz: ltz_num++; break;
+                case common::utils::GateType::kShuffle: shuffle_num++; break;
+                case common::utils::GateType::kPermAndSh: permAndSh_num++; break;
+                case common::utils::GateType::kAmortzdPnS: amortzdPnS_num++; break;
+                default: break;
+            }
+        }
+
         std::vector<Ring> mult_vals;
+        mult_vals.reserve(mult_num * 2);
         std::vector<Ring> mult3_vals;
+        mult3_vals.reserve(mult3_num * 3);
         std::vector<Ring> mult4_vals;
+        mult4_vals.reserve(mult4_num * 4);
         std::vector<Ring> dotp_vals;
         std::vector<common::utils::FIn1Gate> eqz_gates;
+        eqz_gates.reserve(eqz_num);
         std::vector<common::utils::FIn1Gate> ltz_gates;
+        ltz_gates.reserve(ltz_num);
         std::vector<common::utils::SIMDOGate> shuffle_gates;
+        shuffle_gates.reserve(shuffle_num);
         std::vector<common::utils::SIMDOGate> permAndSh_gates;
+        permAndSh_gates.reserve(permAndSh_num);
         std::vector<common::utils::SIMDMOGate> amortzdPnS_gates;
+        amortzdPnS_gates.reserve(amortzdPnS_num);
 
         for (auto &gate : circ_.gates_by_level[depth]) {
             switch (gate->type) {
@@ -826,13 +860,25 @@ namespace emgraph
         online_comm_send.insert(online_comm_send.end(), mult4_vals.begin(), mult4_vals.end());
         online_comm_send.insert(online_comm_send.end(), dotp_vals.begin(), dotp_vals.end());
 
+        // Save sizes before clearing
+        size_t mult_vals_size = mult_vals.size();
+        size_t mult3_vals_size = mult3_vals.size();
+        size_t mult4_vals_size = mult4_vals.size();
+        size_t dotp_vals_size = dotp_vals.size();
+
+        // Free intermediate buffers after copying to comm buffer
+        mult_vals.clear(); mult_vals.shrink_to_fit();
+        mult3_vals.clear(); mult3_vals.shrink_to_fit();
+        mult4_vals.clear(); mult4_vals.shrink_to_fit();
+        dotp_vals.clear(); dotp_vals.shrink_to_fit();
+
         for (int pid = 1; pid <= nP_; ++pid) {
             if (pid != id_) {
                 network_->send(pid, online_comm_send.data(), sizeof(Ring) * online_comm_send.size());
             }
         }
 
-        usleep(250);
+        usleep(latency_usec_);
         std::vector<std::vector<Ring>> online_comm_recv_party(nP_);
         #pragma omp parallel for
         for (int pid = 1; pid <= nP_; ++pid) {
@@ -849,7 +895,7 @@ namespace emgraph
             }
         }
 
-        size_t mult_all_recv = nP_ * mult_vals.size();
+        size_t mult_all_recv = nP_ * mult_vals_size;
         std::vector<Ring> mult_all(mult_all_recv);
         for (int i = 0, j = 0, pid = 0; i < mult_all_recv;) {
             mult_all[i++] = online_comm_recv[pid * total_comm_send + 2 * j];
@@ -858,36 +904,58 @@ namespace emgraph
             pid = (pid + 1) % nP_;
         }
 
-        size_t mult3_all_recv = nP_ * mult3_vals.size();
+        // Free online_comm_recv_party after processing to release memory
+        online_comm_recv_party.clear();
+        online_comm_recv_party.shrink_to_fit();
+
+        size_t mult3_all_recv = nP_ * mult3_vals_size;
         std::vector<Ring> mult3_all(mult3_all_recv);
         for (int i = 0, j = 0, pid = 0; i < mult3_all_recv;) {
-            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + 3 * j];
-            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + 3 * j + 1];
-            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + 3 * j + 2];
+            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + 3 * j];
+            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + 3 * j + 1];
+            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + 3 * j + 2];
             j += (pid + 1) / nP_;
             pid = (pid + 1) % nP_;
         }
 
-        size_t mult4_all_recv = nP_ * mult4_vals.size();
+        size_t mult4_all_recv = nP_ * mult4_vals_size;
         std::vector<Ring> mult4_all(mult4_all_recv);
         for (int i = 0, j = 0, pid = 0; i < mult4_all_recv;) {
-            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j];
-            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j + 1];
-            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j + 2];
-            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j + 3];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + mult3_vals_size + 4 * j];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + mult3_vals_size + 4 * j + 1];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + mult3_vals_size + 4 * j + 2];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + mult3_vals_size + 4 * j + 3];
             j += (pid + 1) / nP_;
             pid = (pid + 1) % nP_;
         }
 
-        size_t dotp_all_recv = nP_ * dotp_vals.size();
+        size_t dotp_all_recv = nP_ * dotp_vals_size;
         std::vector<Ring> dotp_all(dotp_all_recv);
         for (int i = 0, j = 0, pid = 0; i < dotp_all_recv;) {
-            dotp_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + mult4_vals.size() + 2 * j];
-            dotp_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + mult4_vals.size() + 2 * j + 1];
+            dotp_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + mult3_vals_size + mult4_vals_size + 2 * j];
+            dotp_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + mult3_vals_size + mult4_vals_size + 2 * j + 1];
             j += (pid + 1) / nP_;
             pid = (pid + 1) % nP_;
         }
         evaluateGatesAtDepthPartyRecv(depth, mult_all, mult3_all, mult4_all, dotp_all);
+        
+        // Free communication buffers immediately after use
+        online_comm_send.clear(); online_comm_send.shrink_to_fit();
+        online_comm_recv.clear(); online_comm_recv.shrink_to_fit();
+        mult_all.clear(); mult_all.shrink_to_fit();
+        mult3_all.clear(); mult3_all.shrink_to_fit();
+        mult4_all.clear(); mult4_all.shrink_to_fit();
+        dotp_all.clear(); dotp_all.shrink_to_fit();
+        
+        // Free gates collected at this depth
+        eqz_gates.clear(); eqz_gates.shrink_to_fit();
+        ltz_gates.clear(); ltz_gates.shrink_to_fit();
+        shuffle_gates.clear(); shuffle_gates.shrink_to_fit();
+        permAndSh_gates.clear(); permAndSh_gates.shrink_to_fit();
+        amortzdPnS_gates.clear(); amortzdPnS_gates.shrink_to_fit();
+        
+        // Progressive preproc cleanup: free preprocessing data for this depth
+        // freeDepthPreproc(depth);
     }
 
     std::vector<Ring> OnlineEvaluator::getOutputs() {
@@ -906,7 +974,7 @@ namespace emgraph
                     network_->send(pid, output_shares[id_ - 1].data(), output_shares[id_ - 1].size() * sizeof(Ring));
                 }
             }
-            usleep(250);
+            usleep(latency_usec_);
             #pragma omp parallel for
             for (int pid = 1; pid <= nP_; ++pid) {
                 if (pid != id_) {
@@ -952,16 +1020,47 @@ namespace emgraph
         return getOutputs();
     }
 
+    void OnlineEvaluator::releaseMemory() {
+        // Release large data structures once evaluation is done to free RAM.
+        // Clear level-ordered circuit
+        circ_ = common::utils::LevelOrderedCircuit();
+        circ_.num_gates = 0;
+        circ_.num_wires = 0;
+        circ_.gates_by_level.clear();
+        circ_.gates_by_level.shrink_to_fit();
+
+        // Clear preprocessed gate data
+        preproc_.gates.clear();
+        preproc_.gates.rehash(0);
+
+        // Clear wire storage
+        wires_.clear();
+        wires_.shrink_to_fit();
+    }
+
+    void OnlineEvaluator::freeDepthPreproc(size_t depth) {
+        // Free preprocessing data for gates at this depth to progressively reduce memory
+        if (depth >= circ_.gates_by_level.size()) return;
+        
+        for (auto &gate : circ_.gates_by_level[depth]) {
+            auto it = preproc_.gates.find(gate->out);
+            if (it != preproc_.gates.end()) {
+                preproc_.gates.erase(it);
+            }
+        }
+    }
+
     BoolEval::BoolEval(int my_id, int nP, std::shared_ptr<io::NetIOMP> network,
                        std::vector<preprocg_ptr_t<BoolRing> *> vpreproc,
-                       common::utils::LevelOrderedCircuit circ, int seed)
+                       common::utils::LevelOrderedCircuit circ, int seed, int latency_ms)
         : id(my_id),
           nP(nP),
           rgen(id, seed),
           network(std::move(network)),
           vwires(vpreproc.size(), std::vector<BoolRing>(circ.num_wires)),
           vpreproc(std::move(vpreproc)),
-          circ(std::move(circ)) {}
+          circ(std::move(circ)),
+          latency_usec(latency_ms * 1000) {}
 
     void BoolEval::evaluateGatesAtDepthPartySend(size_t depth, std::vector<BoolRing> &mult_vals, std::vector<BoolRing> &mult3_vals,
                                                  std::vector<BoolRing> &mult4_vals, std::vector<BoolRing> &dotp_vals) {
@@ -1215,6 +1314,18 @@ namespace emgraph
         online_comm_send.insert(online_comm_send.end(), mult3_vals.begin(), mult3_vals.end());
         online_comm_send.insert(online_comm_send.end(), mult4_vals.begin(), mult4_vals.end());
         online_comm_send.insert(online_comm_send.end(), dotp_vals.begin(), dotp_vals.end());
+        
+        // Save sizes before clearing
+        size_t mult_vals_size = mult_vals.size();
+        size_t mult3_vals_size = mult3_vals.size();
+        size_t mult4_vals_size = mult4_vals.size();
+        size_t dotp_vals_size = dotp_vals.size();
+        
+        // Free intermediate buffers after copying
+        mult_vals.clear(); mult_vals.shrink_to_fit();
+        mult3_vals.clear(); mult3_vals.shrink_to_fit();
+        mult4_vals.clear(); mult4_vals.shrink_to_fit();
+        dotp_vals.clear(); dotp_vals.shrink_to_fit();
 
         for (int pid = 1; pid <= nP; ++pid) {
             if (pid != id) {
@@ -1223,7 +1334,7 @@ namespace emgraph
             }
         }
 
-        usleep(250);
+        usleep(latency_usec);
         size_t nbytes = (total_comm_send + 7) / 8;
         std::vector<std::vector<BoolRing>> online_comm_recv_party(nP);
         #pragma omp parallel for
@@ -1242,7 +1353,7 @@ namespace emgraph
             }
         }
 
-        size_t mult_all_recv = nP * mult_vals.size();
+        size_t mult_all_recv = nP * mult_vals_size;
         std::vector<BoolRing> mult_all(mult_all_recv);
         for (int i = 0, j = 0, pid = 0; i < mult_all_recv;) {
             mult_all[i++] = online_comm_recv[pid * total_comm_send + 2 * j];
@@ -1251,36 +1362,45 @@ namespace emgraph
             pid = (pid + 1) % nP;
         }
 
-        size_t mult3_all_recv = nP * mult3_vals.size();
+        size_t mult3_all_recv = nP * mult3_vals_size;
         std::vector<BoolRing> mult3_all(mult3_all_recv);
         for (int i = 0, j = 0, pid = 0; i < mult3_all_recv;) {
-            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + 3 * j];
-            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + 3 * j + 1];
-            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + 3 * j + 2];
+            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + 3 * j];
+            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + 3 * j + 1];
+            mult3_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + 3 * j + 2];
             j += (pid + 1) / nP;
             pid = (pid + 1) % nP;
         }
 
-        size_t mult4_all_recv = nP * mult4_vals.size();
+        size_t mult4_all_recv = nP * mult4_vals_size;
         std::vector<BoolRing> mult4_all(mult4_all_recv);
         for (int i = 0, j = 0, pid = 0; i < mult4_all_recv;) {
-            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j];
-            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j + 1];
-            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j + 2];
-            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + 4 * j + 3];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + mult3_vals_size + 4 * j];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + mult3_vals_size + 4 * j + 1];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + mult3_vals_size + 4 * j + 2];
+            mult4_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + mult3_vals_size + 4 * j + 3];
             j += (pid + 1) / nP;
             pid = (pid + 1) % nP;
         }
 
-        size_t dotp_all_recv = nP * dotp_vals.size();
+        size_t dotp_all_recv = nP * dotp_vals_size;
         std::vector<BoolRing> dotp_all(dotp_all_recv);
         for (int i = 0, j = 0, pid = 0; i < dotp_all_recv;) {
-            dotp_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + mult4_vals.size() + 2 * j];
-            dotp_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals.size() + mult3_vals.size() + mult4_vals.size() + 2 * j + 1];
+            dotp_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + mult3_vals_size + mult4_vals_size + 2 * j];
+            dotp_all[i++] = online_comm_recv[pid * total_comm_send + mult_vals_size + mult3_vals_size + mult4_vals_size + 2 * j + 1];
             j += (pid + 1) / nP;
             pid = (pid + 1) % nP;
         }
         evaluateGatesAtDepthPartyRecv(depth, mult_all, mult3_all, mult4_all, dotp_all);
+        
+        // Free BoolEval communication buffers
+        online_comm_send.clear(); online_comm_send.shrink_to_fit();
+        online_comm_recv.clear(); online_comm_recv.shrink_to_fit();
+        online_comm_recv_party.clear(); online_comm_recv_party.shrink_to_fit();
+        mult_all.clear(); mult_all.shrink_to_fit();
+        mult3_all.clear(); mult3_all.shrink_to_fit();
+        mult4_all.clear(); mult4_all.shrink_to_fit();
+        dotp_all.clear(); dotp_all.shrink_to_fit();
     }
 
     void BoolEval::evaluateAllLevels() {

@@ -12,27 +12,76 @@
 
 #include "utils.h"
 
+#include <iomanip>
+
 using namespace emgraph;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
-common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size, int iter) {
+common::utils::Circuit<Ring> generateInitCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size) {
 
-    std::cout << "Generating circuit" << std::endl;
+
+    std::cout << "Generating Initialization circuit" << std::endl;
     
     common::utils::Circuit<Ring> circ;
 
-    int num_vert = vec_size * 0.1;
-    int num_edge = vec_size - num_vert;
-
-    std::vector<common::utils::wire_t> dag_list(vec_size);
-    std::generate(dag_list.begin(), dag_list.end(), [&]() { return circ.newInputWire(); });
-
-    for (int i = 0; i < dag_list.size() - 1; ++i) {
-        auto diff = circ.addGate(common::utils::GateType::kSub, dag_list[i], dag_list[dag_list.size() - 1]);
-        auto cmp = circ.addGate(common::utils::GateType::kLtz, diff);
-        circ.setAsOutput(cmp);
+    // Create input wires for the vector
+    std::vector<common::utils::wire_t> input_wires(vec_size);
+    std::generate(input_wires.begin(), input_wires.end(), [&]() { return circ.newInputWire(); });
+    
+    // Add shuffle gate - addMGate returns the output wires directly
+    std::vector<std::vector<int>> perm;
+    std::vector<int> tmp_perm(vec_size);
+    #pragma omp parallel for
+    for (int i = 0; i < vec_size; ++i) {
+        tmp_perm[i] = i;
     }
+    perm.push_back(tmp_perm);
+    if (pid == 0) {
+        for (int i = 1; i < nP; ++i) {
+            perm.push_back(tmp_perm);
+        }
+    }
+
+    std::vector<common::utils::wire_t> shuffled_wires1 = circ.addMGate(common::utils::GateType::kShuffle, input_wires, perm, 0);
+    std::vector<common::utils::wire_t> shuffled_wires2 = circ.addMGate(common::utils::GateType::kShuffle, shuffled_wires1, perm, 0);
+
+    // Simulate sorting
+    std::vector<common::utils::wire_t> sort_wires1 = circ.addMGate(common::utils::GateType::kShuffle, shuffled_wires1, perm, 0);
+    std::vector<common::utils::wire_t> sort_wires2 = circ.addMGate(common::utils::GateType::kShuffle, shuffled_wires2, perm, 0);
+
+    // Current working wires start as shuffled wires
+    std::vector<common::utils::wire_t> current_wires;
+    current_wires.insert(current_wires.end(), sort_wires1.begin(), sort_wires1.end());
+    current_wires.insert(current_wires.end(), sort_wires2.begin(), sort_wires2.end());
+
+    // // Perform vec_size comparisons only once
+    std::cout << "Adding " << vec_size << " comparisons" << std::endl;
+    
+    // // Perform vec_size comparisons (each addGate returns output wire directly)
+    std::vector<common::utils::wire_t> comparison_outputs(2*vec_size);
+    for (size_t i = 0; i < 2*vec_size; ++i) {
+        size_t idx1 = i;
+        size_t idx2 = (i + 1) % (2*vec_size); // Compare with next element (wrap around)
+
+        // Compare current_wires[idx1] and current_wires[idx2]
+        // Compute diff = current_wires[idx1] - current_wires[idx2]
+        auto diff = circ.addGate(common::utils::GateType::kSub, current_wires[idx1], current_wires[idx2]);
+
+        // Compute comparison result: cmp = (diff < 0)
+        auto cmp = circ.addGate(common::utils::GateType::kLtz, diff);
+
+        comparison_outputs[i] = cmp;
+    }
+    
+    // current_wires = comparison_outputs;
+    
+    // Set outputs
+    for (size_t i = 0; i < 2* vec_size; ++i) {
+        circ.setAsOutput(comparison_outputs[i]);
+    }
+    
+    std::cout << "Sorting circuit generation complete" << std::endl;
     return circ;
 }
 
@@ -47,7 +96,6 @@ void benchmark(const bpo::variables_map& opts) {
 
     auto nP = opts["num-parties"].as<int>();
     auto vec_size = opts["vec-size"].as<size_t>();
-    auto iter = opts["iter"].as<int>();
     auto latency = opts["latency"].as<double>();
     auto pid = opts["pid"].as<size_t>();
     auto threads = opts["threads"].as<size_t>();
@@ -56,10 +104,9 @@ void benchmark(const bpo::variables_map& opts) {
     auto port = opts["port"].as<int>();
 
     omp_set_nested(1);
-    // omp_set_num_threads(nP);
     if (nP < 10) { omp_set_num_threads(nP); }
     else { omp_set_num_threads(10); }
-    std::cout << "Starting benchmarks" << std::endl;
+    std::cout << "Starting init_graphiti benchmark" << std::endl;
 
     std::shared_ptr<io::NetIOMP> network = nullptr;
     if (opts["localhost"].as<bool>()) {
@@ -85,10 +132,14 @@ void benchmark(const bpo::variables_map& opts) {
     // Increase socket buffer sizes to prevent deadlocks with large messages
     increaseSocketBuffers(network.get(), 128 * 1024 * 1024);
 
+    int num_rounds = static_cast<int>(std::ceil(std::log2(vec_size)));
+    
     json output_data;
     output_data["details"] = {{"num_parties", nP},
                               {"vec_size", vec_size},
-                              {"iterations", iter},
+                              {"num_comparison_rounds", num_rounds},
+                              {"comparisons_executed_per_instance", vec_size},
+                              {"num_parallel_instances", 2},
                               {"latency (ms)", latency},
                               {"pid", pid},
                               {"threads", threads},
@@ -106,7 +157,7 @@ void benchmark(const bpo::variables_map& opts) {
 
     network->sync();
     StatsPoint init_start(*network);
-    auto circ = generateCircuit(network, nP, pid, vec_size, iter).orderGatesByLevel();
+    auto circ = generateInitCircuit(network, nP, pid, vec_size).orderGatesByLevel();
     network->sync();
     StatsPoint init_end(*network);
 
@@ -116,7 +167,7 @@ void benchmark(const bpo::variables_map& opts) {
     std::unordered_map<common::utils::wire_t, int> input_pid_map;
     for (const auto& g : circ.gates_by_level[0]) {
         if (g->type == common::utils::GateType::kInp) {
-            input_pid_map[g->out] = 1;
+            input_pid_map[g->out] = 1; // All inputs owned by party 1
         }
     }
 
@@ -130,26 +181,83 @@ void benchmark(const bpo::variables_map& opts) {
     StatsPoint preproc_end(*network);
 
     std::cout << "Starting online evaluation" << std::endl;
-    StatsPoint online_start(*network);
     OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, threads, seed);
     eval.setRandomInputs();
-    for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
+    
+    // Benchmark two sequential shuffles
+    network->sync();
+    StatsPoint shuffle_start(*network);
+    std::cout << "Evaluating initialization (input gates)" << std::endl;
+    eval.evaluateGatesAtDepth(0); // Input gates
+    std::cout << "Evaluating initialization (first shuffle)" << std::endl;
+    eval.evaluateGatesAtDepth(1); // First shuffle
+    std::cout << "Evaluating initialization (second shuffle)" << std::endl;
+    eval.evaluateGatesAtDepth(2); // Second shuffle
+    network->sync();
+    StatsPoint shuffle_end(*network);
+    
+    // Time the two parallel sorting circuits
+    network->sync();
+    StatsPoint sort_start(*network);
+    std::cout << "Evaluating message passing (parallel sorting circuits)" << std::endl;
+    for (size_t i = 3; i < circ.gates_by_level.size(); ++i) {
+        std::cout << "Evaluating depth " << i << std::endl;
         eval.evaluateGatesAtDepth(i);
     }
     std::cout << "Online evaluation complete" << std::endl;
     network->sync();
-    StatsPoint online_end(*network);
-
+    StatsPoint sort_end(*network);
+    
+    // Calculate benchmarks for initialization
+    auto initialization_rbench = shuffle_end - shuffle_start;
+    auto sort_rbench = sort_end - sort_start;
+    
+    double initialization_time = initialization_rbench["time"].get<double>();
+    double sort_time = sort_rbench["time"].get<double>();
+    
+    // we have: shuffle_time + comparison_time for each parallel instance
+    // Since they run in parallel, the time is max(instance1, instance2) which is approximately equal
+    // The projected time accounts for log(vec_size) rounds of comparisons
+    double projected_sort_time = num_rounds * sort_time;
+    
+    size_t initialization_comm = 0;
+    for (const auto& val : initialization_rbench["communication"]) {
+        initialization_comm += val.get<int64_t>();
+    }
+    size_t message_passing_comm = 0;
+    for (const auto& val : sort_rbench["communication"]) {
+        message_passing_comm += val.get<int64_t>();
+    }
+    size_t projected_sort_comm = num_rounds * message_passing_comm;
+    
+    double total_online_time = initialization_time + projected_sort_time;
+    size_t total_online_comm = initialization_comm + projected_sort_comm;
+    
     StatsPoint end(*network);
 
     auto init_rbench = init_end - init_start;
     auto preproc_rbench = preproc_end - preproc_start;
-    auto online_rbench = online_end - online_start;
     auto total_rbench = end - start;
+    
+    // Add individual benchmarks
     output_data["benchmarks"].push_back(init_rbench);
     output_data["benchmarks"].push_back(preproc_rbench);
-    output_data["benchmarks"].push_back(online_rbench);
+    output_data["benchmarks"].push_back(initialization_rbench);
+    output_data["benchmarks"].push_back(sort_rbench);
     output_data["benchmarks"].push_back(total_rbench);
+    
+    // Add projected runtime
+    output_data["projected_runtime"] = {
+        {"initialization_time_ms", initialization_time},
+        {"sort_time_ms", sort_time},
+        {"num_rounds", num_rounds},
+        {"projected_sort_time_ms", projected_sort_time},
+        {"projected_total_online_time_ms", total_online_time},
+        {"initialization_comm_bytes", initialization_comm},
+        {"message_passing_comm_bytes", message_passing_comm},
+        {"projected_sort_comm_bytes", projected_sort_comm},
+        {"projected_total_online_comm_bytes", total_online_comm}
+    };
 
     size_t init_bytes_sent = 0;
     for (const auto& val : init_rbench["communication"]) {
@@ -159,22 +267,23 @@ void benchmark(const bpo::variables_map& opts) {
     for (const auto& val : preproc_rbench["communication"]) {
         pre_bytes_sent += val.get<int64_t>();
     }
-    size_t online_bytes_sent = 0;
-    for (const auto& val : online_rbench["communication"]) {
-        online_bytes_sent += val.get<int64_t>();
-    }
     size_t total_bytes_sent = 0;
     for (const auto& val : total_rbench["communication"]) {
         total_bytes_sent += val.get<int64_t>();
     }
 
-    // std::cout << "--- Repetition " << r + 1 << " ---" << std::endl;
-    std::cout << "init time: " << init_rbench["time"] << " ms" << std::endl;
-    std::cout << "init sent: " << init_bytes_sent << " bytes" << std::endl;
+    std::cout << "--- Benchmark Results ---" << std::endl;
+    std::cout << std::fixed << std::setprecision(2);
     std::cout << "preproc time: " << preproc_rbench["time"] << " ms" << std::endl;
     std::cout << "preproc sent: " << pre_bytes_sent << " bytes" << std::endl;
-    std::cout << "online time: " << online_rbench["time"] << " ms" << std::endl;
-    std::cout << "online sent: " << online_bytes_sent << " bytes" << std::endl;
+    std::cout << "shuffle time (2 sequential shuffles): " << initialization_time << " ms" << std::endl;
+    std::cout << "shuffle sent: " << initialization_comm << " bytes" << std::endl;
+    std::cout << "sorting time (2 parallel sorting, 1 round): " << sort_time << " ms" << std::endl;
+    std::cout << "sorting sent: " << message_passing_comm << " bytes" << std::endl;
+    std::cout << "projected init time (" << num_rounds << " rounds): " << projected_sort_time << " ms" << std::endl;
+    std::cout << "projected init comm (" << num_rounds << " rounds): " << projected_sort_comm << " bytes" << std::endl;
+    std::cout << "online time: " << total_online_time << " ms" << std::endl;
+    std::cout << "online sent: " << total_online_comm << " bytes" << std::endl;
     std::cout << "total time: " << total_rbench["time"] << " ms" << std::endl;
     std::cout << "total sent: " << total_bytes_sent << " bytes" << std::endl;
     std::cout << std::endl;
@@ -198,9 +307,8 @@ bpo::options_description programOptions() {
     bpo::options_description desc("Following options are supported by config file too.");
     desc.add_options()
         ("num-parties,n", bpo::value<int>()->required(), "Number of parties.")
-        ("vec-size,v", bpo::value<size_t>()->required(), "Number of gates at each level.")
-        ("iter,i", bpo::value<int>()->default_value(1), "Number of iterations for message passing.")
-        ("latency,l", bpo::value<double>()->required(), "Network latency in ms.")
+        ("vec-size,v", bpo::value<size_t>()->required(), "Size of vector for each sorting instance.")
+        ("latency,l", bpo::value<double>()->default_value(100.0), "Network latency in ms.")
         ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
         ("threads,t", bpo::value<size_t>()->default_value(6), "Number of threads (recommended 6).")
         ("seed", bpo::value<size_t>()->default_value(200), "Value of the random seed.")
@@ -215,7 +323,7 @@ bpo::options_description programOptions() {
 
 int main(int argc, char* argv[]) {
     auto prog_opts(programOptions());
-    bpo::options_description cmdline("Benchmark online phase for multiplication gates.");
+    bpo::options_description cmdline("Benchmark init_graphiti: 2 sequential shuffles + 2 parallel sorting circuits.");
     cmdline.add(prog_opts);
     cmdline.add_options()(
       "config,c", bpo::value<std::string>(),
