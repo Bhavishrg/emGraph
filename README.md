@@ -1,6 +1,6 @@
 # EmGraph
 
-This directory contains the implementation of the EmGraph secure graph analysis protocol.
+This directory contains the implementation of the EmGraph secure graph processing protocol.
 The protocol is implemented in C++17 and [CMake](https://cmake.org/) is used as the build system.
 
 ## External Dependencies
@@ -87,7 +87,7 @@ Available benchmarks:
 Example usage:
 
 ```
-./../graph_analysis.sh mpa_emgraph -l 0.5 --vec-size 10000 -i 10
+./../graph_analysis.sh mpa_emgraph -l 0.5 -n 5 --vec-size 10000 -i 10
 ```
 
 
