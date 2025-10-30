@@ -100,62 +100,64 @@ common::utils::Circuit<Ring> generateMPACircuit(std::shared_ptr<io::NetIOMP> &ne
     size_t num_edge = vec_size - num_vert;
     int n = nP;
 
-    std::vector<common::utils::wire_t> full_vertex_list(num_vert);
-    for (size_t i = 0; i < num_vert; ++i) full_vertex_list[i] = circ.newInputWire();
-
-    std::vector<std::vector<common::utils::wire_t>> subg_edge_list(n);
-    // distribute edges roughly equally
-    for (int p = 0; p < n; ++p) {
-        size_t edges_for_p = num_edge / n + (p == n-1 ? num_edge % n : 0);
-        subg_edge_list[p].resize(edges_for_p);
-        for (size_t j = 0; j < edges_for_p; ++j) subg_edge_list[p][j] = circ.newInputWire();
-    }
-
+    std::vector<common::utils::wire_t> dag_list(vec_size);
+    std::generate(dag_list.begin(), dag_list.end(), [&]() { return circ.newInputWire(); });
+    
     // Keep permutations trivial (identity) to focus on measuring gate evaluation and communication patterns
-    std::vector<std::vector<int>> pub_perm_g(n), pub_perm_s(n), pub_perm_d(n), pub_perm_v(n);
-    for (int p = 0; p < n; ++p) {
-        pub_perm_g[p].resize(num_vert / n + (p == n-1 ? num_vert % n : 0));
-        for (size_t i = 0; i < pub_perm_g[p].size(); ++i) pub_perm_g[p][i] = i;
-        pub_perm_s[p].resize(subg_edge_list[p].size());
-        for (size_t i = 0; i < pub_perm_s[p].size(); ++i) pub_perm_s[p][i] = i;
-        pub_perm_d[p] = pub_perm_s[p];
-        pub_perm_v[p] = pub_perm_s[p];
+    std::vector<std::vector<int>> permutation;
+    std::vector<int> tmp_perm(vec_size);
+    for (int i = 0; i < vec_size; ++i) {
+        tmp_perm[i] = i;
     }
-
-    // Perform a single iteration of the MPA-like message passing (decompose, apply, combine)
-    // For simplicity, we build a skeleton that mirrors the steps but keeps gates simple.
-    // DECOMPOSE: permute (we use identity)
-    std::vector<std::vector<common::utils::wire_t>> subg_sorted(n);
-    // split full_vertex_list among parties
-    size_t base = num_vert / n;
-    size_t rem = num_vert % n;
-    size_t idx = 0;
-    for (int p = 0; p < n; ++p) {
-        size_t count = base + (p == n-1 ? rem : 0);
-        subg_sorted[p].reserve(count);
-        for (size_t j = 0; j < count; ++j) {
-            subg_sorted[p].push_back(full_vertex_list[idx++]);
+    permutation.push_back(tmp_perm);
+    if (pid == 0) {
+        for (int i = 1; i < nP; ++i) {
+            permutation.push_back(tmp_perm);
         }
     }
 
-    // For each party, create simple propagate/applyv/gather operations
-    for (int p = 0; p < n; ++p) {
-        // PROPAGATE (pairwise subtractions)
-        std::vector<common::utils::wire_t> prop(subg_sorted[p].size());
-        for (int j = (int)subg_sorted[p].size()-1; j > 0; --j) {
-            prop[j] = circ.addGate(common::utils::GateType::kSub, subg_sorted[p][j], subg_sorted[p][j-1]);
-        }
-        // APPLYV: small const mul/add sequence
-        std::vector<common::utils::wire_t> applyv(prop.size());
-        for (size_t j = 0; j < prop.size(); ++j) {
-            auto pgr = circ.addConstOpGate(common::utils::GateType::kConstMul, prop[j], Ring(1));
-            applyv[j] = circ.addConstOpGate(common::utils::GateType::kConstAdd, pgr, Ring(1));
-        }
-        // COMBINE: take first few into output
-        for (size_t j = 0; j < applyv.size(); ++j) circ.setAsOutput(applyv[j]);
+
+    // PROPAGATE
+    for (int i = num_vert - 1; i > 0; --i) {
+        dag_list[i] = circ.addGate(common::utils::GateType::kSub, dag_list[i], dag_list[i - 1]);
+    }
+    auto tmp1 = circ.addMGate(common::utils::GateType::kShuffle, dag_list, permutation);
+    std::vector<common::utils::wire_t> propagate_list(vec_size);
+    for (int i = 0; i < vec_size; ++i){
+        propagate_list[i] = tmp1[i];
+        circ.setAsOutput(propagate_list[i]);
+    }
+    for (int i = 1; i < vec_size; ++i) {
+        propagate_list[i] = circ.addGate(common::utils::GateType::kAdd, propagate_list[i], propagate_list[i - 1]);
+    }
+    for (int i = vec_size - 1; i > 0; --i) {
+        propagate_list[i] = circ.addGate(common::utils::GateType::kSub, propagate_list[i], tmp1[i]);
     }
 
+    // SRC TO DST
+    auto dst_list = circ.addMGate(common::utils::GateType::kShuffle, propagate_list, permutation);
+
+    // GATHER
+    for (int i = 1; i < vec_size; ++i) {
+        dst_list[i] = circ.addGate(common::utils::GateType::kAdd, dst_list[i], dst_list[i - 1]);
+    }
+    auto tmp2 = circ.addMGate(common::utils::GateType::kShuffle, dst_list, permutation);
+    std::vector<common::utils::wire_t> gather_list(vec_size);
+    for (int i = 0; i < vec_size; ++i){
+        gather_list[i] = tmp2[i];
+    }
+    for (int i = vec_size - 1; i > 0; --i) {
+        gather_list[i] = circ.addGate(common::utils::GateType::kSub, gather_list[i], gather_list[i - 1]);
+    }
+
+    // APPLYV
+    for (int i = 0; i < gather_list.size(); ++i) {
+        auto pgr = circ.addConstOpGate(common::utils::GateType::kConstMul, gather_list[i], Ring(1));
+        gather_list[i] = circ.addConstOpGate(common::utils::GateType::kConstAdd, pgr, Ring(1));
+        circ.setAsOutput(gather_list[i]);
+    }
     return circ;
+
 }
 
 void benchmark(const bpo::variables_map& opts) {
@@ -226,10 +228,11 @@ void benchmark(const bpo::variables_map& opts) {
 
     // Initialization circuit and timing
     network->sync();
-    StatsPoint init_start(*network);
+   
+    
     auto init_circ = generateInitCircuit(network, nP, pid, vec_size).orderGatesByLevel();
     network->sync();
-    StatsPoint init_end(*network);
+
 
     int latency_ms = static_cast<int>(latency);  // Convert latency from double to int milliseconds
 
@@ -250,8 +253,7 @@ void benchmark(const bpo::variables_map& opts) {
     network->sync();
     StatsPoint preproc_init_end(*network);
 
-    // Online evaluate initialization (two sequential shuffles ONLY)
-    // The two parallel sorting circuits come after initialization
+    // Online evaluate initialization 
     std::cout << "Starting online evaluation (init - two sequential shuffles)" << std::endl;
     OnlineEvaluator eval_init(nP, pid, network, std::move(preproc_init), init_circ, threads, seed, latency_ms);
     eval_init.setRandomInputs();
@@ -278,22 +280,22 @@ void benchmark(const bpo::variables_map& opts) {
     network->sync();
     StatsPoint sort_end(*network);
 
-    auto init_rbench = init_end - init_start;
     auto preproc_init_rbench = preproc_init_end - preproc_init_start;
-    auto initialization_rbench = shuffle_end - shuffle_start;
+    auto shuffle_rbench = shuffle_end - shuffle_start;
     auto sort_rbench = sort_end - sort_start;
 
-    double initialization_time = initialization_rbench["time"].get<double>();
-    size_t initialization_comm = 0;
-    for (const auto& val : initialization_rbench["communication"]) initialization_comm += val.get<int64_t>();
-    
+    double shuffle_time = shuffle_rbench["time"].get<double>();
+    size_t shuffle_comm = 0;
+    for (const auto& val : shuffle_rbench["communication"]) shuffle_comm += val.get<int64_t>();
+
+    int num_rounds = static_cast<int>(std::ceil(std::log2(vec_size)));
     double sort_time = sort_rbench["time"].get<double>();
     size_t sort_comm = 0;
     for (const auto& val : sort_rbench["communication"]) sort_comm += val.get<int64_t>();
     
     // Total initialization includes both shuffle phase and sorting phase
-    double total_init_time = initialization_time + sort_time;
-    size_t total_init_comm = initialization_comm + sort_comm;
+    double total_init_time = shuffle_time + num_rounds * sort_time;
+    size_t total_init_comm = shuffle_comm + num_rounds * sort_comm;
 
     // Now generate MPA circuit and measure one iteration of message passing
     network->sync();
@@ -354,9 +356,9 @@ void benchmark(const bpo::variables_map& opts) {
 
     auto total_rbench = end - start;
 
-    output_data["benchmarks"].push_back(init_rbench);
+
     output_data["benchmarks"].push_back(preproc_init_rbench);
-    output_data["benchmarks"].push_back(initialization_rbench);
+    output_data["benchmarks"].push_back(shuffle_rbench);
     output_data["benchmarks"].push_back(sort_rbench);
     output_data["benchmarks"].push_back(mpa_preproc_rbench);
     output_data["benchmarks"].push_back(mpa_rbench);
@@ -366,7 +368,7 @@ void benchmark(const bpo::variables_map& opts) {
         {"preproc_init_time_ms", preproc_init_time},
         {"preproc_mpa_time_ms", preproc_mpa_time},
         {"total_preproc_time_ms", total_preproc_time},
-        {"shuffle_time_ms", initialization_time},
+        {"shuffle_time_ms", shuffle_time},
         {"sort_time_ms", sort_time},
         {"total_initialization_time_ms", total_init_time},
         {"message_passing_time_ms", message_passing_time},
@@ -375,7 +377,7 @@ void benchmark(const bpo::variables_map& opts) {
         {"preproc_init_comm_bytes", preproc_init_comm},
         {"preproc_mpa_comm_bytes", preproc_mpa_comm},
         {"total_preproc_comm_bytes", total_preproc_comm},
-        {"shuffle_comm_bytes", initialization_comm},
+        {"shuffle_comm_bytes", shuffle_comm},
         {"sort_comm_bytes", sort_comm},
         {"total_initialization_comm_bytes", total_init_comm},
         {"message_passing_comm_bytes", message_passing_comm},
@@ -390,8 +392,8 @@ void benchmark(const bpo::variables_map& opts) {
     std::cout << "preproc mpa comm (bytes): " << preproc_mpa_comm << std::endl;
     std::cout << "preproc time: " << total_preproc_time << " ms" << std::endl;
     std::cout << "preproc sent: " << total_preproc_comm << " bytes" << std::endl;
-    std::cout << "shuffle time (2 sequential shuffles, ms): " << initialization_time << std::endl;
-    std::cout << "shuffle comm (bytes): " << initialization_comm << std::endl;
+    std::cout << "shuffle time (2 sequential shuffles, ms): " << shuffle_time << std::endl;
+    std::cout << "shuffle comm (bytes): " << shuffle_comm << std::endl;
     std::cout << "sort time (2 parallel sorts, ms): " << sort_time << std::endl;
     std::cout << "sort comm (bytes): " << sort_comm << std::endl;
     std::cout << "total initialization time (ms): " << total_init_time << std::endl;

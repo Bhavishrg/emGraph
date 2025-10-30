@@ -98,17 +98,17 @@ done
 
 # # 4. e2e_emgraph for num parties =5 and vec-size= 10000,100000,1000000,10000000
 for v in 10000 100000 1000000 10000000; do
-    run_benchmark "$BENCH_DIR/e2e_emgraph" "--vec-size $v -n 5"
+    run_benchmark "$BENCH_DIR/e2e_emgraph" "--vec-size $v -n 5 -i 10"
 done
 
 # 5. e2e_graphiti for vec-size 100000 and num parties= 2,5,10,15
 for p in 2 5 10 15; do
-    run_benchmark "$BENCH_DIR/e2e_graphiti" "--vec-size $COMMON_VEC -n $p"
+    run_benchmark "$BENCH_DIR/e2e_graphiti" "--vec-size $COMMON_VEC -n $p -i 10"
 done
 
 # # 6. e2e_graphiti for num parties=5 and vec-size=10000,100000
 for v in 10000; do
-    run_benchmark "$BENCH_DIR/e2e_graphiti" "--vec-size $v -n 5"
+    run_benchmark "$BENCH_DIR/e2e_graphiti" "--vec-size $v -n 5 -i 10"
 done
 
 echo "Batch run finished"

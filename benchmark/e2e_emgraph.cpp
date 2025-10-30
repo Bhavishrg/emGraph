@@ -40,7 +40,9 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
         perm_g[0] = std::vector<int>(num_vert);
         rand_perm_g = std::vector<std::vector<int>>(1);
         rand_perm_g[0] = std::vector<int>(num_vert);
-        for (int i = 0; i < perm_g[0].size(); ++i) {
+        // initialize in parallel
+        #pragma omp parallel for
+        for (int i = 0; i < static_cast<int>(perm_g[0].size()); ++i) {
             perm_g[0][i] = i;
             rand_perm_g[0][i] = i;
         }
@@ -50,7 +52,8 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
         perm_s[0] = std::vector<int>(subg_num_dag_list[pid - 1]);
         rand_perm_s = std::vector<std::vector<int>>(1);
         rand_perm_s[0] = std::vector<int>(subg_num_dag_list[pid - 1]);
-        for (int i = 0; i < perm_s[0].size(); ++i) {
+        #pragma omp parallel for
+        for (int i = 0; i < static_cast<int>(perm_s[0].size()); ++i) {
             perm_s[0][i] = i;
             rand_perm_s[0][i] = i;
         }
@@ -60,7 +63,8 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
         perm_d[0] = std::vector<int>(subg_num_dag_list[pid - 1]);
         rand_perm_d = std::vector<std::vector<int>>(1);
         rand_perm_d[0] = std::vector<int>(subg_num_dag_list[pid - 1]);
-        for (int i = 0; i < perm_d[0].size(); ++i) {
+        #pragma omp parallel for
+        for (int i = 0; i < static_cast<int>(perm_d[0].size()); ++i) {
             perm_d[0][i] = i;
             rand_perm_d[0][i] = i;
         }
@@ -70,23 +74,28 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
         perm_v[0] = std::vector<int>(subg_num_dag_list[pid - 1]);
         rand_perm_v = std::vector<std::vector<int>>(1);
         rand_perm_v[0] = std::vector<int>(subg_num_dag_list[pid - 1]);
-        for (int i = 0; i < perm_v[0].size(); ++i) {
+        #pragma omp parallel for
+        for (int i = 0; i < static_cast<int>(perm_v[0].size()); ++i) {
             perm_v[0][i] = i;
             rand_perm_v[0][i] = i;
         }
 
         std::cout << "Sending permutations" << std::endl;
-
-        for (int i = 0; i < perm_g[0].size(); ++i) {
+        // parallel copy into a single send buffer
+        #pragma omp parallel for
+        for (int i = 0; i < static_cast<int>(perm_g[0].size()); ++i) {
             perm_send[i] = perm_g[0][rand_perm_g[0][i]];
         }
-        for (int i = 0; i < perm_s[0].size(); ++i) {
+        #pragma omp parallel for
+        for (int i = 0; i < static_cast<int>(perm_s[0].size()); ++i) {
             perm_send[i + perm_g[0].size()] = perm_s[0][rand_perm_s[0][i]];
         }
-        for (int i = 0; i < perm_d[0].size(); ++i) {
+        #pragma omp parallel for
+        for (int i = 0; i < static_cast<int>(perm_d[0].size()); ++i) {
             perm_send[i + perm_g[0].size() + perm_s[0].size()] = perm_d[0][rand_perm_d[0][i]];
         }
-        for (int i = 0; i < perm_v[0].size(); ++i) {
+        #pragma omp parallel for
+        for (int i = 0; i < static_cast<int>(perm_v[0].size()); ++i) {
             perm_send[i + perm_g[0].size() + perm_s[0].size() + perm_d[0].size()] = perm_v[0][rand_perm_v[0][i]];
         }
 
@@ -112,7 +121,6 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
                 }
 
                 // Create a receive task for each party
-                usleep(latency_usec);
                 for (int i = 1; i <= nP; ++i) {
                     #pragma omp task firstprivate(i)
                     {
@@ -147,6 +155,7 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
                 // Implicit taskwait at the end of single region
             }
         }
+        usleep(latency_usec);
     } else {
         perm_g = std::vector<std::vector<int>>(nP);
         rand_perm_g = std::vector<std::vector<int>>(nP);
@@ -161,12 +170,14 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
         rand_perm_v = std::vector<std::vector<int>>(nP);
         pub_perm_v = std::vector<std::vector<int>>(nP);
 
+        // initialize permutations in parallel across parties
+        #pragma omp parallel for
         for (int p = 0; p < nP; ++p) {
             // Permutation G
             perm_g[p] = std::vector<int>(num_vert);
             rand_perm_g[p] = std::vector<int>(num_vert);
             pub_perm_g[p] = std::vector<int>(num_vert, 0);
-            for (int i = 0; i < perm_g[p].size(); ++i) {
+            for (int i = 0; i < static_cast<int>(perm_g[p].size()); ++i) {
                 perm_g[p][i] = i;
                 rand_perm_g[p][i] = i;
             }
@@ -175,7 +186,7 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
             perm_s[p] = std::vector<int>(subg_num_dag_list[p]);
             rand_perm_s[p] = std::vector<int>(subg_num_dag_list[p]);
             pub_perm_s[p] = std::vector<int>(subg_num_dag_list[p], 0);
-            for (int i = 0; i < perm_s[p].size(); ++i) {
+            for (int i = 0; i < static_cast<int>(perm_s[p].size()); ++i) {
                 perm_s[p][i] = i;
                 rand_perm_s[p][i] = i;
             }
@@ -184,7 +195,7 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
             perm_d[p] = std::vector<int>(subg_num_dag_list[p]);
             rand_perm_d[p] = std::vector<int>(subg_num_dag_list[p]);
             pub_perm_d[p] = std::vector<int>(subg_num_dag_list[p], 0);
-            for (int i = 0; i < perm_d[p].size(); ++i) {
+            for (int i = 0; i < static_cast<int>(perm_d[p].size()); ++i) {
                 perm_d[p][i] = i;
                 rand_perm_d[p][i] = i;
             }
@@ -193,7 +204,7 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
             perm_v[p] = std::vector<int>(subg_num_dag_list[p]);
             rand_perm_v[p] = std::vector<int>(subg_num_dag_list[p]);
             pub_perm_v[p] = std::vector<int>(subg_num_dag_list[p], 0);
-            for (int i = 0; i < perm_v[p].size(); ++i) {
+            for (int i = 0; i < static_cast<int>(perm_v[p].size()); ++i) {
                 perm_v[p][i] = i;
                 rand_perm_v[p][i] = i;
             }
@@ -203,7 +214,15 @@ void initializePermutations(std::shared_ptr<io::NetIOMP> network, int nP, int pi
     std::cout << "Initialization done" << std::endl;
 }
 
-common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size, int iter, int latency_usec) {
+common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &network, int nP, int pid, size_t vec_size, int iter, int latency_usec,
+                                             const std::vector<std::vector<int>> &rand_perm_g,
+                                             const std::vector<std::vector<int>> &rand_perm_s,
+                                             const std::vector<std::vector<int>> &rand_perm_d,
+                                             const std::vector<std::vector<int>> &rand_perm_v,
+                                             const std::vector<std::vector<int>> &pub_perm_g,
+                                             const std::vector<std::vector<int>> &pub_perm_s,
+                                             const std::vector<std::vector<int>> &pub_perm_d,
+                                             const std::vector<std::vector<int>> &pub_perm_v) {
 
     std::cout << "Generating circuit" << std::endl;
     
@@ -242,17 +261,8 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
         subg_edge_list[i] = subg_edge_list_party;
     }
 
-    // INITIALIZATION PHASE
-    std::vector<std::vector<int>> perm_g, rand_perm_g, pub_perm_g;
-    std::vector<std::vector<int>> perm_s, rand_perm_s, pub_perm_s;
-    std::vector<std::vector<int>> perm_d, rand_perm_d, pub_perm_d;
-    std::vector<std::vector<int>> perm_v, rand_perm_v, pub_perm_v;
-    initializePermutations(network, nP, pid, num_vert, subg_num_dag_list,
-                           perm_g, rand_perm_g, perm_s, rand_perm_s, perm_d, rand_perm_d, perm_v, rand_perm_v,
-                           pub_perm_g, pub_perm_s, pub_perm_d, pub_perm_v, latency_usec);
-
-    // MESSAGE PASSING
-    for (int r = 0; r < iter; ++r) {
+    // MESSAGE PASSING - permutations are passed as parameters
+        // MESSAGE PASSING
         // DECOMPOSE
         auto subg_sorted_vert_list = circ.addMOGate(common::utils::GateType::kAmortzdPnS, full_vertex_list, rand_perm_g, nP);
         full_vertex_list.clear();
@@ -309,8 +319,9 @@ common::utils::Circuit<Ring> generateCircuit(std::shared_ptr<io::NetIOMP> &netwo
 
             // COMBINE
             full_vertex_list.insert(full_vertex_list.end(), applyv_list.begin(), applyv_list.begin() + num_vert_set[i]);
+
         }
-    }
+
     for (int i = 0; i < full_vertex_list.size(); ++i) {
         circ.setAsOutput(full_vertex_list[i]);
     }
@@ -387,11 +398,41 @@ void benchmark(const bpo::variables_map& opts) {
 
     StatsPoint start(*network);
 
+    // INITIALIZATION PHASE - compute graph partitioning and permutations
     network->sync();
     StatsPoint init_start(*network);
-    auto circ = generateCircuit(network, nP, pid, vec_size, iter, latency_usec).orderGatesByLevel();
-    network->sync();
+    
+    size_t num_vert = 0.1 * vec_size;
+    std::vector<size_t> subg_num_dag_list(nP);
+    std::vector<size_t> subg_num_vert(nP);
+    std::vector<size_t> subg_num_edge(nP);
+    size_t num_edge = vec_size - num_vert;
+    for (int i = 0; i < nP; ++i) {
+        if (i != nP - 1) {
+            subg_num_edge[i] = num_edge / nP;
+        } else {
+            subg_num_edge[i] = num_edge / nP + num_edge % nP;
+        }
+        subg_num_vert[i] = std::min(num_vert, 2 * subg_num_edge[i]);
+        subg_num_dag_list[i] = subg_num_vert[i] + subg_num_edge[i];
+    }
+    
+    std::vector<std::vector<int>> perm_g, rand_perm_g, pub_perm_g;
+    std::vector<std::vector<int>> perm_s, rand_perm_s, pub_perm_s;
+    std::vector<std::vector<int>> perm_d, rand_perm_d, pub_perm_d;
+    std::vector<std::vector<int>> perm_v, rand_perm_v, pub_perm_v;
+    initializePermutations(network, nP, pid, num_vert, subg_num_dag_list,
+                           perm_g, rand_perm_g, perm_s, rand_perm_s, perm_d, rand_perm_d, perm_v, rand_perm_v,
+                           pub_perm_g, pub_perm_s, pub_perm_d, pub_perm_v, latency_usec);
+    
     StatsPoint init_end(*network);
+    network->sync();
+    
+    // CIRCUIT GENERATION PHASE
+    auto circ = generateCircuit(network, nP, pid, vec_size, iter, latency_usec,
+                               rand_perm_g, rand_perm_s, rand_perm_d, rand_perm_v,
+                               pub_perm_g, pub_perm_s, pub_perm_d, pub_perm_v).orderGatesByLevel();
+    
 
     std::cout << "--- Circuit ---" << std::endl;
     std::cout << circ << std::endl;
@@ -452,14 +493,18 @@ void benchmark(const bpo::variables_map& opts) {
         total_bytes_sent += val.get<int64_t>();
     }
 
+    // Adjust online to include init
+    double adjusted_online_time = init_rbench["time"].get<double>() + online_rbench["time"].get<double>() * iter;
+    size_t adjusted_online_bytes = init_bytes_sent + online_bytes_sent * iter;
+
     // std::cout << "--- Repetition " << r + 1 << " ---" << std::endl;
     std::cout << std::fixed << std::setprecision(2);
     std::cout << "init time: " << init_rbench["time"] << " ms" << std::endl;
     std::cout << "init sent: " << init_bytes_sent << " bytes" << std::endl;
     std::cout << "preproc time: " << preproc_rbench["time"] << " ms" << std::endl;
     std::cout << "preproc sent: " << pre_bytes_sent << " bytes" << std::endl;
-    std::cout << "online time: " << online_rbench["time"] << " ms" << std::endl;
-    std::cout << "online sent: " << online_bytes_sent << " bytes" << std::endl;
+    std::cout << "online time: " << adjusted_online_time << " ms" << std::endl;
+    std::cout << "online sent: " << adjusted_online_bytes << " bytes" << std::endl;
     std::cout << "total time: " << total_rbench["time"] << " ms" << std::endl;
     std::cout << "total sent: " << total_bytes_sent << " bytes" << std::endl;
     std::cout << std::endl;
