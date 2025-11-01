@@ -1,6 +1,6 @@
-# EmGraph
+# GraSP
 
-This directory contains the implementation of the EmGraph secure graph processing protocol.
+This directory contains the implementation of the GraSP secure graph processing protocol.
 The protocol is implemented in C++17 and [CMake](https://cmake.org/) is used as the build system.
 
 ## External Dependencies
@@ -17,16 +17,16 @@ All required dependencies to compile and run the project are available through t
 To build and run the docker image, execute the following commands from the root directory of the repository:
 
 ```sh
-# Build the EmGraph Docker image.
+# Build the GraSP Docker image.
 #
 # Building the Docker image requires at least 4GB RAM. This needs to be set 
 # explicitly in case of Windows and MacOS.
-docker build -t emgraph .
+docker build -t grasp .
 
 # Create and run a container.
 #
 # This should start the shell from within the container.
-docker run -it -v $PWD:/code emgraph
+docker run -it -v $PWD:/code grasp
 
 # The following command changes the working directory to the one containing the 
 # source code and should be run on the shell started using the previous command.
@@ -48,13 +48,13 @@ make benchmarks
 A short description of the compiled programs is given below.
 All of them provide detailed usage description on using the `--help` option.
 
-- `benchmarks/e2e_emgraph`: Benchmark the performance of the end to end emgraph protocol with initialization, preprocessing and online phases.
-- `benchmarks/mpa_emgraph`: Benchmark the performance of the message-passing phase of the emgraph protocol.
+- `benchmarks/e2e_grasp`: Benchmark the performance of the end to end emgraph protocol with initialization, preprocessing and online phases.
+- `benchmarks/mpa_grasp`: Benchmark the performance of the message-passing phase of the emgraph protocol.
 - `benchmarks/e2e_graphiti`: Benchmark the performance of the end to end graphiti protocol.
 - `benchmarks/mpa_graphiti`: Benchmark the performance of message passing phase of the graphiti protocol.
 Execute the following commands from the `build` directory created during compilation to run the programs:
 ```sh
-# Benchmark EmGraph MPA.
+# Benchmark GraSP.
 #
 # The command below should be run on n+1 different terminals with $PID set to
 # 0, 1, 2, upto n i.e., one instance corresponding to each party.
@@ -67,7 +67,7 @@ Execute the following commands from the `build` directory created during compila
 # option with '--net-config <net_config.json>' where 'net_config.json' is a
 # JSON file containing the IPs of the parties. A template is given in the
 # repository root.
-./benchmarks/e2e_emgraph -p $party --localhost -l 100.0 -v $vec_size -i 10 -n $players
+./benchmarks/e2e_grasp -p $party --localhost -l 100.0 -v $vec_size -i 10 -n $players
 ```
 
 ## Scripts
@@ -79,9 +79,9 @@ Two helper scripts are provided to run benchmarks and collect logs: `graph_analy
 Usage: ./../graph_analysis.sh <benchmark_name> [benchmark_options...]
 
 Available benchmarks:
-  - e2e_emgraph
+  - e2e_grasp
   - e2e_graphiti
-  - mpa_emgraph
+  - mpa_grasp
   - mpa_graphiti
 
 Example usage:
