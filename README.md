@@ -48,10 +48,10 @@ make benchmarks
 A short description of the compiled programs is given below.
 All of them provide detailed usage description on using the `--help` option.
 
-- `benchmarks/e2e_grasp`: Benchmark the performance of the end to end emgraph protocol with initialization, preprocessing and online phases.
-- `benchmarks/mpa_grasp`: Benchmark the performance of the message-passing phase of the emgraph protocol.
+- `benchmarks/e2e_grasp`: Benchmark the performance of the end to end GraSP protocol with initialization, preprocessing and online phases.
+- `benchmarks/mpa_grasp`: Benchmark the performance of the message-passing (one iteration of GAS computation) of the GraSP protocol.
 - `benchmarks/e2e_graphiti`: Benchmark the performance of the end to end graphiti protocol.
-- `benchmarks/mpa_graphiti`: Benchmark the performance of message passing phase of the graphiti protocol.
+- `benchmarks/mpa_graphiti`: Benchmark the performance of message-passing (one iteration of GAS computation) of the graphiti protocol.
 Execute the following commands from the `build` directory created during compilation to run the programs:
 ```sh
 # Benchmark GraSP.
@@ -87,7 +87,7 @@ Available benchmarks:
 Example usage:
 
 ```
-./../graph_analysis.sh mpa_emgraph -l 0.5 -n 5 --vec-size 10000 -i 10
+./../graph_analysis.sh mpa_grasp -l 0.5 -n 5 --vec-size 10000 -i 10
 ```
 
 

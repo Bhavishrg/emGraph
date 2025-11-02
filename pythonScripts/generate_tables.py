@@ -2,9 +2,9 @@
 """
 Scan all `agregate_stat.log` files under the `Results` directory and generate three comparison tables:
 
-1) mpa_graphiti vs mpa_emgraph for varying num-parties and vec-size=100000
-2) e2e_graphiti vs e2e_emgraph for varying num-parties and vec-size=100000
-3) e2e_graphiti vs e2e_emgraph for varying vec-size and num-parties=5
+1) mpa_graphiti vs mpa_grasp for varying num-parties and vec-size=100000
+2) e2e_graphiti vs e2e_grasp for varying num-parties and vec-size=100000
+3) e2e_graphiti vs e2e_grasp for varying vec-size and num-parties=5
 
 Usage:
     python3 pythonScripts/generate_compare_tables.py --results-dir /path/to/Results
@@ -144,9 +144,9 @@ def build_and_print_tables(mapping, results_dir):
             oc_mb = None
         return ot_s, oc_mb
 
-    # 1) mpa_graphiti vs mpa_emgraph for vec_size=100000 across num-parties
+    # 1) mpa_graphiti vs mpa_grasp for vec_size=100000 across num-parties
     vec = 100000
-    benchmarks_a = ('mpa_graphiti', 'mpa_emgraph')
+    benchmarks_a = ('mpa_graphiti', 'mpa_grasp')
     parties_set = set()
     for (bench, players, v) in mapping.keys():
         if bench in benchmarks_a and v == vec and players is not None:
@@ -161,8 +161,8 @@ def build_and_print_tables(mapping, results_dir):
             entries.append((bench, fmt(ot), fmt(oc, is_comm=True)))
         rows1.append((p, entries))
 
-    # 2) e2e_graphiti vs e2e_emgraph for vec_size=100000
-    benchmarks_b = ('e2e_graphiti', 'e2e_emgraph')
+    # 2) e2e_graphiti vs e2e_grasp for vec_size=100000
+    benchmarks_b = ('e2e_graphiti', 'e2e_grasp')
     parties_set_b = set()
     for (bench, players, v) in mapping.keys():
         if bench in benchmarks_b and v == vec and players is not None:
@@ -177,7 +177,7 @@ def build_and_print_tables(mapping, results_dir):
             entries.append((bench, fmt(ot), fmt(oc, is_comm=True)))
         rows2.append((p, entries))
 
-    # 3) e2e_graphiti vs e2e_emgraph for num-parties=5 across vec_size
+    # 3) e2e_graphiti vs e2e_grasp for num-parties=5 across vec_size
     p = 5
     vec_set = set()
     for (bench, players, v) in mapping.keys():
@@ -200,13 +200,13 @@ def build_and_print_tables(mapping, results_dir):
 
     # Save to CSV files
     save_table_csv(os.path.join(results_dir, 'table1_mpa_comparison.csv'), 
-                   'mpa_graphiti vs mpa_emgraph (vec_size=100000)', 
+                   'mpa_graphiti vs mpa_grasp (vec_size=100000)', 
                    rows1, '#Parties')
     save_table_csv(os.path.join(results_dir, 'table2_e2e_comparison_parties.csv'), 
-                   'e2e_graphiti vs e2e_emgraph (vec_size=100000)', 
+                   'e2e_graphiti vs e2e_grasp (vec_size=100000)', 
                    rows2, '#Parties')
     save_table_csv(os.path.join(results_dir, 'table3_e2e_comparison_vecsize.csv'), 
-                   'e2e_graphiti vs e2e_emgraph (num_parties=5)', 
+                   'e2e_graphiti vs e2e_grasp (num_parties=5)', 
                    rows3, 'Vec Size')
 
 

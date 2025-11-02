@@ -83,7 +83,7 @@ echo "Starting batch run at $(date)"
 
 # 1. mpa_emgraph for vec-size 100000, num-parties = 2,5,10,15,20,25
 for p in $PARTIES; do
-    run_benchmark "$BENCH_DIR/mpa_emgraph" "--vec-size $COMMON_VEC -n $p"
+    run_benchmark "$BENCH_DIR/mpa_grasp" "--vec-size $COMMON_VEC -n $p"
 done
 
 # # 2. mpa_graphiti for vec-size 100000, same parties
@@ -93,12 +93,12 @@ done
 
 # # 3. e2e_emgraph for vec-size 100000 and num parties=2,5,10,15,25
 for p in $PARTIES; do
-    run_benchmark "$BENCH_DIR/e2e_emgraph" "--vec-size $COMMON_VEC -n $p -i 10"
+    run_benchmark "$BENCH_DIR/e2e_grasp" "--vec-size $COMMON_VEC -n $p -i 10"
 done
 
 # # 4. e2e_emgraph for num parties =5 and vec-size= 10000,100000,1000000,10000000
 for v in 10000 100000 1000000 10000000; do
-    run_benchmark "$BENCH_DIR/e2e_emgraph" "--vec-size $v -n 5 -i 10"
+    run_benchmark "$BENCH_DIR/e2e_grasp" "--vec-size $v -n 5 -i 10"
 done
 
 # 5. e2e_graphiti for vec-size 100000 and num parties= 2,5,10,15

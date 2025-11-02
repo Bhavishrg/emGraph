@@ -3,8 +3,8 @@
 #include <emp-tool/emp-tool.h>
 #include <io/netmp.h>
 #include <utils/helpers.h>
-#include <emgraph/offline_evaluator.h>
-#include <emgraph/rand_gen_pool.h>
+#include <grasp/offline_evaluator.h>
+#include <grasp/rand_gen_pool.h>
 #include <utils/circuit.h>
 
 #include <algorithm>
@@ -17,7 +17,7 @@
 #include <random>
 #include <vector>
 
-using namespace emgraph;
+using namespace grasp;
 namespace bdata = boost::unit_test::data;
  
 

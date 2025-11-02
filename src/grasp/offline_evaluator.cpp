@@ -9,7 +9,7 @@
 
 // #include "../utils/helpers.h"
 
-namespace emgraph {
+namespace grasp {
 
 // Static circuit template cache implementation.
 // These are lazily initialized on first use and shared across all preprocessing calls.
@@ -859,4 +859,4 @@ OfflineBoolEvaluator::OfflineBoolEvaluator(int nP, int my_id, std::shared_ptr<io
 }
 
 
-};  // namespace emgraph
+};  // namespace grasp

@@ -1,9 +1,9 @@
 #define BOOST_TEST_MODULE online
 #include <emp-tool/emp-tool.h>
 #include <io/netmp.h>
-#include <emgraph/offline_evaluator.h>
-#include <emgraph/online_evaluator.h>
-#include <emgraph/sharing.h>
+#include <grasp/offline_evaluator.h>
+#include <grasp/online_evaluator.h>
+#include <grasp/sharing.h>
 
 #include <boost/test/data/monomorphic.hpp>
 #include <boost/test/data/test_case.hpp>
@@ -15,7 +15,7 @@
 #include <vector>
 #include <thread>
 
-using namespace emgraph;
+using namespace grasp;
 using namespace common::utils;
 namespace bdata = boost::unit_test::data;
 constexpr int TEST_DATA_MAX_VAL = 1000;

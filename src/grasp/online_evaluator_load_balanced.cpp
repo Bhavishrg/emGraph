@@ -3,7 +3,7 @@
 #include "../utils/helpers.h"
 #include <omp.h>
 
-namespace emgraph
+namespace grasp
 {
     OnlineEvaluator::OnlineEvaluator(int nP, int id, std::shared_ptr<io::NetIOMP> network,
                                      PreprocCircuit<Ring> preproc,
@@ -1419,4 +1419,4 @@ namespace emgraph
         }
         return outputs;
     }
-}; // namespace emgraph
+}; // namespace grasp

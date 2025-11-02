@@ -10,12 +10,12 @@ if [ $# -lt 1 ]; then
     echo "Usage: $0 <benchmark_name> [benchmark_options...]"
     echo ""
     echo "Available benchmarks:"
-    echo "  - e2e_emgraph"
+    echo "  - e2e_grasp"
     echo "  - e2e_graphiti"
-    echo "  - mpa_emgraph"
+    echo "  - mpa_grasp"
     echo "  - mpa_graphiti"
     echo ""
-    echo "Example: $0 mpa_emgraph -l 0.5 --vec-size 10000 -i 10"
+    echo "Example: $0 mpa_grasp -l 0.5 --vec-size 10000 -i 10"
     exit 1
 fi
 

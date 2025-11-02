@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE sharing
 
-#include <emgraph/sharing.h>
+#include <grasp/sharing.h>
 #include <utils/types.h>
 
 #include <boost/test/data/monomorphic.hpp>
@@ -9,7 +9,7 @@
 #include <random>
 #include <vector>
 
-using namespace emgraph;
+using namespace grasp;
 namespace bdata = boost::unit_test::data;
 
 struct GlobalFixture {

@@ -12,13 +12,13 @@
 
 
 #include "preproc.h"
-#include "emgraph/rand_gen_pool.h"
+#include "grasp/rand_gen_pool.h"
 #include "sharing.h"
 #include "../utils/types.h"
 
 using namespace common::utils;
 
-namespace emgraph {
+namespace grasp {
 class OfflineEvaluator {
   int nP_;  
   int id_;
@@ -99,4 +99,5 @@ class OfflineBoolEvaluator {
                                 AddShare<BoolRing>& share, TPShare<BoolRing>& tpShare, BoolRing secret,
                                 std::vector<BoolRing>& rand_sh_sec, size_t& idx_rand_sh_sec);
 };
-};  // namespace emgraph
+
+};  // namespace grasp

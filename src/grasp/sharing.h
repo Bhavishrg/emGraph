@@ -10,7 +10,7 @@
 
 using namespace common::utils;
 
-namespace emgraph {
+namespace grasp {
 
 template <class R>
 class AddShare {
@@ -234,108 +234,6 @@ class TPShare {
 
 template <>
 void AddShare<BoolRing>::randomize(emp::PRG& prg);
-//add the constructor above
 
 
-
-// Contains all elements of a secret sharing. Used only for generating dummy
-// preprocessing data.
-/*
-template <class R>
-struct DummyShare { 
-  // number of components will depent upon number of parties
-  std::array<R, 6> share_elements;
-
-  DummyShare() = default;
-
-  explicit DummyShare(std::array<R, 6> share_elements)
-      : share_elements(std::move(share_elements)) {}
-
-  DummyShare(R secret, emp::PRG& prg) {
-    prg.random_data(share_elements.data(), sizeof(R) * 5);
-
-    R sum = share_elements[0];
-    for (int i = 1; i < 5; ++i) {
-      sum += share_elements[i];
-    }
-    share_elements[5] = secret - sum;
-  }
-
-  void randomize(emp::PRG& prg) {
-    prg.random_data(share_elements.data(), sizeof(R) * 6);
-  }
-
-  [[nodiscard]] R secret() const {
-    R sum = share_elements[0];
-    for (size_t i = 1; i < 6; ++i) {
-      sum += share_elements[i];
-    }
-
-    return sum;
-  }
-
-  DummyShare<R>& operator+=(const DummyShare<R>& rhs) {
-    for (size_t i = 0; i < 6; ++i) {
-      share_elements[i] += rhs.share_elements[i];
-    }
-
-    return *this;
-  }
-
-  friend DummyShare<R> operator+(DummyShare<R> lhs, const DummyShare<R>& rhs) {
-    lhs += rhs;
-    return lhs;
-  }
-
-  DummyShare<R>& operator-=(const DummyShare<R>& rhs) {
-    for (size_t i = 0; i < 6; ++i) {
-      share_elements[i] -= rhs.share_elements[i];
-    }
-
-    return *this;
-  }
-
-  friend DummyShare<R> operator-(DummyShare<R> lhs, const DummyShare<R>& rhs) {
-    lhs -= rhs;
-    return lhs;
-  }
-
-  DummyShare<R>& operator*=(const R& rhs) {
-    for (size_t i = 0; i < 6; ++i) {
-      share_elements[i] *= rhs;
-    }
-
-    return *this;
-  }
-
-  friend DummyShare<R> operator*(DummyShare<R> lhs, const R& rhs) {
-    lhs *= rhs;
-    return lhs;
-  }
-
-  friend DummyShare<R> operator*(const R& lhs, DummyShare<R> rhs) {
-    // Assumes abelian ring.
-    rhs *= lhs;
-    return rhs;
-  }
-
-  //ReplicatedShare<R> getRSS(size_t pid) {
-  //  return ReplicatedShare<R>({getShareElement(pid, pidFromOffset(pid, 1)),
-  //                             getShareElement(pid, pidFromOffset(pid, 2)),
-  //                             getShareElement(pid, pidFromOffset(pid, 3))});
-  //}
-
-  R getShareElement(size_t i, size_t j) {
-    return share_elements.at(upperTriangularToArray(i, j));
-  }
-};*/
-
-//template <>
-//void AddShare<BoolRing>::randomize(emp::PRG& prg);
-
-//template <>
-//TPShare<BoolRing>::TPShare(BoolRing secret, emp::PRG& prg);
-
-//template <>
-//void TPShare<BoolRing>::randomize(emp::PRG& prg);
-};  // namespace emgraph
+};  // namespace grasp

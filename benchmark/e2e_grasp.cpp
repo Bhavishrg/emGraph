@@ -1,6 +1,6 @@
 #include <io/netmp.h>
-#include <emgraph/offline_evaluator.h>
-#include <emgraph/online_evaluator.h>
+#include <grasp/offline_evaluator.h>
+#include <grasp/online_evaluator.h>
 #include <utils/circuit.h>
 
 #include <algorithm>
@@ -14,7 +14,7 @@
 
 #include <iomanip>
 
-using namespace emgraph;
+using namespace grasp;
 using json = nlohmann::json;
 namespace bpo = boost::program_options;
 
