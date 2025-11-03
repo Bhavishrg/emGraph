@@ -1,6 +1,6 @@
 # GraSP
 
-This directory contains the implementation of the GraSP secure graph processing protocol.
+This directory contains the implementation of the GraSP secure graph processing protocol: https://eprint.iacr.org/2025/590.
 The protocol is implemented in C++17 and [CMake](https://cmake.org/) is used as the build system.
 
 ## External Dependencies
